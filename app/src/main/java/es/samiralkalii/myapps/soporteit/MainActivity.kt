@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val user= User("samir", "samir@gmial.com", "123456789", "no tengo todavia")
+        val user= User("samir", "samir@gmial.com", "123456789", "pass", "no tengo todavia")
         Log.d(TAG, user.toString())
     }
 
