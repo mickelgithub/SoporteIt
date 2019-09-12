@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import es.samiralkalii.myapps.data.splash.AuthService
-import es.samiralkalii.myapps.data.splash.SplashRepository
-import es.samiralkalii.myapps.soporteit.framework.FirebaseAuthService
+import es.samiralkalii.myapps.data.authlogin.AuthLoginRepository
+import es.samiralkalii.myapps.data.authlogin.AuthLoginService
+import es.samiralkalii.myapps.soporteit.framework.FirebaseAuthLoginService
+import es.samiralkalii.myapps.usecase.authlogin.AuthUseCase
+import es.samiralkalii.myapps.usecase.authlogin.LoginUseCase
 
 class SplashViewModel() : ViewModel() {
 
@@ -18,12 +20,15 @@ class SplashViewModel() : ViewModel() {
     val userLoginSuccess
         get() = _userLoginSuccess
 
-    val authService: AuthService= FirebaseAuthService(FirebaseAuth.getInstance(), _userLoginSuccess, _userLogged)
+    val authLoginService: AuthLoginService = FirebaseAuthLoginService(FirebaseAuth.getInstance(), _userLoginSuccess, _userLogged)
 
-    private val splashRepository= SplashRepository(authService)
+    private val authLoginRepository= AuthLoginRepository(authLoginService)
 
-    fun checkUserLogged()= splashRepository.checkUserLoggedIn()
+    private val authUseCase= AuthUseCase(authLoginRepository)
+    private val loginUseCase= LoginUseCase(authLoginRepository)
 
-    fun signInUser(name: String, pass: String)= splashRepository.signInUser(name, pass)
+    fun checkUserLogged()= authUseCase.checkUserLoggedIn()
+
+    fun signInUser(name: String, pass: String)= loginUseCase.signInUser(name, pass)
 
 }
