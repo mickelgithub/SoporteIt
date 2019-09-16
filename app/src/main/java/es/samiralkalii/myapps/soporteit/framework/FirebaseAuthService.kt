@@ -1,18 +1,16 @@
 package es.samiralkalii.myapps.soporteit.framework
 
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import es.samiralkalii.myapps.data.authlogin.AuthLoginService
+import es.samiralkalii.myapps.data.authlogin.IAuthService
 
-class FirebaseAuthLoginService(val fbAuth: FirebaseAuth, val userLoginSuccess: MutableLiveData<Boolean>, val userLogged: MutableLiveData<Boolean>): AuthLoginService {
+class FirebaseAuthService(val fbAuth: FirebaseAuth, val userLogged: MutableLiveData<Boolean>): IAuthService {
 
     override fun checkUserLoggedIn() {
         userLogged.value= (fbAuth.currentUser!= null)
     }
 
-    override fun signInUser(mail: String, pass: String) {
+    /*override fun signInUser(mail: String, pass: String) {
         fbAuth.signInWithEmailAndPassword(mail, pass).addOnCompleteListener(OnCompleteListener<AuthResult>() {
             if (it.isSuccessful()) {
                 userLoginSuccess.value= true
@@ -20,7 +18,7 @@ class FirebaseAuthLoginService(val fbAuth: FirebaseAuth, val userLoginSuccess: M
                 userLoginSuccess.value= false
             }
         })
-    }
+    }*/
 }
 
 

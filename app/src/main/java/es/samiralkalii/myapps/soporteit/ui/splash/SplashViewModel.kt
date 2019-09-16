@@ -4,31 +4,32 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import es.samiralkalii.myapps.data.authlogin.AuthLoginRepository
-import es.samiralkalii.myapps.data.authlogin.AuthLoginService
-import es.samiralkalii.myapps.soporteit.framework.FirebaseAuthLoginService
+import es.samiralkalii.myapps.data.authlogin.AuthRepository
+import es.samiralkalii.myapps.data.authlogin.IAuthService
+import es.samiralkalii.myapps.soporteit.framework.FirebaseAuthService
 import es.samiralkalii.myapps.usecase.authlogin.AuthUseCase
-import es.samiralkalii.myapps.usecase.authlogin.LoginUseCase
 
-class SplashViewModel() : ViewModel() {
+class SplashViewModel() : ViewModel(), IAuthService {
+
 
     private val _userLogged= MutableLiveData<Boolean>()
     val userLogged: LiveData<Boolean>
         get() = _userLogged
 
-    private val _userLoginSuccess= MutableLiveData<Boolean>()
-    val userLoginSuccess
-        get() = _userLoginSuccess
+    val authLoginService: IAuthService = FirebaseAuthService(FirebaseAuth.getInstance(), _userLogged)
 
-    val authLoginService: AuthLoginService = FirebaseAuthLoginService(FirebaseAuth.getInstance(), _userLoginSuccess, _userLogged)
+    private val authRepository= AuthRepository(authLoginService)
 
-    private val authLoginRepository= AuthLoginRepository(authLoginService)
+    private val authUseCase= AuthUseCase(authRepository)
 
-    private val authUseCase= AuthUseCase(authLoginRepository)
-    private val loginUseCase= LoginUseCase(authLoginRepository)
+    //fun checkUserLogged()= authUseCase.checkUserLoggedIn()
 
-    fun checkUserLogged()= authUseCase.checkUserLoggedIn()
+    override fun checkUserLoggedIn() {
+        authUseCase.checkUserLoggedIn()
+    }
 
-    fun signInUser(name: String, pass: String)= loginUseCase.signInUser(name, pass)
+    /*override fun signInUser(mail: String, pass: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }*/
 
 }
