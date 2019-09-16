@@ -9,16 +9,6 @@ class FirebaseAuthService(val fbAuth: FirebaseAuth, val userLogged: MutableLiveD
     override fun checkUserLoggedIn() {
         userLogged.value= (fbAuth.currentUser!= null)
     }
-
-    /*override fun signInUser(mail: String, pass: String) {
-        fbAuth.signInWithEmailAndPassword(mail, pass).addOnCompleteListener(OnCompleteListener<AuthResult>() {
-            if (it.isSuccessful()) {
-                userLoginSuccess.value= true
-            } else {
-                userLoginSuccess.value= false
-            }
-        })
-    }*/
 }
 
 

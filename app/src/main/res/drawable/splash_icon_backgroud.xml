@@ -3,7 +3,7 @@
 
     <item android:drawable="@color/colorPrimary"/>
     <item android:gravity="center"
-        android:drawable="@drawable/support_it_icon" android:height="100dp" android:width="100dp">
+        android:drawable="@drawable/ic_support" android:height="100dp" android:width="100dp">
     </item>
 
 </layer-list>

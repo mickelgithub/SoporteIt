@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import es.samiralkalii.myapps.soporteit.ui.startLoginActivity
+import es.samiralkalii.myapps.soporteit.ui.startRegistrationActivity
 
 
 private val TAG= "SplashActivity"
@@ -26,8 +26,8 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             } else {
                 Log.d(TAG, "NOOOOOO LOGADO")
-                //startActivity(Intent(this, LoginActivity::class.java))
-                startLoginActivity()
+                //startActivity(Intent(this, RegisterActivity::class.java))
+                startRegistrationActivity()
             }
         })
     }
