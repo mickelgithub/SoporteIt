@@ -1,13 +1,10 @@
 package es.samiralkalii.myapps.soporteit.framework
 
-import android.text.TextUtils
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IRegisterService
-import es.samiralkalii.myapps.domain.User
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.tasks.await
 
 private val TAG: String= "FirebaseRegisterService"
 
@@ -16,8 +13,14 @@ class FirebaseRegisterService(val fbAuth: FirebaseAuth, val fstore: FirebaseFire
 
 
 
-    override fun registerUser(name: String, mail: String, pass: String, profileImage: String): Deferred<Boolean> {
-        fbAuth.createUserWithEmailAndPassword(mail, pass).addOnCompleteListener { task ->
+    override suspend fun registerUser(name: String, mail: String, pass: String, profileImage: String): Boolean {
+        val authResult= fbAuth.createUserWithEmailAndPassword(mail, pass).await()
+        if (authResult.user!= null) {
+            //registracion ha ido OK
+            return true
+        }
+
+        /*fbAuth.createUserWithEmailAndPassword(mail, pass).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 //we have registered user successfully
 
@@ -42,8 +45,8 @@ class FirebaseRegisterService(val fbAuth: FirebaseAuth, val fstore: FirebaseFire
                 //something wrong
             }
         }
+        return false*/
         return false
-
 
     }
 }

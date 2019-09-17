@@ -9,27 +9,21 @@ import es.samiralkalii.myapps.data.authlogin.IAuthService
 import es.samiralkalii.myapps.soporteit.framework.FirebaseAuthService
 import es.samiralkalii.myapps.usecase.authlogin.AuthUseCase
 
-class SplashViewModel() : ViewModel(), IAuthService {
+class SplashViewModel() : ViewModel() {
 
 
     private val _userLogged= MutableLiveData<Boolean>()
     val userLogged: LiveData<Boolean>
         get() = _userLogged
 
-    val authLoginService: IAuthService = FirebaseAuthService(FirebaseAuth.getInstance(), _userLogged)
+    val authService: IAuthService = FirebaseAuthService(FirebaseAuth.getInstance())
 
-    private val authRepository= AuthRepository(authLoginService)
+    private val authRepository= AuthRepository(authService)
 
     private val authUseCase= AuthUseCase(authRepository)
 
-    //fun checkUserLogged()= authUseCase.checkUserLoggedIn()
-
-    override fun checkUserLoggedIn() {
-        authUseCase.checkUserLoggedIn()
+    fun checkUserLoggedIn() {
+        _userLogged.value= authUseCase.checkUserLoggedIn()
     }
-
-    /*override fun signInUser(mail: String, pass: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }*/
 
 }

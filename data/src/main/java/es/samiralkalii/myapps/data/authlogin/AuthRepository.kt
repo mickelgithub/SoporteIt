@@ -9,6 +9,6 @@ class AuthRepository(val authService: IAuthService) {
 }
 
 interface IAuthService {
-    fun checkUserLoggedIn()
+    fun checkUserLoggedIn(): Boolean
 }
 

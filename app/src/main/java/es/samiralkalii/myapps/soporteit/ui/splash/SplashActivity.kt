@@ -1,7 +1,6 @@
 package es.samiralkalii.myapps.soporteit.ui.splash
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,7 +13,6 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_splash)
 
         val viewModel: SplashViewModel= ViewModelProviders.of(this)[SplashViewModel::class.java]
 
@@ -22,11 +20,8 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.userLogged.observe(this, Observer {
             if (it) {
-                Log.d(TAG, "SIIIIIII LOGADO")
                 finish()
             } else {
-                Log.d(TAG, "NOOOOOO LOGADO")
-                //startActivity(Intent(this, RegisterActivity::class.java))
                 startRegistrationActivity()
             }
         })
