@@ -1,8 +1,12 @@
 package es.samiralkalii.myapps.domain
 
-data class User(val name: String,
-                val email: String, val password: String,
-                val profileImage: String) {
-    var id: String= ""
+data class User(var email: String= "", var password: String= "",
+                var name: String= "",
+                var id: String= "",
+                var profileImage: String= "") {
+
+
 }
+
+
 

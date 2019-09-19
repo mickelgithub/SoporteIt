@@ -20,7 +20,8 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.userLogged.observe(this, Observer {
             if (it) {
-                finish()
+                //finish()
+                startRegistrationActivity()
             } else {
                 startRegistrationActivity()
             }
