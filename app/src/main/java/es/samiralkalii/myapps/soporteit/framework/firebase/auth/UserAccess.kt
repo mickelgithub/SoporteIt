@@ -13,9 +13,10 @@ class UserAccess(val fbAuth: FirebaseAuth): IUserAccess {
 
     }
 
-    override suspend fun registerUser(user: User) : Boolean {
+    override suspend fun registerUser(user: User) : String {
         val authResult = fbAuth.createUserWithEmailAndPassword(user.email, user.password).await()
-        return (authResult.user != null)
+        return authResult.user!!.uid;
+        //return (authResult.user != null)
     }
 
 }

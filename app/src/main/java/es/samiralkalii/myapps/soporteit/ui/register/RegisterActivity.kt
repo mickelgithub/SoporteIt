@@ -16,5 +16,7 @@ class RegisterActivity : AppCompatActivity() {
 
         val binding: ActivityRegisterBinding= DataBindingUtil.setContentView(this, R.layout.activity_register)
         binding.viewModel= viewModel
+
+        supportActionBar?.let { title= "Registración" }
     }
 }
