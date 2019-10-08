@@ -21,8 +21,12 @@ private val TAG= "RegisterViewModel"
 class RegisterViewModel:  ViewModel() {
 
     private val _registerSuccessfull= MutableLiveData<Boolean>()
-    val registerSuccessFull
+    val registerSuccessfull
         get() = _registerSuccessfull
+
+    private val _progressbarVisible= MutableLiveData<Boolean>()
+    val progressVisible
+        get() = _progressbarVisible
 
     val user= User()
 
@@ -35,9 +39,11 @@ class RegisterViewModel:  ViewModel() {
     private val userAccessUseCase= UserAccessUseCase(userAccessRepository, userDatabaseRepository)
 
     fun registerUser() {
-
+        _progressbarVisible.value= true
         viewModelScope.launch {
             _registerSuccessfull.value= userAccessUseCase.registerUser(user)
+            _progressbarVisible.value= false
+
             //Log.d(TAG, "$name $mail $pass $profileImage")
         }
     }

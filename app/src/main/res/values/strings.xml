@@ -3,5 +3,8 @@
     <string name="name">Nombre</string>
     <string name="mail">Email</string>
     <string name="password">Contraseña</string>
-    <string name="register">Registar</string>
+    <string name="register">Registrar</string>
+    <string name="registration">Registración</string>
+    <string name="preference_file">_preferencias</string>
+        
 </resources>

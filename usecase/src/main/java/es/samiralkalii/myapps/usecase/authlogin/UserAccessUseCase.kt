@@ -3,8 +3,11 @@ package es.samiralkalii.myapps.usecase.authlogin
 import es.samiralkalii.myapps.data.authlogin.UserAccessRepository
 import es.samiralkalii.myapps.data.authlogin.UserDatabaseRepository
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.preference.PreferenceRepository
 
-class UserAccessUseCase(val userAccessRepository: UserAccessRepository, val userDatabaseRepository: UserDatabaseRepository) {
+class UserAccessUseCase(val userAccessRepository: UserAccessRepository,
+                        val userDatabaseRepository: UserDatabaseRepository,
+                        val preferenceRepository: PreferenceRepository?= null) {
 
     fun checkUserLoggedIn()= userAccessRepository.checkUserLoggedIn()
 
