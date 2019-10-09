@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.ui
+package es.samiralkalii.myapps.soporteit.ui.util
 
 import android.view.View
 import androidx.databinding.BindingAdapter

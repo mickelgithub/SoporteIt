@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import es.samiralkalii.myapps.soporteit.ui.startRegistrationActivity
+import es.samiralkalii.myapps.soporteit.ui.util.startRegistrationActivity
 
 
 private val TAG= "SplashActivity"
