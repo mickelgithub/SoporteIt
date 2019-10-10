@@ -9,8 +9,9 @@ class UserAccess(val fbAuth: FirebaseAuth): IUserAccess {
 
     override fun checkUserLoggedIn()= fbAuth.currentUser!= null
 
-    override fun signInUser(user: User) {
-
+    override suspend fun signInUser(user: User): Boolean {
+        val authResult= fbAuth.signInWithEmailAndPassword(user.email, user.password).await()
+        return authResult.user!= null
     }
 
     override suspend fun registerUser(user: User) : String {

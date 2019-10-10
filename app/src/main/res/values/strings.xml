@@ -5,6 +5,6 @@
     <string name="password">Contraseña</string>
     <string name="register">Registrar</string>
     <string name="registration">Registración</string>
-    <string name="preference_file">_preferencias</string>
-        
+    <string name="preference_file">es.samiralkalii.myapps.soporteit.preferencias</string>
+
 </resources>

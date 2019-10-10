@@ -12,6 +12,6 @@ class UserAccessRepository(val userAccess: IUserAccess) {
 
 interface IUserAccess {
     suspend fun registerUser(user: User): String
-    fun signInUser(user: User)
+    suspend fun signInUser(user: User): Boolean
     fun checkUserLoggedIn(): Boolean
 }

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.startRegistrationActivity
 
 
@@ -18,13 +20,21 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.checkUserLoggedIn()
 
-        viewModel.userLogged.observe(this, Observer {
-            if (it) {
-                //finish()
-                startRegistrationActivity()
-            } else {
-                startRegistrationActivity()
+        viewModel.splashState.observe(this, Observer {
+            if (it is ScreenState.Render) {
+                processState(it)
             }
         })
+    }
+
+    fun processState(screenState: ScreenState.Render<SplashState>?) {
+        screenState?.let {
+            when (screenState.renderState) {
+                SplashState.LoggedIn, SplashState.GotoHome -> startHomeActivity()
+                SplashState.GotoRegister -> startRegistrationActivity()
+                is SplashState.ShowMessage -> Unit
+            }
+        }
+
     }
 }
