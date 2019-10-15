@@ -2,9 +2,9 @@ package es.samiralkalii.myapps.soporteit.ui.splash
 
 sealed class SplashState {
 
-    class ShowMessage(message: String): SplashState()
+    class ShowMessage(val message: String): SplashState()
     object LoggedIn: SplashState()
-    object GotoHome: SplashState()
-    object GotoRegister: SplashState()
+    object Relogged: SplashState()
+    object FirstAccess: SplashState()
 
 }

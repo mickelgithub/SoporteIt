@@ -1,28 +1,28 @@
 package es.samiralkalii.myapps.soporteit.ui.register
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import es.samiralkalii.myapps.data.authlogin.IUserAccess
-import es.samiralkalii.myapps.data.authlogin.IUserDatabase
-import es.samiralkalii.myapps.data.authlogin.UserAccessRepository
-import es.samiralkalii.myapps.data.authlogin.UserDatabaseRepository
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import es.samiralkalii.myapps.domain.User
-import es.samiralkalii.myapps.soporteit.framework.firebase.auth.UserAccess
-import es.samiralkalii.myapps.soporteit.framework.firebase.database.UserDatabase
-import es.samiralkalii.myapps.usecase.authlogin.UserAccessUseCase
+import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.usecase.authlogin.RegisterUseCase
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
 private val TAG= "RegisterViewModel"
 
-class RegisterViewModel:  ViewModel() {
+class RegisterViewModel(val registerUseCase: RegisterUseCase) : ViewModel() {
 
-    private val _registerSuccessfull= MutableLiveData<Boolean>()
-    val registerSuccessfull
-        get() = _registerSuccessfull
+    private val _registerState= MutableLiveData<ScreenState<RegisterState>>()
+    val registerState
+        get() = _registerState
 
     private val _progressbarVisible= MutableLiveData<Boolean>()
     val progressVisible
@@ -30,26 +30,68 @@ class RegisterViewModel:  ViewModel() {
 
     val user= User()
 
-    val userAccessFramework: IUserAccess = UserAccess(FirebaseAuth.getInstance())
-    val userDatabaseFramework: IUserDatabase = UserDatabase(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+    private val _imageProfile= MutableLiveData<String?>()
+    val imageProfile
+        get() = _imageProfile
+
+
+    /*private val userAccessFramework: IUserAccess = UserAccess(FirebaseAuth.getInstance())
+    private val userDatabaseFramework: IUserDatabase = UserDatabase(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+    private val sharedPreferencesFramework: IPreferences = MySharedPreferences(context)
 
     private val userAccessRepository= UserAccessRepository(userAccessFramework)
     private val userDatabaseRepository= UserDatabaseRepository(userDatabaseFramework)
+    private val preferenceRepository= PreferenceRepository(sharedPreferencesFramework)
 
-    private val userAccessUseCase= UserAccessUseCase(userAccessRepository, userDatabaseRepository)
+    private val registerUseCase= RegisterUseCase(userAccessRepository, userDatabaseRepository, preferenceRepository) */
 
     fun registerUser() {
         _progressbarVisible.value= true
-        viewModelScope.launch {
-            _registerSuccessfull.value= userAccessUseCase.registerUser(user)
-            _progressbarVisible.value= false
-
-            //Log.d(TAG, "$name $mail $pass $profileImage")
+        val errorHandler = CoroutineExceptionHandler { _, error ->
+            _progressbarVisible.postValue(false)
+            Log.e(TAG, error.toString()+ "....................")
+            when (error) {
+                is FirebaseNetworkException -> {
+                    _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage("Error de conexion, comprueba el acceso a Internet")))
+                }
+                is FirebaseAuthInvalidCredentialsException -> {
+                    if (error.toString().contains("email address is badly formatted")) {
+                        _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage("Email no válido al tener formato incorrecto")))
+                    } else if (error.toString().contains("The given password is invalid")) {
+                        _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage("La contraseña debe ser de al menos 6 posiciones")))
+                    }
+                }
+                is FirebaseAuthUserCollisionException -> {
+                    _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage("Ya existe ese usuario!!!")))
+                }
+                else -> {
+                    _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage("Error no controlado!!!")))
+                }
+            }
+        }
+        viewModelScope.launch(errorHandler) {
+            val result= async(Dispatchers.IO) {
+                registerUseCase.registerUser(user)
+            }.await()
+            when (result) {
+                is RegisterUseCase.Result.RegisteredOk -> {
+                    _progressbarVisible.value = false
+                    _registerState.value = ScreenState.Render(RegisterState.RegisteredOk)
+                }
+            }
         }
     }
 
+    fun onRegisterClick()= registerUser()
 
-    fun onRegister()= registerUser()
+    fun saveProfileImage(file: String?) {
 
+
+
+    }
+
+    fun updateImageProfile(imgFilePath: String?) {
+        _imageProfile.value= imgFilePath
+    }
 
 }

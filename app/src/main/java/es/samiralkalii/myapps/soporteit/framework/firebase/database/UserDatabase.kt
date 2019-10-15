@@ -13,6 +13,7 @@ class UserDatabase(val fbAuth: FirebaseAuth, val fstore: FirebaseFirestore): IUs
         val connectedUser= fbAuth.currentUser!!
         user.id= connectedUser.uid
         fstore.collection("users").document(user.id).set(user).await()
+        fbAuth.signOut()
         return true
 
     }

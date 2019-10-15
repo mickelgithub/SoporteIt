@@ -5,6 +5,10 @@ data class User(var email: String= "", var password: String= "",
                 var id: String= "",
                 var profileImage: String= "") {
 
+    companion object {
+        val Empty= User()
+    }
+
 
 }
 
