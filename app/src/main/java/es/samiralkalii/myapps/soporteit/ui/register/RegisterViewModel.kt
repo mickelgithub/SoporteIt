@@ -72,8 +72,7 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase) : ViewModel() {
         }
         viewModelScope.launch(errorHandler) {
             val result= async(Dispatchers.IO) {
-                user.externalProfileImageUri= _imageProfile.value?.toString() ?: ""
-                registerUseCase.registerUser(user)
+                registerUseCase.registerUser(user, imageProfile.value?.toString() ?: "")
             }.await()
             when (result) {
                 is RegisterUseCase.Result.RegisteredOk -> {

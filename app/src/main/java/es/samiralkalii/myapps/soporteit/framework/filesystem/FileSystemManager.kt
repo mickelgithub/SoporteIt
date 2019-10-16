@@ -1,25 +1,31 @@
 package es.samiralkalii.myapps.soporteit.framework.filesystem
 
 import android.content.Context
+import android.net.Uri
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
+import java.io.File
 
+private val profileImageName= "profile_image"
 
 class FileSystemManager(val context: Context): IFileSystemManager {
 
-    override suspend fun copyFileFromExternalToInternal(
-        externalFileStr: String,
-        internalFileStr: String
-    ) {
-        /*val externalFile= File(externalFileStr)
-        val inputStream= FileInputStream(externalFile)
+    override suspend fun copyFileFromExternalToInternal(externalFileStr: String): File {
+        val uri= Uri.parse(externalFileStr)
+        val type= context.contentResolver.getType(uri)
+        val inputStream= context.contentResolver.openInputStream(uri)
 
-        val internalFile= File(context.filesDir, internalFileStr)
-        context.openFileOutput(internalFileStr, Context.MODE_PRIVATE).use {
+        val ext= type.substringAfterLast(File.separator)
+
+        val internalFile= File(context.filesDir, "${profileImageName}.${ext}")
+        if (internalFile.exists()) {
+            internalFile.delete()
+        }
+        context.openFileOutput(internalFile.name, Context.MODE_PRIVATE).use {
             it.write(inputStream.readBytes())
             it.close()
         }
 
-        inputStream.close()*/
-
+        inputStream.close()
+        return internalFile
     }
 }

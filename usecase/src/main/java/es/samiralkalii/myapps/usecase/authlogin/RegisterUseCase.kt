@@ -17,16 +17,17 @@ class RegisterUseCase(private val userAccessRepository: UserAccessRepository,
         class RegisteredOk(): Result()
     }
 
-    suspend fun registerUser(user: User): Result {
+    suspend fun registerUser(user: User, profileImage: String= ""): Result {
         val uid = userAccessRepository.registerUser(user)
-        //user registered correctly
-        //we have to add the user to the database
+        //registration OK
         user.id = uid
         //we have to add the user profile image de local and remote storage
-        if (user.externalProfileImageUri.isNotBlank()) {
-            fileSystemRepository.copyFileFromExternalToInternal(user.externalProfileImageUri, user.externalProfileImageUri.substringAfterLast("/"))
-            userStorageRepository.saveProfileImage(user)
+        if (profileImage.isNotBlank()) {
+            val profileImageFile= fileSystemRepository.copyFileFromExternalToInternal(profileImage)
+            user.remoteProfileImage= userStorageRepository.saveProfileImage(user, profileImageFile)
+            user.localProfileImage= profileImageFile.absolutePath
         }
+        //we have to add the user to the database
         userDatabaseRepository.addUser(user)
         preferenceRepository.saveUserToPreferences(user)
         return Result.RegisteredOk()
