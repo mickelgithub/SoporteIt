@@ -1,5 +1,6 @@
 package es.samiralkalii.myapps.soporteit.ui.register
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,7 +31,7 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase) : ViewModel() {
 
     val user= User()
 
-    private val _imageProfile= MutableLiveData<String?>()
+    private val _imageProfile= MutableLiveData<Uri?>()
     val imageProfile
         get() = _imageProfile
 
@@ -71,6 +72,7 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase) : ViewModel() {
         }
         viewModelScope.launch(errorHandler) {
             val result= async(Dispatchers.IO) {
+                user.externalProfileImageUri= _imageProfile.value?.toString() ?: ""
                 registerUseCase.registerUser(user)
             }.await()
             when (result) {
@@ -84,14 +86,8 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase) : ViewModel() {
 
     fun onRegisterClick()= registerUser()
 
-    fun saveProfileImage(file: String?) {
-
-
-
-    }
-
-    fun updateImageProfile(imgFilePath: String?) {
-        _imageProfile.value= imgFilePath
+    fun updateImageProfile(imgUri: Uri?) {
+        _imageProfile.value= imgUri
     }
 
 }

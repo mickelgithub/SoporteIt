@@ -29,8 +29,8 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
         val view= binding.root
-
-        val showDeleteOption: Boolean= arguments!![ARG_KEY_SHOW_DELETE_OPTION] as Boolean
+        val args= arguments!!
+        val showDeleteOption: Boolean= args.let { args[ARG_KEY_SHOW_DELETE_OPTION] as Boolean}
 
         if (!showDeleteOption) {
             binding.deleteOption.visibility= View.GONE
@@ -60,15 +60,17 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
     fun onCameraClick() {
         Handler().postDelayed({
             this@PickUpProfilePhotoBottonSheetDialog.dismiss()
+            pickProfilePhotoListener.getProfilePhotoFrom(ProfilePhotoSource.CAMERA)
         }, 300L)
-        pickProfilePhotoListener.getProfilePhotoFrom(ProfilePhotoSource.CAMERA)
+
     }
 
     fun onGalleryClick() {
         Handler().postDelayed({
             this@PickUpProfilePhotoBottonSheetDialog.dismiss()
+            pickProfilePhotoListener.getProfilePhotoFrom(PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY)
         }, 300L)
-        pickProfilePhotoListener.getProfilePhotoFrom(PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY)
+
     }
 
     fun onDeleteClick() {

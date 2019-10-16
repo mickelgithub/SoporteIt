@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,14 +17,6 @@ import es.samiralkalii.myapps.soporteit.ui.register.dialog.PickUpProfilePhotoBot
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import org.koin.android.viewmodel.ext.android.viewModel
-
-
-
-
-
-
-
-
 
 private val TAG= "RegisterActivity"
 private val PICK_IMAGE= 1
@@ -71,7 +62,7 @@ class RegisterActivity : AppCompatActivity(),
             }
         }
     }
-
+    //called by binding
     fun onImageProfileClick() {
         val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.imageProfile.value!= null)
         pickUpProfilePhotoBottonSheetDialog.show(supportFragmentManager, "pickUpProfilePhotoBottonSheetDialog")
@@ -79,7 +70,7 @@ class RegisterActivity : AppCompatActivity(),
 
 
 
-    fun showChooserToPickImage() {
+    private fun showChooserToPickImage() {
         val getIntent = Intent(Intent.ACTION_GET_CONTENT)
         getIntent.type = "image/*"
 
@@ -105,25 +96,16 @@ class RegisterActivity : AppCompatActivity(),
             }
     }
 
-    fun pickImage(data: Intent?) {
+    private fun pickImage(data: Intent?) {
         //data.getData return the content URI for the selected Image
         val selectedImage = data?.data
 
-        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-        // Get the cursor
-        val cursor = contentResolver.query(selectedImage, filePathColumn, null, null, null)
-        // Move to first row
-        cursor!!.moveToFirst()
-        //Get the column index of MediaStore.Images.Media.DATA
-        val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-        //Gets the String value in the column
-        val imgFilePath = cursor.getString(columnIndex)
-        Log.d(TAG, imgFilePath+ ".................")
-        cursor.close()
-        if (checkPermission()) {
-            viewModel.updateImageProfile(imgFilePath)
-        } else {
-            requestPermission()
+        if (selectedImage!= null) {
+            if (checkPermission()) {
+                viewModel.updateImageProfile(selectedImage)
+            } else {
+                requestPermission()
+            }
         }
     }
 

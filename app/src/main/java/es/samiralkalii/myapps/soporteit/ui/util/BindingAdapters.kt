@@ -1,5 +1,6 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
+import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -13,6 +14,6 @@ fun View.bindVisible(visible: Boolean?) {
 
 
 @BindingAdapter("imgsrc")
-fun ImageView.bindImgSrc(imgsrc: String?) {
-    Glide.with(this.context).load(imgsrc ?: R.drawable.profile).into(this)
+fun ImageView.bindImgSrc(imageUri: Uri?) {
+    Glide.with(this.context).load(imageUri ?: R.drawable.profile).into(this)
 }
