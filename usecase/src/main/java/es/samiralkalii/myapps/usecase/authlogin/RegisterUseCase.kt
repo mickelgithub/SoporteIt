@@ -21,7 +21,7 @@ class RegisterUseCase(private val userAccessRepository: UserAccessRepository,
     }
 
     suspend fun registerUser(user: User, profileImage: String= ""): Result {
-        logger.debug("HOLA; ESTAMOS REGISTRANDO EL USUARIO")
+        logger.debug("Vamos a registar el usuario ${user.email}")
         val uid = userAccessRepository.registerUser(user)
         //registration OK
         user.id = uid

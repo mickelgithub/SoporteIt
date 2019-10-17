@@ -37,6 +37,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/alreadyLoggedUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:onClick="@{()-> viewModel.onAlreadyLoggedUpClick()}"
+                android:text="@string/already_logged_up"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button"
+                tools:text="Si ya estas registrado, haz click aqui" />
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 app:shapeAppearance="@style/rounded_text_field"
@@ -48,7 +65,8 @@
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_image">
+                app:layout_constraintTop_toBottomOf="@+id/profile_image"
+                app:error="@{viewModel.nameError}" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
@@ -65,6 +83,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 app:shapeAppearance="@style/rounded_text_field"
                 android:id="@+id/textInputLayout2"
+                app:error="@{viewModel.emailError}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -89,6 +108,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 app:shapeAppearance="@style/rounded_text_field"
                 android:id="@+id/textInputLayout3"
+                app:error="@{viewModel.passwordError}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

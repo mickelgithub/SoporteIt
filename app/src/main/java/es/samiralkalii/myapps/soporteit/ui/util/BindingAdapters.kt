@@ -17,3 +17,12 @@ fun View.bindVisible(visible: Boolean?) {
 fun ImageView.bindImgSrc(imageUri: Uri?) {
     Glide.with(this.context).load(imageUri ?: R.drawable.profile).into(this)
 }
+
+@BindingAdapter("error")
+fun com.google.android.material.textfield.TextInputLayout.bindError(errorMessage: Int?) {
+    if (errorMessage!= null) {
+        error= resources.getString(errorMessage)
+    } else {
+        error= ""
+    }
+}

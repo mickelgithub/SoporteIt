@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,8 +17,8 @@ import es.samiralkalii.myapps.soporteit.ui.register.dialog.PickUpProfilePhotoBot
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.slf4j.LoggerFactory
 
-private val TAG= "RegisterActivity"
 private val PICK_IMAGE= 1
 private val PERMISSION_REQUEST_CODE= 2
 private val IMAGE_MIMETYPE= "image/*"
@@ -30,6 +29,8 @@ class RegisterActivity : AppCompatActivity(),
 
     private val viewModel: RegisterViewModel by viewModel()
     private lateinit var binding: ActivityRegisterBinding
+
+    private val logger = LoggerFactory.getLogger(RegisterActivity::class.java!!)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,11 +53,12 @@ class RegisterActivity : AppCompatActivity(),
         screenState.let {
             when (screenState.renderState) {
                 RegisterState.RegisteredOk -> {
-                    Log.d(TAG, "Registered OK, goto home")
+                    logger.debug("Registracion correcto, goto Home")
                     startHomeActivity()
                 }
                 is RegisterState.ShowMessage -> {
-                    Toast.makeText(this, screenState.renderState.message, Toast.LENGTH_LONG).show()
+                    logger.debug("Hubo un error en la registracion, lo mostramos")
+                    Toast.makeText(this, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -130,9 +132,9 @@ class RegisterActivity : AppCompatActivity(),
         when(requestCode) {
             PERMISSION_REQUEST_CODE -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("value", "Permission Granted, Now you can use local drive .");
+                    logger.debug("value", "Permission Granted, Now you can use local drive .");
                 } else {
-                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                    logger.debug("value", "Permission Denied, You cannot use local drive .");
                 }
             }
         }
@@ -142,7 +144,7 @@ class RegisterActivity : AppCompatActivity(),
 
     override fun getProfilePhotoFrom(profilePhotoSource: PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource) {
         when (profilePhotoSource) {
-            PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.CAMERA -> Log.d(TAG, "Camera clicked.........")
+            PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.CAMERA -> logger.debug("Camera clicked.........")
             PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY -> showChooserToPickImage()
         }
     }
