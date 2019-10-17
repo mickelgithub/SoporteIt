@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityRegisterBinding
 import es.samiralkalii.myapps.soporteit.ui.register.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
@@ -21,6 +22,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 private val TAG= "RegisterActivity"
 private val PICK_IMAGE= 1
 private val PERMISSION_REQUEST_CODE= 2
+private val IMAGE_MIMETYPE= "image/*"
 
 
 class RegisterActivity : AppCompatActivity(),
@@ -44,9 +46,6 @@ class RegisterActivity : AppCompatActivity(),
                 processState(it)
             }
         })
-
-
-
     }
 
     private fun processState(screenState: ScreenState.Render<RegisterState>) {
@@ -72,15 +71,15 @@ class RegisterActivity : AppCompatActivity(),
 
     private fun showChooserToPickImage() {
         val getIntent = Intent(Intent.ACTION_GET_CONTENT)
-        getIntent.type = "image/*"
+        getIntent.type = IMAGE_MIMETYPE
 
         val pickIntent = Intent(
             Intent.ACTION_PICK,
             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
-        pickIntent.type = "image/*"
+        pickIntent.type = IMAGE_MIMETYPE
 
-        val chooserIntent = Intent.createChooser(getIntent, "Seleccionar una imagen")
+        val chooserIntent = Intent.createChooser(getIntent, getString(R.string.select_image))
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
 
         startActivityForResult(chooserIntent, PICK_IMAGE)
@@ -116,7 +115,7 @@ class RegisterActivity : AppCompatActivity(),
     }
     private fun requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            Toast.makeText(this, "El permiso para Write External Storage permission allows us to read files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.read_permission_indication), Toast.LENGTH_LONG).show();
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)

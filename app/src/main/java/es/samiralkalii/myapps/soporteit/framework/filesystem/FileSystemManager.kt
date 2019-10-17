@@ -5,7 +5,7 @@ import android.net.Uri
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
 import java.io.File
 
-private val profileImageName= "profile_image"
+private val PROFILE_IMAGE_NAME= "profile_image"
 
 class FileSystemManager(val context: Context): IFileSystemManager {
 
@@ -15,7 +15,7 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         val inputStream= context.contentResolver.openInputStream(uri)
         val ext= type.substringAfterLast(File.separator)
 
-        val internalFile= File(context.filesDir, "${profileImageName}.${ext}")
+        val internalFile= File(context.filesDir, "${PROFILE_IMAGE_NAME}.${ext}")
         if (internalFile.exists()) {
             internalFile.delete()
         }

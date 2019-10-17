@@ -11,14 +11,14 @@ fun String.fileExtension(): String {
     return substringAfterLast(".", "")
 }
 
-private val profileBaseDir= "profile"
-private val profileImageName= "profile"
+private val PROFILE_BASE_DIR= "profile"
+private val PROFILE_IMAGE_NAME= "profile"
 
 class UserStorage(val fstorage: FirebaseStorage): IUserStorage {
 
     override suspend fun saveProfileImage(user: User, imagefile: File): String {
 
-        val mStorageRef = FirebaseStorage.getInstance().getReference("${user.id}${File.separator}${profileBaseDir}${File.separator}${profileImageName}.${imagefile.name.fileExtension()}")
+        val mStorageRef = FirebaseStorage.getInstance().getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${imagefile.name.fileExtension()}")
         val result= mStorageRef.putFile(Uri.fromFile(imagefile)).await()
         if (result.task.isComplete) {
             val uri= mStorageRef.downloadUrl.await()

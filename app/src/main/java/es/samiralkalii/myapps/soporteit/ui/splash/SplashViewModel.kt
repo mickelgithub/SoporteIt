@@ -13,8 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-
-
 private val TAG= "SplashViewModel"
 
 class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewModel() {
@@ -23,14 +21,6 @@ class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewMode
     private val _splashState= MutableLiveData<ScreenState<SplashState>>()
     val splashState: LiveData<ScreenState<SplashState>>
         get() = _splashState
-
-    /*private val userAccessFramework: IUserAccess = UserAccess(FirebaseAuth.getInstance())
-    private val sharedPreferencesFramework: IPreferences= MySharedPreferences(context)
-
-    private val userAccessRepository= UserAccessRepository(userAccessFramework)
-    private val preferencesRepository= PreferenceRepository(sharedPreferencesFramework)
-
-    private val checkUserAuthUseCase= CheckUserAuthUseCase(userAccessRepository, preferencesRepository)*/
 
     fun checkUserAuth() {
 

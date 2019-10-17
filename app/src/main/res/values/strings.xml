@@ -12,5 +12,7 @@
     <string name="camera">Camera</string>
     <string name="gallery">Galería</string>
     <string name="delete">Eliminar</string>
+    <string name="select_image">Seleccionar una imagen</string>
+    <string name="read_permission_indication">Es necesario otorgar el permiso ... para poder seleccionar una imagen</string>
 
 </resources>

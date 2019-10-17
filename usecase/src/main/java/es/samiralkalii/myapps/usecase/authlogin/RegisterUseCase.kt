@@ -8,8 +8,6 @@ import es.samiralkalii.myapps.filesystem.FileSystemRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
-
-
 class RegisterUseCase(private val userAccessRepository: UserAccessRepository,
                       private val userDatabaseRepository: UserDatabaseRepository,
                       private val  preferenceRepository: PreferenceRepository,
