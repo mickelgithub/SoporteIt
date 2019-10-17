@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="fragment"
             type="es.samiralkalii.myapps.soporteit.ui.register.dialog.PickUpProfilePhotoBottonSheetDialog" />
-
     </data>
 
     <LinearLayout
@@ -40,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Camera"
+                android:text="@string/camera"
                 android:layout_marginTop="8dp" />
 
         </LinearLayout>
@@ -55,7 +53,6 @@
                 android:id="@+id/gallery"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/gallery"
                 android:onClick="@{()-> fragment.onGalleryClick()}"
@@ -66,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Galería"
+                android:text="@string/gallery"
                 android:layout_marginTop="8dp"
                 tools:text="Galería" />
 
@@ -83,7 +80,6 @@
                 android:id="@+id/delete"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/gallery"
                 android:onClick="@{()-> fragment.onDeleteClick()}"
@@ -94,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Eliminar"
+                android:text="@string/delete"
                 android:layout_marginTop="8dp"
                 tools:text="Eliminar" />
 

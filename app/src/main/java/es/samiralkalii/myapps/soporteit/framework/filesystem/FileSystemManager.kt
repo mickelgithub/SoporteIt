@@ -13,7 +13,6 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         val uri= Uri.parse(externalFileStr)
         val type= context.contentResolver.getType(uri)
         val inputStream= context.contentResolver.openInputStream(uri)
-
         val ext= type.substringAfterLast(File.separator)
 
         val internalFile= File(context.filesDir, "${profileImageName}.${ext}")
@@ -24,7 +23,6 @@ class FileSystemManager(val context: Context): IFileSystemManager {
             it.write(inputStream.readBytes())
             it.close()
         }
-
         inputStream.close()
         return internalFile
     }

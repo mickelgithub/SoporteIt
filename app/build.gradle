@@ -46,8 +46,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.google.firebase:firebase-storage:19.0.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation project(':domain')
-    implementation project(':data')
+
     implementation project(':usecase')
     implementation 'com.google.android.material:material:1.1.0-beta01'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
@@ -62,6 +61,7 @@ dependencies {
         transitive = true
     }
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -16,7 +16,6 @@ private val USER_PASS_KEY= "userpass_key"
 class MySharedPreferences(val context: Context): IPreferences {
 
     override suspend fun saveUser(user: User) {
-
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(USER_NAME_KEY, user.name);
             putString(USER_MAIL_KEY, user.email)
