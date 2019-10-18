@@ -48,6 +48,10 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase) : ViewModel() {
     val passwordError
         get()= _passwordError
 
+    private val _nameVisible= MutableLiveData<Boolean>(true)
+    val nameVisible
+        get()= _nameVisible
+
     private fun clearErrors() {
         _nameError.value= null
         _emailError.value= null
@@ -109,6 +113,7 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase) : ViewModel() {
 
     fun onAlreadyLoggedUpClick() {
         logger.debug("already logged up")
+        _nameVisible.value= false
     }
 
 }
