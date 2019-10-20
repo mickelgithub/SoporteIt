@@ -7,6 +7,10 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import es.samiralkalii.myapps.soporteit.R
 
+val FADE_IN= 1
+val FADE_OUT= 2
+val DEFAULT_ANIMATION_DURATION = 1000L
+
 @BindingAdapter("visible")
 fun View.bindVisible(visible: Boolean?) {
     visibility= if (visible== true) View.VISIBLE else View.GONE
@@ -26,3 +30,4 @@ fun com.google.android.material.textfield.TextInputLayout.bindError(errorMessage
         error= ""
     }
 }
+

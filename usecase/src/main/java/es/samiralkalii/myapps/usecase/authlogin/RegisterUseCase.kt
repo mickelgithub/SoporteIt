@@ -27,9 +27,9 @@ class RegisterUseCase(private val userAccessRepository: UserAccessRepository,
         user.id = uid
         //we have to add the user profile image de local and remote storage
         if (profileImage.isNotBlank()) {
-            val profileImageFile= fileSystemRepository.copyFileFromExternalToInternal(profileImage)
-            user.remoteProfileImage= userStorageRepository.saveProfileImage(user, profileImageFile)
-            user.localProfileImage= profileImageFile.absolutePath
+            val profileImageFile = fileSystemRepository.copyFileFromExternalToInternal(profileImage)
+            user.remoteProfileImage = userStorageRepository.saveProfileImage(user, profileImageFile)
+            user.localProfileImage = profileImageFile.absolutePath
         }
         //we have to add the user to the database
         userDatabaseRepository.addUser(user)

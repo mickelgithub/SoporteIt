@@ -5,17 +5,23 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.databinding.ActivityRegisterBinding
+import androidx.transition.Scene
+import androidx.transition.Transition
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
+import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
+import es.samiralkalii.myapps.soporteit.databinding.SceneRegisterFormBinding
 import es.samiralkalii.myapps.soporteit.ui.register.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
+import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.scene_register_form.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -28,28 +34,83 @@ class RegisterActivity : AppCompatActivity(),
     PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
 
     private val viewModel: RegisterViewModel by viewModel()
-    private lateinit var binding: ActivityRegisterBinding
+    private lateinit var bindingRegister: SceneRegisterFormBinding
+    private lateinit var bindingLogin: SceneLoginFormBinding
+    private lateinit var scene1: Scene
+    private lateinit var scene2: Scene
+    private lateinit var transitionMngLogUpToLogIn: Transition
 
     private val logger = LoggerFactory.getLogger(RegisterActivity::class.java!!)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding= DataBindingUtil.setContentView(this, es.samiralkalii.myapps.soporteit.R.layout.activity_register)
-        binding.viewModel= viewModel
-        binding.lifecycleOwner= this
-        binding.activity= this
+        setContentView(es.samiralkalii.myapps.soporteit.R.layout.activity_register)
+
+
+        bindingRegister= SceneRegisterFormBinding.inflate(layoutInflater, container, false)
+        bindingRegister.viewModel= viewModel
+        bindingRegister.lifecycleOwner= this
+        bindingRegister.activity= this
+
+        scene1= Scene(container, bindingRegister.root)
+        scene1.enter()
+
+        bindingLogin= SceneLoginFormBinding.inflate(layoutInflater, container, false)
+        bindingLogin.viewModel= viewModel
+        bindingLogin.lifecycleOwner= this
+        bindingLogin.activity= this
+        scene2= Scene(container, bindingLogin.root)
+
+        transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(es.samiralkalii.myapps.soporteit.R.transition.logup_login_transition)
+
+        setSupportActionBar(toolbar)
 
         supportActionBar?.let { title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration) }
 
         viewModel.registerState.observe(this, Observer {
             if (it is ScreenState.Render) {
-                processState(it)
+                processStateLogUp(it)
+            }
+        })
+
+        viewModel.loginState.observe(this, Observer {
+            if (it is ScreenState.Render)
+        })
+
+        viewModel.loginOrLogUp.observe(this, Observer {
+            when (it) {
+                RegisterViewModel.TO_LOG_IN -> {
+                    nameInputLayout.visibility= View.GONE
+                    TransitionManager.go(scene2, transitionMngLogUpToLogIn)
+                    supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.logIn)
+                }
+                RegisterViewModel.TO_LOG_UP -> {
+                    TransitionManager.go(scene1, transitionMngLogUpToLogIn)
+                    nameInputLayout.visibility= View.VISIBLE
+                    supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration)
+                }
             }
         })
     }
 
-    private fun processState(screenState: ScreenState.Render<RegisterState>) {
+    private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {
+        screenState.let {
+            when (screenState.renderState) {
+                LoginState.LoginOk -> {
+                    logger.debug("Login correcto, goto Home")
+                    startHomeActivity()
+                } else {
+
+                }
+            }
+
+            }
+        }
+    }
+
+    private fun processStateLogUp(screenState: ScreenState.Render<RegisterState>) {
         screenState.let {
             when (screenState.renderState) {
                 RegisterState.RegisteredOk -> {
@@ -63,7 +124,7 @@ class RegisterActivity : AppCompatActivity(),
             }
         }
     }
-    //called by binding
+    //called by bindingRegister
     fun onImageProfileClick() {
         val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.imageProfile.value!= null)
         pickUpProfilePhotoBottonSheetDialog.show(supportFragmentManager, "pickUpProfilePhotoBottonSheetDialog")
@@ -81,7 +142,7 @@ class RegisterActivity : AppCompatActivity(),
         )
         pickIntent.type = IMAGE_MIMETYPE
 
-        val chooserIntent = Intent.createChooser(getIntent, getString(R.string.select_image))
+        val chooserIntent = Intent.createChooser(getIntent, getString(es.samiralkalii.myapps.soporteit.R.string.select_image))
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
 
         startActivityForResult(chooserIntent, PICK_IMAGE)
@@ -117,7 +178,7 @@ class RegisterActivity : AppCompatActivity(),
     }
     private fun requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            Toast.makeText(this, getString(R.string.read_permission_indication), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(es.samiralkalii.myapps.soporteit.R.string.read_permission_indication), Toast.LENGTH_LONG).show();
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
@@ -154,4 +215,6 @@ class RegisterActivity : AppCompatActivity(),
     }
 
     //---------------------------------------------------------------------------------
+
+
 }

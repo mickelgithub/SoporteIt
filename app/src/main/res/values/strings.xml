@@ -4,7 +4,9 @@
     <string name="mail">Email</string>
     <string name="password">Contraseña</string>
     <string name="register">Registrar</string>
+    <string name="logIn">Acceder</string>
     <string name="registration">Registración</string>
+    <string name="log_in">Acceso</string>
     <string name="preference_file">es.samiralkalii.myapps.soporteit.preferencias</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -21,6 +23,7 @@
     <string name="user_collision">Ya existe este usuario!!!</string>
     <string name="no_internet_connection">Error de conexion, comprueba el acceso a Internet</string>
     <string name="already_logged_up">Si ya estas registrado, haz click</string>
+    <string name="no_account">Si no tienes cuenta, registrate</string>
     <string name="her">Aqui</string>
 
 </resources>
