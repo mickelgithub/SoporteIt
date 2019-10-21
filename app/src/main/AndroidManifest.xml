@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.home.HomeActivity"
             ></activity>
-        <activity android:name=".ui.register.RegisterActivity"
+        <activity android:name=".ui.logup.LogupActivity"
             />
         <activity
             android:name=".ui.splash.SplashActivity"

@@ -32,7 +32,7 @@ class LoginUserCase(private val userAccessRepository: UserAccessRepository,
             logger.debug("imagefile length"+ imageFile.length())
             user.localProfileImage= imageFile.absolutePath
         }
-        //preferenceRepository.saveUserToPreferences(user)
+        preferenceRepository.saveUserToPreferences(user)
 
 
         return Result.LoginOk()

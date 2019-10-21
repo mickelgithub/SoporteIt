@@ -7,11 +7,11 @@
     <data>
         <variable
             name="viewModel"
-            type="es.samiralkalii.myapps.soporteit.ui.register.RegisterViewModel" />
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel" />
 
         <variable
             name="activity"
-            type="es.samiralkalii.myapps.soporteit.ui.register.RegisterActivity" />
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupActivity" />
     </data>
 
     <ScrollView
@@ -22,7 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.register.RegisterActivity">
+            tools:context=".ui.logup.LogupActivity">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
@@ -99,6 +99,7 @@
                 app:shapeAppearance="@style/rounded_text_field"
                 android:id="@+id/passInputLayout"
                 app:error="@{viewModel.passwordError}"
+                app:passwordToggleEnabled="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.ui.register
+package es.samiralkalii.myapps.soporteit.ui.logup
 
 sealed class LoginState {
 

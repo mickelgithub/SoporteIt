@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.ui.register
+package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.LoginUserCase
-import es.samiralkalii.myapps.usecase.authlogin.RegisterUseCase
+import es.samiralkalii.myapps.usecase.authlogin.LogupUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -20,11 +20,11 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
 
-class RegisterViewModel(val registerUseCase: RegisterUseCase, val loginUserCase: LoginUserCase) : ViewModel() {
+class LogupViewModel(val logupUseCase: LogupUseCase, val loginUserCase: LoginUserCase) : ViewModel() {
 
-    private val logger = LoggerFactory.getLogger(RegisterViewModel::class.java)
+    private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
-    private val _registerState= MutableLiveData<ScreenState<RegisterState>>()
+    private val _registerState= MutableLiveData<ScreenState<LogupState>>()
     val registerState
         get()= _registerState
 
@@ -119,8 +119,12 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase, val loginUserCase:
 
         clearErrorsLogUp()
 
-        if (user.name.isBlank() || user.name.length<= 4) {
-            _nameError.value= R.string.name_incorrect_message_error
+        if (user.name.isBlank() || user.name.length< 4) {
+            _nameError.value = R.string.name_incorrect_message_error
+        } else if (user.email.isBlank()) {
+            _emailError.value = R.string.email_incorrect_message_error
+        } else if (user.password.isBlank()) {
+            _passwordError.value= R.string.password_incorrect_logup_message_error
         } else {
             _progressVisible.value= true
             val errorHandler = CoroutineExceptionHandler { _, error ->
@@ -128,34 +132,34 @@ class RegisterViewModel(val registerUseCase: RegisterUseCase, val loginUserCase:
                 logger.error(error.toString(), error)
                 when (error) {
                     is FirebaseNetworkException -> {
-                        _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage(R.string.no_internet_connection)))
+                        _registerState.postValue(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection)))
                     }
                     is FirebaseAuthInvalidCredentialsException -> {
                         if (error.toString().contains("email address is badly formatted")) {
-                            //_registerState.postValue(ScreenState.Render(RegisterState.ShowMessage("Email no válido al tener formato incorrecto")))
+                            //_registerState.postValue(ScreenState.Render(LogupState.ShowMessage("Email no válido al tener formato incorrecto")))
                             _emailError.postValue(R.string.email_incorrect_message_error)
                         } else if (error.toString().contains("The given password is invalid")) {
-                            //_registerState.postValue(ScreenState.Render(RegisterState.ShowMessage("La contraseña debe ser de al menos 6 posiciones")))
+                            //_registerState.postValue(ScreenState.Render(LogupState.ShowMessage("La contraseña debe ser de al menos 6 posiciones")))
                             _passwordError.postValue(R.string.password_incorrect_logup_message_error)
                         }
                     }
                     is FirebaseAuthUserCollisionException -> {
-                        _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage(R.string.user_collision)))
+                        _registerState.postValue(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision)))
                     }
                     else -> {
-                        _registerState.postValue(ScreenState.Render(RegisterState.ShowMessage(R.string.no_internet_connection)))
+                        _registerState.postValue(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection)))
                     }
                 }
             }
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-                    registerUseCase.registerUser(user, imageProfile.value?.toString() ?: "")
+                    logupUseCase.logupUser(user, imageProfile.value?.toString() ?: "")
                 }.await()
                 when (result) {
-                    is RegisterUseCase.Result.RegisteredOk -> {
+                    is LogupUseCase.Result.RegisteredOk -> {
                         _progressVisible.value = false
-                        _registerState.value = ScreenState.Render(RegisterState.RegisteredOk)
+                        _registerState.value = ScreenState.Render(LogupState.RegisteredOk)
                     }
                 }
             }

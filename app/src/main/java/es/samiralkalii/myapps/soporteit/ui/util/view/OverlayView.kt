@@ -5,11 +5,11 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import es.samiralkalii.myapps.soporteit.R
 
-class OverlayView(context: Context?, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class OverlayView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     init {
-        setBackgroundColor(context?.resources?.getColor(R.color.black)!!)
+        setBackgroundColor(context.resources.getColor(R.color.black))
         alpha = 0.6f
 
-        setOnTouchListener({ v, event -> true })
+        setOnTouchListener({ _, _ -> true })
     }
 }

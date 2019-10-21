@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.ui.register.dialog
+package es.samiralkalii.myapps.soporteit.ui.logup.dialog
 
 
 import android.content.Context

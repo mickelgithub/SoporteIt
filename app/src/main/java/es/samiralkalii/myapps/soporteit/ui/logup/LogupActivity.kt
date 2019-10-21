@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.ui.register
+package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,14 +19,14 @@ import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.databinding.ActivityRegisterBinding
+import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
-import es.samiralkalii.myapps.soporteit.databinding.SceneRegisterFormBinding
-import es.samiralkalii.myapps.soporteit.ui.register.dialog.PickUpProfilePhotoBottonSheetDialog
+import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
+import es.samiralkalii.myapps.soporteit.ui.logup.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
-import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.scene_register_form.*
+import kotlinx.android.synthetic.main.activity_logup.*
+import kotlinx.android.synthetic.main.scene_logup_form.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -35,35 +36,35 @@ private val PERMISSION_REQUEST_CODE= 2
 private val IMAGE_MIMETYPE= "image/*"
 
 
-class RegisterActivity : AppCompatActivity(),
+class LogupActivity : AppCompatActivity(),
     PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
 
-    private val viewModel: RegisterViewModel by viewModel()
-    private lateinit var binding: ActivityRegisterBinding
-    private lateinit var bindingRegister: SceneRegisterFormBinding
+    private val viewModel: LogupViewModel by viewModel()
+    private lateinit var binding: ActivityLogupBinding
+    private lateinit var bindingLogup: SceneLogupFormBinding
     private lateinit var bindingLogin: SceneLoginFormBinding
     private lateinit var scene1: Scene
     private lateinit var scene2: Scene
     private lateinit var transitionMngLogUpToLogIn: Transition
 
-    private val logger = LoggerFactory.getLogger(RegisterActivity::class.java)
+    private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //setContentView(es.samiralkalii.myapps.soporteit.R.layout.activity_register)
-        binding= DataBindingUtil.setContentView(this, R.layout.activity_register)
+        //setContentView(es.samiralkalii.myapps.soporteit.R.layout.activity_logup)
+        binding= DataBindingUtil.setContentView(this, R.layout.activity_logup)
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
         setContentView(binding.root)
 
-        bindingRegister= SceneRegisterFormBinding.inflate(layoutInflater, container, false)
-        bindingRegister.viewModel= viewModel
-        bindingRegister.lifecycleOwner= this
-        bindingRegister.activity= this
+        bindingLogup= SceneLogupFormBinding.inflate(layoutInflater, container, false)
+        bindingLogup.viewModel= viewModel
+        bindingLogup.lifecycleOwner= this
+        bindingLogup.activity= this
 
-        scene1= Scene(container, bindingRegister.root)
+        scene1= Scene(container, bindingLogup.root)
         scene1.enter()
 
         bindingLogin= SceneLoginFormBinding.inflate(layoutInflater, container, false)
@@ -72,11 +73,11 @@ class RegisterActivity : AppCompatActivity(),
         bindingLogin.activity= this
         scene2= Scene(container, bindingLogin.root)
 
-        transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(es.samiralkalii.myapps.soporteit.R.transition.logup_login_transition)
+        transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
         setSupportActionBar(toolbar)
 
-        supportActionBar?.let { title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration) }
+        supportActionBar?.let { title= resources.getString(R.string.registration) }
 
         viewModel.registerState.observe(this, Observer {
             if (it is ScreenState.Render) {
@@ -92,12 +93,15 @@ class RegisterActivity : AppCompatActivity(),
 
         viewModel.loginOrLogUp.observe(this, Observer {
             when (it) {
-                RegisterViewModel.TO_LOG_IN -> {
+                LogupViewModel.TO_LOG_IN -> {
+                    bindingLogin.invalidateAll()
                     nameInputLayout.visibility= View.GONE
                     TransitionManager.go(scene2, transitionMngLogUpToLogIn)
+                    logger.debug(viewModel.user.toString()+ "dfsdfsdfsdf")
                     supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.logIn)
                 }
-                RegisterViewModel.TO_LOG_UP -> {
+                LogupViewModel.TO_LOG_UP -> {
+                    bindingLogup.invalidateAll()
                     TransitionManager.go(scene1, transitionMngLogUpToLogIn)
                     nameInputLayout.visibility= View.VISIBLE
                     supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration)
@@ -111,7 +115,11 @@ class RegisterActivity : AppCompatActivity(),
             when (screenState.renderState) {
                 LoginState.LoginOk -> {
                     logger.debug("Login correcto, goto Home")
-                    Handler().postDelayed(Runnable { startHomeActivity() }, 500)
+                    if (viewModel.user.localProfileImage.isNotBlank()) {
+                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+                        profile_image.startAnimation(shake)
+                    }
+                    Handler().postDelayed(Runnable { startHomeActivity() }, 1000)
                 }
                 is LoginState.ShowMessage -> {
                     logger.debug("Hubo un error en acceso, lo mostramos")
@@ -121,21 +129,21 @@ class RegisterActivity : AppCompatActivity(),
         }
     }
 
-    private fun processStateLogUp(screenState: ScreenState.Render<RegisterState>) {
+    private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
         screenState.let {
             when (screenState.renderState) {
-                RegisterState.RegisteredOk -> {
+                LogupState.RegisteredOk -> {
                     logger.debug("Registracion correcto, goto Home")
                     startHomeActivity()
                 }
-                is RegisterState.ShowMessage -> {
+                is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")
                     Toast.makeText(this, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
-    //called by bindingRegister
+    //called by bindingLogup
     fun onImageProfileClick() {
         val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.imageProfile.value!= null)
         pickUpProfilePhotoBottonSheetDialog.show(supportFragmentManager, "pickUpProfilePhotoBottonSheetDialog")
@@ -218,6 +226,7 @@ class RegisterActivity : AppCompatActivity(),
         when (profilePhotoSource) {
             PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.CAMERA -> logger.debug("Camera clicked.........")
             PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY -> showChooserToPickImage()
+            PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.DELETE -> Unit
         }
     }
 
