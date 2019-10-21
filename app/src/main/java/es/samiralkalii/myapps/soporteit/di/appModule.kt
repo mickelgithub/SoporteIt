@@ -31,5 +31,5 @@ val appModule= module {
     factory<IFileSystemManager> { FileSystemManager(get()) }
 
     viewModel { SplashViewModel(get()) }
-    viewModel { RegisterViewModel(get()) }
+    viewModel { RegisterViewModel(get(), get()) }
 }
