@@ -9,6 +9,6 @@ class UserDatabaseRepository(val userDatabase: IUserDatabase) {
 }
 
 interface IUserDatabase {
-    suspend fun addUser(user: User): Boolean
-    suspend fun getUserInfo(user: User): Unit
+    suspend fun addUser(user: User)
+    suspend fun getUserInfo(user: User)
 }

@@ -2,6 +2,7 @@ package es.samiralkalii.myapps.soporteit.framework.filesystem
 
 import android.content.Context
 import android.net.Uri
+import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
 import java.io.File
 import java.io.InputStream
@@ -10,7 +11,7 @@ private val PROFILE_IMAGE_NAME= "profile_image"
 
 class FileSystemManager(val context: Context): IFileSystemManager {
 
-    override suspend fun copyFileFromExternalToInternal(externalFile: String): File {
+    override suspend fun copyFileFromExternalToInternal(user: User, externalFile: String): File {
         val uri= Uri.parse(externalFile)
         val type= context.contentResolver.getType(uri)
         val inputStream= context.contentResolver.openInputStream(uri)
@@ -25,6 +26,7 @@ class FileSystemManager(val context: Context): IFileSystemManager {
             it.close()
         }
         inputStream?.close()
+        user.localProfileImage= internalFile.absolutePath
         return internalFile
     }
 

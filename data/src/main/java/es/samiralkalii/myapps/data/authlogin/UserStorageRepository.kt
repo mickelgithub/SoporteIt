@@ -12,6 +12,6 @@ class UserStorageRepository(val userStorage: IUserStorage) {
 }
 
 interface IUserStorage {
-    suspend fun saveProfileImage(user: User, profileImage: File): String
+    suspend fun saveProfileImage(user: User, profileImage: File)
     suspend fun getProfileImage(user: User): InputStream?
 }

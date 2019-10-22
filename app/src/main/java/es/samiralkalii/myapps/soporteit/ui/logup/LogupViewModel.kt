@@ -70,6 +70,7 @@ class LogupViewModel(val logupUseCase: LogupUseCase, val loginUserCase: LoginUse
     }
 
     private fun loginUser() {
+
         clearErrorsLogin()
 
         _progressVisible.value= true

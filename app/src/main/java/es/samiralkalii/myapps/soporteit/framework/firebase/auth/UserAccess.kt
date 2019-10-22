@@ -10,17 +10,19 @@ class UserAccess(val fbAuth: FirebaseAuth): IUserAccess {
 
     override fun checkUserLoggedIn()= fbAuth.currentUser!= null
 
-    override suspend fun signInUser(user: User): Boolean {
+    override suspend fun signInUser(user: User, firstTime: Boolean) {
         val authResult= fbAuth.signInWithEmailAndPassword(user.email, user.password).await()
-        if (authResult.user!= null) {
-            user.id= (authResult.user as FirebaseUser).uid
+        if (firstTime && authResult.user!= null) {
+            val firebaseUser= authResult.user as FirebaseUser
+            user.id= firebaseUser.uid
+            user.creationDate= firebaseUser.metadata?.creationTimestamp ?: 0L
         }
-        return authResult.user!= null
     }
 
-    override suspend fun registerUser(user: User) : String {
+    override suspend fun logupUser(user: User) {
         val authResult = fbAuth.createUserWithEmailAndPassword(user.email, user.password).await()
-        return authResult.user!!.uid;
+        user.creationDate= authResult.user?.metadata?.creationTimestamp ?: 0L
+        user.id= authResult.user?.uid ?: ""
     }
 
 }

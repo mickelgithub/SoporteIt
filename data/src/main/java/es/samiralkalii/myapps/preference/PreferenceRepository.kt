@@ -10,5 +10,5 @@ class PreferenceRepository(val preferences: IPreferences) {
 
 interface IPreferences {
     suspend fun getUserFromPreferences(): User
-    suspend fun saveUser(user: User): Unit
+    suspend fun saveUser(user: User)
 }

@@ -26,10 +26,9 @@ class UserDatabase(val fstore: FirebaseFirestore): IUserDatabase {
         }
     }
 
-    override suspend fun addUser(user: User): Boolean {
+    override suspend fun addUser(user: User) {
 
         fstore.collection(USERS_REF).document(user.id).set(user).await()
-        return true
 
     }
 

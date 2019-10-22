@@ -20,27 +20,20 @@ class UserStorage(val fstorage: FirebaseStorage): IUserStorage {
 
     val logger= LoggerFactory.getLogger(UserStorage::class.java)
 
-    override suspend fun saveProfileImage(user: User, profileImage: File): String {
+    override suspend fun saveProfileImage(user: User, profileImage: File) {
 
-        val mStorageRef = FirebaseStorage.getInstance().getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.name.fileExtension()}")
+        val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.name.fileExtension()}")
         val result= mStorageRef.putFile(Uri.fromFile(profileImage)).await()
         if (result.task.isComplete) {
             val uri= mStorageRef.downloadUrl.await()
-            val url= uri.toString()
-            return url
+            user.remoteProfileImage = uri.toString()
         }
-        return ""
     }
 
     override suspend fun getProfileImage(user: User): InputStream? {
-        val mStorageRef = FirebaseStorage.getInstance().getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}")
-        val listFiles= mStorageRef.list(1).await()
-        if (!listFiles.items.isEmpty()) {
-            val imageReference= listFiles.items[0]
-            val streamResult= imageReference.stream.await()
-            return streamResult.stream
-        }
-        return null
+        val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${user.localProfileImage.fileExtension()}")
+        val streamResult= mStorageRef.stream.await()
+        return streamResult.stream
     }
 
 }

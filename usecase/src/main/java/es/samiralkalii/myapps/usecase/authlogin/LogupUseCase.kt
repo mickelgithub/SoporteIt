@@ -22,14 +22,16 @@ class LogupUseCase(private val userAccessRepository: UserAccessRepository,
 
     suspend fun logupUser(user: User, profileImage: String= ""): Result {
         logger.debug("Vamos a registar el usuario ${user.email}")
-        val uid = userAccessRepository.registerUser(user)
+
+        //we get user.id and user.creationDate
+        userAccessRepository.logupUser(user)
         //registration OK
-        user.id = uid
         //we have to add the user profile image de local and remote storage
         if (profileImage.isNotBlank()) {
-            val profileImageFile = fileSystemRepository.copyFileFromExternalToInternal(profileImage)
-            user.localProfileImage = profileImageFile.absolutePath
-            user.remoteProfileImage = userStorageRepository.saveProfileImage(user, profileImageFile)
+            //we get user.localProfileImage
+            val profileImageFile = fileSystemRepository.copyFileFromExternalToInternal(user, profileImage)
+            //we get user.remoteProfileImage
+            userStorageRepository.saveProfileImage(user, profileImageFile)
         }
         //we have to add the user to the database
         userDatabaseRepository.addUser(user)

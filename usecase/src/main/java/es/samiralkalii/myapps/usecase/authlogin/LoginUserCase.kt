@@ -22,19 +22,19 @@ class LoginUserCase(private val userAccessRepository: UserAccessRepository,
 
     suspend fun loginUser(user: User): Result {
         logger.debug("Vamos a login el usuario ${user.email}")
-        userAccessRepository.signInUser(user)
+        //we get user.id and user.creationDate
+        userAccessRepository.signInUser(user, true)
         //login correcto
-        //we have to retrieve userImageProfile and his name
+        //we get user.name, user.localProfileImage and user.remoteProfileImage
         userDatabaseRepository.getUserInfo(user)
-        val imageInputStream= userStorageRepository.getProfileImage(user)
-        imageInputStream?.let {
-            val imageFile= fileSystemRepository.copyFileFromStreamToInternal(imageInputStream, user.localProfileImage)
-            logger.debug("imagefile length"+ imageFile.length())
-            user.localProfileImage= imageFile.absolutePath
+        if (user.remoteProfileImage.isNotBlank()) {
+            val imageInputStream= userStorageRepository.getProfileImage(user)
+            imageInputStream?.let {
+                val imageFile= fileSystemRepository.copyFileFromStreamToInternal(imageInputStream, user.localProfileImage)
+                user.localProfileImage= imageFile.absolutePath
+            }
         }
         preferenceRepository.saveUserToPreferences(user)
-
-
         return Result.LoginOk()
     }
 

@@ -29,7 +29,7 @@ class CheckUserAuthUseCase(private val userAccessRepository: UserAccessRepositor
             if (false) {
                 //user already registered but he has a expired token
                 //we have to login
-                userAccessRepository.signInUser(user)
+                userAccessRepository.signInUser(user, false)
                 return Result.Relogged
             } else {
                 return Result.FirstAccess
