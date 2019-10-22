@@ -1,22 +1,22 @@
 package es.samiralkalii.myapps.soporteit.ui.splash
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
+import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.CheckUserAuthUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-
-private val TAG= "SplashViewModel"
+import org.slf4j.LoggerFactory
 
 class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewModel() {
 
+    private val logger= LoggerFactory.getLogger(SplashViewModel::class.java)
 
     private val _splashState= MutableLiveData<ScreenState<SplashState>>()
     val splashState: LiveData<ScreenState<SplashState>>
@@ -25,13 +25,13 @@ class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewMode
     fun checkUserAuth() {
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            Log.e(TAG, error.toString())
+            logger.debug(error.toString())
             when (error) {
                 is FirebaseNetworkException -> {
-                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage("Error de conexion, comprueba el acceso a Internet y intentalo de nuevo")))
+                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))
                 }
                 else -> {
-                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage("Error no controlado!!!")))
+                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))
                 }
             }
         }
@@ -51,7 +51,7 @@ class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewMode
                     _splashState.value= ScreenState.Render(SplashState.FirstAccess)
                 }
                 is CheckUserAuthUseCase.Result.Error -> {
-                    _splashState.value= ScreenState.Render(SplashState.ShowMessage(result.message))
+                    _splashState.value= ScreenState.Render(SplashState.ShowMessage((R.string.no_internet_connection)))
                 }
             }
         }

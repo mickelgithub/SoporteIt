@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -65,7 +66,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="@string/gallery"
                 android:layout_marginTop="8dp"
-                tools:text="Galería" />
+                tools:text="@string/gallery" />
 
         </LinearLayout>
 
@@ -92,7 +93,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="@string/delete"
                 android:layout_marginTop="8dp"
-                tools:text="Eliminar" />
+                tools:text="@string/delete" />
 
         </LinearLayout>
 
