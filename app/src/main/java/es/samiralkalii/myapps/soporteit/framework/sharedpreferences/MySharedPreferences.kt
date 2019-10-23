@@ -14,6 +14,7 @@ private val USER_PASS_KEY= "userpass_key"
 private val IMAGE_USER_PROFILE_URL= "profile_image_url_key"
 private val IMAGE_USER_PROFILE_LOCAL= "profile_image_path_key"
 private val USER_CREATION_DATE= "creation_date";
+private val USER_EMAIL_VALIDATED= "email_validated"
 
 
 
@@ -28,6 +29,7 @@ class MySharedPreferences(val context: Context): IPreferences {
             putString(IMAGE_USER_PROFILE_LOCAL, user.localProfileImage)
             putString(IMAGE_USER_PROFILE_URL, user.remoteProfileImage)
             putLong(USER_CREATION_DATE, user.creationDate)
+            putBoolean(USER_EMAIL_VALIDATED, user.emailValidated)
         }
     }
 
@@ -39,11 +41,12 @@ class MySharedPreferences(val context: Context): IPreferences {
         val imageProfilePath= getString(IMAGE_USER_PROFILE_LOCAL, "") ?: ""
         val imageProfileUrl= getString(IMAGE_USER_PROFILE_URL, "") ?: ""
         val creationDate= getLong(USER_CREATION_DATE, 0L)
+        val emailValidated= getBoolean(USER_EMAIL_VALIDATED, false)
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
             return User.Empty
         }
         User(email, pass, name, localProfileImage = imageProfilePath,
-            id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate)
+            id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailValidated = emailValidated)
     }
 
 }

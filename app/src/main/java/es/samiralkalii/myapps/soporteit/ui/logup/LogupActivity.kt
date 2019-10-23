@@ -132,7 +132,7 @@ class LogupActivity : AppCompatActivity(),
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
         screenState.let {
             when (screenState.renderState) {
-                LogupState.RegisteredOk -> {
+                LogupState.LoggedupOk -> {
                     logger.debug("Registracion correcto, goto Home")
                     startHomeActivity()
                 }

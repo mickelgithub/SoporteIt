@@ -3,14 +3,15 @@ package es.samiralkalii.myapps.soporteit.framework.firebase.database
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IUserDatabase
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.ui.util.EMAIL_VALIDATED_KEY
+import es.samiralkalii.myapps.soporteit.ui.util.LOCAL_PROFILE_IMAGE_KEY
+import es.samiralkalii.myapps.soporteit.ui.util.NAME_KEY
+import es.samiralkalii.myapps.soporteit.ui.util.REMOTE_PROFILE_IMAGE_KEY
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 
 
 private val USERS_REF= "users"
-private val USER_NAME_KEY= "name"
-private val USER_LOCAL_PROFILE_IMAGE_KEY= "localProfileImage"
-private val USER_REMOTE_PROFILE_IMAGE_KEY= "remoteProfileImage"
 
 class UserDatabase(val fstore: FirebaseFirestore): IUserDatabase {
 
@@ -20,9 +21,10 @@ class UserDatabase(val fstore: FirebaseFirestore): IUserDatabase {
         val result= fstore.collection(USERS_REF).document(user.id).get().await()
         if (result!= null && result.data!= null) {
             val data= result.data!!
-            user.name= (data[USER_NAME_KEY] as String?) ?: ""
-            user.localProfileImage= (data[USER_LOCAL_PROFILE_IMAGE_KEY] as String?) ?: ""
-            user.remoteProfileImage= (data[USER_REMOTE_PROFILE_IMAGE_KEY] as String?) ?: ""
+            user.name= (data[NAME_KEY] as String?) ?: ""
+            user.localProfileImage= (data[LOCAL_PROFILE_IMAGE_KEY] as String?) ?: ""
+            user.remoteProfileImage= (data[REMOTE_PROFILE_IMAGE_KEY] as String?) ?: ""
+            user.emailValidated= (data[EMAIL_VALIDATED_KEY] as Boolean?) ?: false
         }
     }
 

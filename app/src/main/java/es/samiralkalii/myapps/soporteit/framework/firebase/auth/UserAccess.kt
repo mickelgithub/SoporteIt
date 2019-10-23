@@ -8,6 +8,10 @@ import kotlinx.coroutines.tasks.await
 
 class UserAccess(val fbAuth: FirebaseAuth): IUserAccess {
 
+    override suspend fun sendEmailVerification(user: User) {
+        fbAuth.currentUser?.sendEmailVerification()?.await()
+    }
+
     override fun checkUserLoggedIn()= fbAuth.currentUser!= null
 
     override suspend fun signInUser(user: User, firstTime: Boolean) {

@@ -36,6 +36,8 @@ class LogupUseCase(private val userAccessRepository: UserAccessRepository,
         //we have to add the user to the database
         userDatabaseRepository.addUser(user)
         preferenceRepository.saveUserToPreferences(user)
+        userAccessRepository.sendEmailVerification(user)
+
         return Result.RegisteredOk()
     }
 

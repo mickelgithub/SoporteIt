@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,38 +25,38 @@ class LogupViewModel(val logupUseCase: LogupUseCase, val loginUserCase: LoginUse
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
+    val user= User()
+
     private val _registerState= MutableLiveData<ScreenState<LogupState>>()
-    val registerState
+    val registerState: LiveData<ScreenState<LogupState>>
         get()= _registerState
 
     private val _loginState= MutableLiveData<ScreenState<LoginState>>()
-    val loginState
+    val loginState: LiveData<ScreenState<LoginState>>
         get()= _loginState
 
     private val _progressVisible= MutableLiveData<Boolean>(false)
-    val progressVisible
+    val progressVisible: LiveData<Boolean>
         get()= _progressVisible
 
-    val user= User()
-
     private val _imageProfile= MutableLiveData<Uri?>()
-    val imageProfile
+    val imageProfile: LiveData<Uri?>
         get()= _imageProfile
 
     private val _nameError= MutableLiveData<Int?>()
-    val nameError
+    val nameError: LiveData<Int?>
         get()= _nameError
 
     private val _emailError= MutableLiveData<Int?>()
-    val emailError
+    val emailError: LiveData<Int?>
         get()= _emailError
 
     private val _passwordError= MutableLiveData<Int?>()
-    val passwordError
+    val passwordError: LiveData<Int?>
         get()= _passwordError
 
     private val _loginOrLogUp= MutableLiveData<Int>(0)
-    val loginOrLogUp
+    val loginOrLogUp: LiveData<Int>
         get()= _loginOrLogUp
 
     private fun clearErrorsLogUp() {
@@ -101,11 +102,11 @@ class LogupViewModel(val logupUseCase: LogupUseCase, val loginUserCase: LoginUse
 
         viewModelScope.launch(errorHandler) {
             val result= async(Dispatchers.IO) {
-                 val result= loginUserCase.loginUser(user)
+                 val resultLoginIn= loginUserCase.loginUser(user)
                 if (!user.localProfileImage.isBlank()) {
                     _imageProfile.postValue(Uri.fromFile(File(user.localProfileImage)))
                 }
-                result
+                resultLoginIn
             }.await()
             when (result) {
                 is LoginUserCase.Result.LoginOk -> {
@@ -160,7 +161,7 @@ class LogupViewModel(val logupUseCase: LogupUseCase, val loginUserCase: LoginUse
                 when (result) {
                     is LogupUseCase.Result.RegisteredOk -> {
                         _progressVisible.value = false
-                        _registerState.value = ScreenState.Render(LogupState.RegisteredOk)
+                        _registerState.value = ScreenState.Render(LogupState.LoggedupOk)
                     }
                 }
             }

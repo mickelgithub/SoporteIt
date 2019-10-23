@@ -23,7 +23,6 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         }
         context.openFileOutput(internalFile.name, Context.MODE_PRIVATE).use {
             it.write(inputStream?.readBytes())
-            it.close()
         }
         inputStream?.close()
         user.localProfileImage= internalFile.absolutePath
@@ -38,9 +37,7 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         }
         context.openFileOutput(internalFile.name, Context.MODE_PRIVATE).use {
             it.write(inputStream.readBytes())
-            it.close()
         }
-        inputStream.close()
         return internalFile
     }
 }

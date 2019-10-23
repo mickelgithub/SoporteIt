@@ -13,6 +13,7 @@ import es.samiralkalii.myapps.soporteit.framework.firebase.auth.UserAccess
 import es.samiralkalii.myapps.soporteit.framework.firebase.database.UserDatabase
 import es.samiralkalii.myapps.soporteit.framework.firebase.storage.UserStorage
 import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.MySharedPreferences
+import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashViewModel
 import org.koin.android.viewmodel.dsl.viewModel
@@ -32,4 +33,5 @@ val appModule= module {
 
     viewModel { SplashViewModel(get()) }
     viewModel { LogupViewModel(get(), get()) }
+    viewModel { HomeViewModel(get())}
 }

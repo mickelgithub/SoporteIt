@@ -29,14 +29,13 @@ class LoginUserCase(private val userAccessRepository: UserAccessRepository,
         userDatabaseRepository.getUserInfo(user)
         if (user.remoteProfileImage.isNotBlank()) {
             val imageInputStream= userStorageRepository.getProfileImage(user)
-            imageInputStream?.let {
-                val imageFile= fileSystemRepository.copyFileFromStreamToInternal(imageInputStream, user.localProfileImage)
+            imageInputStream?.use {
+                val imageFile= fileSystemRepository.copyFileFromStreamToInternal(it, user.localProfileImage)
                 user.localProfileImage= imageFile.absolutePath
             }
         }
         preferenceRepository.saveUserToPreferences(user)
         return Result.LoginOk()
     }
-
 
 }
