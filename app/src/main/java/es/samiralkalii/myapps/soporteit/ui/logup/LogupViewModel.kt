@@ -111,7 +111,7 @@ class LogupViewModel(val logupUseCase: LogupUseCase, val loginUserCase: LoginUse
             when (result) {
                 is LoginUserCase.Result.LoginOk -> {
                     _progressVisible.value = false
-                    _loginState.value = ScreenState.Render(LoginState.LoginOk)
+                    _loginState.value = ScreenState.Render(LoginState.LoginOk(result.user))
                 }
             }
         }
@@ -161,7 +161,7 @@ class LogupViewModel(val logupUseCase: LogupUseCase, val loginUserCase: LoginUse
                 when (result) {
                     is LogupUseCase.Result.RegisteredOk -> {
                         _progressVisible.value = false
-                        _registerState.value = ScreenState.Render(LogupState.LoggedupOk)
+                        _registerState.value = ScreenState.Render(LogupState.LoggedupOk(result.user))
                     }
                 }
             }

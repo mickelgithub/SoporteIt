@@ -4,31 +4,32 @@ import android.os.Bundle
 import es.samiralkalii.myapps.domain.User
 
 
-const val EMAIL_KEY= "email"
-const val NAME_KEY= "name"
-const val ID_KEY= "id"
-const val LOCAL_PROFILE_IMAGE_KEY= "local_profile_image"
-const val REMOTE_PROFILE_IMAGE_KEY= "remote_profile_image"
-const val CREATION_DATE_KEY= "creation_date"
-const val EMAIL_VALIDATED_KEY= "email_validated"
+const val KEY_EMAIL= "email"
+const val KEY_NAME= "name"
+const val KEY_ID= "id"
+const val KEY_PASS= "password"
+const val KEY_LOCAL_PROFILE_IMAGE= "local_profile_image"
+const val KEY_REMOTE_PROFILE_IMAGE= "remote_profile_image"
+const val KEY_CREATION_DATE= "creation_date"
+const val KEY_EMAIL_VERIFIED= "email_validated"
 
 
 fun User.toBundle()= Bundle().apply {
-    putString(EMAIL_KEY, email)
-    putString(NAME_KEY, name)
-    putString(ID_KEY, id)
-    putString(LOCAL_PROFILE_IMAGE_KEY, localProfileImage)
-    putString(REMOTE_PROFILE_IMAGE_KEY, remoteProfileImage)
-    putLong(CREATION_DATE_KEY, creationDate)
-    putBoolean(EMAIL_VALIDATED_KEY, emailValidated)
+    putString(KEY_EMAIL, email)
+    putString(KEY_NAME, name)
+    putString(KEY_ID, id)
+    putString(KEY_LOCAL_PROFILE_IMAGE, localProfileImage)
+    putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
+    putLong(KEY_CREATION_DATE, creationDate)
+    putBoolean(KEY_EMAIL_VERIFIED, emailVerified)
 }
 
 fun Bundle.toUser()= User(
-    email= getString(EMAIL_KEY, ""),
-    name = getString(NAME_KEY, ""),
-    id= getString(ID_KEY, ""),
-    localProfileImage = getString(LOCAL_PROFILE_IMAGE_KEY, ""),
-    remoteProfileImage = getString(REMOTE_PROFILE_IMAGE_KEY, ""),
-    creationDate = getLong(CREATION_DATE_KEY, 0L),
-    emailValidated = getBoolean(EMAIL_VALIDATED_KEY, false)
+    email= getString(KEY_EMAIL, ""),
+    name = getString(KEY_NAME, ""),
+    id= getString(KEY_ID, ""),
+    localProfileImage = getString(KEY_LOCAL_PROFILE_IMAGE, ""),
+    remoteProfileImage = getString(KEY_REMOTE_PROFILE_IMAGE, ""),
+    creationDate = getLong(KEY_CREATION_DATE, 0L),
+    emailVerified = getBoolean(KEY_EMAIL_VERIFIED, false)
 )

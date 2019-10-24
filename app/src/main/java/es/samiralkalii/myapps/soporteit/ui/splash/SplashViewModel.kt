@@ -41,11 +41,11 @@ class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewMode
                 checkUserAuthUseCase.checkUserAuth()
             }.await()
             when (result) {
-                CheckUserAuthUseCase.Result.Logged -> {
-                    _splashState.value= ScreenState.Render(SplashState.LoggedIn)
+                is CheckUserAuthUseCase.Result.Logged -> {
+                    _splashState.value= ScreenState.Render(SplashState.LoggedIn(result.user))
                 }
-                CheckUserAuthUseCase.Result.Relogged -> {
-                    _splashState.value= ScreenState.Render(SplashState.Relogged)
+                is CheckUserAuthUseCase.Result.Relogged -> {
+                    _splashState.value= ScreenState.Render(SplashState.Relogged(result.user))
                 }
                 CheckUserAuthUseCase.Result.FirstAccess -> {
                     _splashState.value= ScreenState.Render(SplashState.FirstAccess)

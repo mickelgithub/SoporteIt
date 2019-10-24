@@ -14,10 +14,10 @@ class LogupUseCase(private val userAccessRepository: UserAccessRepository,
                    private val userStorageRepository: UserStorageRepository,
                    private val fileSystemRepository: FileSystemRepository) {
 
-    private val logger = LoggerFactory.getLogger(LogupUseCase::class.java!!)
+    private val logger = LoggerFactory.getLogger(LogupUseCase::class.java)
 
     sealed class Result() {
-        class RegisteredOk(): Result()
+        class RegisteredOk(val user: User): Result()
     }
 
     suspend fun logupUser(user: User, profileImage: String= ""): Result {
@@ -38,7 +38,7 @@ class LogupUseCase(private val userAccessRepository: UserAccessRepository,
         preferenceRepository.saveUserToPreferences(user)
         userAccessRepository.sendEmailVerification(user)
 
-        return Result.RegisteredOk()
+        return Result.RegisteredOk(user)
     }
 
 }

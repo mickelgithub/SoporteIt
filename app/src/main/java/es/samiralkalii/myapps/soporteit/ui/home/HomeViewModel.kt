@@ -11,7 +11,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
-class HomeViewModel(val getUserUseCase: GetUserUseCase, val checkUserEmailValidatedUseCase: CheckUserEmailValidatedUseCase) : ViewModel() {
+class HomeViewModel(val getUserUseCase: GetUserUseCase) : ViewModel() {
 
     lateinit var user: User
 
@@ -24,8 +24,13 @@ class HomeViewModel(val getUserUseCase: GetUserUseCase, val checkUserEmailValida
             user = async(Dispatchers.IO) {
                 getUserUseCase.getUser()
             }.await()
-            _emailValidated.value = user.emailValidated
+            _emailValidated.value = user.emailVerified
         }
+    }
+
+    fun publishUser(userParam: User) {
+        user= userParam
+        _emailValidated.value= user.emailVerified
     }
 
 

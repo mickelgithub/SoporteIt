@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.startLogupActivity
+import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -35,13 +36,13 @@ class SplashActivity : AppCompatActivity() {
     private fun processState(screenState: ScreenState.Render<SplashState>?) {
         screenState?.let {
             when (screenState.renderState) {
-                SplashState.LoggedIn -> {
+                is SplashState.LoggedIn -> {
                     logger.debug("Logged in, goto home")
-                    startHomeActivity()
+                    startHomeActivity(screenState.renderState.user.toBundle())
                 }
-                SplashState.Relogged -> {
+                is SplashState.Relogged -> {
                     logger.debug("relogged in, goto home")
-                    startHomeActivity()
+                    startHomeActivity(screenState.renderState.user.toBundle())
                 }
                 SplashState.FirstAccess -> {
                     logger.debug("First access, goto signUp")

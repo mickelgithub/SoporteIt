@@ -25,6 +25,7 @@ import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.logup.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
+import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -53,7 +54,6 @@ class LogupActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //setContentView(es.samiralkalii.myapps.soporteit.R.layout.activity_logup)
         binding= DataBindingUtil.setContentView(this, R.layout.activity_logup)
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
@@ -97,7 +97,6 @@ class LogupActivity : AppCompatActivity(),
                     bindingLogin.invalidateAll()
                     nameInputLayout.visibility= View.GONE
                     TransitionManager.go(scene2, transitionMngLogUpToLogIn)
-                    logger.debug(viewModel.user.toString()+ "dfsdfsdfsdf")
                     supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.logIn)
                 }
                 LogupViewModel.TO_LOG_UP -> {
@@ -113,13 +112,13 @@ class LogupActivity : AppCompatActivity(),
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {
         screenState.let {
             when (screenState.renderState) {
-                LoginState.LoginOk -> {
+                is LoginState.LoginOk -> {
                     logger.debug("Login correcto, goto Home")
                     if (viewModel.user.localProfileImage.isNotBlank()) {
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         profile_image.startAnimation(shake)
                     }
-                    Handler().postDelayed(Runnable { startHomeActivity() }, 1000)
+                    Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, 1000)
                 }
                 is LoginState.ShowMessage -> {
                     logger.debug("Hubo un error en acceso, lo mostramos")
@@ -132,9 +131,9 @@ class LogupActivity : AppCompatActivity(),
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
         screenState.let {
             when (screenState.renderState) {
-                LogupState.LoggedupOk -> {
+                is LogupState.LoggedupOk -> {
                     logger.debug("Registracion correcto, goto Home")
-                    startHomeActivity()
+                    startHomeActivity(screenState.renderState.user.toBundle())
                 }
                 is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")

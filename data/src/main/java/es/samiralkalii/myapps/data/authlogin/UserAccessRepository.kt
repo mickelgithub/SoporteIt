@@ -7,13 +7,13 @@ class UserAccessRepository(val userAccess: IUserAccess) {
     suspend fun logupUser(user: User)= userAccess.logupUser(user)
     suspend fun signInUser(user: User, firstTime: Boolean)= userAccess.signInUser(user, firstTime)
     suspend fun sendEmailVerification(user: User)= userAccess.sendEmailVerification(user)
-    fun checkUserLoggedIn()= userAccess.checkUserLoggedIn()
+    suspend fun checkUserLoggedIn(user: User)= userAccess.checkUserLoggedIn(user)
 
 }
 
 interface IUserAccess {
     suspend fun logupUser(user: User)
     suspend fun signInUser(user: User, firstTime: Boolean)
-    fun checkUserLoggedIn(): Boolean
+    suspend fun checkUserLoggedIn(user: User): Boolean
     suspend fun sendEmailVerification(user: User)
 }

@@ -17,7 +17,7 @@ class LoginUserCase(private val userAccessRepository: UserAccessRepository,
     private val logger = LoggerFactory.getLogger(LoginUserCase::class.java)
 
     sealed class Result() {
-        class LoginOk(): Result()
+        class LoginOk(val user: User): Result()
     }
 
     suspend fun loginUser(user: User): Result {
@@ -26,6 +26,7 @@ class LoginUserCase(private val userAccessRepository: UserAccessRepository,
         userAccessRepository.signInUser(user, true)
         //login correcto
         //we get user.name, user.localProfileImage and user.remoteProfileImage
+        val emailVerified= user.emailVerified
         userDatabaseRepository.getUserInfo(user)
         if (user.remoteProfileImage.isNotBlank()) {
             val imageInputStream= userStorageRepository.getProfileImage(user)
@@ -34,8 +35,17 @@ class LoginUserCase(private val userAccessRepository: UserAccessRepository,
                 user.localProfileImage= imageFile.absolutePath
             }
         }
+        //if the mail is verified and is not updated en firebase databaase, weh have to do it
+        var updateDatabase= false
+        if (emailVerified && !user.emailVerified) {
+            user.emailVerified= emailVerified
+            updateDatabase= true
+        }
         preferenceRepository.saveUserToPreferences(user)
-        return Result.LoginOk()
+        if (updateDatabase) {
+            userDatabaseRepository.updateEmailVerified(user)
+        }
+        return Result.LoginOk(user)
     }
 
 }
