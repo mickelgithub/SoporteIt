@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_item_add_planification"
+        android:icon="@drawable/add_icon"
+        android:title="@string/add_planification" />
+
+    <item
+        android:id="@+id/menu_item_notifications"
+        android:icon="@drawable/notifications_icon"
+        android:title="@string/notifications" />
+
+    <item
+        android:id="@+id/menu_item_profile"
+        android:icon="@drawable/profile_icon"
+        android:title="@string/profile" />
+
+</menu>

@@ -28,5 +28,8 @@
     <string name="no_account">Si no tienes cuenta, registrate</string>
     <string name="her">Aqui</string>
     <string name="instructions_to_validate_your_email">Te queda un ultimo paso para utilizar esta aplicación, revisa tu correo y siga las instrucciones.</string>
+    <string name="profile">Perfil</string>
+    <string name="add_planification">Añadir Plan</string>
+    <string name="notifications">Notificaciones</string>
 
 </resources>

@@ -7,7 +7,9 @@ import androidx.databinding.DataBindingUtil
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
+import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -38,7 +40,21 @@ class HomeActivity : AppCompatActivity() {
             }, 10000)
         }
 
+        bottomNav.setOnNavigationItemSelectedListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.menu_item_profile -> {
+                    supportActionBar?.title= resources.getString(R.string.profile)
+                    supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment()).commit()
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
 
+
+
+        }
 
     }
 
