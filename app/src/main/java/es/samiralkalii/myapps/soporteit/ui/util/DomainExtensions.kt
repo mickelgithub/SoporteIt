@@ -4,14 +4,15 @@ import android.os.Bundle
 import es.samiralkalii.myapps.domain.User
 
 
+
 const val KEY_EMAIL= "email"
 const val KEY_NAME= "name"
 const val KEY_ID= "id"
 const val KEY_PASS= "password"
-const val KEY_LOCAL_PROFILE_IMAGE= "local_profile_image"
-const val KEY_REMOTE_PROFILE_IMAGE= "remote_profile_image"
-const val KEY_CREATION_DATE= "creation_date"
-const val KEY_EMAIL_VERIFIED= "email_validated"
+const val KEY_LOCAL_PROFILE_IMAGE= "localProfileImage"
+const val KEY_REMOTE_PROFILE_IMAGE= "remoteProfileImage"
+const val KEY_CREATION_DATE= "creationDate"
+const val KEY_EMAIL_VERIFIED= "emailVerified"
 
 
 fun User.toBundle()= Bundle().apply {

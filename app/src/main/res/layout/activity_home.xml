@@ -38,13 +38,25 @@
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp">
-                <TextView
-                    android:textSize="20sp"
-                    android:textColor="@color/black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/instructions_to_validate_your_email" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:layout_gravity="center"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/instructions_to_validate_your_email" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/thinking" />
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
         </FrameLayout>
