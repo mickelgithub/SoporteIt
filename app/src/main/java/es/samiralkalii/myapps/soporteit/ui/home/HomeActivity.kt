@@ -8,6 +8,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
+import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -44,17 +45,16 @@ class HomeActivity : AppCompatActivity() {
             when(menuItem.itemId) {
                 R.id.menu_item_profile -> {
                     supportActionBar?.title= resources.getString(R.string.profile)
-                    supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment()).commit()
+
+                    supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle())).commit()
                     true
                 }
                 else -> {
                     false
                 }
             }
-
-
-
         }
+
 
     }
 

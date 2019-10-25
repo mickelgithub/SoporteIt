@@ -6,7 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
             android:layout_width="100dp"
@@ -23,9 +24,9 @@
             android:layout_marginTop="32dp"
             android:src="@drawable/profile"
             app:imgsrc="@{viewModel.imageProfile}"
+            android:onClick="@{()-> activity.onImageProfileClick()}"
             app:civ_border_color="#FF000000"
             app:civ_border_width="2dp"
-            android:onClick="@{()-> activity.onImageProfileClick()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
