@@ -9,6 +9,10 @@
         <variable
             name="viewModel"
             type="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel" />
+
+        <variable
+            name="fragment"
+            type="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +28,7 @@
             android:layout_marginTop="32dp"
             android:src="@drawable/profile"
             app:imgsrc="@{viewModel.imageProfile}"
-            android:onClick="@{()-> activity.onImageProfileClick()}"
+            android:onClick="@{()-> fragment.onImageProfileClick()}"
             app:civ_border_color="#FF000000"
             app:civ_border_width="2dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,8 +39,8 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +60,8 @@
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="76dp"
             app:layout_constraintStart_toStartOf="parent"

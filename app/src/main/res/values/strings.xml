@@ -31,5 +31,6 @@
     <string name="profile">Perfil</string>
     <string name="add_planification">Añadir Plan</string>
     <string name="notifications">Notificaciones</string>
+    <string name="save">Guardar</string>
 
 </resources>

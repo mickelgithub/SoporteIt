@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.transition.Scene
 import androidx.transition.Transition
@@ -22,20 +21,18 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
-import es.samiralkalii.myapps.soporteit.ui.logup.dialog.PickUpProfilePhotoBottonSheetDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
+import es.samiralkalii.myapps.soporteit.ui.util.view.IMAGE_MIMETYPE
+import es.samiralkalii.myapps.soporteit.ui.util.view.PERMISSION_REQUEST_CODE
+import es.samiralkalii.myapps.soporteit.ui.util.view.PICK_IMAGE
 import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
-
-private val PICK_IMAGE= 1
-private val PERMISSION_REQUEST_CODE= 2
-private val IMAGE_MIMETYPE= "image/*"
-
 
 class LogupActivity : AppCompatActivity(),
     PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
@@ -54,7 +51,7 @@ class LogupActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding= DataBindingUtil.setContentView(this, R.layout.activity_logup)
+        binding= ActivityLogupBinding.inflate(layoutInflater)
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
         setContentView(binding.root)
@@ -80,14 +77,19 @@ class LogupActivity : AppCompatActivity(),
         supportActionBar?.let { title= resources.getString(R.string.registration) }
 
         viewModel.registerState.observe(this, Observer {
-            if (it is ScreenState.Render) {
-                processStateLogUp(it)
+            it.getContentIfNotHandled()?.let {
+                if (it is ScreenState.Render) {
+                    processStateLogUp(it)
+                }
             }
+
         })
 
         viewModel.loginState.observe(this, Observer {
-            if (it is ScreenState.Render) {
-                processStateLogin(it)
+            it.getContentIfNotHandled()?.let {
+                if (it is ScreenState.Render) {
+                    processStateLogin(it)
+                }
             }
         })
 
@@ -179,13 +181,13 @@ class LogupActivity : AppCompatActivity(),
     private fun pickImage(data: Intent?) {
         //data.getData return the content URI for the selected Image
         val selectedImage = data?.data
-
         if (selectedImage!= null) {
-            if (checkPermission()) {
-                viewModel.updateImageProfile(selectedImage)
+            viewModel.updateImageProfile(selectedImage)
+            /*if (checkPermission()) {
+
             } else {
                 requestPermission()
-            }
+            }*/
         }
     }
 
@@ -212,6 +214,7 @@ class LogupActivity : AppCompatActivity(),
             PERMISSION_REQUEST_CODE -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     logger.debug("value", "Permission Granted, Now you can use local drive .");
+                    showChooserToPickImage()
                 } else {
                     logger.debug("value", "Permission Denied, You cannot use local drive .");
                 }
@@ -224,8 +227,13 @@ class LogupActivity : AppCompatActivity(),
     override fun getProfilePhotoFrom(profilePhotoSource: PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource) {
         when (profilePhotoSource) {
             PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.CAMERA -> logger.debug("Camera clicked.........")
-            PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY -> showChooserToPickImage()
-            PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.DELETE -> Unit
+            PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY -> {
+                if (checkPermission()) {
+                    showChooserToPickImage()
+                } else {
+                    requestPermission()
+                }
+            }
         }
     }
 

@@ -40,4 +40,26 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         }
         return internalFile
     }
+
+    override suspend fun compare2Images(externalImage: String, internalImage: String): Boolean {
+        val uri= Uri.parse(externalImage)
+        val externalImageInputStream= context.contentResolver.openInputStream(uri)!!
+        var equals= true
+        context.openFileInput(internalImage.substringAfterLast(File.separator)).use { internalImageInputStream ->
+            externalImageInputStream.use { externalImageInputStream ->
+                val externalByte= externalImageInputStream.read()
+                val internalByte= internalImageInputStream.read()
+                while (externalByte!= -1 && internalByte!= -1) {
+                    if (externalByte!= internalByte) {
+                        equals= false
+                        break
+                    }
+                }
+                if (externalByte!= internalByte) {
+                    equals= false
+                }
+            }
+        }
+        return equals
+    }
 }

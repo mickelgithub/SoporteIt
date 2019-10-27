@@ -6,7 +6,7 @@
     <data>
         <variable
             name="fragment"
-            type="es.samiralkalii.myapps.soporteit.ui.logup.dialog.PickUpProfilePhotoBottonSheetDialog" />
+            type="es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog" />
     </data>
 
     <LinearLayout
@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:padding="16dp"
-        tools:context=".ui.logup.dialog.PickUpProfilePhotoBottonSheetDialog">
+        tools:context=".ui.dialog.PickUpProfilePhotoBottonSheetDialog">
 
         <LinearLayout
             android:layout_width="0dp"

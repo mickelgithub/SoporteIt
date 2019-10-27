@@ -2,8 +2,8 @@ package es.samiralkalii.myapps.soporteit.ui.home
 
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory
 
 class HomeActivity : AppCompatActivity() {
 
+
     private val logger= LoggerFactory.getLogger(HomeActivity::class.java)
 
     private val viewModel: HomeViewModel by viewModel()
@@ -25,7 +26,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding= DataBindingUtil.setContentView(this, R.layout.activity_home)
+        binding= ActivityHomeBinding.inflate(layoutInflater)
         viewModel.publishUser(intent.extras?.toUser() ?: User())
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
@@ -33,29 +34,35 @@ class HomeActivity : AppCompatActivity() {
         binding.executePendingBindings()
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title= "Home"
+        supportActionBar?.title= getString(R.string.app_name)
 
+        if (!viewModel.user.emailVerified) {
+            bottomNav.visibility= View.GONE
+            finishMeInAwhile()
+        } else {
+            bottomNav.setOnNavigationItemSelectedListener { menuItem ->
+                when(menuItem.itemId) {
+                    R.id.menu_item_profile -> {
+                        supportActionBar?.title= resources.getString(R.string.profile)
+
+                        supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun finishMeInAwhile() {
         if (!viewModel.user.emailVerified) {
             Handler().postDelayed({
                 finish()
             }, 10000)
         }
-
-        bottomNav.setOnNavigationItemSelectedListener { menuItem ->
-            when(menuItem.itemId) {
-                R.id.menu_item_profile -> {
-                    supportActionBar?.title= resources.getString(R.string.profile)
-
-                    supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle())).commit()
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        }
-
-
     }
 
 

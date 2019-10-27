@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.ui.logup.dialog
+package es.samiralkalii.myapps.soporteit.ui.dialog
 
 
 import android.content.Context
@@ -7,18 +7,43 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentPickupProfilePhotoBottomSheetDialogBinding
 
 
-private val ARG_KEY_SHOW_DELETE_OPTION= "delete"
+private const val KEY_ARG_SHOW_DELETE_OPTION= "delete"
+private const val KEY_FRAGMENT_TAG= "fragment"
 
 class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
 
     private lateinit var pickProfilePhotoListener: PickProfilePhotoListener
     private lateinit var binding: FragmentPickupProfilePhotoBottomSheetDialogBinding
+
+    private var showDeleteOption: Boolean= false
+    private var fragmentTag: String= ""
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val args= arguments
+        args?.let {
+            showDeleteOption = args[KEY_ARG_SHOW_DELETE_OPTION] as Boolean
+            fragmentTag = args[KEY_FRAGMENT_TAG] as String
+        }
+        try {
+            if (context is PickProfilePhotoListener) {
+                pickProfilePhotoListener = context
+            } else {
+
+                pickProfilePhotoListener= (context as AppCompatActivity).supportFragmentManager.findFragmentByTag(fragmentTag) as PickProfilePhotoListener
+            }
+
+        } catch (e: ClassCastException) {
+            throw IllegalStateException("${context.toString()} must implement PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener" )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,8 +54,6 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
         val view= binding.root
-        val args= arguments!!
-        val showDeleteOption: Boolean= args.let { args[ARG_KEY_SHOW_DELETE_OPTION] as Boolean}
 
         if (!showDeleteOption) {
             binding.deleteOption.visibility= View.GONE
@@ -40,7 +63,7 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
     }
 
     enum class ProfilePhotoSource {
-        CAMERA, GALLERY, DELETE
+        CAMERA, GALLERY
     }
 
     interface PickProfilePhotoListener {
@@ -48,14 +71,7 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
         fun deleteImageProfile()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            pickProfilePhotoListener = context as PickProfilePhotoListener
-        } catch (e: ClassCastException) {
-            throw IllegalStateException("${context.toString()} must implement PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener" )
-        }
-    }
+
 
     fun onCameraClick() {
         Handler().postDelayed({
@@ -68,7 +84,7 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
     fun onGalleryClick() {
         Handler().postDelayed({
             this@PickUpProfilePhotoBottonSheetDialog.dismiss()
-            pickProfilePhotoListener.getProfilePhotoFrom(PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY)
+            pickProfilePhotoListener.getProfilePhotoFrom(ProfilePhotoSource.GALLERY)
         }, 300L)
 
     }
@@ -82,11 +98,13 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
 
 
     companion object {
-        fun newInstance(showDeleteOption: Boolean= false): PickUpProfilePhotoBottonSheetDialog {
+        fun newInstance(showDeleteOption: Boolean= false, fragmentTag: String= ""): PickUpProfilePhotoBottonSheetDialog {
             val bundle= Bundle().apply {
-                putBoolean(ARG_KEY_SHOW_DELETE_OPTION, showDeleteOption)
+                putBoolean(KEY_ARG_SHOW_DELETE_OPTION, showDeleteOption)
+                putString(KEY_FRAGMENT_TAG, fragmentTag)
             }
-            return PickUpProfilePhotoBottonSheetDialog().apply { arguments= bundle }
+            return PickUpProfilePhotoBottonSheetDialog()
+                .apply { arguments= bundle }
         }
     }
 }
