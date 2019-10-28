@@ -26,9 +26,9 @@ class SaveProfileImageChangeUseCase(private val preferenceRepository: Preference
             preferenceRepository.updateImageProfile(user)
         } else if (user.localProfileImage.isNotBlank() && imageUri.isBlank()) {
             //profileImage deleted
+            userStorageRepository.deleleProfileImage(user, user.localProfileImage)
             fileSystemRepository.deleteImageProfile(user)
             user.localProfileImage= ""
-            userStorageRepository.deleleProfileImage(user, user.localProfileImage)
             userDatabaseRepository.updateImageProfile(user)
             preferenceRepository.updateImageProfile(user)
         } else {

@@ -11,10 +11,12 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
+import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import es.samiralkalii.myapps.soporteit.ui.util.view.IMAGE_MIMETYPE
@@ -32,9 +34,9 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
     private val logger= LoggerFactory.getLogger(ProfileFragment::class.java)
 
     private val viewModel: ProfileViewModel by viewModel()
-    /*private val homeViewModel: HomeViewModel by lazy {
+    private val homeViewModel: HomeViewModel by lazy {
         ViewModelProviders.of(activity!!)[HomeViewModel::class.java]
-    }*/
+    }
 
     private lateinit var user: User
 
@@ -66,6 +68,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
     private fun processStateProfileImageChanged(screenState: ScreenState.Render<ProfileChangeState>) {
         when (screenState.renderState) {
             ProfileChangeState.changeOk -> {
+                homeViewModel.updateProfileImage(user)
                 Toast.makeText(activity!!, "Operación realizada con exito", Toast.LENGTH_LONG).show()
             }
             is ProfileChangeState.ShowMessage -> {

@@ -72,6 +72,7 @@ class FileSystemManager(val context: Context): IFileSystemManager {
                 }
             }
         }
+        logger.debug("El valor de equals es ${equals}")
         return equals
     }
 }

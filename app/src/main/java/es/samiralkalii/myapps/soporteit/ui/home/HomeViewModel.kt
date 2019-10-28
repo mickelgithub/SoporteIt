@@ -19,6 +19,11 @@ class HomeViewModel() : ViewModel() {
         _emailValidated.value= user.emailVerified
     }
 
+    fun updateProfileImage(userParam: User) {
+        user.localProfileImage= userParam.localProfileImage
+        user.remoteProfileImage= userParam.remoteProfileImage
+    }
+
 
 
 

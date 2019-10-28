@@ -38,14 +38,15 @@ class HomeActivity : AppCompatActivity() {
 
         if (!viewModel.user.emailVerified) {
             bottomNav.visibility= View.GONE
-            finishMeInAwhile()
+            finishMeInAwhile(1000L)
         } else {
             bottomNav.setOnNavigationItemSelectedListener { menuItem ->
                 when(menuItem.itemId) {
                     R.id.menu_item_profile -> {
-                        supportActionBar?.title= resources.getString(R.string.profile)
-
-                        supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
+                        if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
+                            supportActionBar?.title= resources.getString(R.string.profile)
+                            supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
+                        }
                         true
                     }
                     else -> {
@@ -57,11 +58,11 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun finishMeInAwhile() {
+    private fun finishMeInAwhile(delay: Long) {
         if (!viewModel.user.emailVerified) {
             Handler().postDelayed({
                 finish()
-            }, 10000)
+            }, delay)
         }
     }
 

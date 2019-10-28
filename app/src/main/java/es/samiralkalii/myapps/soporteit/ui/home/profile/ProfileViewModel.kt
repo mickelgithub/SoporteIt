@@ -99,6 +99,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
                 saveProfileImageChangeUseCase.saveProfileImageChange(user, _imageProfile.value?.toString() ?: "")
             }.await()
             _progressVisible.value = false
+            _showSaveMenu.value= false
             _profileChangeState.value= Event(ScreenState.Render(ProfileChangeState.changeOk))
         }
 
