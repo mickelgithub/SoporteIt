@@ -19,6 +19,11 @@ class UserDatabase(val fstore: FirebaseFirestore): IUserDatabase {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_EMAIL_VERIFIED to true)).await()
     }
 
+    override suspend fun updateImageProfile(user: User) {
+        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_LOCAL_PROFILE_IMAGE to user.localProfileImage,
+            KEY_REMOTE_PROFILE_IMAGE to user.remoteProfileImage)).await()
+    }
+
     val logger= LoggerFactory.getLogger(UserDatabase::class.java)
 
     override suspend fun getUserInfo(user: User) {

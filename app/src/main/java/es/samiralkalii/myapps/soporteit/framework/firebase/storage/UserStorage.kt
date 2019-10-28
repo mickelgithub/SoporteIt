@@ -20,6 +20,12 @@ class UserStorage(val fstorage: FirebaseStorage): IUserStorage {
 
     val logger= LoggerFactory.getLogger(UserStorage::class.java)
 
+    override suspend fun deleleProfileImage(user: User, fileName: String) {
+        val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${fileName.fileExtension()}")
+        mStorageRef.delete().await()
+        user.remoteProfileImage= ""
+    }
+
     override suspend fun saveProfileImage(user: User, profileImage: File) {
 
         val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.name.fileExtension()}")

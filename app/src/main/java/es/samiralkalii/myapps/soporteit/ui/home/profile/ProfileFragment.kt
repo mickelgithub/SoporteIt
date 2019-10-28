@@ -15,6 +15,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
+import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import es.samiralkalii.myapps.soporteit.ui.util.view.IMAGE_MIMETYPE
 import es.samiralkalii.myapps.soporteit.ui.util.view.PERMISSION_REQUEST_CODE
@@ -51,6 +52,26 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
             activity!!.invalidateOptionsMenu()
         })
 
+        viewModel.profileChangeState.observe(this, Observer {
+            it.getContentIfNotHandled().let { screenState ->
+                if (screenState is ScreenState.Render) {
+                    processStateProfileImageChanged(screenState)
+                }
+            }
+
+        })
+
+    }
+
+    private fun processStateProfileImageChanged(screenState: ScreenState.Render<ProfileChangeState>) {
+        when (screenState.renderState) {
+            ProfileChangeState.changeOk -> {
+                Toast.makeText(activity!!, "Operación realizada con exito", Toast.LENGTH_LONG).show()
+            }
+            is ProfileChangeState.ShowMessage -> {
+                Toast.makeText(activity!!, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -63,7 +84,20 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
         if (viewModel.showSaveMenu.value!!) {
             menu.findItem(R.id.menu_item_ok).setVisible(true)
         }
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_ok -> {
+                //we have tu update user object
+                //we have to save the file en local storage
+                //we have ti save the file en remote storage
+                viewModel.onSaveClick()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateView(

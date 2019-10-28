@@ -10,6 +10,14 @@ import es.samiralkalii.myapps.soporteit.ui.util.*
 
 
 class MySharedPreferences(val context: Context): IPreferences {
+
+    override suspend fun updateImageProfile(user: User) {
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            putString(KEY_LOCAL_PROFILE_IMAGE, user.localProfileImage)
+            putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
+        }
+    }
+
     override suspend fun updateEmailVerified() {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putBoolean(KEY_EMAIL_VERIFIED, true)
