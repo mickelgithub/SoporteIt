@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.framework.firebase.database
+package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IUserDatabase

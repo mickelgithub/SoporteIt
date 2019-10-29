@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.framework.firebase.storage
+package es.samiralkalii.myapps.soporteit.framework.remotestorage.storage
 
 import android.net.Uri
 import com.google.firebase.storage.FirebaseStorage

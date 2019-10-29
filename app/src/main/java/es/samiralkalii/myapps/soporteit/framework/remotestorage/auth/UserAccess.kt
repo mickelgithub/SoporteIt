@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.framework.firebase.auth
+package es.samiralkalii.myapps.soporteit.framework.remotestorage.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

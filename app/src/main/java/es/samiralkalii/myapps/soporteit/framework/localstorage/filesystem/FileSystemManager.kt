@@ -1,10 +1,10 @@
-package es.samiralkalii.myapps.soporteit.framework.filesystem
+package es.samiralkalii.myapps.soporteit.framework.localstorage.filesystem
 
 import android.content.Context
 import android.net.Uri
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
-import es.samiralkalii.myapps.soporteit.framework.firebase.storage.fileExtension
+import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.fileExtension
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.InputStream
