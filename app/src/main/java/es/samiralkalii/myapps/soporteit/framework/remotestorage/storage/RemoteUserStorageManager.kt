@@ -16,9 +16,9 @@ fun String.fileExtension(): String {
 private val PROFILE_BASE_DIR= "profile"
 private val PROFILE_IMAGE_NAME= "profile"
 
-class UserStorage(val fstorage: FirebaseStorage): IUserStorage {
+class RemoteUserStorageManager(val fstorage: FirebaseStorage): IUserStorage {
 
-    val logger= LoggerFactory.getLogger(UserStorage::class.java)
+    val logger= LoggerFactory.getLogger(RemoteUserStorageManager::class.java)
 
     override suspend fun deleleProfileImage(user: User, fileName: String) {
         val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${fileName.fileExtension()}")

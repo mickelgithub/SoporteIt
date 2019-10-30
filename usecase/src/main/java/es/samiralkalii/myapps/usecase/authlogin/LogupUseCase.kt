@@ -1,17 +1,17 @@
 package es.samiralkalii.myapps.usecase.authlogin
 
-import es.samiralkalii.myapps.data.authlogin.UserAccessRepository
-import es.samiralkalii.myapps.data.authlogin.UserDatabaseRepository
-import es.samiralkalii.myapps.data.authlogin.UserStorageRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserDatabaseRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserStorageRepository
+import es.samiralkalii.myapps.database.LocalUserDatabaseRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.filesystem.FileSystemRepository
-import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
-class LogupUseCase(private val userAccessRepository: UserAccessRepository,
-                   private val userDatabaseRepository: UserDatabaseRepository,
-                   private val  preferenceRepository: PreferenceRepository,
-                   private val userStorageRepository: UserStorageRepository,
+class LogupUseCase<T>(private val remoteUserAuthRepository: RemoteUserAuthRepository,
+                   private val remoteUserDatabaseRepository: RemoteUserDatabaseRepository,
+                   private val  localUserDatabaseRepository: LocalUserDatabaseRepository<T>,
+                   private val remoteUserStorageRepository: RemoteUserStorageRepository,
                    private val fileSystemRepository: FileSystemRepository) {
 
     private val logger = LoggerFactory.getLogger(LogupUseCase::class.java)
@@ -24,19 +24,19 @@ class LogupUseCase(private val userAccessRepository: UserAccessRepository,
         logger.debug("Vamos a registar el usuario ${user.email}")
 
         //we get user.id and user.creationDate
-        userAccessRepository.logupUser(user)
+        remoteUserAuthRepository.logupUser(user)
         //registration OK
         //we have to add the user profile image de local and remote storage
         if (profileImage.isNotBlank()) {
             //we get user.localProfileImage
             val profileImageFile = fileSystemRepository.copyFileFromExternalToInternal(user, profileImage)
             //we get user.remoteProfileImage
-            userStorageRepository.saveProfileImage(user, profileImageFile)
+            remoteUserStorageRepository.saveProfileImage(user, profileImageFile)
         }
         //we have to add the user to the database
-        userDatabaseRepository.addUser(user)
-        preferenceRepository.saveUserToPreferences(user)
-        userAccessRepository.sendEmailVerification(user)
+        remoteUserDatabaseRepository.addUser(user)
+        localUserDatabaseRepository.addOrUpdateUser(user)
+        remoteUserAuthRepository.sendEmailVerification(user)
 
         return Result.RegisteredOk(user)
     }

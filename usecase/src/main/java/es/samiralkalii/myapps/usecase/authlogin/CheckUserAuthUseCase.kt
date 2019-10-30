@@ -1,15 +1,15 @@
 package es.samiralkalii.myapps.usecase.authlogin
 
-import es.samiralkalii.myapps.data.authlogin.UserAccessRepository
-import es.samiralkalii.myapps.data.authlogin.UserDatabaseRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserDatabaseRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
 
-class CheckUserAuthUseCase(private val userAccessRepository: UserAccessRepository,
+class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                            private val preferenceRepository: PreferenceRepository,
-                           private val userDatabaseRepository: UserDatabaseRepository) {
+                           private val remoteUserDatabaseRepository: RemoteUserDatabaseRepository) {
 
     private val logger= LoggerFactory.getLogger(CheckUserAuthUseCase::class.java)
 
@@ -22,14 +22,14 @@ class CheckUserAuthUseCase(private val userAccessRepository: UserAccessRepositor
 
     private suspend fun updateEmailVerified(user: User) {
         preferenceRepository.updateEmailVerified()
-        userDatabaseRepository.updateEmailVerified(user)
+        remoteUserDatabaseRepository.updateEmailVerified(user)
 
     }
 
     suspend fun checkUserAuth(): Result {
         val user = preferenceRepository.getUserFromPreferences()
         val emailVerified= user.emailVerified
-        val loggedIn= userAccessRepository.checkUserLoggedIn(user)
+        val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
         if (loggedIn) {
             logger.debug("active session...")
             if (!emailVerified && user.emailVerified) {
@@ -45,7 +45,7 @@ class CheckUserAuthUseCase(private val userAccessRepository: UserAccessRepositor
                  //user already registered but he has a expired token
                 //we have to login
                 logger.debug("expired session, login taking data from preferences...")
-                userAccessRepository.signInUser(user, false)
+                remoteUserAuthRepository.signInUser(user, false)
                 if (!emailVerified && user.emailVerified) {
                     //we have to update this informacion en preferences
                     //and update it in firebase database

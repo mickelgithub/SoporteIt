@@ -1,17 +1,21 @@
 package es.samiralkalii.myapps.soporteit.di
 
-import es.samiralkalii.myapps.data.authlogin.UserAccessRepository
-import es.samiralkalii.myapps.data.authlogin.UserDatabaseRepository
-import es.samiralkalii.myapps.data.authlogin.UserStorageRepository
+import androidx.lifecycle.LiveData
+import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserDatabaseRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserStorageRepository
+import es.samiralkalii.myapps.database.LocalUserDatabaseRepository
+import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.filesystem.FileSystemRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.koin.dsl.module
 
 val dataModule= module {
 
-    factory { UserAccessRepository(get()) }
-    factory { UserDatabaseRepository(get()) }
+    factory { RemoteUserAuthRepository(get()) }
+    factory { RemoteUserDatabaseRepository(get()) }
     factory { PreferenceRepository(get()) }
-    factory { UserStorageRepository(get()) }
+    factory { RemoteUserStorageRepository(get()) }
     factory { FileSystemRepository(get()) }
+    factory { LocalUserDatabaseRepository<LiveData<User>>(get()) }
 }

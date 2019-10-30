@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 
 private val USERS_REF= "users"
 
-class UserDatabase(val fstore: FirebaseFirestore): IUserDatabase {
+class RemoteUserDatabaseManager(val fstore: FirebaseFirestore): IUserDatabase {
 
     override suspend fun updateEmailVerified(user: User) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_EMAIL_VERIFIED to true)).await()
@@ -24,7 +24,7 @@ class UserDatabase(val fstore: FirebaseFirestore): IUserDatabase {
             KEY_REMOTE_PROFILE_IMAGE to user.remoteProfileImage)).await()
     }
 
-    val logger= LoggerFactory.getLogger(UserDatabase::class.java)
+    val logger= LoggerFactory.getLogger(RemoteUserDatabaseManager::class.java)
 
     override suspend fun getUserInfo(user: User) {
         val result= fstore.collection(USERS_REF).document(user.id).get().await()
