@@ -1,7 +1,8 @@
 package es.samiralkalii.myapps.usecase.authlogin
 
 import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
-import es.samiralkalii.myapps.data.authlogin.RemoteUserDatabaseRepository
+import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
+import es.samiralkalii.myapps.database.LocalUserDatabaseRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
@@ -9,7 +10,8 @@ import org.slf4j.LoggerFactory
 
 class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                            private val preferenceRepository: PreferenceRepository,
-                           private val remoteUserDatabaseRepository: RemoteUserDatabaseRepository) {
+                           private val localUserDatabaseRepository: LocalUserDatabaseRepository,
+                           private val remoteUserRepository: RemoteUserRepository) {
 
     private val logger= LoggerFactory.getLogger(CheckUserAuthUseCase::class.java)
 
@@ -22,12 +24,13 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
 
     private suspend fun updateEmailVerified(user: User) {
         preferenceRepository.updateEmailVerified()
-        remoteUserDatabaseRepository.updateEmailVerified(user)
+        remoteUserRepository.updateEmailVerified(user)
 
     }
 
-    suspend fun checkUserAuth(): Result {
-        val user = preferenceRepository.getUserFromPreferences()
+    suspend operator fun invoke(): Result {
+        //val user = preferenceRepository.getUserFromPreferences()
+        val user= localUserDatabaseRepository.getUser()
         val emailVerified= user.emailVerified
         val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
         if (loggedIn) {
@@ -41,7 +44,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
         } else {
             //check if the user has been logged sometime ago
             //and so he has the login info saved en sharedPreferences
-            if (user != User.Empty) {
+            if (user != User.EMPTY) {
                  //user already registered but he has a expired token
                 //we have to login
                 logger.debug("expired session, login taking data from preferences...")

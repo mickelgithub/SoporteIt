@@ -7,7 +7,7 @@ class Compare2ImageProfileUseCase(private val fileSystemRepository: FileSystemRe
 
     private val logger = LoggerFactory.getLogger(Compare2ImageProfileUseCase::class.java)
 
-    suspend fun compare2Images(externalImage: String, internalImage: String)=
+    suspend operator fun invoke(externalImage: String, internalImage: String)=
         fileSystemRepository.compare2Images(externalImage, internalImage)
 
 }

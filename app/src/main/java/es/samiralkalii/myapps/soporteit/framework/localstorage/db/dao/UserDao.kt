@@ -1,6 +1,5 @@
 package es.samiralkalii.myapps.soporteit.framework.localstorage.db.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,5 +13,5 @@ interface UserDao {
     fun insert(user: User)
 
     @Query("SELECT * FROM user_profile_info LIMIT 1")
-    fun getUser(): LiveData<User>
+    fun getUser(): User
 }

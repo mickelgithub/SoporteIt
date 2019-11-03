@@ -9,7 +9,7 @@ data class User(var email: String= "", var password: String= "",
                 var emailVerified: Boolean= false) {
 
     companion object {
-        val Empty= User()
+        val EMPTY= User()
     }
 
 

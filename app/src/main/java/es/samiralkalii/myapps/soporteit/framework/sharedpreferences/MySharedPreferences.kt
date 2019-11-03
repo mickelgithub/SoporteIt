@@ -47,7 +47,7 @@ class MySharedPreferences(val context: Context): IPreferences {
         val creationDate= getLong(KEY_CREATION_DATE, 0L)
         val emailValidated= getBoolean(KEY_EMAIL_VERIFIED, false)
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
-            return User.Empty
+            return User.EMPTY
         }
         User(email, pass, name, localProfileImage = imageProfilePath,
             id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated)

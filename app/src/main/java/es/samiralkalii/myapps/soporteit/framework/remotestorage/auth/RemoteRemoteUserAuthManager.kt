@@ -2,11 +2,11 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import es.samiralkalii.myapps.data.authlogin.IUserAccess
+import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.domain.User
 import kotlinx.coroutines.tasks.await
 
-class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IUserAccess {
+class RemoteRemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource {
 
     override suspend fun sendEmailVerification(user: User) {
         fbAuth.currentUser?.sendEmailVerification()?.await()
@@ -15,7 +15,7 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IUserAccess {
     override suspend fun checkUserLoggedIn(user: User): Boolean {
         if (fbAuth.currentUser!= null) {
             val currentUser= fbAuth.currentUser as FirebaseUser
-            if (user!= User.Empty) {
+            if (user!= User.EMPTY) {
                 if (!user.emailVerified) {
                     currentUser.reload().await()
                     if (currentUser.isEmailVerified) {

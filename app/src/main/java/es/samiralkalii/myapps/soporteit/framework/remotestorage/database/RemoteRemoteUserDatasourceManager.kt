@@ -1,7 +1,7 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
 import com.google.firebase.firestore.FirebaseFirestore
-import es.samiralkalii.myapps.data.authlogin.IUserDatabase
+import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.ui.util.KEY_EMAIL_VERIFIED
 import es.samiralkalii.myapps.soporteit.ui.util.KEY_LOCAL_PROFILE_IMAGE
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 
 private val USERS_REF= "users"
 
-class RemoteUserDatabaseManager(val fstore: FirebaseFirestore): IUserDatabase {
+class RemoteRemoteUserDatasourceManager(val fstore: FirebaseFirestore): IRemoteUserDatasource {
 
     override suspend fun updateEmailVerified(user: User) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_EMAIL_VERIFIED to true)).await()
@@ -24,7 +24,7 @@ class RemoteUserDatabaseManager(val fstore: FirebaseFirestore): IUserDatabase {
             KEY_REMOTE_PROFILE_IMAGE to user.remoteProfileImage)).await()
     }
 
-    val logger= LoggerFactory.getLogger(RemoteUserDatabaseManager::class.java)
+    val logger= LoggerFactory.getLogger(RemoteRemoteUserDatasourceManager::class.java)
 
     override suspend fun getUserInfo(user: User) {
         val result= fstore.collection(USERS_REF).document(user.id).get().await()
