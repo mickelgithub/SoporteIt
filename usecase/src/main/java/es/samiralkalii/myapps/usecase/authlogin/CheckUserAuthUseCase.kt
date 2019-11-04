@@ -2,7 +2,6 @@ package es.samiralkalii.myapps.usecase.authlogin
 
 import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
-import es.samiralkalii.myapps.database.LocalUserDatabaseRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory
 
 class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                            private val preferenceRepository: PreferenceRepository,
-                           private val localUserDatabaseRepository: LocalUserDatabaseRepository,
                            private val remoteUserRepository: RemoteUserRepository) {
 
     private val logger= LoggerFactory.getLogger(CheckUserAuthUseCase::class.java)
@@ -29,8 +27,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
     }
 
     suspend operator fun invoke(): Result {
-        //val user = preferenceRepository.getUserFromPreferences()
-        val user= localUserDatabaseRepository.getUser()
+        val user = preferenceRepository.getUserFromPreferences()
         val emailVerified= user.emailVerified
         val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
         if (loggedIn) {

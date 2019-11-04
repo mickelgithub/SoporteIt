@@ -38,7 +38,7 @@ class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewMode
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                checkUserAuthUseCase.checkUserAuth()
+                checkUserAuthUseCase()
             }.await()
             when (result) {
                 is CheckUserAuthUseCase.Result.Logged -> {

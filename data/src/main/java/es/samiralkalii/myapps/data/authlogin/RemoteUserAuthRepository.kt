@@ -2,12 +2,12 @@ package es.samiralkalii.myapps.data.authlogin
 
 import es.samiralkalii.myapps.domain.User
 
-class RemoteUserAuthRepository(val userAccess: IRemoteUserAuthDataSource) {
+class RemoteUserAuthRepository(val userAuthManager: IRemoteUserAuthDataSource) {
 
-    suspend fun logupUser(user: User)= userAccess.logupUser(user)
-    suspend fun signInUser(user: User, firstTime: Boolean)= userAccess.signInUser(user, firstTime)
-    suspend fun sendEmailVerification(user: User)= userAccess.sendEmailVerification(user)
-    suspend fun checkUserLoggedIn(user: User)= userAccess.checkUserLoggedIn(user)
+    suspend fun logupUser(user: User)= userAuthManager.logupUser(user)
+    suspend fun signInUser(user: User, firstTime: Boolean)= userAuthManager.signInUser(user, firstTime)
+    suspend fun sendEmailVerification(user: User)= userAuthManager.sendEmailVerification(user)
+    suspend fun checkUserLoggedIn(user: User)= userAuthManager.checkUserLoggedIn(user)
 
 }
 
