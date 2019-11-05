@@ -6,7 +6,7 @@ import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.domain.User
 import kotlinx.coroutines.tasks.await
 
-class RemoteRemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource {
+class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource {
 
     override suspend fun sendEmailVerification(user: User) {
         fbAuth.currentUser?.sendEmailVerification()?.await()

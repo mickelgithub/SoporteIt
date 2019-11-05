@@ -9,7 +9,7 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.*
 
 
-class MySharedPreferences(val context: Context): IPreferences {
+class SharedPreferencesManager(val context: Context): IPreferences {
 
     override suspend fun updateImageProfile(user: User) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
