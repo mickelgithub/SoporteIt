@@ -17,7 +17,7 @@ import es.samiralkalii.myapps.soporteit.framework.localstorage.db.database.DATAB
 import es.samiralkalii.myapps.soporteit.framework.localstorage.db.manager.LocalUserDatabaseManager
 import es.samiralkalii.myapps.soporteit.framework.localstorage.filesystem.FileSystemManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.auth.RemoteUserAuthManager
-import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteRemoteUserDatasourceManager
+import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteUserDatasourceManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.RemoteUserStorageManager
 import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.SharedPreferencesManager
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
@@ -37,7 +37,7 @@ val appModule= module {
     single {get<AppDatabase>().userDao()}
 
     factory<IRemoteUserAuthDataSource> { RemoteUserAuthManager(get()) }
-    factory<IRemoteUserDatasource> { RemoteRemoteUserDatasourceManager(get()) }
+    factory<IRemoteUserDatasource> { RemoteUserDatasourceManager(get()) }
     factory<IPreferences> { SharedPreferencesManager(get()) }
     factory<IUserStorage> { RemoteUserStorageManager(get()) }
     factory<IFileSystemManager> { FileSystemManager(get()) }

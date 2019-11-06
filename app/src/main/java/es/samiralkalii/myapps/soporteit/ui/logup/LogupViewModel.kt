@@ -157,7 +157,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-                    logupUseCase.logupUser(user, imageProfile.value?.toString() ?: "")
+                    logupUseCase(user, imageProfile.value?.toString() ?: "")
                 }.await()
                 when (result) {
                     is LogupUseCase.Result.RegisteredOk -> {
