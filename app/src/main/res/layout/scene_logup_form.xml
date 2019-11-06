@@ -147,7 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:onClick="@{()-> viewModel.onRegisterClick()}"
+                android:onClick="@{()-> viewModel.onLogupClick()}"
                 android:text="@string/register"
                 android:textSize="16sp"
                 android:textAllCaps="false"

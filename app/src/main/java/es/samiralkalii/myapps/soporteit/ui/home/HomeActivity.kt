@@ -38,7 +38,7 @@ class HomeActivity : AppCompatActivity() {
 
         if (!viewModel.user.emailVerified) {
             bottomNav.visibility= View.GONE
-            finishMeInAwhile(1000L)
+            finishMeInAwhile(5000L)
         } else {
             bottomNav.setOnNavigationItemSelectedListener { menuItem ->
                 when(menuItem.itemId) {

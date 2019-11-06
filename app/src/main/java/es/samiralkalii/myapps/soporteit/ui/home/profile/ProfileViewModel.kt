@@ -66,14 +66,12 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
         } else {
             viewModelScope.launch() {
                 val equals = async(Dispatchers.IO) {
-                    compare2ImageProfileUseCase.compare2Images(
+                    compare2ImageProfileUseCase(
                         imgUri.toString(),
                         user.localProfileImage
                     )
                 }.await()
-                if (!equals) {
-                    _showSaveMenu.value = true
-                }
+                _showSaveMenu.value= !equals
             }
         }
     }
@@ -96,7 +94,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                saveProfileImageChangeUseCase.saveProfileImageChange(user, _imageProfile.value?.toString() ?: "")
+                saveProfileImageChangeUseCase(user, _imageProfile.value?.toString() ?: "")
             }.await()
             _progressVisible.value = false
             _showSaveMenu.value= false

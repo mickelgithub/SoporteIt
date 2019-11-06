@@ -1,25 +1,23 @@
 package es.samiralkalii.myapps.soporteit.framework.localstorage.db.manager
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import es.samiralkalii.myapps.database.ILocalUserDatabase
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.framework.localstorage.db.dao.UserDao
 import org.slf4j.LoggerFactory
 
-class LocalUserDatabaseManager(val userDao: UserDao): ILocalUserDatabase<LiveData<User>> {
+class LocalUserDatabaseManager(val userDao: UserDao): ILocalUserDatabase {
 
     private val logger = LoggerFactory.getLogger(LocalUserDatabaseManager::class.java)
 
-    override suspend fun addOrUpdateUser(user: User) {
+    /*override suspend fun addOrUpdateUser(user: User) {
         logger.debug("inserting user ${user.name}")
         userDao.insert(user.mapToDbUser())
         logger.debug("ok inserting user ${user.name}")
 
-    }
+    }*/
 
 
-    override suspend fun getUser(): LiveData<User> = Transformations.map(userDao.getUser(), ::toUserDomain)
+    //override suspend fun getUser(): LiveData<User> = Transformations.map(userDao.getUser(), ::toUserDomain)
 
     private fun toUserDomain(user: es.samiralkalii.myapps.soporteit.framework.localstorage.db.model.User)= user.mapToUserDomain()
 

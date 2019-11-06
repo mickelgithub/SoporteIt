@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 
 
-private val USERS_REF= "users"
+private const val USERS_REF= "users"
 
 class RemoteUserDatasourceManager(val fstore: FirebaseFirestore): IRemoteUserDatasource {
 

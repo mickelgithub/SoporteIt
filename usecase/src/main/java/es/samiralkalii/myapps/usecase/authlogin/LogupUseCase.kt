@@ -3,16 +3,16 @@ package es.samiralkalii.myapps.usecase.authlogin
 import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.data.authlogin.RemoteUserStorageRepository
-import es.samiralkalii.myapps.database.LocalUserDatabaseRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.filesystem.FileSystemRepository
+import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
 class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                    private val remoteUserRepository: RemoteUserRepository,
-                   private val  localUserDatabaseRepository: LocalUserDatabaseRepository,
                    private val remoteUserStorageRepository: RemoteUserStorageRepository,
-                   private val fileSystemRepository: FileSystemRepository) {
+                   private val fileSystemRepository: FileSystemRepository,
+                   private val preferenceRepository: PreferenceRepository) {
 
     private val logger = LoggerFactory.getLogger(LogupUseCase::class.java)
 
@@ -35,7 +35,7 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         }
         //we have to add the user to the database
         remoteUserRepository.addUser(user)
-        localUserDatabaseRepository.addOrUpdateUser(user)
+        preferenceRepository.saveUserToPreferences(user)
         remoteUserAuthRepository.sendEmailVerification(user)
 
         return Result.RegisteredOk(user)

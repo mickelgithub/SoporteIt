@@ -1,24 +1,20 @@
 package es.samiralkalii.myapps.soporteit.di
 
-import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
-import es.samiralkalii.myapps.data.authlogin.IUserStorage
-import es.samiralkalii.myapps.database.ILocalUserDatabase
-import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.data.authlogin.IRemoteUserStorageDataSource
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
 import es.samiralkalii.myapps.preference.IPreferences
 import es.samiralkalii.myapps.soporteit.framework.localstorage.db.database.AppDatabase
 import es.samiralkalii.myapps.soporteit.framework.localstorage.db.database.DATABASE_NAME
-import es.samiralkalii.myapps.soporteit.framework.localstorage.db.manager.LocalUserDatabaseManager
 import es.samiralkalii.myapps.soporteit.framework.localstorage.filesystem.FileSystemManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.auth.RemoteUserAuthManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteUserDatasourceManager
-import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.RemoteUserStorageManager
+import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.RemoteUserStorageDataSourceManager
 import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.SharedPreferencesManager
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
@@ -39,9 +35,9 @@ val appModule= module {
     factory<IRemoteUserAuthDataSource> { RemoteUserAuthManager(get()) }
     factory<IRemoteUserDatasource> { RemoteUserDatasourceManager(get()) }
     factory<IPreferences> { SharedPreferencesManager(get()) }
-    factory<IUserStorage> { RemoteUserStorageManager(get()) }
+    factory<IRemoteUserStorageDataSource> { RemoteUserStorageDataSourceManager(get()) }
     factory<IFileSystemManager> { FileSystemManager(get()) }
-    factory<ILocalUserDatabase<LiveData<User>>> { LocalUserDatabaseManager(get()) }
+    //factory<ILocalUserDatabase<LiveData<User>>> { LocalUserDatabaseManager(get()) }
 
 
     viewModel { SplashViewModel(get()) }

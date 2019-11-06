@@ -32,11 +32,12 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         if (internalFile.exists()) {
             internalFile.delete()
         }
-        context.openFileOutput(internalFile.name, Context.MODE_PRIVATE).use {
-            it.write(inputStream?.readBytes())
+        inputStream?.use { input ->
+            context.openFileOutput(internalFile.name, Context.MODE_PRIVATE).use {
+                it.write(input.readBytes())
+            }
+            user.localProfileImage= internalFile.absolutePath
         }
-        inputStream?.close()
-        user.localProfileImage= internalFile.absolutePath
         return internalFile
     }
 
@@ -54,21 +55,30 @@ class FileSystemManager(val context: Context): IFileSystemManager {
 
     override suspend fun compare2Images(externalImage: String, internalImage: String): Boolean {
         logger.debug("Comparando imagenes.....")
+
         val uri= Uri.parse(externalImage)
+
         val externalImageInputStream= context.contentResolver.openInputStream(uri)!!
+
         var equals= true
+        val inputBloque= IntArray(128)
         context.openFileInput(internalImage.substringAfterLast(File.separator)).use { internalImageInputStream ->
             externalImageInputStream.use { externalImageInputStream ->
-                val externalByte= externalImageInputStream.read()
-                val internalByte= internalImageInputStream.read()
+
+                var externalByte= externalImageInputStream.read()
+                var internalByte= internalImageInputStream.read()
                 while (externalByte!= -1 && internalByte!= -1) {
                     if (externalByte!= internalByte) {
                         equals= false
                         break
                     }
+                    externalByte= externalImageInputStream.read()
+                    internalByte= internalImageInputStream.read()
                 }
-                if (externalByte!= internalByte) {
-                    equals= false
+                if (equals) {
+                    if (externalByte!= internalByte) {
+                        equals= false
+                    }
                 }
             }
         }

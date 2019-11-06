@@ -4,14 +4,14 @@ import es.samiralkalii.myapps.domain.User
 import java.io.File
 import java.io.InputStream
 
-class RemoteUserStorageRepository(val userStorage: IUserStorage) {
+class RemoteUserStorageRepository(val remoteUserStorageDataSourceDataSource: IRemoteUserStorageDataSource) {
 
-    suspend fun saveProfileImage(user: User, profileImage: File)= userStorage.saveProfileImage(user, profileImage)
-    suspend fun getProfileImage(user: User)= userStorage.getProfileImage(user)
-    suspend fun deleleProfileImage(user: User, fileName: String)= userStorage.deleleProfileImage(user, fileName)
+    suspend fun saveProfileImage(user: User, profileImage: File)= remoteUserStorageDataSourceDataSource.saveProfileImage(user, profileImage)
+    suspend fun getProfileImage(user: User)= remoteUserStorageDataSourceDataSource.getProfileImage(user)
+    suspend fun deleleProfileImage(user: User, fileName: String)= remoteUserStorageDataSourceDataSource.deleleProfileImage(user, fileName)
 }
 
-interface IUserStorage {
+interface IRemoteUserStorageDataSource {
     suspend fun saveProfileImage(user: User, profileImage: File)
     suspend fun getProfileImage(user: User): InputStream?
     suspend fun deleleProfileImage(user: User, fileName: String): Unit

@@ -103,7 +103,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         viewModelScope.launch(errorHandler) {
             val result= async(Dispatchers.IO) {
-                 val resultLoginIn= loginUserCase(user)
+                val resultLoginIn= loginUserCase(user)
                 if (!user.localProfileImage.isBlank()) {
                     _imageProfile.postValue(Uri.fromFile(File(user.localProfileImage)))
                 }
@@ -118,7 +118,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         }
     }
 
-    fun registerUser() {
+    fun logupUser() {
 
         clearErrorsLogUp()
 
@@ -169,7 +169,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         }
     }
 
-    fun onRegisterClick()= registerUser()
+    fun onLogupClick()= logupUser()
 
     fun onLogInClick()= loginUser()
 

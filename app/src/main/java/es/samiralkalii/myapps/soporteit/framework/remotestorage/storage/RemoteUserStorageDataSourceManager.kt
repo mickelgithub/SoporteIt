@@ -2,7 +2,7 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.storage
 
 import android.net.Uri
 import com.google.firebase.storage.FirebaseStorage
-import es.samiralkalii.myapps.data.authlogin.IUserStorage
+import es.samiralkalii.myapps.data.authlogin.IRemoteUserStorageDataSource
 import es.samiralkalii.myapps.domain.User
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
@@ -16,9 +16,9 @@ fun String.fileExtension(): String {
 private val PROFILE_BASE_DIR= "profile"
 private val PROFILE_IMAGE_NAME= "profile"
 
-class RemoteUserStorageManager(val fstorage: FirebaseStorage): IUserStorage {
+class RemoteUserStorageDataSourceManager(val fstorage: FirebaseStorage): IRemoteUserStorageDataSource {
 
-    val logger= LoggerFactory.getLogger(RemoteUserStorageManager::class.java)
+    val logger= LoggerFactory.getLogger(RemoteUserStorageDataSourceManager::class.java)
 
     override suspend fun deleleProfileImage(user: User, fileName: String) {
         val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${fileName.fileExtension()}")

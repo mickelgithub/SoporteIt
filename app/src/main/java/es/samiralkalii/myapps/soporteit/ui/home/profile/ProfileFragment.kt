@@ -84,9 +84,9 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        if (viewModel.showSaveMenu.value!!) {
-            menu.findItem(R.id.menu_item_ok).setVisible(true)
-        }
+        //if (viewModel.showSaveMenu.value!!) {
+            menu.findItem(R.id.menu_item_ok).setVisible(viewModel.showSaveMenu.value!!)
+        //}
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
