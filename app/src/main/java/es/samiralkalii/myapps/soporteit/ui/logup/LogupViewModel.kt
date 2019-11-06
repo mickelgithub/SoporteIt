@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
 
-class LogupViewModel(private val logupUseCase: LogupUseCase<LiveData<User>>, private val loginUserCase: LoginUserCase) : ViewModel() {
+class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
@@ -103,7 +103,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase<LiveData<User>>, pri
 
         viewModelScope.launch(errorHandler) {
             val result= async(Dispatchers.IO) {
-                 val resultLoginIn= loginUserCase.loginUser(user)
+                 val resultLoginIn= loginUserCase(user)
                 if (!user.localProfileImage.isBlank()) {
                     _imageProfile.postValue(Uri.fromFile(File(user.localProfileImage)))
                 }
