@@ -8,6 +8,7 @@ import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.fileExte
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.InputStream
+import java.util.*
 
 private val PROFILE_IMAGE_NAME= "profile_image"
 
@@ -61,24 +62,28 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         val externalImageInputStream= context.contentResolver.openInputStream(uri)!!
 
         var equals= true
-        val inputBloque= IntArray(128)
+        val internalBloque= ByteArray(128)
+        val externalBloque= ByteArray(128)
         context.openFileInput(internalImage.substringAfterLast(File.separator)).use { internalImageInputStream ->
             externalImageInputStream.use { externalImageInputStream ->
 
-                var externalByte= externalImageInputStream.read()
-                var internalByte= internalImageInputStream.read()
-                while (externalByte!= -1 && internalByte!= -1) {
-                    if (externalByte!= internalByte) {
+                var externalBytesRead= externalImageInputStream.read(externalBloque)
+                var internalBytesRead= internalImageInputStream.read(internalBloque)
+                while (externalBytesRead>= 0) {
+                    if (externalBytesRead!= internalBytesRead) {
                         equals= false
                         break
                     }
-                    externalByte= externalImageInputStream.read()
-                    internalByte= internalImageInputStream.read()
-                }
-                if (equals) {
-                    if (externalByte!= internalByte) {
+                    if (!Arrays.equals(externalBloque, internalBloque)) {
                         equals= false
+                        break
                     }
+                    externalBytesRead= externalImageInputStream.read(externalBloque)
+                    internalBytesRead= internalImageInputStream.read(internalBloque)
+
+                }
+                if (externalBytesRead!= internalBytesRead) {
+                    equals= false
                 }
             }
         }

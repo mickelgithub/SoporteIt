@@ -29,6 +29,7 @@ class SaveProfileImageChangeUseCase(private val preferenceRepository: Preference
             remoteUserStorageRepository.deleleProfileImage(user, user.localProfileImage)
             fileSystemRepository.deleteImageProfile(user)
             user.localProfileImage= ""
+            user.remoteProfileImage= ""
             remoteUserRepository.updateImageProfile(user)
             preferenceRepository.updateImageProfile(user)
         } else {
