@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".framework.messaging.MyFirebaseInstanceIDService"
+            android:name="es.samiralkalii.myapps.soporteit.framework.remotestorage.messaging.MyFirebaseInstanceIDService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

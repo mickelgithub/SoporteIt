@@ -11,6 +11,13 @@ import es.samiralkalii.myapps.soporteit.ui.util.*
 
 class SharedPreferencesManager(val context: Context): IPreferences {
 
+
+    override suspend fun updateMessagingToken(token: String) {
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            putString(KEY_MESSAGING_TOKEN, token)
+        }
+    }
+
     override suspend fun updateImageProfile(user: User) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_LOCAL_PROFILE_IMAGE, user.localProfileImage)

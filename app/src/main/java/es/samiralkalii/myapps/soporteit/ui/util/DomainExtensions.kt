@@ -13,6 +13,7 @@ const val KEY_LOCAL_PROFILE_IMAGE= "localProfileImage"
 const val KEY_REMOTE_PROFILE_IMAGE= "remoteProfileImage"
 const val KEY_CREATION_DATE= "creationDate"
 const val KEY_EMAIL_VERIFIED= "emailVerified"
+const val KEY_MESSAGING_TOKEN= "messagingToken"
 
 
 fun User.toBundle()= Bundle().apply {

@@ -5,8 +5,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
-import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserStorageDataSource
+import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
 import es.samiralkalii.myapps.preference.IPreferences
 import es.samiralkalii.myapps.soporteit.framework.localstorage.db.database.AppDatabase
@@ -33,7 +33,7 @@ val appModule= module {
     single {get<AppDatabase>().userDao()}
 
     factory<IRemoteUserAuthDataSource> { RemoteUserAuthManager(get()) }
-    factory<IRemoteUserDatasource> { RemoteUserDatasourceManager(get()) }
+    factory<RemoteUserRepository.IRemoteUserDatasource> { RemoteUserDatasourceManager(get(), get()) }
     factory<IPreferences> { SharedPreferencesManager(get()) }
     factory<IRemoteUserStorageDataSource> { RemoteUserStorageDataSourceManager(get()) }
     factory<IFileSystemManager> { FileSystemManager(get()) }

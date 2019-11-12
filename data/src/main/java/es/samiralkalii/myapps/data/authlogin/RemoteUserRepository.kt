@@ -4,15 +4,17 @@ import es.samiralkalii.myapps.domain.User
 
 class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
 
-    suspend fun addUser(user: User)= remoteUserDatasource.addUser(user)
-    suspend fun getUserInfo(user: User)= remoteUserDatasource.getUserInfo(user)
-    suspend fun updateEmailVerified(user: User)= remoteUserDatasource.updateEmailVerified(user)
-    suspend fun updateImageProfile(user: User)= remoteUserDatasource.updateImageProfile(user)
-}
+    suspend fun addUser(user: User) = remoteUserDatasource.addUser(user)
+    suspend fun getUserInfo(user: User) = remoteUserDatasource.getUserInfo(user)
+    suspend fun updateEmailVerified(user: User) = remoteUserDatasource.updateEmailVerified(user)
+    suspend fun updateImageProfile(user: User) = remoteUserDatasource.updateImageProfile(user)
+    suspend fun updateMessagingToken(token: String) = remoteUserDatasource.updateMessagingToken(token)
 
-interface IRemoteUserDatasource {
-    suspend fun addUser(user: User)
-    suspend fun getUserInfo(user: User)
-    suspend fun updateEmailVerified(user: User)
-    suspend fun updateImageProfile(user: User)
+    interface IRemoteUserDatasource {
+        suspend fun addUser(user: User)
+        suspend fun getUserInfo(user: User)
+        suspend fun updateEmailVerified(user: User)
+        suspend fun updateImageProfile(user: User)
+        suspend fun updateMessagingToken(token: String)
+    }
 }
