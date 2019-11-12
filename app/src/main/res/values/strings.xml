@@ -32,5 +32,6 @@
     <string name="add_planification">Añadir Plan</string>
     <string name="notifications">Notificaciones</string>
     <string name="save">Guardar</string>
+    <string name="is_boss">¿Eres Jefe de equipo?</string>
 
 </resources>

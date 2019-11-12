@@ -22,11 +22,16 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
 
+private const val PENDING= "P"
+private const val NO= "N"
+
 class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
     val user= User()
+
+    var boss= false
 
     private val _registerState= MutableLiveData<Event<ScreenState<LogupState>>>()
     val registerState: LiveData<Event<ScreenState<LogupState>>>
@@ -121,6 +126,8 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     fun logupUser() {
 
         clearErrorsLogUp()
+
+        user.boss= if (boss) PENDING else NO
 
         if (user.name.isBlank() || user.name.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error
