@@ -11,6 +11,9 @@ import es.samiralkalii.myapps.soporteit.ui.util.*
 
 class SharedPreferencesManager(val context: Context): IPreferences {
 
+    override suspend fun getMessaginToken(): String=
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).getString(KEY_MESSAGING_TOKEN, "")
+
 
     override suspend fun updateMessagingToken(token: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
@@ -41,6 +44,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
             putLong(KEY_CREATION_DATE, user.creationDate)
             putBoolean(KEY_EMAIL_VERIFIED, user.emailVerified)
+            putString(KEY_BOSS, user.boss)
         }
     }
 

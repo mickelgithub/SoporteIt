@@ -18,6 +18,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     private val logger= LoggerFactory.getLogger(RemoteUserDatasourceManager::class.java)
 
     override suspend fun updateMessagingToken(token: String) {
+
         if (fbAuth.currentUser!= null) {
             val firebaseUser= fbAuth.currentUser as FirebaseUser
             fstore.collection(USERS_REF).document(firebaseUser.uid).update(mapOf( KEY_MESSAGING_TOKEN to token)).await()
@@ -44,6 +45,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.localProfileImage= (data[KEY_LOCAL_PROFILE_IMAGE] as String?) ?: ""
             user.remoteProfileImage= (data[KEY_REMOTE_PROFILE_IMAGE] as String?) ?: ""
             user.emailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
+            user.boss= (data[KEY_BOSS] as String?) ?: ""
         }
     }
 

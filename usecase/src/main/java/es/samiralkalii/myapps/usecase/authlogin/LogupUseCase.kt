@@ -35,6 +35,7 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         }
         //we have to add the user to the database
         remoteUserRepository.addUser(user)
+        remoteUserRepository.updateMessagingToken(preferenceRepository.getMessaginToken())
         preferenceRepository.saveUserToPreferences(user)
         remoteUserAuthRepository.sendEmailVerification(user)
 

@@ -1,7 +1,7 @@
 package es.samiralkalii.myapps.soporteit.di
 
 import es.samiralkalii.myapps.usecase.authlogin.*
-import messaging.RegisterMessagingTokenUseCase
+import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
 import org.koin.dsl.module
 
 
