@@ -4,6 +4,7 @@ import android.app.Application
 import es.samiralkalii.myapps.soporteit.di.appModule
 import es.samiralkalii.myapps.soporteit.di.dataModule
 import es.samiralkalii.myapps.soporteit.di.useCaseModule
+import es.samiralkalii.myapps.soporteit.framework.notification.createNotificationChannel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -26,5 +27,11 @@ class App: Application() {
             androidContext(this@App)
             modules(listOf(appModule, dataModule, useCaseModule))
         }
+
+        createNotificationChannel(this)
+
+
     }
+
+
 }

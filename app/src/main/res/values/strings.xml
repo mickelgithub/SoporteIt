@@ -33,5 +33,7 @@
     <string name="notifications">Notificaciones</string>
     <string name="save">Guardar</string>
     <string name="is_boss">¿Eres Jefe de equipo?</string>
+    <string name="general_notif_channel_name">Notificaciones generales</string>
+    <string name="general_notif_channel_id">es.samiralkalii.myapps.soporteit_notif_generales_id</string>
 
 </resources>
