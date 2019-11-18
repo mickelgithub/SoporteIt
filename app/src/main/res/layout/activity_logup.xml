@@ -28,24 +28,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <FrameLayout
+            <es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView
                 android:id="@+id/stage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:visible="@{viewModel.progressVisible}">
 
-                <es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView
+                <!--<es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <ProgressBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center" /> -->
 
-                </es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView>
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/animation_view"
+                        android:layout_width="300dp"
+                        android:layout_height="300dp"
+                        android:layout_gravity="center"
+                        app:lottie_rawRes="@raw/loader"
+                        app:lottie_loop="true"
+                        app:lottie_autoPlay="true" />
 
-            </FrameLayout>
+                <!--</es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView>-->
+
+            </es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView>
 
         </FrameLayout>
     </LinearLayout>

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -73,6 +74,12 @@ class LogupActivity : AppCompatActivity(),
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
         setSupportActionBar(toolbar)
+
+        ArrayAdapter.createFromResource(this, R.array.profile_array, android.R.layout.simple_spinner_item)
+            .also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                profilSpinner.adapter= adapter
+            }
 
         supportActionBar?.let { title= resources.getString(R.string.registration) }
 

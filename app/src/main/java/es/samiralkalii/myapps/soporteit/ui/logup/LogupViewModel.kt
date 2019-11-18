@@ -31,7 +31,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
     val user= User()
 
-    var boss= false
 
     private val _registerState= MutableLiveData<Event<ScreenState<LogupState>>>()
     val registerState: LiveData<Event<ScreenState<LogupState>>>

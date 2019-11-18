@@ -9,9 +9,7 @@ import es.samiralkalii.myapps.soporteit.R
 class OverlayView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     init {
 
-        setBackgroundColor(ContextCompat.getColor(context, R.color.black))
-        alpha = 0.6f
-
+        setBackgroundColor(ContextCompat.getColor(context, R.color.back_load))
         setOnTouchListener({ _, _ -> true })
     }
 }

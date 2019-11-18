@@ -17,11 +17,11 @@
     <ScrollView
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context=".ui.logup.LogupActivity">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -68,7 +68,8 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBaseline_toBaselineOf="@id/alreadyLoggedUp"
-                tools:text="@string/her" />
+                tools:text="@string/her"
+                android:focusable="true" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -95,18 +96,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                app:shapeAppearance="@style/rounded_text_field"
                 android:id="@+id/mailInputLayout"
-                app:error="@{viewModel.emailError}"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
+                app:error="@{viewModel.emailError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nameInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/nameInputLayout"
+                app:shapeAppearance="@style/rounded_text_field">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@id/email"
@@ -114,8 +115,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/mail"
                     android:inputType="textEmailAddress"
-                    android:text="@={viewModel.user.email}"
-                    android:nextFocusDown="@+id/password"/>
+                    android:nextFocusDown="@+id/password"
+                    android:text="@={viewModel.user.email}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -142,39 +143,39 @@
                     android:text="@={viewModel.user.password}" />
             </com.google.android.material.textfield.TextInputLayout>
 
+
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="54dp"
                 android:onClick="@{()-> viewModel.onLogupClick()}"
                 android:text="@string/register"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/is_boss_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
-            <TextView
-                android:id="@+id/is_boss_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/is_boss"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_spinner"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passInputLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/passInputLayout">
 
-            <Switch
-                android:id="@+id/isBossSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text=""
-                android:checked="@={viewModel.boss}"
-                app:layout_constraintBottom_toBottomOf="@+id/is_boss_tv"
-                app:layout_constraintStart_toEndOf="@+id/is_boss_tv"
-                app:layout_constraintTop_toTopOf="@+id/is_boss_tv" />
+                <Spinner
+                    android:id="@+id/profilSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+            </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
