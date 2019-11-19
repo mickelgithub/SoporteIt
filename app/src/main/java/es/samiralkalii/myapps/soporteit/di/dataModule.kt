@@ -16,5 +16,4 @@ val dataModule= module {
     factory { RemoteUserStorageRepository(get()) }
     factory { FileSystemRepository(get()) }
     factory { NotificationRepository(get()) }
-    //factory { LocalUserDatabaseRepository<LiveData<User>>(get()) }
 }

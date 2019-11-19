@@ -39,10 +39,10 @@ class MyFirebaseInstanceIDService() : CoroutineScope, FirebaseMessagingService()
         if (token.isNotBlank()) {
             launch(Dispatchers.Main) {
                 logger.debug("inside main coroutine:${Thread.currentThread().name}")
-                val result = async(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
                     logger.debug("inside coroutine IO (${Thread.currentThread().name})")
                     registerMessagingTokenUseCase(token)
-                }.await()
+                }
             }
         }
 

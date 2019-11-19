@@ -1,6 +1,5 @@
 package es.samiralkalii.myapps.soporteit.di
 
-import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -10,8 +9,6 @@ import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
 import es.samiralkalii.myapps.notification.INotification
 import es.samiralkalii.myapps.preference.IPreferences
-import es.samiralkalii.myapps.soporteit.framework.localstorage.db.database.AppDatabase
-import es.samiralkalii.myapps.soporteit.framework.localstorage.db.database.DATABASE_NAME
 import es.samiralkalii.myapps.soporteit.framework.localstorage.filesystem.FileSystemManager
 import es.samiralkalii.myapps.soporteit.framework.notification.NotificationManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.auth.RemoteUserAuthManager
@@ -31,16 +28,13 @@ val appModule= module {
     single { FirebaseFirestore.getInstance() }
     single { FirebaseStorage.getInstance() }
 
-    single<AppDatabase> { Room.databaseBuilder(get(), AppDatabase::class.java, DATABASE_NAME).build() }
-    single {get<AppDatabase>().userDao()}
-
     factory<IRemoteUserAuthDataSource> { RemoteUserAuthManager(get()) }
     factory<RemoteUserRepository.IRemoteUserDatasource> { RemoteUserDatasourceManager(get(), get()) }
     factory<IPreferences> { SharedPreferencesManager(get()) }
     factory<IRemoteUserStorageDataSource> { RemoteUserStorageDataSourceManager(get()) }
     factory<IFileSystemManager> { FileSystemManager(get()) }
     factory<INotification> { NotificationManager(get()) }
-    //factory<ILocalUserDatabase<LiveData<User>>> { LocalUserDatabaseManager(get()) }
+
 
 
     viewModel { SplashViewModel(get()) }

@@ -22,9 +22,6 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
 
-private const val PENDING= "P"
-private const val NO= "N"
-
 class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
@@ -126,7 +123,8 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         clearErrorsLogUp()
 
-        user.boss= if (boss) PENDING else NO
+        //user.profile= if (boss) PENDING else NO
+        //TODO("hay que actualizar el valor de perfil")
 
         if (user.name.isBlank() || user.name.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error

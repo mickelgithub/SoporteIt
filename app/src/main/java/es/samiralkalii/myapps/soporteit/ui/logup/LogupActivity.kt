@@ -78,7 +78,7 @@ class LogupActivity : AppCompatActivity(),
         ArrayAdapter.createFromResource(this, R.array.profile_array, android.R.layout.simple_spinner_item)
             .also { adapter ->
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                profilSpinner.adapter= adapter
+                bindingLogup.profilSpinner.adapter= adapter
             }
 
         supportActionBar?.let { title= resources.getString(R.string.registration) }

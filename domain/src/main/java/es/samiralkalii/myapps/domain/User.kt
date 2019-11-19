@@ -7,7 +7,7 @@ data class User(var email: String= "", var password: String= "",
                 var remoteProfileImage: String= "",
                 var creationDate: Long= 0,
                 var emailVerified: Boolean= false,
-                var boss: String= "") {
+                var profile: String= "") {
 
     companion object {
         val EMPTY= User()

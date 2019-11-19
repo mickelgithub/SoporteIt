@@ -44,7 +44,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
             putLong(KEY_CREATION_DATE, user.creationDate)
             putBoolean(KEY_EMAIL_VERIFIED, user.emailVerified)
-            putString(KEY_BOSS, user.boss)
+            putString(KEY_BOSS, user.profile)
         }
     }
 
