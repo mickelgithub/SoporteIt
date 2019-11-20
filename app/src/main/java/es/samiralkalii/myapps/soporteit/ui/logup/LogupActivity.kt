@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -11,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -31,7 +33,6 @@ import es.samiralkalii.myapps.soporteit.ui.util.view.PERMISSION_REQUEST_CODE
 import es.samiralkalii.myapps.soporteit.ui.util.view.PICK_IMAGE
 import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
-import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -73,7 +74,7 @@ class LogupActivity : AppCompatActivity(),
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
 
         ArrayAdapter.createFromResource(this, R.array.profile_array, android.R.layout.simple_spinner_item)
             .also { adapter ->
@@ -81,7 +82,7 @@ class LogupActivity : AppCompatActivity(),
                 bindingLogup.profilSpinner.adapter= adapter
             }
 
-        supportActionBar?.let { title= resources.getString(R.string.registration) }
+        //supportActionBar?.let { title= resources.getString(R.string.registration) }
 
         viewModel.registerState.observe(this, Observer {
             it.getContentIfNotHandled()?.let {
@@ -106,16 +107,18 @@ class LogupActivity : AppCompatActivity(),
                     bindingLogin.invalidateAll()
                     nameInputLayout.visibility= View.GONE
                     TransitionManager.go(scene2, transitionMngLogUpToLogIn)
-                    supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.logIn)
+                    //supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.logIn)
                 }
                 LogupViewModel.TO_LOG_UP -> {
                     bindingLogup.invalidateAll()
                     TransitionManager.go(scene1, transitionMngLogUpToLogIn)
                     nameInputLayout.visibility= View.VISIBLE
-                    supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration)
+                    //supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration)
                 }
             }
         })
+
+        (frameLayout.background as GradientDrawable).setStroke(2, AppCompatResources.getColorStateList(this, R.color.red_error))
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {

@@ -83,6 +83,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profile_image"
+                app:errorTextAppearance="@style/ErrorText"
                 app:error="@{viewModel.nameError}" >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -107,6 +108,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/nameInputLayout"
+                app:errorTextAppearance="@style/ErrorText"
                 app:shapeAppearance="@style/rounded_text_field">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -132,6 +134,7 @@
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:errorTextAppearance="@style/ErrorText"
                 app:layout_constraintTop_toBottomOf="@+id/mailInputLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -175,8 +178,22 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
+                    app:value="@={viewModel.user.profile}"
                     app:entries="@{@stringArray/profile_array}"/>
+
             </FrameLayout>
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
+                android:text="Este es un error"
+                android:textColor="@color/red_error"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/frameLayout"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

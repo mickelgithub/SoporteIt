@@ -1,16 +1,19 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
 import android.net.Uri
+import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingMethod
-import androidx.databinding.InverseBindingMethods
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import es.samiralkalii.myapps.soporteit.R
+
 
 val FADE_IN= 1
 val FADE_OUT= 2
@@ -39,24 +42,47 @@ fun com.google.android.material.textfield.TextInputLayout.bindError(errorMessage
     }
 }
 
-@BindingAdapter("entries")
-fun Spinner.bindEntries(entries: Array<String>) {
+@BindingAdapter(value=arrayOf("entries", "value"), requireAll = false)
+fun Spinner.bindEntries(entries: Array<String>, value: String?) {
+    Log.d("TAG",".....................bindEntries...........................")
+    var itemSelectedIndex= entries.size -1
     val adapter = object: ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, entries) {
-
         override fun getCount(): Int {
-            return 4
+            return (entries.size- 1)
         }
     }
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    if (value!= null && value.isNotEmpty() && entries.contains(value)) {
+        itemSelectedIndex= entries.indexOfFirst { it -> it== value }
+    }
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     this.adapter= adapter
-    this.setSelection(4)
+    this.setSelection(itemSelectedIndex)
 }
 
-@InverseBindingMethods({
-    @InverseBindingMethod(type = android.widget.Spinner::class.java,
-            attribute = "profile",
-        method = "getProfile")
-})
+@InverseBindingAdapter(attribute = "value", event="valueAttrChanged")
+fun Spinner.getValue(): String {
+    Log.d("TAG", ".....................getValue...........................")
+    return this.selectedItem as String
+}
+
+@BindingAdapter(value= arrayOf("valueAttrChanged"))
+fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?) {
+
+    if (inverseBindingListener== null) {
+        onItemClickListener= null
+    } else {
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                if (tag != position) {
+                    inverseBindingListener.onChange()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+}
+
+
 
 

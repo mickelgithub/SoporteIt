@@ -28,7 +28,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
     val user= User()
 
-
     private val _registerState= MutableLiveData<Event<ScreenState<LogupState>>>()
     val registerState: LiveData<Event<ScreenState<LogupState>>>
         get()= _registerState
@@ -125,6 +124,8 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         //user.profile= if (boss) PENDING else NO
         //TODO("hay que actualizar el valor de perfil")
+
+
 
         if (user.name.isBlank() || user.name.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error
