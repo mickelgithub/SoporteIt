@@ -27,7 +27,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
     }
 
     suspend operator fun invoke(): Result {
-        val user = preferenceRepository.getUserFromPreferences()
+        val user = preferenceRepository.getUser()
         val emailAlreadyVerified= user.emailVerified
         val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
         if (loggedIn) {

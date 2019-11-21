@@ -6,4 +6,5 @@ sealed class LogupState {
 
     class ShowMessage(val message: Int): LogupState()
     class LoggedupOk(val user: User): LogupState()
+    class LoggedupAsManagerTeamOk(val user: User): LogupState()
 }

@@ -22,6 +22,9 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
 
+
+private const val CHOOSE_PROFILE= "Elige tu perfil"
+
 class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
@@ -133,7 +136,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             _emailError.value = R.string.email_incorrect_message_error
         } else if (user.password.isBlank()) {
             _passwordError.value = R.string.password_incorrect_logup_message_error
-        } else if (user.profile.isBlank() || user.profile== "Elige tu perfil") {
+        } else if (user.profile.isBlank() || user.profile== CHOOSE_PROFILE) {
             _showProfileError.value= true
         } else {
             _progressVisible.value= true
@@ -167,9 +170,13 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                     logupUseCase(user, imageProfile.value?.toString() ?: "")
                 }.await()
                 when (result) {
-                    is LogupUseCase.Result.RegisteredOk -> {
+                    is LogupUseCase.Result.LoggedUpOk -> {
                         _progressVisible.value = false
                         _registerState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
+                    }
+                    is LogupUseCase.Result.LoggedUpAsManagerTeamOk -> {
+                        _progressVisible.value = false
+                        _registerState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
                     }
                 }
             }

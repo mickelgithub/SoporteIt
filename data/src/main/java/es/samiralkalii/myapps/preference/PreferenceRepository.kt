@@ -4,8 +4,8 @@ import es.samiralkalii.myapps.domain.User
 
 class PreferenceRepository(val preferences: IPreferences) {
 
-    suspend fun getUserFromPreferences()= preferences.getUserFromPreferences()
-    suspend fun saveUserToPreferences(user: User)= preferences.saveUser(user)
+    suspend fun getUser()= preferences.getUser()
+    suspend fun saveUser(user: User)= preferences.saveUser(user)
     suspend fun updateEmailVerified()= preferences.updateEmailVerified()
     suspend fun updateImageProfile(user: User)= preferences.updateImageProfile(user)
     suspend fun updateMessagingToken(token: String)= preferences.updateMessagingToken(token)
@@ -14,7 +14,7 @@ class PreferenceRepository(val preferences: IPreferences) {
 }
 
 interface IPreferences {
-    suspend fun getUserFromPreferences(): User
+    suspend fun getUser(): User
     suspend fun saveUser(user: User)
     suspend fun updateEmailVerified()
     suspend fun updateImageProfile(user: User)

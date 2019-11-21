@@ -36,6 +36,6 @@ fun Bundle.toUser()= User(
     remoteProfileImage = getString(KEY_REMOTE_PROFILE_IMAGE, ""),
     creationDate = getLong(KEY_CREATION_DATE, 0L),
     emailVerified = getBoolean(KEY_EMAIL_VERIFIED, false),
-    profile = getString(KEY_PROFILE)
+    profile = getString(KEY_PROFILE, "")
 
 )

@@ -41,7 +41,7 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
             user.emailVerified= isEmailAlreadyVerified
             updateDatabase= true
         }
-        preferenceRepository.saveUserToPreferences(user)
+        preferenceRepository.saveUser(user)
         if (updateDatabase) {
             remoteUserRepository.updateEmailVerified(user)
         }

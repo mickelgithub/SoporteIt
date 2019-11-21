@@ -20,6 +20,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel.checkUserAuth()
+
         viewModel.splashState.observe(this, Observer {
             if (it is ScreenState.Render) {
                 processState(it)
@@ -30,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.checkUserAuth()
+
     }
 
     private fun processState(screenState: ScreenState.Render<SplashState>?) {

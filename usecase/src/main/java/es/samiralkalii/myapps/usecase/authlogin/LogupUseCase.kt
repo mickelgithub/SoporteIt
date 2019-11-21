@@ -8,6 +8,8 @@ import es.samiralkalii.myapps.filesystem.FileSystemRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
+private const val TEAM_MANAGER_PROFILE= "Responsable de equipo";
+
 class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                    private val remoteUserRepository: RemoteUserRepository,
                    private val remoteUserStorageRepository: RemoteUserStorageRepository,
@@ -17,7 +19,9 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
     private val logger = LoggerFactory.getLogger(LogupUseCase::class.java)
 
     sealed class Result() {
-        class RegisteredOk(val user: User): Result()
+        class LoggedUpOk(val user: User): Result()
+        class LoggedUpAsManagerTeamOk(val user: User): Result()
+
     }
 
     suspend operator fun invoke(user: User, profileImage: String= ""): Result {
@@ -36,10 +40,12 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         //we have to add the user to the database
         remoteUserRepository.addUser(user)
         remoteUserRepository.updateMessagingToken(preferenceRepository.getMessaginToken())
-        preferenceRepository.saveUserToPreferences(user)
+        preferenceRepository.saveUser(user)
         remoteUserAuthRepository.sendEmailVerification(user)
-
-        return Result.RegisteredOk(user)
+        if (TEAM_MANAGER_PROFILE== user.profile) {
+            return Result.LoggedUpAsManagerTeamOk(user)
+        }
+        return Result.LoggedUpOk(user)
     }
 
 }

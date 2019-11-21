@@ -6,9 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,6 +16,7 @@ import androidx.transition.Scene
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
@@ -33,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
+
 
 class LogupActivity : AppCompatActivity(),
     PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
@@ -74,11 +74,11 @@ class LogupActivity : AppCompatActivity(),
 
         //setSupportActionBar(toolbar)
 
-        ArrayAdapter.createFromResource(this, R.array.profile_array, android.R.layout.simple_spinner_item)
+        /*ArrayAdapter.createFromResource(this, R.array.profile_array, android.R.layout.simple_spinner_item)
             .also { adapter ->
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 bindingLogup.profilSpinner.adapter= adapter
-            }
+            }*/
 
         //supportActionBar?.let { title= resources.getString(R.string.registration) }
 
@@ -103,14 +103,14 @@ class LogupActivity : AppCompatActivity(),
             when (it) {
                 LogupViewModel.TO_LOG_IN -> {
                     bindingLogin.invalidateAll()
-                    nameInputLayout.visibility= View.GONE
+                    //nameInputLayout.visibility= View.GONE
                     TransitionManager.go(scene2, transitionMngLogUpToLogIn)
                     //supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.logIn)
                 }
                 LogupViewModel.TO_LOG_UP -> {
                     bindingLogup.invalidateAll()
                     TransitionManager.go(scene1, transitionMngLogUpToLogIn)
-                    nameInputLayout.visibility= View.VISIBLE
+                    //nameInputLayout.visibility= View.VISIBLE
                     //supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration)
                 }
             }
@@ -136,12 +136,28 @@ class LogupActivity : AppCompatActivity(),
         }
     }
 
+    private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Verificacion Perfil")
+            .setMessage("Recibiras una notificacion una vez verificado tu perfil de responsable de equipo")
+            .setPositiveButton(
+                "De acuerdo"
+            ) { dialogInterface, i ->
+                startHomeActivity(logupState.user.toBundle())
+            }
+            .show()
+    }
+
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
         screenState.let {
             when (screenState.renderState) {
                 is LogupState.LoggedupOk -> {
                     logger.debug("Registracion correcto, goto Home")
                     startHomeActivity(screenState.renderState.user.toBundle())
+                }
+                is LogupState.LoggedupAsManagerTeamOk -> {
+                    logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
+                    showTeamVerificationMessage(screenState.renderState)
                 }
                 is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")
