@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -12,7 +11,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -117,8 +115,6 @@ class LogupActivity : AppCompatActivity(),
                 }
             }
         })
-
-        (frameLayout.background as GradientDrawable).setStroke(2, AppCompatResources.getColorStateList(this, R.color.red_error))
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {

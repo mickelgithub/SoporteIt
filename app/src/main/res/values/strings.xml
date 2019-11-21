@@ -35,6 +35,7 @@
     <string name="is_boss">¿Eres Jefe de equipo?</string>
     <string name="general_notif_channel_name">Notificaciones generales</string>
     <string name="general_notif_channel_id">es.samiralkalii.myapps.soporteit_notif_generales_id</string>
+    <string name="profile_mandatory">El perfil es obligatorio</string>
 
     <string name="boss_profil">Responsable de equipo</string>
     <string name="java_profil">Perfil Java</string>

@@ -14,6 +14,12 @@ class SharedPreferencesManager(val context: Context): IPreferences {
     override suspend fun getMessaginToken(): String=
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).getString(KEY_MESSAGING_TOKEN, "")
 
+    override suspend fun updateProfile(profile: String) {
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            putString(KEY_PROFILE, profile)
+        }
+    }
+
 
     override suspend fun updateMessagingToken(token: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
@@ -44,7 +50,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
             putLong(KEY_CREATION_DATE, user.creationDate)
             putBoolean(KEY_EMAIL_VERIFIED, user.emailVerified)
-            putString(KEY_BOSS, user.profile)
+            putString(KEY_PROFILE, user.profile)
         }
     }
 
@@ -57,11 +63,13 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         val imageProfileUrl= getString(KEY_REMOTE_PROFILE_IMAGE, "") ?: ""
         val creationDate= getLong(KEY_CREATION_DATE, 0L)
         val emailValidated= getBoolean(KEY_EMAIL_VERIFIED, false)
+        val profile= getString(KEY_PROFILE, "")
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
             return User.EMPTY
         }
         User(email, pass, name, localProfileImage = imageProfilePath,
-            id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated)
+            id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated,
+            profile = profile)
     }
 
 }

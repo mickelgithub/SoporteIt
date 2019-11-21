@@ -54,9 +54,10 @@ class MyFirebaseInstanceIDService() : CoroutineScope, FirebaseMessagingService()
             val messageId= this[MESSAGE_ID_KEY] ?: ""
             val result= this[RESULT_KEY] ?: ""
             val body= this[MESSAGE_BODY_KEY] ?: ""
-            notifyMessagingUseCase.invoke(messageId, result, body)
+            async(Dispatchers.IO) {
+                notifyMessagingUseCase.invoke(messageId, result, body)
+            }
             logger.debug("the message received is $messageId -> $result")
-
         }
 
     }

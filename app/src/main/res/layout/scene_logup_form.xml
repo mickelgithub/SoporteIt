@@ -170,7 +170,8 @@
                 android:background="@drawable/bg_spinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/passInputLayout"
+                app:error_indication="@{viewModel.showProfileError}">
 
                 <Spinner
                     android:id="@+id/profil_spinner"
@@ -189,9 +190,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="4dp"
-                android:text="Este es un error"
+                android:text="@string/profile_mandatory"
                 android:textColor="@color/red_error"
                 android:textSize="12sp"
+                app:visible="@{viewModel.showProfileError}"
                 app:layout_constraintStart_toStartOf="@+id/frameLayout"
                 app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 

@@ -10,6 +10,7 @@ class PreferenceRepository(val preferences: IPreferences) {
     suspend fun updateImageProfile(user: User)= preferences.updateImageProfile(user)
     suspend fun updateMessagingToken(token: String)= preferences.updateMessagingToken(token)
     suspend fun getMessaginToken()= preferences.getMessaginToken()
+    suspend fun updateProfile(profile: String)= preferences.updateProfile(profile)
 }
 
 interface IPreferences {
@@ -19,4 +20,5 @@ interface IPreferences {
     suspend fun updateImageProfile(user: User)
     suspend fun updateMessagingToken(token: String)
     suspend fun getMessaginToken(): String
+    suspend fun updateProfile(profile: String)
 }

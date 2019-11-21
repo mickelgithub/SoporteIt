@@ -1,12 +1,15 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
@@ -31,6 +34,15 @@ fun ImageView.bindImgSrc(imageUri: Uri?) {
         .diskCacheStrategy(DiskCacheStrategy.NONE)
         .skipMemoryCache(true)
         .into(this)
+}
+
+@BindingAdapter("error_indication")
+fun ViewGroup.bindShowError(showError: Boolean) {
+    if (showError) {
+        (this.background as GradientDrawable).setStroke(2, AppCompatResources.getColorStateList(context, R.color.red_error))
+    } else {
+        (this.background as GradientDrawable).setStroke(2, AppCompatResources.getColorStateList(context, R.color.mtrl_outlined_stroke_color))
+    }
 }
 
 @BindingAdapter("error")

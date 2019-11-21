@@ -45,7 +45,6 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.localProfileImage= (data[KEY_LOCAL_PROFILE_IMAGE] as String?) ?: ""
             user.remoteProfileImage= (data[KEY_REMOTE_PROFILE_IMAGE] as String?) ?: ""
             user.emailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
-            user.profile= (data[KEY_BOSS] as String?) ?: ""
         }
     }
 

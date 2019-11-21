@@ -14,7 +14,7 @@ const val KEY_REMOTE_PROFILE_IMAGE= "remoteProfileImage"
 const val KEY_CREATION_DATE= "creationDate"
 const val KEY_EMAIL_VERIFIED= "emailVerified"
 const val KEY_MESSAGING_TOKEN= "messagingToken"
-const val KEY_BOSS= "profile";
+const val KEY_PROFILE= "profile"
 
 
 fun User.toBundle()= Bundle().apply {
@@ -25,6 +25,7 @@ fun User.toBundle()= Bundle().apply {
     putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
     putLong(KEY_CREATION_DATE, creationDate)
     putBoolean(KEY_EMAIL_VERIFIED, emailVerified)
+    putString(KEY_PROFILE, profile)
 }
 
 fun Bundle.toUser()= User(
@@ -34,5 +35,7 @@ fun Bundle.toUser()= User(
     localProfileImage = getString(KEY_LOCAL_PROFILE_IMAGE, ""),
     remoteProfileImage = getString(KEY_REMOTE_PROFILE_IMAGE, ""),
     creationDate = getLong(KEY_CREATION_DATE, 0L),
-    emailVerified = getBoolean(KEY_EMAIL_VERIFIED, false)
+    emailVerified = getBoolean(KEY_EMAIL_VERIFIED, false),
+    profile = getString(KEY_PROFILE)
+
 )

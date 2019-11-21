@@ -56,6 +56,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val passwordError: LiveData<Int?>
         get()= _passwordError
 
+    private val _showProfileError= MutableLiveData<Boolean>(false)
+    val showProfileError: LiveData<Boolean>
+        get()= _showProfileError
+
     private val _loginOrLogUp= MutableLiveData<Int>(0)
     val loginOrLogUp: LiveData<Int>
         get()= _loginOrLogUp
@@ -64,6 +68,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         _nameError.value= null
         _emailError.value= null
         _passwordError.value= null
+        _showProfileError.value= false
     }
 
     private fun clearErrorsLogin() {
@@ -122,17 +127,14 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         clearErrorsLogUp()
 
-        //user.profile= if (boss) PENDING else NO
-        //TODO("hay que actualizar el valor de perfil")
-
-
-
         if (user.name.isBlank() || user.name.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error
         } else if (user.email.isBlank()) {
             _emailError.value = R.string.email_incorrect_message_error
         } else if (user.password.isBlank()) {
-            _passwordError.value= R.string.password_incorrect_logup_message_error
+            _passwordError.value = R.string.password_incorrect_logup_message_error
+        } else if (user.profile.isBlank() || user.profile== "Elige tu perfil") {
+            _showProfileError.value= true
         } else {
             _progressVisible.value= true
             val errorHandler = CoroutineExceptionHandler { _, error ->
