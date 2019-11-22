@@ -5,11 +5,15 @@ import com.google.firebase.auth.FirebaseUser
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.domain.User
 import kotlinx.coroutines.tasks.await
+import org.slf4j.LoggerFactory
 
 class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource {
 
+    private val logger= LoggerFactory.getLogger(RemoteUserAuthManager::class.java)
+
     override suspend fun sendEmailVerification(user: User) {
         fbAuth.currentUser?.sendEmailVerification()?.await()
+        logger.debug("Hemos enviado el correo de verificacion a "+ user.email)
     }
 
     override suspend fun checkUserLoggedIn(user: User): Boolean {

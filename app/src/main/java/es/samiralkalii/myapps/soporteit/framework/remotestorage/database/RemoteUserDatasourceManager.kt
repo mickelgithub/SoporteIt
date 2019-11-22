@@ -28,6 +28,10 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         }
     }
 
+    override suspend fun updateProfile(profile: String, userId: String) {
+        fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_PROFILE to profile)).await()
+    }
+
     override suspend fun updateEmailVerified(user: User) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_EMAIL_VERIFIED to true)).await()
     }
@@ -45,6 +49,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.localProfileImage= (data[KEY_LOCAL_PROFILE_IMAGE] as String?) ?: ""
             user.remoteProfileImage= (data[KEY_REMOTE_PROFILE_IMAGE] as String?) ?: ""
             user.emailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
+            user.profile= (data[KEY_PROFILE] as String?) ?: ""
         }
     }
 
