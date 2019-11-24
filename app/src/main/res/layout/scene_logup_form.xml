@@ -143,7 +143,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:text="@={viewModel.user.password}" />
+                    android:text="@={viewModel.user.password}"
+                    android:nextFocusDown= "@+id/profil_spinner"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 

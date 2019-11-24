@@ -115,6 +115,16 @@ class LogupActivity : AppCompatActivity(),
                 }
             }
         })
+        bindingLogup.profilSpinner.isFocusableInTouchMode= true
+        bindingLogup.profilSpinner.setOnFocusChangeListener({ v, hasFocus ->
+
+            if (hasFocus) {
+                logger.debug("FOCUSSSSSEEEEEEEEEEEEEEEEDDDDDDDDDDDDDDDDD")
+            } else {
+                logger.debug("NOOOOOOOOOOOOOO          FOCUSSSSSEEEEEEEEEEEEEEEEDDDDDDDDDDDDDDDDD")
+            }
+
+        })
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {
