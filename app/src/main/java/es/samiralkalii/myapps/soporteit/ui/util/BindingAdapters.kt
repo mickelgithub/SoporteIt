@@ -2,13 +2,9 @@ package es.samiralkalii.myapps.soporteit.ui.util
 
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
@@ -58,9 +54,32 @@ fun com.google.android.material.textfield.TextInputLayout.bindError(errorMessage
     }
 }
 
+@BindingAdapter("visible")
+fun TextView.bindVisible(bossValidation: String) {
+    if (bossValidation== "N") {
+        visibility= View.GONE
+    } else {
+        visibility= View.VISIBLE
+    }
+}
+
+@BindingAdapter("visible")
+fun ViewGroup.bindVisible(bossValidation: String) {
+    if (bossValidation== "N") {
+        visibility= View.VISIBLE
+    } else {
+        visibility= View.GONE
+    }
+}
+
 @BindingAdapter(value=arrayOf("entries", "value"), requireAll = false)
-fun Spinner.bindEntries(entries: Array<String>, value: String?) {
-    Log.d("TAG",".....................bindEntries...........................")
+fun Spinner.bindEntries(entriesOpcion: String, value: String?) {
+    var entries: Array<String>
+    if (entriesOpcion== "N"){ //Is not a Boss
+        entries= resources.getStringArray(R.array.profile_members_array)
+    } else { //En other cases
+        entries= resources.getStringArray(R.array.profile_array)
+    }
     var itemSelectedIndex= entries.size -1
     val adapter = object: ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, entries) {
         override fun getCount(): Int {
@@ -77,7 +96,6 @@ fun Spinner.bindEntries(entries: Array<String>, value: String?) {
 
 @InverseBindingAdapter(attribute = "value", event="valueAttrChanged")
 fun Spinner.getValue(): String {
-    Log.d("TAG", ".....................getValue...........................")
     return this.selectedItem as String
 }
 

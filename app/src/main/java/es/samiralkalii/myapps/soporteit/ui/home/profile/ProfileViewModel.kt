@@ -55,6 +55,11 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
         }
     }
 
+    fun updateShowSaveMenu() {
+        _showSaveMenu.value= true
+    }
+
+
     fun updateImageProfile(imgUri: Uri?) {
         _imageProfile.value= imgUri
         if (user.localProfileImage.isBlank() && imgUri!= null) {

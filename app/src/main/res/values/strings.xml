@@ -42,11 +42,18 @@
     <string name="cobol_profil">Perfil Cobol</string>
     <string name="csf_profil">Perfil Csf</string>
     <string name="choose_profile">Elige tu perfil</string>
-
+    <string name="work_address">Tres Cantos, Madrid</string>
 
 
     <string-array name="profile_array">
         <item>@string/boss_profil</item>
+        <item>@string/java_profil</item>
+        <item>@string/cobol_profil</item>
+        <item>@string/csf_profil</item>
+        <item>@string/choose_profile</item>
+    </string-array>
+
+    <string-array name="profile_members_array">
         <item>@string/java_profil</item>
         <item>@string/cobol_profil</item>
         <item>@string/csf_profil</item>
