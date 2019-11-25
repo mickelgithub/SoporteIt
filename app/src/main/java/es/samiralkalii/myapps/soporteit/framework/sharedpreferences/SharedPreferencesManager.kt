@@ -19,6 +19,12 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
+    override suspend fun updateBossVerification(bossVerification: String) {
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            putString(KEY_BOSS_VERIFICATION, bossVerification)
+        }
+    }
+
 
     override suspend fun updateMessagingToken(token: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
@@ -50,6 +56,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putLong(KEY_CREATION_DATE, user.creationDate)
             putBoolean(KEY_EMAIL_VERIFIED, user.emailVerified)
             putString(KEY_PROFILE, user.profile)
+            putString(KEY_BOSS_VERIFICATION, user.bossVerification)
         }
     }
 
@@ -67,10 +74,11 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val creationDate= getLong(KEY_CREATION_DATE, 0L)
             val emailValidated= getBoolean(KEY_EMAIL_VERIFIED, false)
             val profile= getString(KEY_PROFILE, "") ?: ""
+            val bossVerification= getString(KEY_BOSS_VERIFICATION, "") ?: ""
 
             return User(email, pass, name, localProfileImage = imageProfilePath,
                 id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated,
-                profile = profile)
+                profile = profile, bossVerification = bossVerification)
         }
     }
 }

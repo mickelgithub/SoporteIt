@@ -36,10 +36,14 @@ fun ImageView.bindImgSrc(imageUri: Uri?) {
         .into(this)
 }
 
-@BindingAdapter("error_indication")
-fun ViewGroup.bindShowError(showError: Boolean) {
-    if (showError) {
+@BindingAdapter("spinner_state")
+fun ViewGroup.bindShowError(spinnerState: Int) {
+    if (spinnerState== 1) {
+        //Error indicating no selected profile value
         (this.background as GradientDrawable).setStroke(2, AppCompatResources.getColorStateList(context, R.color.red_error))
+    } else if (spinnerState== 2) {
+        //spinner selected
+        (this.background as GradientDrawable).setStroke(5, AppCompatResources.getColorStateList(context, R.color.colorPrimary))
     } else {
         (this.background as GradientDrawable).setStroke(2, AppCompatResources.getColorStateList(context, R.color.mtrl_outlined_stroke_color))
     }
@@ -94,6 +98,18 @@ fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?) {
         }
     }
 }
+
+@BindingAdapter("app:srcCompat")
+fun ImageView.bindBossVerification(bossVerification: String) {
+    if (bossVerification== "P" || bossVerification== "N") {
+        setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.warning))
+    } else if (bossVerification== "S") {
+        setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ok))
+    } else {
+        visibility= View.GONE
+    }
+}
+
 
 
 

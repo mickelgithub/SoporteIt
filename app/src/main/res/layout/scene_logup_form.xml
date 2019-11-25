@@ -159,10 +159,10 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfileSpinner" />
 
             <FrameLayout
-                android:id="@+id/frameLayout"
+                android:id="@+id/frameLayoutProfileSpinner"
                 android:layout_width="0dp"
                 android:layout_height="46dp"
                 android:layout_marginStart="8dp"
@@ -172,7 +172,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/passInputLayout"
-                app:error_indication="@{viewModel.showProfileError}">
+                app:spinner_state="@{viewModel.spinnerState}">
 
                 <Spinner
                     android:id="@+id/profil_spinner"
@@ -194,9 +194,9 @@
                 android:text="@string/profile_mandatory"
                 android:textColor="@color/red_error"
                 android:textSize="12sp"
-                app:visible="@{viewModel.showProfileError}"
-                app:layout_constraintStart_toStartOf="@+id/frameLayout"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+                app:visible="@{viewModel.spinnerState== 1}"
+                app:layout_constraintStart_toStartOf="@+id/frameLayoutProfileSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfileSpinner" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

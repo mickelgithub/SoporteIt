@@ -59,9 +59,9 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val passwordError: LiveData<Int?>
         get()= _passwordError
 
-    private val _showProfileError= MutableLiveData<Boolean>(false)
-    val showProfileError: LiveData<Boolean>
-        get()= _showProfileError
+    private val _spinnerState= MutableLiveData<Int>(0)
+    val spinnerState: LiveData<Int>
+        get()= _spinnerState
 
     private val _loginOrLogUp= MutableLiveData<Int>(0)
     val loginOrLogUp: LiveData<Int>
@@ -71,7 +71,11 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         _nameError.value= null
         _emailError.value= null
         _passwordError.value= null
-        _showProfileError.value= false
+        _spinnerState.value= 0
+    }
+
+    fun indicateSpinnerState(state: Int) {
+        _spinnerState.value= state
     }
 
     private fun clearErrorsLogin() {
@@ -137,7 +141,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         } else if (user.password.isBlank()) {
             _passwordError.value = R.string.password_incorrect_logup_message_error
         } else if (user.profile.isBlank() || user.profile== CHOOSE_PROFILE) {
-            _showProfileError.value= true
+            _spinnerState.value= 1
         } else {
             _progressVisible.value= true
             val errorHandler = CoroutineExceptionHandler { _, error ->

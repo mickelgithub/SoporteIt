@@ -27,6 +27,10 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
     suspend operator fun invoke(user: User, profileImage: String= ""): Result {
         logger.debug("Vamos a registar el usuario ${user.email}")
 
+        if (TEAM_MANAGER_PROFILE== user.profile) {
+            user.bossVerification= "P"
+        }
+
         //we get user.id and user.creationDate
         remoteUserAuthRepository.logupUser(user)
         //registration OK

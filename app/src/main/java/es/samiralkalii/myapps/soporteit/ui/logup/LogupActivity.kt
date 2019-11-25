@@ -117,13 +117,11 @@ class LogupActivity : AppCompatActivity(),
         })
         bindingLogup.profilSpinner.isFocusableInTouchMode= true
         bindingLogup.profilSpinner.setOnFocusChangeListener({ v, hasFocus ->
-
             if (hasFocus) {
-                logger.debug("FOCUSSSSSEEEEEEEEEEEEEEEEDDDDDDDDDDDDDDDDD")
+                viewModel.indicateSpinnerState(2)
             } else {
-                logger.debug("NOOOOOOOOOOOOOO          FOCUSSSSSEEEEEEEEEEEEEEEEDDDDDDDDDDDDDDDDD")
+                viewModel.indicateSpinnerState(0)
             }
-
         })
     }
 
