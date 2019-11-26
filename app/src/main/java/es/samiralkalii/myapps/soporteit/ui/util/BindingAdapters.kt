@@ -12,6 +12,7 @@ import androidx.databinding.InverseBindingListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 
 
 val FADE_IN= 1
@@ -99,8 +100,8 @@ fun Spinner.getValue(): String {
     return this.selectedItem as String
 }
 
-@BindingAdapter(value= arrayOf("valueAttrChanged"))
-fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?) {
+@BindingAdapter(value= arrayOf("valueAttrChanged", "viewmodel"), requireAll = false)
+fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?, viewmodel: ProfileViewModel?) {
 
     if (inverseBindingListener== null) {
         onItemClickListener= null
@@ -109,6 +110,9 @@ fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?) {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 if (tag != position) {
                     inverseBindingListener.onChange()
+                    if ((selectedItem as String) != context.resources.getString(R.string.choose_profile)) {
+                        viewmodel?.updateShowSaveMenu()
+                    }
                 }
             }
 

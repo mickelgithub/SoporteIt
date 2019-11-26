@@ -10,6 +10,7 @@ class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
     suspend fun updateImageProfile(user: User) = remoteUserDatasource.updateImageProfile(user)
     suspend fun updateMessagingToken(token: String) = remoteUserDatasource.updateMessagingToken(token)
     suspend fun updateProfile(profile: String, userId: String)= remoteUserDatasource.updateProfile(profile, userId)
+    suspend fun updateBossVerification(bossVerification: String, userId: String)= remoteUserDatasource.updateBossVerification(bossVerification, userId)
 
     interface IRemoteUserDatasource {
         suspend fun addUser(user: User)
@@ -18,5 +19,6 @@ class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
         suspend fun updateImageProfile(user: User)
         suspend fun updateMessagingToken(token: String)
         suspend fun updateProfile(profile: String, userId: String)
+        suspend fun updateBossVerification(bossVerification: String, userId: String)
     }
 }

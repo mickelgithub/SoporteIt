@@ -32,6 +32,10 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_PROFILE to profile)).await()
     }
 
+    override suspend fun updateBossVerification(bossVerification: String, userId: String) {
+        fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_BOSS_VERIFICATION to bossVerification)).await()
+    }
+
     override suspend fun updateEmailVerified(user: User) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_EMAIL_VERIFIED to true)).await()
     }

@@ -58,13 +58,13 @@
                     app:srcCompat="@drawable/email_icon" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/email_text_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/backgroud_rounded"
-                    android:text="samiralkalii@gmail.com"
+                    android:text="@{viewModel.user.email}"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -83,13 +83,13 @@
                     app:srcCompat="@drawable/identity" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/name_text_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/backgroud_rounded"
-                    android:text="samir"
+                    android:text="@{viewModel.user.name}"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -97,6 +97,7 @@
                     app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
                 <TextView
+                    android:textSize="16sp"
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -137,7 +138,10 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         app:entries='@{viewModel.user.bossVerification}'
-                        app:value="@={viewModel.user.profile}" />
+                        app:value="@={viewModel.user.profile}"
+                        app:viewmodel="@{viewModel}"
+                        />
+
 
                 </FrameLayout>
 
@@ -170,25 +174,24 @@
 
         </FrameLayout>
 
-        <FrameLayout
+
+
+        <es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView
             android:id="@+id/stage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:visible="@{viewModel.progressVisible}"
-            tools:visibility="gone">
+            app:visible="@{viewModel.progressVisible}">
 
-            <es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_view"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                app:lottie_rawRes="@raw/loader"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true" />
 
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-
-            </es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView>
-
-        </FrameLayout>
+        </es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView>
 
     </FrameLayout>
 

@@ -32,7 +32,7 @@ class SaveProfileImageChangeUseCase(private val preferenceRepository: Preference
             user.remoteProfileImage= ""
             remoteUserRepository.updateImageProfile(user)
             preferenceRepository.updateImageProfile(user)
-        } else {
+        } else if (imageUri.isNotBlank()){
             //profileImage changed
             val imageAdded= fileSystemRepository.copyFileFromExternalToInternal(user, imageUri)
             val oldFileName= user.localProfileImage
@@ -41,6 +41,14 @@ class SaveProfileImageChangeUseCase(private val preferenceRepository: Preference
             remoteUserStorageRepository.saveProfileImage(user, imageAdded)
             remoteUserRepository.updateImageProfile(user)
             preferenceRepository.updateImageProfile(user)
+        }
+        //we check if the profile has been introduced
+        if (user.profile.isNotBlank() && user.bossVerification== "N") {
+            user.bossVerification= ""
+            preferenceRepository.updateBossVerification(user.bossVerification)
+            preferenceRepository.updateProfile(user.profile)
+            remoteUserRepository.updateProfile(user.profile, user.id)
+            remoteUserRepository.updateBossVerification(user.bossVerification, user.id)
         }
     }
 }
