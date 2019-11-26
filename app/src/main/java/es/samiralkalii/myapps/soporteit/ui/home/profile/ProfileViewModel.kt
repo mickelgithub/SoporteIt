@@ -41,7 +41,13 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     val profileChangeState: LiveData<Event<ScreenState<ProfileChangeState>>>
         get()= _profileChangeState
 
+    private val _updateUI= MutableLiveData<Event<Boolean>>()
+    val updateUI: LiveData<Event<Boolean>>
+        get() = _updateUI
+
     lateinit var user: User
+
+    private var imageChanged: Boolean= false
 
     init {
 
@@ -63,10 +69,13 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     fun updateImageProfile(imgUri: Uri?) {
         _imageProfile.value= imgUri
         if (user.localProfileImage.isBlank() && imgUri!= null) {
+            imageChanged= true
             _showSaveMenu.value= true
         } else if (!user.localProfileImage.isBlank() && imgUri== null) {
+            imageChanged= true
             _showSaveMenu.value = true
         } else if (user.localProfileImage.isBlank() && imgUri== null) {
+            imageChanged= false
             _showSaveMenu.value= false
         } else {
             viewModelScope.launch() {
@@ -76,6 +85,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
                         user.localProfileImage
                     )
                 }.await()
+                imageChanged= !equals
                 _showSaveMenu.value= !equals
             }
         }
@@ -99,11 +109,12 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                saveProfileImageChangeUseCase(user, _imageProfile.value?.toString() ?: "")
+                saveProfileImageChangeUseCase(user, _imageProfile.value?.toString() ?: "", imageChanged)
             }.await()
             _progressVisible.value = false
             _showSaveMenu.value= false
             _profileChangeState.value= Event(ScreenState.Render(ProfileChangeState.changeOk))
+            _updateUI.value= Event(true)
         }
 
 

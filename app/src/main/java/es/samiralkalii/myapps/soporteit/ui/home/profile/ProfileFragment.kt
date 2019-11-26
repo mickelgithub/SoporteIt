@@ -63,6 +63,14 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
         })
 
+        viewModel.updateUI.observe(this, Observer {
+            it.getContentIfNotHandled().let { update ->
+                if (update!= null && update) {
+                    binding.invalidateAll()
+                }
+            }
+        })
+
     }
 
     private fun processStateProfileImageChanged(screenState: ScreenState.Render<ProfileChangeState>) {
@@ -114,24 +122,6 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
         binding.executePendingBindings()
-
-        /*binding.profilSpinner.onItemSelectedListener= object: AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val optionSelected= parent?.selectedItem as String
-                if (optionSelected!= activity!!.resources.getString(R.string.choose_profile)) {
-                    viewModel.updateShowSaveMenu()
-                }
-            }
-
-        }*/
         return binding.root
     }
 
