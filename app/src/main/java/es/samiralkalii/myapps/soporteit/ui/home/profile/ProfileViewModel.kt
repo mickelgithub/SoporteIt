@@ -11,7 +11,7 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.Compare2ImageProfileUseCase
-import es.samiralkalii.myapps.usecase.authlogin.SaveProfileImageChangeUseCase
+import es.samiralkalii.myapps.usecase.authlogin.SaveProfileChangeUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImageProfileUseCase,
-                       private val saveProfileImageChangeUseCase: SaveProfileImageChangeUseCase
+                       private val saveProfileChangeUseCase: SaveProfileChangeUseCase
 ): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(ProfileViewModel::class.java)
@@ -41,17 +41,14 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     val profileChangeState: LiveData<Event<ScreenState<ProfileChangeState>>>
         get()= _profileChangeState
 
-    private val _updateUI= MutableLiveData<Event<Boolean>>()
-    val updateUI: LiveData<Event<Boolean>>
-        get() = _updateUI
+    private val _profileChanged= MutableLiveData<Event<Boolean>>()
+    val profileChanged: LiveData<Event<Boolean>>
+        get() = _profileChanged
 
     lateinit var user: User
 
     private var imageChanged: Boolean= false
-
-    init {
-
-    }
+    private var currentProfile= ""
 
     fun publishUser(userParam: User) {
         user= userParam
@@ -59,6 +56,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
         if (user.localProfileImage.isNotBlank()) {
             _imageProfile.value= Uri.fromFile(File(user.localProfileImage))
         }
+        currentProfile= user.profile
     }
 
     fun updateShowSaveMenu() {
@@ -109,16 +107,14 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                saveProfileImageChangeUseCase(user, _imageProfile.value?.toString() ?: "", imageChanged)
+                saveProfileChangeUseCase(user, _imageProfile.value?.toString() ?: "", imageChanged)
             }.await()
             _progressVisible.value = false
             _showSaveMenu.value= false
             _profileChangeState.value= Event(ScreenState.Render(ProfileChangeState.changeOk))
-            _updateUI.value= Event(true)
+            if (currentProfile!= user.profile) {
+                _profileChanged.value= Event(true)
+            }
         }
-
-
     }
-
-
 }

@@ -43,6 +43,9 @@
     <string name="csf_profil">Perfil Csf</string>
     <string name="choose_profile">Elige tu perfil</string>
     <string name="work_address">Tres Cantos, Madrid</string>
+    <string name="boss_verification_title">Verificacion Perfil</string>
+    <string name="boss_verification_msg">Recibiras una notificacion una vez verificado tu perfil de \'responsable de equipo\'</string>
+    <string name="agree">De acuerdo</string>
 
 
     <string-array name="profile_array">

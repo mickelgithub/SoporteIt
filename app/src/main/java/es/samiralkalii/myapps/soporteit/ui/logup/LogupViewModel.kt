@@ -173,13 +173,12 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 val result= async(Dispatchers.IO) {
                     logupUseCase(user, imageProfile.value?.toString() ?: "")
                 }.await()
+                _progressVisible.value = false
                 when (result) {
                     is LogupUseCase.Result.LoggedUpOk -> {
-                        _progressVisible.value = false
                         _registerState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                     }
                     is LogupUseCase.Result.LoggedUpAsManagerTeamOk -> {
-                        _progressVisible.value = false
                         _registerState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
                     }
                 }

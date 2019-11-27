@@ -11,7 +11,7 @@ val useCaseModule= module {
     factory { LogupUseCase(get(), get(), get(), get(), get()) }
     factory { LoginUserCase(get(), get(), get(), get(), get()) }
     factory { Compare2ImageProfileUseCase(get()) }
-    factory { SaveProfileImageChangeUseCase(get(), get(), get(), get()) }
+    factory { SaveProfileChangeUseCase(get(), get(), get(), get()) }
     factory { RegisterMessagingTokenUseCase(get(), get()) }
     factory { NotifyMessagingUseCase(get(), get(), get()) }
 }

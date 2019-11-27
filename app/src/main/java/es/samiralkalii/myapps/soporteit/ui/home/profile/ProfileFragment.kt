@@ -63,10 +63,11 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
         })
 
-        viewModel.updateUI.observe(this, Observer {
+        viewModel.profileChanged.observe(this, Observer {
             it.getContentIfNotHandled().let { update ->
                 if (update!= null && update) {
                     binding.invalidateAll()
+                    homeViewModel.updateProfile(user)
                 }
             }
         })
@@ -92,9 +93,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        //if (viewModel.showSaveMenu.value!!) {
-            menu.findItem(R.id.menu_item_ok).setVisible(viewModel.showSaveMenu.value!!)
-        //}
+        menu.findItem(R.id.menu_item_ok).setVisible(viewModel.showSaveMenu.value!!)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -194,11 +193,6 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
         if (selectedImage!= null) {
             viewModel.updateImageProfile(selectedImage)
-            /*if (checkPermission()) {
-
-            } else {
-                requestPermission()
-            }*/
         }
     }
 

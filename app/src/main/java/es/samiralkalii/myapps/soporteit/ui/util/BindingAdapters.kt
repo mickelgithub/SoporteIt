@@ -1,10 +1,17 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.Spinner
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
@@ -13,11 +20,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
-
-
-val FADE_IN= 1
-val FADE_OUT= 2
-val DEFAULT_ANIMATION_DURATION = 1000L
 
 @BindingAdapter("visible")
 fun View.bindVisible(visible: Boolean?) {
@@ -55,30 +57,12 @@ fun com.google.android.material.textfield.TextInputLayout.bindError(errorMessage
     }
 }
 
-@BindingAdapter("visible")
-fun TextView.bindVisible(bossValidation: String) {
-    if (bossValidation== "N") {
-        visibility= View.GONE
-    } else {
-        visibility= View.VISIBLE
-    }
-}
-
-@BindingAdapter("visible")
-fun ViewGroup.bindVisible(bossValidation: String) {
-    if (bossValidation== "N") {
-        visibility= View.VISIBLE
-    } else {
-        visibility= View.GONE
-    }
-}
-
-@BindingAdapter(value=arrayOf("entries", "value"), requireAll = false)
-fun Spinner.bindEntries(entriesOpcion: String, value: String?) {
+@BindingAdapter(value=arrayOf("option", "value"), requireAll = false)
+fun Spinner.bindEntries(opcion: String, value: String?) {
     var entries: Array<String>
-    if (entriesOpcion== "N"){ //Is not a Boss
+    if (opcion== "N"){ //Is not a Boss, we show othen profiles other than boss
         entries= resources.getStringArray(R.array.profile_members_array)
-    } else { //En other cases
+    } else { //En other cases, we show all including boss profile
         entries= resources.getStringArray(R.array.profile_array)
     }
     var itemSelectedIndex= entries.size -1
@@ -100,6 +84,16 @@ fun Spinner.getValue(): String {
     return this.selectedItem as String
 }
 
+private fun hideSoftKeybord(context: Context) {
+    val imm: InputMethodManager =
+        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    var view: View? = (context as AppCompatActivity).getCurrentFocus()
+    if (view == null) {
+        view = View(context)
+    }
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
 @BindingAdapter(value= arrayOf("valueAttrChanged", "viewmodel"), requireAll = false)
 fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?, viewmodel: ProfileViewModel?) {
 
@@ -112,6 +106,7 @@ fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?, viewmo
                     inverseBindingListener.onChange()
                     if ((selectedItem as String) != context.resources.getString(R.string.choose_profile)) {
                         viewmodel?.updateShowSaveMenu()
+                        hideSoftKeybord(this@setListeners.context)
                     }
                 }
             }

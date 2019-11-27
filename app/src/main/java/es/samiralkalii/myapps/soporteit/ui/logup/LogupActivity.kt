@@ -72,29 +72,20 @@ class LogupActivity : AppCompatActivity(),
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
-        //setSupportActionBar(toolbar)
-
-        /*ArrayAdapter.createFromResource(this, R.array.profile_array, android.R.layout.simple_spinner_item)
-            .also { adapter ->
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                bindingLogup.profilSpinner.adapter= adapter
-            }*/
-
-        //supportActionBar?.let { title= resources.getString(R.string.registration) }
 
         viewModel.registerState.observe(this, Observer {
-            it.getContentIfNotHandled()?.let {
-                if (it is ScreenState.Render) {
-                    processStateLogUp(it)
+            it.getContentIfNotHandled()?.let { screenState ->
+                if (screenState is ScreenState.Render) {
+                    processStateLogUp(screenState)
                 }
             }
 
         })
 
         viewModel.loginState.observe(this, Observer {
-            it.getContentIfNotHandled()?.let {
-                if (it is ScreenState.Render) {
-                    processStateLogin(it)
+            it.getContentIfNotHandled()?.let { screenState ->
+                if (screenState is ScreenState.Render) {
+                    processStateLogin(screenState)
                 }
             }
         })
@@ -103,26 +94,22 @@ class LogupActivity : AppCompatActivity(),
             when (it) {
                 LogupViewModel.TO_LOG_IN -> {
                     bindingLogin.invalidateAll()
-                    //nameInputLayout.visibility= View.GONE
                     TransitionManager.go(scene2, transitionMngLogUpToLogIn)
-                    //supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.logIn)
                 }
                 LogupViewModel.TO_LOG_UP -> {
                     bindingLogup.invalidateAll()
                     TransitionManager.go(scene1, transitionMngLogUpToLogIn)
-                    //nameInputLayout.visibility= View.VISIBLE
-                    //supportActionBar?.title= resources.getString(es.samiralkalii.myapps.soporteit.R.string.registration)
                 }
             }
         })
         bindingLogup.profilSpinner.isFocusableInTouchMode= true
-        bindingLogup.profilSpinner.setOnFocusChangeListener({ v, hasFocus ->
+        bindingLogup.profilSpinner.setOnFocusChangeListener{ _, hasFocus ->
             if (hasFocus) {
                 viewModel.indicateSpinnerState(2)
             } else {
                 viewModel.indicateSpinnerState(0)
             }
-        })
+        }
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {
@@ -145,12 +132,14 @@ class LogupActivity : AppCompatActivity(),
     }
 
     private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Verificacion Perfil")
-            .setMessage("Recibiras una notificacion una vez verificado tu perfil de responsable de equipo")
+        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+            .setTitle(getString(R.string.boss_verification_title))
+            .setMessage(getString(R.string.boss_verification_msg))
             .setPositiveButton(
-                "De acuerdo"
-            ) { dialogInterface, i ->
+                getString(R.string.agree)
+            ) { _, _ ->
+                startHomeActivity(logupState.user.toBundle())
+            }.setOnDismissListener { _ ->
                 startHomeActivity(logupState.user.toBundle())
             }
             .show()
@@ -242,7 +231,7 @@ class LogupActivity : AppCompatActivity(),
         grantResults: IntArray) {
         when(requestCode) {
             PERMISSION_REQUEST_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     logger.debug("value", "Permission Granted, Now you can use local drive .");
                     showChooserToPickImage()
                 } else {

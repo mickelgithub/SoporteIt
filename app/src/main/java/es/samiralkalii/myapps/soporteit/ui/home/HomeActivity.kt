@@ -28,6 +28,8 @@ class HomeActivity : AppCompatActivity() {
 
         binding= ActivityHomeBinding.inflate(layoutInflater)
         viewModel.publishUser(intent.extras?.toUser() ?: User())
+        aqui no debemos llamar al metodo publish porque se actualizaria el viewmodel en caso de cambio de configuracion.....
+                hay que leer el usuario de prerefenrices en el init de viewmodel
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
         setContentView(binding.root)

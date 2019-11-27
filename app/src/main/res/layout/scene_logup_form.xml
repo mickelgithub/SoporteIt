@@ -181,7 +181,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     app:value="@={viewModel.user.profile}"
-                    app:entries='@{"ALL"}'/>
+                    app:option='@{""}'/>
 
             </FrameLayout>
 

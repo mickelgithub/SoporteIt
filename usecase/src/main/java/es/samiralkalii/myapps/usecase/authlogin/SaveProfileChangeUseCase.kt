@@ -7,12 +7,12 @@ import es.samiralkalii.myapps.filesystem.FileSystemRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
-class SaveProfileImageChangeUseCase(private val preferenceRepository: PreferenceRepository,
-                                    private val remoteUserRepository: RemoteUserRepository,
-                                    private val remoteUserStorageRepository: RemoteUserStorageRepository,
-                                    private val fileSystemRepository: FileSystemRepository) {
+class SaveProfileChangeUseCase(private val preferenceRepository: PreferenceRepository,
+                               private val remoteUserRepository: RemoteUserRepository,
+                               private val remoteUserStorageRepository: RemoteUserStorageRepository,
+                               private val fileSystemRepository: FileSystemRepository) {
 
-    private val logger= LoggerFactory.getLogger(SaveProfileImageChangeUseCase::class.java)
+    private val logger= LoggerFactory.getLogger(SaveProfileChangeUseCase::class.java)
 
 
     suspend operator fun invoke(user: User, imageUri: String, imageChanged: Boolean) {
