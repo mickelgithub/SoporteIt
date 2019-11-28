@@ -2,12 +2,8 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.messaging
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
+import es.samiralkalii.myapps.usecase.messaging.*
 import kotlinx.coroutines.*
-import messaging.MESSAGE_BODY_KEY
-import messaging.MESSAGE_ID_KEY
-import messaging.NotifyMessagingUseCase
-import messaging.RESULT_KEY
 import org.koin.android.ext.android.inject
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext

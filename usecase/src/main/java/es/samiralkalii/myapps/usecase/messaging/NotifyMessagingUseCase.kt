@@ -1,4 +1,4 @@
-package messaging
+package es.samiralkalii.myapps.usecase.messaging
 
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.notification.NotificationRepository

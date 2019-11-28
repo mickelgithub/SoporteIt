@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
@@ -28,8 +29,6 @@ class HomeActivity : AppCompatActivity() {
 
         binding= ActivityHomeBinding.inflate(layoutInflater)
         viewModel.publishUser(intent.extras?.toUser() ?: User())
-        aqui no debemos llamar al metodo publish porque se actualizaria el viewmodel en caso de cambio de configuracion.....
-                hay que leer el usuario de prerefenrices en el init de viewmodel
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
         setContentView(binding.root)
@@ -56,6 +55,17 @@ class HomeActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            viewModel.gotoProfile.observe(this, Observer {
+                it.getContentIfNotHandled().let { gotoProfile ->
+                    if (gotoProfile!= null && gotoProfile) {
+                        if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
+                            supportActionBar?.title= resources.getString(R.string.profile)
+                            supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
+                        }
+                    }
+                }}
+            )
         }
 
     }
