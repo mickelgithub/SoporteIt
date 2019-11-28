@@ -29,13 +29,15 @@
     <string name="her">Aqui</string>
     <string name="instructions_to_validate_your_email">Te queda un ultimo paso para utilizar esta aplicación, revisa tu correo y siga las instrucciones.</string>
     <string name="profile">Perfil</string>
-    <string name="add_planification">Añadir Plan</string>
+    <string name="absence">Ausencias</string>
     <string name="notifications">Notificaciones</string>
+    <string name="holidays">Vacaciones</string>
     <string name="save">Guardar</string>
     <string name="is_boss">¿Eres Jefe de equipo?</string>
     <string name="general_notif_channel_name">Notificaciones generales</string>
     <string name="general_notif_channel_id">es.samiralkalii.myapps.soporteit_notif_generales_id</string>
     <string name="profile_mandatory">El perfil es obligatorio</string>
+    <string name="planning">planificaciones</string>
 
     <string name="boss_profil">Responsable de equipo</string>
     <string name="java_profil">Perfil Java</string>
@@ -46,6 +48,8 @@
     <string name="boss_verification_title">Verificacion Perfil</string>
     <string name="boss_verification_msg">Recibiras una notificacion una vez verificado tu perfil de \'responsable de equipo\'</string>
     <string name="agree">De acuerdo</string>
+    <string name="profile_is_needed">Es importante que informes tu perfil</string>
+    <string name="advertisement">Aviso</string>
 
 
     <string-array name="profile_array">

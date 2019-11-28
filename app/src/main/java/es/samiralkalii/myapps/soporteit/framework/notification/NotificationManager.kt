@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -31,9 +30,10 @@ class NotificationManager(val context: Context): INotification {
 
     override fun showNotificationBossUpdated(title: String, body: String) {
 
-        val intent = Intent(context, SplashActivity::class.java).apply {
+        /*val intent = Intent(context, SplashActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+        }*/
+        val intent= SplashActivity.getIntentToProfileScreen(context)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         with(NotificationManagerCompat.from(context)) {

@@ -1,5 +1,7 @@
 package es.samiralkalii.myapps.soporteit.ui.splash
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,8 +19,12 @@ class SplashActivity : AppCompatActivity() {
 
     private val logger= LoggerFactory.getLogger(SplashActivity::class.java)
 
+    private var gotoExtra: Int= -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        gotoExtra= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
 
         viewModel.checkUserAuth()
 
@@ -29,22 +35,16 @@ class SplashActivity : AppCompatActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-
-
-    }
-
     private fun processState(screenState: ScreenState.Render<SplashState>?) {
         screenState?.let {
             when (screenState.renderState) {
                 is SplashState.LoggedIn -> {
                     logger.debug("Logged in, goto home")
-                    startHomeActivity(screenState.renderState.user.toBundle())
+                    startHomeActivity(screenState.renderState.user.toBundle(), gotoExtra)
                 }
                 is SplashState.Relogged -> {
                     logger.debug("relogged in, goto home")
-                    startHomeActivity(screenState.renderState.user.toBundle())
+                    startHomeActivity(screenState.renderState.user.toBundle(), gotoExtra)
                 }
                 SplashState.FirstAccess -> {
                     logger.debug("First access, goto signUp")
@@ -56,6 +56,24 @@ class SplashActivity : AppCompatActivity() {
                     this.finish()
                 }
             }
+        }
+    }
+
+    companion object {
+
+        val GOTO_PROFILE= 1
+        val GOTO_KEY= "GOTO"
+
+
+        fun getIntentToProfileScreen(context: Context): Intent {
+            val intent = Intent(context, SplashActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }.putExtra(GOTO_KEY, GOTO_PROFILE)
+            return intent
+        }
+
+        enum class GOTO {
+            PROFILE, PROFILE_PROFILE_NEEDED
         }
     }
 }

@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_item_add_planification"
-        android:icon="@drawable/add_icon"
-        android:title="@string/add_planification" />
+        android:id="@+id/menu_item_planning"
+        android:icon="@drawable/planning"
+        android:title="@string/planning" />
 
     <item
         android:id="@+id/menu_item_notifications"
@@ -12,8 +12,15 @@
         android:title="@string/notifications" />
 
     <item
-        android:id="@+id/menu_item_profile"
-        android:icon="@drawable/profile_icon"
-        android:title="@string/profile" />
+        android:id="@+id/menu_item_holidays"
+        android:icon="@drawable/holidays"
+        android:title="@string/holidays" />
+
+
+    <item
+        android:id="@+id/menu_item_absence"
+        android:icon="@drawable/absence"
+        android:title="@string/absence" />
+
 
 </menu>

@@ -4,10 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
+import org.slf4j.LoggerFactory
 
 
 class HomeViewModel() : ViewModel() {
+
+    private val logger = LoggerFactory.getLogger(HomeViewModel::class.java)
+
 
     lateinit var user: User
 
@@ -16,15 +21,27 @@ class HomeViewModel() : ViewModel() {
         get() = _emailValidated
 
 
-    private val _gotoProfile= MutableLiveData<Event<Boolean>>()
-    val gotoProfile: LiveData<Event<Boolean>>
-    get() = _gotoProfile
+    private val _goto= MutableLiveData<Event<SplashActivity.Companion.GOTO>>()
+    val goto: LiveData<Event<SplashActivity.Companion.GOTO>>
+    get() = _goto
+
+    private var gotoExtra: Int= -1
+
+    fun publishGotoProfileExtra(gotoInput: Int) {
+        gotoExtra= gotoInput
+    }
+
+    init {
+        logger.debug("se ha creado el HomeViewModel")
+    }
 
     fun publishUser(userParam: User) {
         user= userParam
         _emailValidated.value= user.emailVerified
-        if (user.bossVerification== "N") {
-            _gotoProfile.value= Event(true)
+        if (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") {
+            _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
+        } else if (gotoExtra== SplashActivity.GOTO_PROFILE) {
+            _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE)
         }
     }
 

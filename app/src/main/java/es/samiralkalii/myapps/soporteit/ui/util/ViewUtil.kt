@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupActivity
+import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 
 
 fun Context.startLogupActivity()= Intent(this, LogupActivity::class.java).also {
@@ -13,8 +14,12 @@ fun Context.startLogupActivity()= Intent(this, LogupActivity::class.java).also {
     startActivity(it)
 }
 
-fun Context.startHomeActivity(bundle: Bundle)= Intent(this, HomeActivity::class.java).also {
-    it.putExtras(bundle)
+fun Context.startHomeActivity(bundle: Bundle, goto: Int= -1)= Intent(this, HomeActivity::class.java).also {
+    val superBundle= bundle
+    if (goto> 0) {
+        superBundle.putInt(SplashActivity.GOTO_KEY, goto)
+    }
+    it.putExtras(superBundle)
     it.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
     startActivity(it)
 }
