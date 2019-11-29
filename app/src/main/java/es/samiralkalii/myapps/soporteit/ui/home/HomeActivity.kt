@@ -36,8 +36,7 @@ class HomeActivity : AppCompatActivity() {
         val goto= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
 
         binding= ActivityHomeBinding.inflate(layoutInflater)
-        viewModel.publishUser(intent.extras?.toUser() ?: User())
-        viewModel.publishGotoProfileExtra(goto)
+        viewModel.publishUserAndGoto(intent.extras?.toUser() ?: User(), goto)
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
         setContentView(binding.root)

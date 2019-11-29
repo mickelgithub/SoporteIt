@@ -27,15 +27,12 @@ class HomeViewModel() : ViewModel() {
 
     private var gotoExtra: Int= -1
 
-    fun publishGotoProfileExtra(gotoInput: Int) {
-        gotoExtra= gotoInput
-    }
-
     init {
         logger.debug("se ha creado el HomeViewModel")
     }
 
-    fun publishUser(userParam: User) {
+    fun publishUserAndGoto(userParam: User, gotoParam: Int) {
+        gotoExtra= gotoParam
         user= userParam
         _emailValidated.value= user.emailVerified
         if (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") {

@@ -139,7 +139,7 @@ class LogupActivity : AppCompatActivity(),
                 getString(R.string.agree)
             ) { _, _ ->
                 startHomeActivity(logupState.user.toBundle())
-            }.setOnDismissListener { _ ->
+            }.setOnCancelListener { _ ->
                 startHomeActivity(logupState.user.toBundle())
             }
             .show()
