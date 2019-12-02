@@ -39,6 +39,8 @@ class HomeViewModel() : ViewModel() {
             _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
         } else if (gotoExtra== SplashActivity.GOTO_PROFILE) {
             _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE)
+        } else {
+            _goto.value= Event(SplashActivity.Companion.GOTO.HOME)
         }
     }
 
@@ -49,6 +51,10 @@ class HomeViewModel() : ViewModel() {
 
     fun updateProfile(userParam: User) {
         user.profile= userParam.profile
+    }
+
+    fun updateGoto(gotoParam: SplashActivity.Companion.GOTO) {
+        _goto.value= Event(gotoParam)
     }
 
 

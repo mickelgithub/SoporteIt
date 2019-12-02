@@ -73,7 +73,7 @@ class SplashActivity : AppCompatActivity() {
         }
 
         enum class GOTO {
-            PROFILE, PROFILE_PROFILE_NEEDED
+            PROFILE, PROFILE_PROFILE_NEEDED, HOME
         }
     }
 }

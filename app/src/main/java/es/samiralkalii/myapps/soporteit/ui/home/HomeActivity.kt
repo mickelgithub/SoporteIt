@@ -17,6 +17,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
+import es.samiralkalii.myapps.soporteit.ui.util.view.toast
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -52,10 +53,23 @@ class HomeActivity : AppCompatActivity() {
             bottomNav.setOnNavigationItemSelectedListener { menuItem ->
                 when(menuItem.itemId) {
                     R.id.menu_item_absence -> {
-                        if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
-                            supportActionBar?.title= resources.getString(R.string.profile)
-                            supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
-                        }
+                        toast("Pronto tendremos esta funcionalidad de ausencias")
+                        true
+                    }
+                    R.id.menu_item_holidays -> {
+                        toast("Pronto tendremos esta funcionalidad de vacaciones")
+                        true
+                    }
+                    R.id.menu_item_notifications -> {
+                        toast("Pronto tendremos esta funcionalidad de notificaciones")
+                        true
+                    }
+                    R.id.menu_item_planning -> {
+                        toast("Pronto tendremos esta funcionalidad de crear planificaciones")
+                        true
+                    }
+                    R.id.menu_item_home -> {
+                        toast("Pronto tendremos esta funcionalidad de INICIO")
                         true
                     }
                     else -> {
@@ -67,7 +81,7 @@ class HomeActivity : AppCompatActivity() {
             viewModel.goto.observe(this, Observer {
                 it.getContentIfNotHandled().let { goto ->
                     if (goto!= null) {
-                        gotoProfileScreen(goto)
+                        gotoScreen(goto)
                     }
                 }}
             )
@@ -75,34 +89,38 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun gotoProfileScreen(goto: SplashActivity.Companion.GOTO) {
+    private fun gotoScreen(goto: SplashActivity.Companion.GOTO) {
         when (goto) {
-            SplashActivity.Companion.GOTO.PROFILE -> {
+            SplashActivity.Companion.GOTO.PROFILE, SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED -> {
+                bottomNav.menu.getItem(0).isCheckable= false
                 if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
                     supportActionBar?.title= resources.getString(R.string.profile)
                     supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
+                }
+                if (goto== SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED) {
+                    showMessageDialog(R.string.profile_is_needed, R.string.advertisement)
                 }
             }
-            SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED -> {
-                if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
-                    supportActionBar?.title= resources.getString(R.string.profile)
-                    supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
-                }
-                showMessageDialog(R.string.profile_is_needed, R.string.advertisement)
+            SplashActivity.Companion.GOTO.HOME -> {
+                bottomNav.menu.getItem(0).isCheckable= true
+
+
             }
         }
     }
 
     private fun showMessageDialog(@StringRes message: Int, @StringRes title: Int ) {
-        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-            .setTitle(getString(title))
-            .setMessage(getString(message))
-            .setPositiveButton(
-                getString(R.string.agree)
-            ) { _, _ ->
-            }.setOnDismissListener { _ ->
-            }
-            .show()
+        Handler().postDelayed({
+            MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+                .setTitle(getString(title))
+                .setMessage(getString(message))
+                .setPositiveButton(
+                    getString(R.string.agree)
+                ) { _, _ ->
+                }.setOnCancelListener { _ ->
+                }
+                .show()
+        }, 1000)
     }
 
     private fun finishMeInAwhile(delay: Long) {
@@ -122,10 +140,11 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_item_profile -> {
-                if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
+                /*if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
                     supportActionBar?.title= resources.getString(R.string.profile)
                     supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
-                }
+                }*/
+                viewModel.updateGoto(SplashActivity.Companion.GOTO.PROFILE)
                 true
             }
 
