@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamMangementViewModel" />
+
+        <variable
+            name="fragment"
+            type="es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamMangementFragment" />
+    </data>
+
+    <FrameLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <Button
+                    android:id="@+id/create_team"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="64dp"
+                    android:layout_marginEnd="216dp"
+                    android:text="@string/create_team"
+                    android:onClick="@{() -> viewModel.onTeamCreateClick()}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/invite_member"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/invite"
+                    android:onClick="@{() -> viewModel.onInviteClick()}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/create_team"
+                    app:layout_constraintTop_toTopOf="@+id/create_team" />
+
+                <Button
+                    android:id="@+id/create_group"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/create_group"
+                    android:onClick="@{() -> viewModel.onGroupCreateClick()}"
+                    app:layout_constraintStart_toStartOf="@+id/create_team"
+                    app:layout_constraintTop_toBottomOf="@+id/create_team" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+
+
+        <es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView
+            android:id="@+id/stage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:visible="@{viewModel.progressVisible}">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_view"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                app:lottie_rawRes="@raw/loader"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true" />
+
+        </es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView>
+
+    </FrameLayout>
+
+
+
+</layout>

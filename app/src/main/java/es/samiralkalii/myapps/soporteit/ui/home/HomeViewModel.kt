@@ -8,6 +8,8 @@ import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import org.slf4j.LoggerFactory
 
+fun User.isBoss()= this.bossVerification== "S"
+fun User.isTeamCreated()= this.teamCreated== "S"
 
 class HomeViewModel() : ViewModel() {
 
@@ -39,6 +41,10 @@ class HomeViewModel() : ViewModel() {
             _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
         } else if (gotoExtra== SplashActivity.GOTO_PROFILE) {
             _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE)
+        } else if (user.isBoss() && !user.isTeamCreated()){
+            //si es responsable de equipo y no tiene todavia creado ningun equipo, le dirigimos
+            //a la pantalla de gestion de equipo
+            _goto.value= Event(SplashActivity.Companion.GOTO.TEAM_MANAGEMENT)
         } else {
             _goto.value= Event(SplashActivity.Companion.GOTO.HOME)
         }

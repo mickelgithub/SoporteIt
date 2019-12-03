@@ -17,6 +17,7 @@ import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.RemoteUs
 import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.SharedPreferencesManager
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamMangementViewModel
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashViewModel
 import org.koin.android.viewmodel.dsl.viewModel
@@ -41,4 +42,5 @@ val appModule= module {
     viewModel { LogupViewModel(get(), get()) }
     viewModel { HomeViewModel()}
     viewModel { ProfileViewModel(get(), get()) }
+    viewModel { TeamMangementViewModel() }
 }

@@ -57,6 +57,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putBoolean(KEY_EMAIL_VERIFIED, user.emailVerified)
             putString(KEY_PROFILE, user.profile)
             putString(KEY_BOSS_VERIFICATION, user.bossVerification)
+            putString(KEY_TEAM_CREATED, user.teamCreated)
         }
     }
 

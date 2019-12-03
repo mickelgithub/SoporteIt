@@ -29,6 +29,7 @@
     <string name="her">Aqui</string>
     <string name="instructions_to_validate_your_email">Te queda un ultimo paso para utilizar esta aplicación, revisa tu correo y siga las instrucciones.</string>
     <string name="profile">Perfil</string>
+    <string name="team_management">Gestión de equipo</string>
     <string name="absence">Ausencias</string>
     <string name="notifications">Notifs</string>
     <string name="holidays">Vacas</string>
@@ -51,6 +52,9 @@
     <string name="agree">De acuerdo</string>
     <string name="profile_is_needed">Es importante que informes tu perfil</string>
     <string name="advertisement">Aviso</string>
+    <string name="create_team">Crear equipo</string>
+    <string name="invite">Invitar</string>
+    <string name="create_group">Crear grupo</string>
 
 
     <string-array name="profile_array">

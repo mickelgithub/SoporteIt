@@ -14,6 +14,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
+import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamMangementFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
@@ -50,6 +51,7 @@ class HomeActivity : AppCompatActivity() {
             bottomNav.visibility= View.GONE
             finishMeInAwhile(5000L)
         } else {
+            bottomNav.menu.getItem(0).isCheckable= false
             bottomNav.setOnNavigationItemSelectedListener { menuItem ->
                 when(menuItem.itemId) {
                     R.id.menu_item_absence -> {
@@ -90,9 +92,10 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun gotoScreen(goto: SplashActivity.Companion.GOTO) {
+        bottomNav.menu.getItem(0).isCheckable= true
         when (goto) {
             SplashActivity.Companion.GOTO.PROFILE, SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED -> {
-                bottomNav.menu.getItem(0).isCheckable= false
+                //bottomNav.menu.getItem(0).isCheckable= false
                 if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
                     supportActionBar?.title= resources.getString(R.string.profile)
                     supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
@@ -102,9 +105,14 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
             SplashActivity.Companion.GOTO.HOME -> {
-                bottomNav.menu.getItem(0).isCheckable= true
-
-
+                //bottomNav.menu.getItem(0).isCheckable= true
+            }
+            SplashActivity.Companion.GOTO.TEAM_MANAGEMENT -> {
+                //bottomNav.menu.getItem(0).isCheckable= false
+                if (supportFragmentManager.findFragmentByTag(TeamMangementFragment::class.java.simpleName)== null) {
+                    supportActionBar?.title= resources.getString(R.string.team_management)
+                    supportFragmentManager.beginTransaction().replace(R.id.container, TeamMangementFragment.newInstance(viewModel.user.toBundle()), TeamMangementFragment::class.java.simpleName).commit()
+                }
             }
         }
     }
@@ -134,16 +142,15 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_home, menu)
+        if (!viewModel.user.isBoss()) {
+            menu.findItem(R.id.menu_item_team_management).setVisible(false)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_item_profile -> {
-                /*if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
-                    supportActionBar?.title= resources.getString(R.string.profile)
-                    supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(viewModel.user.toBundle()), ProfileFragment::class.java.simpleName).commit()
-                }*/
                 viewModel.updateGoto(SplashActivity.Companion.GOTO.PROFILE)
                 true
             }

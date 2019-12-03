@@ -8,4 +8,10 @@
         android:icon="@drawable/profile_icon"
         android:title="@string/profile" />
 
+    <item
+        android:id="@+id/menu_item_team_management"
+        app:showAsAction="never"
+        android:icon="@drawable/team_management"
+        android:title="@string/team_management" />
+
 </menu>
