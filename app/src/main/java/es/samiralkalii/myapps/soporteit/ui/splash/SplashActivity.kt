@@ -61,8 +61,8 @@ class SplashActivity : AppCompatActivity() {
 
     companion object {
 
-        val GOTO_PROFILE= 1
-        val GOTO_KEY= "GOTO"
+        const val GOTO_PROFILE= 1
+        const val GOTO_KEY= "GOTO"
 
 
         fun getIntentToProfileScreen(context: Context): Intent {
