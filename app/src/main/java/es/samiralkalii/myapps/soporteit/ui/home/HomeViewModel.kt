@@ -9,7 +9,6 @@ import es.samiralkalii.myapps.soporteit.ui.util.Event
 import org.slf4j.LoggerFactory
 
 fun User.isBoss()= this.bossVerification== "S"
-fun User.isTeamCreated()= this.teamCreated== "S"
 
 class HomeViewModel() : ViewModel() {
 
@@ -40,8 +39,10 @@ class HomeViewModel() : ViewModel() {
         if (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") {
             _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
         } else if (gotoExtra== SplashActivity.GOTO_PROFILE) {
-            _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE)
-        } else if (user.isBoss() && !user.isTeamCreated()){
+            _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+        } else if (user.bossVerification== "P") {
+            _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+        } else if (user.isBoss() && !user.teamCreated){
             //si es responsable de equipo y no tiene todavia creado ningun equipo, le dirigimos
             //a la pantalla de gestion de equipo
             _goto.value= Event(SplashActivity.Companion.GOTO.TEAM_MANAGEMENT)
@@ -53,6 +54,10 @@ class HomeViewModel() : ViewModel() {
     fun updateProfileImage(userParam: User) {
         user.localProfileImage= userParam.localProfileImage
         user.remoteProfileImage= userParam.remoteProfileImage
+    }
+
+    fun updateTeamCreated() {
+        user.teamCreated= true
     }
 
     fun updateProfile(userParam: User) {

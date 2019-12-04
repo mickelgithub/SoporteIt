@@ -36,10 +36,11 @@
                     android:layout_height="150dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="64dp"
-                    android:layout_marginEnd="216dp"
+                    android:enabled="@{viewModel.addTeamButtonEnabled}"
+                    android:onClick="@{() -> fragment.onTeamCreateClick()}"
                     android:text="@string/create_team"
-                    android:onClick="@{() -> viewModel.onTeamCreateClick()}"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/invite_member"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,11 +48,11 @@
                     android:id="@+id/invite_member"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="@string/invite"
                     android:onClick="@{() -> viewModel.onInviteClick()}"
+                    android:text="@string/invite"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/create_team"
                     app:layout_constraintTop_toTopOf="@+id/create_team" />
 
@@ -60,8 +61,8 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginTop="32dp"
-                    android:text="@string/create_group"
                     android:onClick="@{() -> viewModel.onGroupCreateClick()}"
+                    android:text="@string/create_group"
                     app:layout_constraintStart_toStartOf="@+id/create_team"
                     app:layout_constraintTop_toBottomOf="@+id/create_team" />
             </androidx.constraintlayout.widget.ConstraintLayout>

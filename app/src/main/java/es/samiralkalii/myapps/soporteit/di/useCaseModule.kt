@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.di
 import es.samiralkalii.myapps.usecase.authlogin.*
 import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
 import org.koin.dsl.module
 
 
@@ -14,4 +15,5 @@ val useCaseModule= module {
     factory { SaveProfileChangeUseCase(get(), get(), get(), get()) }
     factory { RegisterMessagingTokenUseCase(get(), get()) }
     factory { NotifyMessagingUseCase(get(), get(), get()) }
+    factory { AddTeamUseCase(get(), get(), get()) }
 }

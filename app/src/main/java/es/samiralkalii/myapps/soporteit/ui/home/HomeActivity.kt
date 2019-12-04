@@ -154,7 +154,10 @@ class HomeActivity : AppCompatActivity() {
                 viewModel.updateGoto(SplashActivity.Companion.GOTO.PROFILE)
                 true
             }
-
+            R.id.menu_item_team_management -> {
+                viewModel.updateGoto(SplashActivity.Companion.GOTO.TEAM_MANAGEMENT)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 

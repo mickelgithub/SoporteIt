@@ -21,6 +21,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 
+
+@BindingAdapter("android:enabled")
+fun View.bindEnabled(enabledParam: Boolean) {
+    isEnabled= enabledParam
+}
+
 @BindingAdapter("visible")
 fun View.bindVisible(visible: Boolean?) {
     visibility= if (visible== true) View.VISIBLE else View.GONE
