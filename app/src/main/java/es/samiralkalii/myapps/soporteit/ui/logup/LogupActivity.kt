@@ -21,6 +21,8 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
+import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
@@ -131,18 +133,19 @@ class LogupActivity : AppCompatActivity(),
         }
     }
 
+    private fun showDialog(dialog: AlertDialog) {
+        val ft = supportFragmentManager.beginTransaction()
+        val prev =   supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
+        if (prev != null) {
+            ft.remove(prev)
+        }
+        ft.addToBackStack(null)
+        dialog.show(ft, FRAGMENT_TAG)
+    }
+
     private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
-        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-            .setTitle(getString(R.string.boss_verification_title))
-            .setMessage(getString(R.string.boss_verification_msg))
-            .setPositiveButton(
-                getString(R.string.agree)
-            ) { _, _ ->
-                startHomeActivity(logupState.user.toBundle())
-            }.setOnCancelListener { _ ->
-                startHomeActivity(logupState.user.toBundle())
-            }
-            .show()
+        showDialog(AlertDialog.newInstanceForMessage(getString(R.string.boss_verification_title), getString(R.string.boss_verification_msg),
+            getString(R.string.agree), { startHomeActivity(logupState.user.toBundle())}))
     }
 
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {

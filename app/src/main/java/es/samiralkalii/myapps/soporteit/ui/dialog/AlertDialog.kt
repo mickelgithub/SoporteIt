@@ -1,6 +1,5 @@
 package es.samiralkalii.myapps.soporteit.ui.dialog
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -10,6 +9,8 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import es.samiralkalii.myapps.soporteit.R
 import kotlinx.android.parcel.Parcelize
 import org.slf4j.LoggerFactory
 
@@ -22,29 +23,34 @@ enum class DIALOG_TYPE: Parcelable {
 const val DIALOG_TYPE_KEY= "dialog_type_key"
 const val DIALOG_TITLE_KEY= "dialog_title_key"
 const val DIALOG_MESSAGE_KEY= "dialog_message_key"
+const val FRAGMENT_TAG= "dialog"
 
 class AlertDialog: DialogFragment() {
 
     private val logger = LoggerFactory.getLogger(AlertDialog::class.java)
 
-    private lateinit var onValue: (String) -> Unit
+    private lateinit var onValueInput: (String) -> Unit
+    private var onPositiveButtonClick: (() -> Unit)?= null
+    private var positiveButtonText: String?= null
 
     companion object {
 
-        fun newInstanceForMessage(title: String, message: String)= AlertDialog().apply {
+        fun newInstanceForMessage(title: String, message: String, positiveButtonText: String?, onPositiveButtonClick: (() -> Unit)?)= AlertDialog().apply {
             arguments= Bundle().apply {
                 putParcelable(DIALOG_TYPE_KEY, DIALOG_TYPE.MESSAGE)
                 putString(DIALOG_TITLE_KEY, title)
                 putString(DIALOG_MESSAGE_KEY, message)
             }
+            this@apply.onPositiveButtonClick= onPositiveButtonClick
+            this@apply.positiveButtonText= positiveButtonText
         }
 
-        fun newInstanceForInput(title: String, onValueParam:(inputText: String) -> Unit)= AlertDialog().apply {
+        fun newInstanceForInput(title: String, onValue:(inputText: String) -> Unit)= AlertDialog().apply {
             arguments= Bundle().apply {
                 putParcelable(DIALOG_TYPE_KEY, DIALOG_TYPE.TEXT_INPUT)
                 putString(DIALOG_TITLE_KEY, title)
             }
-            onValue= onValueParam
+            this@apply.onValueInput= onValue
         }
     }
 
@@ -72,20 +78,25 @@ class AlertDialog: DialogFragment() {
     }
 
     private fun getAlertDialog(context: Context, title: String, message: String?, view: View?): Dialog {
-        val builder= AlertDialog.Builder(context)
+        val builder= MaterialAlertDialogBuilder(context, R.style.MyDialogCustomTheme)
         builder.setTitle(title)
         view?.let {
             builder.setView(it)
         }
         message?.let {
             builder.setMessage(message)
+            builder.setCancelable(false)
         }
-        builder.setPositiveButton(android.R.string.ok) {
-            dialog, _ -> if (view!= null) {
-                val inputText= (view as EditText).text.toString()
+        builder.setPositiveButton(positiveButtonText ?: context.resources.getString(android.R.string.ok)) {
+            dialog, _ -> view?.let {
+            val inputText= (view as EditText).text.toString()
                 if (inputText.isNotBlank()) {
-                    onValue((view as EditText).text.toString())
+                    onValueInput((view as EditText).text.toString())
                 }
+            }
+            onPositiveButtonClick?.let {
+                it()
+                dismiss()
             }
         }
         return builder.create()

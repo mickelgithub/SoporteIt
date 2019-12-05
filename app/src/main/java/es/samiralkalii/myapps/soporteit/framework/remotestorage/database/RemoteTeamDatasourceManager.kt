@@ -15,8 +15,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     private val logger= LoggerFactory.getLogger(RemoteTeamDatasourceManager::class.java)
 
     override suspend fun addTeam(team: Team, boss: String) {
-        fstore.collection(USERS_REF).document(boss).collection(TEAM_COLLECTION_REF).document(
-            TEAM_DOCUMENT_REF).set(team).await()
+        fstore.collection(USERS_REF).document(boss).update(TEAM_DOCUMENT_REF, team).await()
     }
 
 
