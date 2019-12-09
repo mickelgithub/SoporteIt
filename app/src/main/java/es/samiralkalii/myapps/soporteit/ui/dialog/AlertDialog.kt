@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.InputType
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -72,6 +73,8 @@ class AlertDialog: DialogFragment() {
                     LinearLayout.LayoutParams.MATCH_PARENT
                 )
                 input.layoutParams = lp
+                input.inputType= InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+                input.requestFocus()
                 return getAlertDialog(activity as Context, title, null, input)
             }
         }
