@@ -8,7 +8,6 @@ import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
@@ -37,7 +36,7 @@ class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase, private
     val teamAddedOk: LiveData<Event<ScreenState<TeamManagementChangeState>>>
         get() = _teamAddedOk
 
-    val _allUsers= MutableLiveData<List<User>>()
+    private val _allUsers= MutableLiveData<List<User>>()
     val allUsers: LiveData<List<User>>
         get() = _allUsers
 
@@ -91,20 +90,20 @@ class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase, private
             logger.error(error.toString(), error)
             when (error) {
                 is FirebaseNetworkException -> {
-                    _teamAddedOk.postValue(
+                    /*_teamAddedOk.postValue(
                         Event(
                             ScreenState.Render(
                                 TeamManagementChangeState.ShowMessage(
                                     R.string.no_internet_connection)))
-                    )
+                    )*/
                 }
                 else -> {
-                    _teamAddedOk.postValue(
+                    /*_teamAddedOk.postValue(
                         Event(
                             ScreenState.Render(
                                 TeamManagementChangeState.ShowMessage(
                                     R.string.no_internet_connection)))
-                    )
+                    )*/
                 }
             }
         }
@@ -117,10 +116,10 @@ class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase, private
         }
     }
 
-    fun onInviteClick() {
+    /*fun onInviteClick() {
         logger.debug("On invite clicked")
         //loadAllUsers()
-    }
+    }*/
 
     fun onGroupCreateClick() {
         logger.debug("On group create clicked")
