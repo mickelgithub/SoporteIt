@@ -12,13 +12,14 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase): ViewModel() {
+class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase, private val getAllUsersButBosesUseCase: GetAllUsersButBosesUseCase): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(TeamMangementViewModel::class.java)
 
@@ -36,6 +37,9 @@ class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMo
     val teamAddedOk: LiveData<Event<ScreenState<TeamManagementChangeState>>>
         get() = _teamAddedOk
 
+    val _allUsers= MutableLiveData<List<User>>()
+    val allUsers: LiveData<List<User>>
+        get() = _allUsers
 
 
     fun publishUser(userParam: User) {
@@ -81,8 +85,41 @@ class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMo
 
     }
 
+    fun loadAllUsers() {
+        val errorHandler = CoroutineExceptionHandler { _, error ->
+            _progressVisible.postValue(false)
+            logger.error(error.toString(), error)
+            when (error) {
+                is FirebaseNetworkException -> {
+                    _teamAddedOk.postValue(
+                        Event(
+                            ScreenState.Render(
+                                TeamManagementChangeState.ShowMessage(
+                                    R.string.no_internet_connection)))
+                    )
+                }
+                else -> {
+                    _teamAddedOk.postValue(
+                        Event(
+                            ScreenState.Render(
+                                TeamManagementChangeState.ShowMessage(
+                                    R.string.no_internet_connection)))
+                    )
+                }
+            }
+        }
+
+        viewModelScope.launch(errorHandler) {
+            val result= async(Dispatchers.IO) {
+                getAllUsersButBosesUseCase()
+            }.await()
+            _allUsers.value= result
+        }
+    }
+
     fun onInviteClick() {
         logger.debug("On invite clicked")
+        //loadAllUsers()
     }
 
     fun onGroupCreateClick() {

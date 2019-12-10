@@ -55,6 +55,7 @@
     <string name="create_team">Crear equipo</string>
     <string name="invite">Invitar</string>
     <string name="create_group">Crear grupo</string>
+    <string name="add">Añadir</string>
 
 
     <string-array name="profile_array">

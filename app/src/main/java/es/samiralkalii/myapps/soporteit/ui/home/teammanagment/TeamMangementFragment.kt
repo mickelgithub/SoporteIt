@@ -6,18 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.databinding.FragmentTeamManagementBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
+import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.dialog.AlertDialogForMemberInvitation
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
-class TeamMangementFragment: Fragment() {
+class TeamMangementFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelectionListener {
 
     companion object {
         fun newInstance(bundle: Bundle) = TeamMangementFragment().apply { arguments= bundle }
@@ -75,6 +78,18 @@ class TeamMangementFragment: Fragment() {
 
     }
 
+    fun onInviteClick() {
+        val alertDialog= AlertDialogForMemberInvitation.newInstance(TeamMangementFragment::class.java.simpleName)
+        val ft = activity!!.supportFragmentManager.beginTransaction()
+        val prev =   activity!!.supportFragmentManager.findFragmentByTag("dialog")
+        if (prev != null) {
+            ft.remove(prev)
+        }
+        ft.addToBackStack(null)
+        viewModel.loadAllUsers()
+        alertDialog.show(ft, "dialog")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -88,6 +103,14 @@ class TeamMangementFragment: Fragment() {
         binding.executePendingBindings()
 
         return binding.root
+    }
+
+    override fun onMemeberSelected(user: String) {
+
+    }
+
+    override fun updateUsers(users: List<User>) {
+
     }
 
 

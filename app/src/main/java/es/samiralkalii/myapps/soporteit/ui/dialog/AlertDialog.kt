@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputType
 import android.view.View
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -92,9 +94,11 @@ class AlertDialog: DialogFragment() {
         }
         builder.setPositiveButton(positiveButtonText ?: context.resources.getString(android.R.string.ok)) {
             dialog, _ -> view?.let {
-            val inputText= (view as EditText).text.toString()
-                if (inputText.isNotBlank()) {
-                    onValueInput((view as EditText).text.toString())
+                if (view is EditText) {
+                    val inputText= view.text.toString()
+                    if (inputText.isNotBlank()) {
+                        onValueInput((view as EditText).text.toString())
+                    }
                 }
             }
             onPositiveButtonClick?.let {
