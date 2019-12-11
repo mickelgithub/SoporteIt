@@ -15,6 +15,6 @@ class AddTeamUseCase(val remoteTeamManagementRepository: RemoteTeamManagementRep
     suspend operator fun invoke(team: Team, boss: String) {
         remoteTeamManagementRepository.addTeam(team, boss)
         remoteUserRepository.updateTeamCreated(boss)
-        preferenceRepository.updateTeamCreated()
+        preferenceRepository.updateTeamCreated(team.name)
     }
 }

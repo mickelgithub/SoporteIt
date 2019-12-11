@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.databinding.FragmentTeamManagementBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.dialog.AlertDialogForMemberInvitation
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
@@ -71,26 +72,26 @@ class TeamMangementFragment: Fragment(), AlertDialogForMemberInvitation.OnMember
     fun onTeamCreateClick() {
         val alertDialog= AlertDialog.newInstanceForInput("Introduzca el nombre del equipo", {teamName -> viewModel.onTeamCreateClick(teamName)})
         val ft = activity!!.supportFragmentManager.beginTransaction()
-        val prev =   activity!!.supportFragmentManager.findFragmentByTag("dialog")
+        val prev =   activity!!.supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
         if (prev != null) {
             ft.remove(prev)
         }
         ft.addToBackStack(null)
-        alertDialog.show(ft, "dialog")
+        alertDialog.show(ft, FRAGMENT_TAG)
 
     }
 
     fun onInviteClick() {
-        viewModel.loadAllUsers()
 
+        viewModel.loadAllUsers()
         val alertDialog= AlertDialogForMemberInvitation.newInstance(TeamMangementFragment::class.java.simpleName)
         val ft = activity!!.supportFragmentManager.beginTransaction()
-        val prev =   activity!!.supportFragmentManager.findFragmentByTag("dialog")
+        val prev =   activity!!.supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
         if (prev != null) {
             ft.remove(prev)
         }
         ft.addToBackStack(null)
-        alertDialog.show(ft, "dialog")
+        alertDialog.show(ft, FRAGMENT_TAG)
     }
 
     override fun onCreateView(
@@ -113,7 +114,7 @@ class TeamMangementFragment: Fragment(), AlertDialogForMemberInvitation.OnMember
     }
 
     override fun updateUsers(users: List<User>) {
-        val invitationFragment= activity!!.supportFragmentManager.findFragmentByTag("dialog")
+        val invitationFragment= activity!!.supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
         if (invitationFragment is AlertDialogForMemberInvitation) {
             invitationFragment.updateUsers(users)
         }

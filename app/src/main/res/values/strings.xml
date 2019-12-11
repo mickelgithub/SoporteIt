@@ -29,7 +29,8 @@
     <string name="her">Aqui</string>
     <string name="instructions_to_validate_your_email">Te queda un ultimo paso para utilizar esta aplicación, revisa tu correo y siga las instrucciones.</string>
     <string name="profile">Perfil</string>
-    <string name="team_management">Gestión de equipo</string>
+    <string name="team_created_title">Equipo: %1$s</string>
+    <string name="team_no_created_title">Equipo: Pendiente de crear</string>
     <string name="absence">Ausencias</string>
     <string name="notifications">Notifs</string>
     <string name="holidays">Vacas</string>

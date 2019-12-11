@@ -12,7 +12,7 @@ class PreferenceRepository(val preferences: IPreferences) {
     suspend fun getMessaginToken()= preferences.getMessaginToken()
     suspend fun updateProfile(profile: String)= preferences.updateProfile(profile)
     suspend fun updateBossVerification(bossVerification: String)= preferences.updateBossVerification(bossVerification)
-    suspend fun updateTeamCreated()= preferences.updateTeamCreated()
+    suspend fun updateTeamCreated(team: String)= preferences.updateTeamCreated(team)
 }
 
 interface IPreferences {
@@ -24,5 +24,5 @@ interface IPreferences {
     suspend fun getMessaginToken(): String
     suspend fun updateProfile(profile: String)
     suspend fun updateBossVerification(bossVerification: String)
-    suspend fun updateTeamCreated()
+    suspend fun updateTeamCreated(team: String)
 }

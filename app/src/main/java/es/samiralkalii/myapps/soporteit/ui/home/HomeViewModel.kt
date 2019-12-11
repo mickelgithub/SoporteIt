@@ -9,6 +9,8 @@ import es.samiralkalii.myapps.soporteit.ui.util.Event
 import org.slf4j.LoggerFactory
 
 fun User.isBoss()= this.bossVerification== "S"
+fun User.isProfilePending()= this.profile== ""
+
 
 class HomeViewModel() : ViewModel() {
 
@@ -36,8 +38,19 @@ class HomeViewModel() : ViewModel() {
         gotoExtra= gotoParam
         user= userParam
         _emailValidated.value= user.emailVerified
-        if (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") {
-            _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
+        when {
+            (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") -> {
+                _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
+            }
+            (gotoExtra== SplashActivity.GOTO_PROFILE ||  user.bossVerification== "P") -> {
+                _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+            }
+            else -> {
+                _goto.value= Event(SplashActivity.Companion.GOTO.HOME)
+            }
+        }
+        /*if (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") {
+
         } else if (gotoExtra== SplashActivity.GOTO_PROFILE) {
             _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
         } else if (user.bossVerification== "P") {
@@ -48,7 +61,7 @@ class HomeViewModel() : ViewModel() {
             _goto.value= Event(SplashActivity.Companion.GOTO.TEAM_MANAGEMENT)
         } else {
             _goto.value= Event(SplashActivity.Companion.GOTO.HOME)
-        }
+        }*/
     }
 
     fun updateProfileImage(userParam: User) {
@@ -67,23 +80,5 @@ class HomeViewModel() : ViewModel() {
     fun updateGoto(gotoParam: SplashActivity.Companion.GOTO) {
         _goto.value= Event(gotoParam)
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

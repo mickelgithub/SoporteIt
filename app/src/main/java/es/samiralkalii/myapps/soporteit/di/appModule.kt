@@ -19,6 +19,7 @@ import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteU
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.RemoteUserStorageDataSourceManager
 import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.SharedPreferencesManager
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamMangementViewModel
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
@@ -46,5 +47,5 @@ val appModule= module {
     viewModel { LogupViewModel(get(), get()) }
     viewModel { HomeViewModel()}
     viewModel { ProfileViewModel(get(), get()) }
-    viewModel { TeamMangementViewModel(get(), get()) }
+    viewModel { HomeFragmentViewModel(get(), get()) }
 }

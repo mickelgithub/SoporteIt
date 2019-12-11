@@ -17,6 +17,7 @@ const val KEY_MESSAGING_TOKEN= "messagingToken"
 const val KEY_PROFILE= "profile"
 const val KEY_BOSS_VERIFICATION= "bossVerification";
 const val KEY_TEAM_CREATED= "teamCreated"
+const val KEY_TEAM= "team"
 
 
 fun User.toBundle()= Bundle().apply {

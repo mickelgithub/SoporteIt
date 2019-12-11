@@ -80,10 +80,8 @@ class AlertDialogForMemberInvitation: DialogFragment() {
         membersAutoComplete.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrBlank() && s.toString().length>= 4) {
                     adapter.setData(adapter._data.filter {
@@ -92,9 +90,7 @@ class AlertDialogForMemberInvitation: DialogFragment() {
                     adapter.notifyDataSetChanged()
                 }
             }
-
         })
-
 
         builder.setView(view)
 
@@ -103,15 +99,11 @@ class AlertDialogForMemberInvitation: DialogFragment() {
             logger.debug("pulsadoooooooooooooooo el button")
         }
 
-
-
         return builder.create()
     }
 
     fun updateUsers(users: List<User>) {
-
         adapter.initData(users)
-
     }
 
     private inner class MembersSuggestAdapter(context: Context, val resource: Int): ArrayAdapter<User>(context, resource), Filterable {
@@ -138,8 +130,6 @@ class AlertDialogForMemberInvitation: DialogFragment() {
             return data.size
         }
 
-
-
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val user= data[position]
             android.R.layout.simple_dropdown_item_1line
@@ -153,11 +143,8 @@ class AlertDialogForMemberInvitation: DialogFragment() {
             return data[position]
         }
 
-
-
         override fun getFilter(): Filter {
             return object: Filter() {
-
                 override fun performFiltering(constraint: CharSequence?): FilterResults {
                     val filterResults = FilterResults()
                     if (constraint != null) {
@@ -166,7 +153,6 @@ class AlertDialogForMemberInvitation: DialogFragment() {
                     }
                     return filterResults
                 }
-
                 override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                     if (results != null && (results.count > 0)) {
                         notifyDataSetChanged();
@@ -174,7 +160,6 @@ class AlertDialogForMemberInvitation: DialogFragment() {
                         notifyDataSetInvalidated();
                     }
                 }
-
                 override fun convertResultToString(resultValue: Any?): CharSequence {
                     if (resultValue is User) {
                         return resultValue.email
