@@ -31,7 +31,7 @@ class SplashViewModel(val checkUserAuthUseCase: CheckUserAuthUseCase) : ViewMode
                     _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))
                 }
                 else -> {
-                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))
+                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.not_controled_error)))
                 }
             }
         }

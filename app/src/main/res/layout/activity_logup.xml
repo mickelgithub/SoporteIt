@@ -9,43 +9,12 @@
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
+        android:fitsSystemWindows="true"
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent" />
 
-        <FrameLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <FrameLayout
-
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView
-                android:id="@+id/stage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:visible="@{viewModel.progressVisible}">
-
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/animation_view"
-                        android:layout_width="300dp"
-                        android:layout_height="300dp"
-                        android:layout_gravity="center"
-                        app:lottie_rawRes="@raw/loader"
-                        app:lottie_loop="true"
-                        app:lottie_autoPlay="true" />
-
-
-            </es.samiralkalii.myapps.soporteit.ui.util.view.OverlayView>
-
-        </FrameLayout>
-    </LinearLayout>
 
 </layout>
 

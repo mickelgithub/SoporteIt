@@ -20,7 +20,7 @@ fun Context.startHomeActivity(bundle: Bundle, goto: Int= -1)= Intent(this, HomeA
         superBundle.putInt(SplashActivity.GOTO_KEY, goto)
     }
     it.putExtras(superBundle)
-    it.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
+    it.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(it)
 }
 

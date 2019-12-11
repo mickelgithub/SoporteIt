@@ -16,13 +16,13 @@ import androidx.transition.Scene
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
+import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
@@ -48,6 +48,8 @@ class LogupActivity : AppCompatActivity(),
     private lateinit var transitionMngLogUpToLogIn: Transition
 
     private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
+
+    private var loadingDialog: LoadingDialog?= null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +77,7 @@ class LogupActivity : AppCompatActivity(),
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
 
-        viewModel.registerState.observe(this, Observer {
+        viewModel.logupState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { screenState ->
                 if (screenState is ScreenState.Render) {
                     processStateLogUp(screenState)
@@ -112,6 +114,14 @@ class LogupActivity : AppCompatActivity(),
                 viewModel.indicateSpinnerState(0)
             }
         }
+
+        viewModel.progressVisible.observe(this, Observer {
+            if (it) {
+                loadingDialog= LoadingDialog.show(supportFragmentManager)
+            } else {
+                loadingDialog?.dismiss()
+            }
+        })
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {
@@ -122,10 +132,15 @@ class LogupActivity : AppCompatActivity(),
                     if (viewModel.user.localProfileImage.isNotBlank()) {
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         profile_image.startAnimation(shake)
+                        Handler().postDelayed(Runnable { viewModel.updateProgressVisible(false) }, 700)
+                        Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, 1000)
+                    } else {
+                        viewModel.updateProgressVisible(false)
+                        Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, 200)
                     }
-                    Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, 1000)
                 }
                 is LoginState.ShowMessage -> {
+                    viewModel.updateProgressVisible(false)
                     logger.debug("Hubo un error en acceso, lo mostramos")
                     Toast.makeText(this, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
                 }
@@ -205,11 +220,6 @@ class LogupActivity : AppCompatActivity(),
         val selectedImage = data?.data
         if (selectedImage!= null) {
             viewModel.updateImageProfile(selectedImage)
-            /*if (checkPermission()) {
-
-            } else {
-                requestPermission()
-            }*/
         }
     }
 

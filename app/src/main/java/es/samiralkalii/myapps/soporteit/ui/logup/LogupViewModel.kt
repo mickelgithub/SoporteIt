@@ -31,9 +31,9 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
     val user= User()
 
-    private val _registerState= MutableLiveData<Event<ScreenState<LogupState>>>()
-    val registerState: LiveData<Event<ScreenState<LogupState>>>
-        get()= _registerState
+    private val _logupState= MutableLiveData<Event<ScreenState<LogupState>>>()
+    val logupState: LiveData<Event<ScreenState<LogupState>>>
+        get()= _logupState
 
     private val _loginState= MutableLiveData<Event<ScreenState<LoginState>>>()
     val loginState: LiveData<Event<ScreenState<LoginState>>>
@@ -130,6 +130,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         }
     }
 
+    fun updateProgressVisible(progressVisible: Boolean) {
+        _progressVisible.value= progressVisible
+    }
+
     fun logupUser() {
 
         clearErrorsLogUp()
@@ -149,7 +153,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 logger.error(error.toString(), error)
                 when (error) {
                     is FirebaseNetworkException -> {
-                        _registerState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
                     }
                     is FirebaseAuthInvalidCredentialsException -> {
                         if (error.toString().contains("email address is badly formatted")) {
@@ -161,10 +165,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                         }
                     }
                     is FirebaseAuthUserCollisionException -> {
-                        _registerState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision))))
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision))))
                     }
                     else -> {
-                        _registerState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
                     }
                 }
             }
@@ -176,10 +180,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 _progressVisible.value = false
                 when (result) {
                     is LogupUseCase.Result.LoggedUpOk -> {
-                        _registerState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
+                        _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                     }
                     is LogupUseCase.Result.LoggedUpAsManagerTeamOk -> {
-                        _registerState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
+                        _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
                     }
                 }
             }

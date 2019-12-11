@@ -16,7 +16,6 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
-import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamMangementFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
@@ -151,9 +150,9 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_home, menu)
-        if (!viewModel.user.isBoss()) {
+        /*if (!viewModel.user.isBoss()) {
             menu.findItem(R.id.menu_item_create_team).setVisible(false)
-        }
+        }*/
         return super.onCreateOptionsMenu(menu)
     }
 

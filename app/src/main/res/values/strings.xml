@@ -24,6 +24,7 @@
     <string name="password_incorrect_login_message_error">La contraseña es incorrecta</string>
     <string name="user_collision">Ya existe este usuario!!!</string>
     <string name="no_internet_connection">Error de conexion, comprueba el acceso a Internet</string>
+    <string name="not_controled_error">Error no controlado</string>
     <string name="already_logged_up">Si ya estas registrado, haz click</string>
     <string name="no_account">Si no tienes cuenta, registrate</string>
     <string name="her">Aqui</string>
