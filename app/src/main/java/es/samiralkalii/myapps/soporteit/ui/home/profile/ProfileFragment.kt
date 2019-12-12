@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
+import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
@@ -72,6 +73,14 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
             }
         })
 
+        viewModel.progressVisible.observe(this, Observer {
+            when (it) {
+                LoadingDialog.DialogState.ShowLoading -> LoadingDialog.showMe(activity!!.supportFragmentManager)
+                LoadingDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
+                is LoadingDialog.DialogState.ShowMesage -> LoadingDialog.dismissMe(it.message)
+            }
+        })
+
     }
 
     private fun processStateProfileImageChanged(screenState: ScreenState.Render<ProfileChangeState>) {
@@ -88,6 +97,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_profile_fragment, menu)
+        menu.findItem(R.id.menu_item_profile)?.setVisible(false)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

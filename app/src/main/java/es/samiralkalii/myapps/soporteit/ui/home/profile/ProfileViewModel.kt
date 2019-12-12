@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.Compare2ImageProfileUseCase
@@ -33,8 +34,8 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     val showSaveMenu: LiveData<Boolean>
         get()= _showSaveMenu
 
-    private val _progressVisible= MutableLiveData<Boolean>(false)
-    val progressVisible: LiveData<Boolean>
+    private val _progressVisible= MutableLiveData<LoadingDialog.DialogState>()
+    val progressVisible: LiveData<LoadingDialog.DialogState>
         get()= _progressVisible
 
     private val _profileChangeState= MutableLiveData<Event<ScreenState<ProfileChangeState>>>()
@@ -91,16 +92,17 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
     fun onSaveClick() {
 
-        _progressVisible.value= true
+        _progressVisible.value= LoadingDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            _progressVisible.postValue(false)
             logger.error(error.toString(), error)
             when (error) {
                 is FirebaseNetworkException -> {
                     _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
+                    _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                 }
                 else -> {
                     _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
+                    _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                 }
             }
         }
@@ -109,12 +111,12 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
             async(Dispatchers.IO) {
                 saveProfileChangeUseCase(user, _imageProfile.value?.toString() ?: "", imageChanged)
             }.await()
-            _progressVisible.value = false
             _showSaveMenu.value= false
             _profileChangeState.value= Event(ScreenState.Render(ProfileChangeState.changeOk))
             if (currentProfile!= user.profile) {
                 _profileChanged.value= Event(true)
             }
+            _progressVisible.value = LoadingDialog.DialogState.ShowSuccess
         }
     }
 }

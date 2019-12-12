@@ -187,8 +187,6 @@ class LogupActivity : AppCompatActivity(),
         pickUpProfilePhotoBottonSheetDialog.show(supportFragmentManager, "pickUpProfilePhotoBottonSheetDialog")
     }
 
-
-
     private fun showChooserToPickImage() {
         val getIntent = Intent(Intent.ACTION_GET_CONTENT)
         getIntent.type = IMAGE_MIMETYPE
@@ -208,7 +206,6 @@ class LogupActivity : AppCompatActivity(),
     @SuppressLint("MissingSuperCall")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // Result code is RESULT_OK only if the user selects an Image
-
         if (resultCode == Activity.RESULT_OK)
             when (requestCode) {
                 PICK_IMAGE -> pickImage(data)

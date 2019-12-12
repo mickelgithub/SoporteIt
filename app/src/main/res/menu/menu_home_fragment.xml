@@ -8,4 +8,18 @@
         android:icon="@drawable/team_management"
         android:title="@string/create_team" />
 
+    <item
+        android:id="@+id/menu_item_invite"
+        app:showAsAction="never"
+        android:icon="@drawable/team_management"
+        android:title="@string/invite" />
+
+    <item
+        android:id="@+id/menu_item_create_group"
+        app:showAsAction="never"
+        android:icon="@drawable/team_management"
+        android:title="@string/create_group" />
+
+
+
 </menu>

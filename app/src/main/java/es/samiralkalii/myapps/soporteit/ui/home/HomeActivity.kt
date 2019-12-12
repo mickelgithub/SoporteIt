@@ -72,7 +72,7 @@ class HomeActivity : AppCompatActivity() {
                         true
                     }
                     R.id.menu_item_home -> {
-                        toast("Pronto tendremos esta funcionalidad de INICIO")
+                        viewModel.updateGoto(SplashActivity.Companion.GOTO.HOME)
                         true
                     }
                     else -> {
@@ -108,12 +108,11 @@ class HomeActivity : AppCompatActivity() {
             SplashActivity.Companion.GOTO.HOME -> {
                 logger.debug("Mostramos el home...")
                 if (supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)== null) {
-                    if (!viewModel.user.teamCreated && viewModel.user.isBoss()) {
+                    if (viewModel.user.isBoss() && !viewModel.user.teamCreated) {
                         supportActionBar?.title= resources.getString(R.string.team_no_created_title)
                     } else {
                         supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                     }
-
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeFragment.newInstance(viewModel.user.toBundle()), HomeFragment::class.java.simpleName).commit()
                 }
 
