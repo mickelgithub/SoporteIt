@@ -116,10 +116,10 @@ class LogupActivity : AppCompatActivity(),
         }
 
         viewModel.progressVisible.observe(this, Observer {
-            if (it) {
-                loadingDialog= LoadingDialog.show(supportFragmentManager)
-            } else {
-                loadingDialog?.dismiss()
+            when (it) {
+                LoadingDialog.DialogState.ShowLoading -> LoadingDialog.showMe(supportFragmentManager)
+                LoadingDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
+                is LoadingDialog.DialogState.ShowMesage -> LoadingDialog.dismissMe(it.message)
             }
         })
     }
@@ -132,17 +132,13 @@ class LogupActivity : AppCompatActivity(),
                     if (viewModel.user.localProfileImage.isNotBlank()) {
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         profile_image.startAnimation(shake)
-                        Handler().postDelayed(Runnable { viewModel.updateProgressVisible(false) }, 700)
-                        Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, 1000)
-                    } else {
-                        viewModel.updateProgressVisible(false)
-                        Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, 200)
                     }
+                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
+                    Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, LoadingDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LoginState.ShowMessage -> {
-                    viewModel.updateProgressVisible(false)
                     logger.debug("Hubo un error en acceso, lo mostramos")
-                    Toast.makeText(this, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
+                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowMesage(screenState.renderState.message))
                 }
             }
         }
@@ -168,15 +164,18 @@ class LogupActivity : AppCompatActivity(),
             when (screenState.renderState) {
                 is LogupState.LoggedupOk -> {
                     logger.debug("Registracion correcto, goto Home")
-                    startHomeActivity(screenState.renderState.user.toBundle())
+                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
+                    Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, LoadingDialog.DIALOG_DISMISS_DELAY)
+
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
-                    showTeamVerificationMessage(screenState.renderState)
+                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
+                    Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, LoadingDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")
-                    Toast.makeText(this, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
+                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowMesage(screenState.renderState.message))
                 }
             }
         }

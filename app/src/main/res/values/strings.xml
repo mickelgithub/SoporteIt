@@ -42,6 +42,7 @@
     <string name="profile_mandatory">El perfil es obligatorio</string>
     <string name="planning">planif</string>
     <string name="home">Inicio</string>
+    <string name="nothing"></string>
 
     <string name="boss_profil">Responsable de equipo</string>
     <string name="java_profil">Perfil Java</string>
@@ -58,6 +59,8 @@
     <string name="invite">Invitar</string>
     <string name="create_group">Crear grupo</string>
     <string name="add">Añadir</string>
+    <string name="verified">Verificado</string>
+    <string name="verification_pending">Verificacíon pendiente</string>
 
 
     <string-array name="profile_array">

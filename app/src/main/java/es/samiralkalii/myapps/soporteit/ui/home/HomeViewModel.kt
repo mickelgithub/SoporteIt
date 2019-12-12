@@ -9,7 +9,8 @@ import es.samiralkalii.myapps.soporteit.ui.util.Event
 import org.slf4j.LoggerFactory
 
 fun User.isBoss()= this.bossVerification== "S"
-fun User.isProfilePending()= this.profile== ""
+fun User.isProfilePendingToInput()= this.profile== ""
+fun User.isVerificationPending()= this.bossVerification== "P"
 
 
 class HomeViewModel() : ViewModel() {

@@ -18,6 +18,8 @@ import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.isBoss
+import es.samiralkalii.myapps.soporteit.ui.home.isVerificationPending
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import es.samiralkalii.myapps.soporteit.ui.util.view.IMAGE_MIMETYPE
@@ -221,6 +223,14 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
                     requestPermission()
                 }
             }
+        }
+    }
+
+    fun onImageBossVerificationClick() {
+        if (viewModel.user.isBoss()) {
+            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verified)
+        } else if (viewModel.user.isVerificationPending()) {
+            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
         }
     }
 

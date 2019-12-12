@@ -146,6 +146,9 @@
             app:layout_constraintBottom_toBottomOf="@+id/frameLayoutProfileSpinner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/frameLayoutProfileSpinner"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:onClick="@{()-> fragment.onImageBossVerificationClick()}"
             app:srcCompat="@{viewModel.user.bossVerification}" />
 
         <TextView

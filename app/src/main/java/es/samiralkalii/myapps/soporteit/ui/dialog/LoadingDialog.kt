@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogLoadingBinding
 
 
@@ -14,23 +15,43 @@ class LoadingDialog: BottomSheetDialogFragment() {
 
     companion object {
 
-        const val FRAGMENT_TAG= "dialog"
+        private const val FRAGMENT_TAG= "dialog"
+        const val DIALOG_DISMISS_DELAY= 2000L
+        private const val DIALOG_FOR_MESSAGE_KEY= "message_dialog"
 
         var loadingDialog: LoadingDialog?= null
 
         fun showMe(fragmentManager: FragmentManager) {
-            if (loadingDialog!= null) {
-                throw Exception("Loading is already showing.....")
-            }
-            loadingDialog= LoadingDialog().apply {
-                isCancelable= false
-            }.also {
-                it.show(fragmentManager, FRAGMENT_TAG)
+            if (loadingDialog== null) {
+                loadingDialog= LoadingDialog().apply {
+                    isCancelable= false
+                }.also {
+                    it.show(fragmentManager, FRAGMENT_TAG)
+                }
             }
         }
 
         fun dismissMe(message: Int?) {
             loadingDialog?.dismiss(message)
+            loadingDialog= null
+        }
+
+        fun showMeForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY) {
+            if (loadingDialog== null) {
+                val bundle= Bundle().apply {
+                    putInt(DIALOG_FOR_MESSAGE_KEY, message)
+                }
+                loadingDialog= LoadingDialog().apply {
+                    isCancelable= false
+                    arguments= bundle
+                }.also {
+                    it.show(fragmentManager, FRAGMENT_TAG)
+                    Handler().postDelayed({
+                        loadingDialog?.dismiss()
+                        loadingDialog= null
+                    }, delay)
+                }
+            }
         }
 
     }
@@ -46,25 +67,41 @@ class LoadingDialog: BottomSheetDialogFragment() {
     ): View? {
 
         binding= DialogLoadingBinding.inflate(inflater, container, false)
+        arguments?.let { args ->
+            args.getInt(DIALOG_FOR_MESSAGE_KEY)?.let { message ->
+                binding.animationLoading.visibility= View.GONE
+                binding.animationOk.visibility= View.GONE
+                binding.message.apply {
+                    visibility= View.VISIBLE
+                    text= resources.getString(message)
+                }
+            }
+        }
 
         return binding.root
     }
 
     fun dismiss(message: Int?) {
+        var delay= 0L
 
-        if (message!= null) {
-            binding.message.visibility= View.VISIBLE
-            binding.message.text= activity!!.resources.getString(message)
-            binding.animationLoading.visibility= View.GONE
-            binding.animationOk.visibility= View.GONE
-        } else {
+        if (message!= null && message!= R.string.nothing) {
+            binding.message.visibility = View.VISIBLE
+            binding.message.text = activity!!.resources.getString(message)
+            binding.animationLoading.visibility = View.GONE
+            binding.animationOk.visibility = View.GONE
+            delay = DIALOG_DISMISS_DELAY
+        } else if (message== null) {
             binding.message.visibility= View.GONE
             binding.animationLoading.visibility= View.GONE
-            binding.animationOk.visibility= View.VISIBLE
+            binding.animationOk.apply {
+                visibility= View.VISIBLE
+                playAnimation()
+            }
+            delay= DIALOG_DISMISS_DELAY
         }
         Handler().postDelayed({
             this.dismiss()
-        }, 200)
+        }, delay)
     }
 
 

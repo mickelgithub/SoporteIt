@@ -9,14 +9,11 @@ import androidx.lifecycle.ViewModelProviders
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
-import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
-import es.samiralkalii.myapps.soporteit.ui.home.isProfilePending
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamManagementChangeState
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.dialog.AlertDialogForMemberInvitation
-import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel

@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.LoginUserCase
@@ -39,8 +40,8 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val loginState: LiveData<Event<ScreenState<LoginState>>>
         get()= _loginState
 
-    private val _progressVisible= MutableLiveData<Boolean>(false)
-    val progressVisible: LiveData<Boolean>
+    private val _progressVisible= MutableLiveData<LoadingDialog.DialogState>()
+    val progressVisible: LiveData<LoadingDialog.DialogState>
         get()= _progressVisible
 
     private val _imageProfile= MutableLiveData<Uri?>()
@@ -87,13 +88,13 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         clearErrorsLogin()
 
-        _progressVisible.value= true
+        _progressVisible.value= LoadingDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            _progressVisible.postValue(false)
             logger.error(error.toString(), error)
             when (error) {
                 is FirebaseNetworkException -> {
                     _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.no_internet_connection))))
+                    //_progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                 }
                 is FirebaseAuthInvalidCredentialsException -> {
                     if (error.toString().contains("email address is badly formatted")) {
@@ -101,14 +102,17 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                     } else if (error.toString().contains("The password is invalid")) {
                         _passwordError.postValue(R.string.password_incorrect_login_message_error)
                     }
+                    _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.nothing))
                 }
                 is FirebaseAuthInvalidUserException -> {
                     if (error.toString().contains("There is no user record corresponding to this identifier")) {
                         _emailError.postValue(R.string.user_not_exist_message_error)
                     }
+                    _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.nothing))
                 }
                 else -> {
                     _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.no_internet_connection))))
+                    //_progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                 }
             }
         }
@@ -123,14 +127,14 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             }.await()
             when (result) {
                 is LoginUserCase.Result.LoginOk -> {
-                    _progressVisible.value = false
+                    //_progressVisible.value = LoadingDialog.DialogState.ShowSuccess
                     _loginState.value = Event(ScreenState.Render(LoginState.LoginOk(result.user)))
                 }
             }
         }
     }
 
-    fun updateProgressVisible(progressVisible: Boolean) {
+    fun updateProgressVisible(progressVisible: LoadingDialog.DialogState) {
         _progressVisible.value= progressVisible
     }
 
@@ -147,28 +151,30 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         } else if (user.profile.isBlank() || user.profile== CHOOSE_PROFILE) {
             _spinnerState.value= 1
         } else {
-            _progressVisible.value= true
+            _progressVisible.value= LoadingDialog.DialogState.ShowLoading
             val errorHandler = CoroutineExceptionHandler { _, error ->
-                _progressVisible.postValue(false)
                 logger.error(error.toString(), error)
                 when (error) {
                     is FirebaseNetworkException -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
+                        _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                     }
                     is FirebaseAuthInvalidCredentialsException -> {
                         if (error.toString().contains("email address is badly formatted")) {
-                            //_registerState.postValue(ScreenState.Render(LogupState.ShowMessage("Email no válido al tener formato incorrecto")))
                             _emailError.postValue(R.string.email_incorrect_message_error)
+                            _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.nothing))
                         } else if (error.toString().contains("The given password is invalid")) {
-                            //_registerState.postValue(ScreenState.Render(LogupState.ShowMessage("La contraseña debe ser de al menos 6 posiciones")))
                             _passwordError.postValue(R.string.password_incorrect_logup_message_error)
+                            _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.nothing))
                         }
                     }
                     is FirebaseAuthUserCollisionException -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision))))
+                        _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.nothing))
                     }
                     else -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
+                        _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                     }
                 }
             }
@@ -177,7 +183,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 val result= async(Dispatchers.IO) {
                     logupUseCase(user, imageProfile.value?.toString() ?: "")
                 }.await()
-                _progressVisible.value = false
+                _progressVisible.value = LoadingDialog.DialogState.ShowSuccess
                 when (result) {
                     is LogupUseCase.Result.LoggedUpOk -> {
                         _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
