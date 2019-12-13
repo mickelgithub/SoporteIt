@@ -90,7 +90,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
         }
     }
 
-    fun onSaveClick() {
+    fun onSaveClick(chooseYourProfileResource: String) {
 
         _progressVisible.value= LoadingDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
@@ -98,25 +98,27 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
             when (error) {
                 is FirebaseNetworkException -> {
                     _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
-                    _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                 }
                 else -> {
                     _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
-                    _progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                 }
             }
         }
 
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                saveProfileChangeUseCase(user, _imageProfile.value?.toString() ?: "", imageChanged)
+                saveProfileChangeUseCase(user, _imageProfile.value?.toString() ?: "", imageChanged, chooseYourProfileResource)
             }.await()
             _showSaveMenu.value= false
             _profileChangeState.value= Event(ScreenState.Render(ProfileChangeState.changeOk))
             if (currentProfile!= user.profile) {
                 _profileChanged.value= Event(true)
             }
-            _progressVisible.value = LoadingDialog.DialogState.ShowSuccess
+            //_progressVisible.value = LoadingDialog.DialogState.ShowSuccess
         }
+    }
+
+    fun updateProgressVisible(progressVisible: LoadingDialog.DialogState) {
+        _progressVisible.value= progressVisible
     }
 }

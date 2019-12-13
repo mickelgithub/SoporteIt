@@ -158,7 +158,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_item_profile -> {
-                if (viewModel.user.isProfilePendingToInput()) {
+                if (viewModel.user.isProfilePendingToInput(this)) {
                     viewModel.updateGoto(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
                 } else {
                     viewModel.updateGoto(SplashActivity.Companion.GOTO.PROFILE)

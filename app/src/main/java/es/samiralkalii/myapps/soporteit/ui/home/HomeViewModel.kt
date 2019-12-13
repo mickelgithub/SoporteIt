@@ -1,15 +1,18 @@
 package es.samiralkalii.myapps.soporteit.ui.home
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import org.slf4j.LoggerFactory
 
 fun User.isBoss()= this.bossVerification== "S"
-fun User.isProfilePendingToInput()= this.profile== ""
+fun User.isProfilePendingToInput(context: Context)= this.profile== "" ||this.profile== context.resources.getString(
+    R.string.choose_profile)
 fun User.isVerificationPending()= this.bossVerification== "P"
 
 

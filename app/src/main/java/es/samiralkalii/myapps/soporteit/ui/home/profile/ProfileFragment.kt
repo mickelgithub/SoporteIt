@@ -19,6 +19,7 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
+import es.samiralkalii.myapps.soporteit.ui.home.isProfilePendingToInput
 import es.samiralkalii.myapps.soporteit.ui.home.isVerificationPending
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
@@ -89,10 +90,10 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
         when (screenState.renderState) {
             ProfileChangeState.changeOk -> {
                 homeViewModel.updateProfileImage(user)
-                Toast.makeText(activity!!, "Operación realizada con exito", Toast.LENGTH_LONG).show()
+                viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
             }
             is ProfileChangeState.ShowMessage -> {
-                Toast.makeText(activity!!, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
+                viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowMesage(screenState.renderState.message))
             }
         }
     }
@@ -114,7 +115,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
                 //we have tu update user object
                 //we have to save the file en local storage
                 //we have ti save the file en remote storage
-                viewModel.onSaveClick()
+                viewModel.onSaveClick(resources.getString(R.string.choose_profile))
                 return true
             }
         }
@@ -231,6 +232,8 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
             LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verified)
         } else if (viewModel.user.isVerificationPending()) {
             LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
+        } else if (viewModel.user.isProfilePendingToInput(activity!!)) {
+            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.profile_is_needed)
         }
     }
 

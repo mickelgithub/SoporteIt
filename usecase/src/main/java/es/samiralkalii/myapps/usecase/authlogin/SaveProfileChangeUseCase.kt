@@ -15,7 +15,7 @@ class SaveProfileChangeUseCase(private val preferenceRepository: PreferenceRepos
     private val logger= LoggerFactory.getLogger(SaveProfileChangeUseCase::class.java)
 
 
-    suspend operator fun invoke(user: User, imageUri: String, imageChanged: Boolean) {
+    suspend operator fun invoke(user: User, imageUri: String, imageChanged: Boolean, chooseYourProfile: String) {
         if (imageChanged) {
             if (user.localProfileImage.isBlank() && imageUri.isNotBlank()) {
                 //profileImage added
@@ -44,12 +44,13 @@ class SaveProfileChangeUseCase(private val preferenceRepository: PreferenceRepos
             }
         }
         //we check if the profile has been introduced
-        if (user.profile.isNotBlank() && user.bossVerification== "N") {
+        if (user.profile.isNotBlank() && user.profile!= chooseYourProfile && user.bossVerification== "N") {
             user.bossVerification= ""
-            preferenceRepository.updateBossVerification(user.bossVerification)
-            preferenceRepository.updateProfile(user.profile)
             remoteUserRepository.updateProfile(user.profile, user.id)
             remoteUserRepository.updateBossVerification(user.bossVerification, user.id)
+            preferenceRepository.updateBossVerification(user.bossVerification)
+            preferenceRepository.updateProfile(user.profile)
+
         }
     }
 }

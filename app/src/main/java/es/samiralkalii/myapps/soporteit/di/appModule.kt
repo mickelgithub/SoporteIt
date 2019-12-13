@@ -2,6 +2,7 @@ package es.samiralkalii.myapps.soporteit.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserStorageDataSource
