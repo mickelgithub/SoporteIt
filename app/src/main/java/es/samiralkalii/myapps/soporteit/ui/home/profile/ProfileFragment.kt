@@ -90,6 +90,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
         when (screenState.renderState) {
             ProfileChangeState.changeOk -> {
                 homeViewModel.updateProfileImage(user)
+                homeViewModel.updateBossVerification(user.bossVerification)
                 viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
             }
             is ProfileChangeState.ShowMessage -> {

@@ -81,6 +81,12 @@ class HomeViewModel() : ViewModel() {
         user.profile= userParam.profile
     }
 
+    fun updateBossVerification(bossVerification: String) {
+        user.bossVerification= bossVerification
+    }
+
+
+
     fun updateGoto(gotoParam: SplashActivity.Companion.GOTO) {
         _goto.value= Event(gotoParam)
     }
