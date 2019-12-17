@@ -16,6 +16,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
@@ -78,9 +79,9 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
-                LoadingDialog.DialogState.ShowLoading -> LoadingDialog.showMe(activity!!.supportFragmentManager)
-                LoadingDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                is LoadingDialog.DialogState.ShowMesage -> LoadingDialog.dismissMe(it.message)
+                MyDialog.DialogState.ShowLoading -> LoadingDialog.showMe(activity!!.supportFragmentManager)
+                MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
+                is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)
             }
         })
 
@@ -91,10 +92,10 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
             ProfileChangeState.changeOk -> {
                 homeViewModel.updateProfileImage(user)
                 homeViewModel.updateBossVerification(user.bossVerification)
-                viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
+                viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
             }
             is ProfileChangeState.ShowMessage -> {
-                viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowMesage(screenState.renderState.message))
+                viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
             }
         }
     }

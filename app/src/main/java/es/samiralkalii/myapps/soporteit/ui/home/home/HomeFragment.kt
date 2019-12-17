@@ -2,7 +2,6 @@ package es.samiralkalii.myapps.soporteit.ui.home.home
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -10,17 +9,19 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
+import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
-import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamManagementChangeState
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.dialog.AlertDialogForMemberInvitation
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
-class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelectionListener {
+class HomeFragment: Fragment(),
+    AlertDialogForMemberInvitation.OnMemberSelectionListener,
+    CreateTeamDialog.OnCreateTeamListener {
 
     companion object {
         fun newInstance(bundle: Bundle) = HomeFragment().apply { arguments= bundle }
@@ -43,6 +44,17 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
         viewModel.publishUser(user)
         setHasOptionsMenu(true)
 
+        //create Tream
+        viewModel.dialogCreateTeamState.observe(this, Observer {
+            when (it) {
+                MyDialog.DialogState.ShowDialog    -> CreateTeamDialog.showDialog(activity!!.supportFragmentManager)
+                MyDialog.DialogState.ShowLoading   -> CreateTeamDialog.showLoading()
+                MyDialog.DialogState.ShowSuccess   -> CreateTeamDialog.showSuccess()
+                is MyDialog.DialogState.ShowMessage -> CreateTeamDialog.showMessage(it.message)
+            }
+        })
+
+
         viewModel.teamAddedOk.observe(this, Observer {
             it.getContentIfNotHandled().let { screenState ->
                 if (screenState is ScreenState.Render) {
@@ -51,10 +63,37 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
             }
         })
 
+
+
+        //end create Team
+
+
+
         viewModel.allUsers.observe(this, Observer {
             updateUsers(it)
         })
     }
+
+    private fun processTeamAdded(screenState: ScreenState.Render<HomeFragmentChangeState>) {
+        when (screenState.renderState) {
+            HomeFragmentChangeState.teamAddedOk -> {
+                homeViewModel.updateTeamCreated()
+                viewModel.updateDialogCreateState(MyDialog.DialogState.ShowSuccess)
+                //Toast.makeText(activity!!, "Operación realizada con exito", Toast.LENGTH_LONG).show()
+            }
+            is HomeFragmentChangeState.ShowMessage -> {
+                //Toast.makeText(activity!!, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
+                viewModel.updateDialogCreateState(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+            }
+        }
+    }
+
+    //create team
+    override fun onCreateTeam(team: String) {
+        logger.debug("Vamos a crear el team $team")
+        viewModel.onTeamCreateClick(team)
+    }
+    //end create team
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,17 +109,7 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
         return binding.root
     }
 
-    private fun processTeamAdded(screenState: ScreenState.Render<TeamManagementChangeState>) {
-        when (screenState.renderState) {
-            TeamManagementChangeState.teamAddedOk -> {
-                homeViewModel.updateTeamCreated()
-                Toast.makeText(activity!!, "Operación realizada con exito", Toast.LENGTH_LONG).show()
-            }
-            is TeamManagementChangeState.ShowMessage -> {
-                Toast.makeText(activity!!, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
-            }
-        }
-    }
+
 
 
     override fun onMemeberSelected(user: String) {
@@ -111,7 +140,7 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
         return when (item.itemId) {
             R.id.menu_item_create_team -> {
                 logger.debug("opcion ${item.title} clicked")
-                CreateTeamDialog.showMe(activity!!.supportFragmentManager)
+                viewModel.updateDialogCreateState(MyDialog.DialogState.ShowDialog)
                 true
             }
             R.id.menu_item_invite -> {
@@ -125,4 +154,6 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 }

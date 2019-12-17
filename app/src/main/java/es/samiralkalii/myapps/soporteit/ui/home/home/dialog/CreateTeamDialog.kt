@@ -1,75 +1,44 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.dialog
 
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogCreateTeamBinding
+import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import org.slf4j.LoggerFactory
-import kotlin.random.Random
 
 
 class CreateTeamDialog: BottomSheetDialogFragment() {
 
-    companion object {
 
-        private const val FRAGMENT_TAG= "dialog"
-        const val DIALOG_DISMISS_DELAY= 2000L
-        private const val DIALOG_FOR_MESSAGE_KEY= "message_dialog"
-
-        fun showMe(fragmentManager: FragmentManager) {
-           CreateTeamDialog().apply {
-               isCancelable= false
-               show(fragmentManager, FRAGMENT_TAG)
-           }
-        }
-
-
-
-        /*fun showMeForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY) {
-            if (createTeamDialog== null) {
-                val bundle= Bundle().apply {
-                    putInt(DIALOG_FOR_MESSAGE_KEY, message)
-                }
-                createTeamDialog= CreateTeamDialog().apply {
-                    isCancelable= false
-                    arguments= bundle
-                }.also {
-                    it.show(fragmentManager, FRAGMENT_TAG)
-                    Handler().postDelayed({
-                        createTeamDialog?.dismiss()
-                        createTeamDialog= null
-                    }, delay)
-                }
-            }
-        }*/
-
-    }
 
     private val logger = LoggerFactory.getLogger(CreateTeamDialog::class.java)
     private lateinit var binding: DialogCreateTeamBinding
+
+    private lateinit var onCreateTeamListener: OnCreateTeamListener
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         logger.debug("OnCreate...")
     }
 
-    fun dismissMe() {
-        val i= Random.nextInt()
-        if (i % 2 == 0) {
-            binding.createTeam.visibility= View.GONE
-            binding.animationLoading.visibility= View.VISIBLE
-        } else {
-            dismiss()
-        }
-    }
-
     var teamName: String= ""
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        onCreateTeamListener= (context as AppCompatActivity).supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName) as OnCreateTeamListener
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,60 +46,71 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
     ): View? {
 
         logger.debug("onCreateView")
-
         binding= DialogCreateTeamBinding.inflate(inflater, container, false)
-        /*arguments?.let { args ->
-            args.getInt(DIALOG_FOR_MESSAGE_KEY)?.let { message ->
-                binding.animationLoading.visibility= View.GONE
-                binding.animationOk.visibility= View.GONE
-                binding.message.apply {
-                    visibility= View.VISIBLE
-                    text= resources.getString(message)
-                }
-            }
-        }*/
         binding.fragment= this
         return binding.root
     }
 
-    fun dismiss(message: Int?) {
-        var delay= 0L
+    companion object {
 
-        /*if (message!= null && message!= R.string.nothing) {
-            binding.message.visibility = View.VISIBLE
-            binding.message.text = activity!!.resources.getString(message)
-            binding.animationLoading.visibility = View.GONE
-            binding.animationOk.visibility = View.GONE
-            delay = DIALOG_DISMISS_DELAY
-        } else if (message== null) {
-            binding.message.visibility= View.GONE
-            binding.animationLoading.visibility= View.GONE
-            binding.animationOk.apply {
-                visibility= View.VISIBLE
-                playAnimation()
+        private const val FRAGMENT_TAG= "dialog"
+
+        var createTeamDialog: CreateTeamDialog?= null
+
+        fun showDialog(fragmentManager: FragmentManager) {
+
+            if (createTeamDialog == null) {
+                createTeamDialog = CreateTeamDialog().apply {
+                    isCancelable = false
+                }.also {
+                    it.show(fragmentManager, FRAGMENT_TAG)
+                }
             }
-            delay= DIALOG_DISMISS_DELAY
         }
-        Handler().postDelayed({
-            this.dismiss()
-        }, delay)*/
+
+        fun showLoading() {
+            val tempCreateTeamDialog= createTeamDialog!!
+            tempCreateTeamDialog.binding.teamInputLayout.editText?.isEnabled= false
+            tempCreateTeamDialog.binding.createTeam.visibility= View.GONE
+            tempCreateTeamDialog.binding.animationOk.visibility= View.GONE
+            tempCreateTeamDialog.binding.message.visibility= View.GONE
+            tempCreateTeamDialog.binding.animationLoading.visibility= View.VISIBLE
+        }
+
+        fun showSuccess() {
+            val tempCreateTeamDialog= createTeamDialog!!
+            tempCreateTeamDialog.binding.teamInputLayout.editText?.isEnabled= false
+            tempCreateTeamDialog.binding.createTeam.visibility= View.GONE
+            tempCreateTeamDialog.binding.animationLoading.visibility= View.GONE
+            tempCreateTeamDialog.binding.message.visibility= View.GONE
+            tempCreateTeamDialog.binding.animationOk.visibility= View.VISIBLE
+            Handler().postDelayed({
+                tempCreateTeamDialog.dismiss()
+                createTeamDialog= null
+            }, MyDialog.DIALOG_DISMISS_DELAY)
+        }
+
+        fun showMessage(message: Int) {
+            val tempCreateTeamDialog= createTeamDialog!!
+            tempCreateTeamDialog.binding.teamInputLayout.editText?.isEnabled= false
+            tempCreateTeamDialog.binding.createTeam.visibility= View.GONE
+            tempCreateTeamDialog.binding.animationLoading.visibility= View.GONE
+            tempCreateTeamDialog.binding.animationOk.visibility= View.GONE
+            tempCreateTeamDialog.binding.message.visibility= View.VISIBLE
+            tempCreateTeamDialog.binding.message.setText(message)
+            Handler().postDelayed({
+                tempCreateTeamDialog.dismiss()
+                createTeamDialog= null
+            }, MyDialog.DIALOG_DISMISS_DELAY)
+        }
+
     }
 
-    fun onCreateTeamButtonClick() {
-        logger.debug("button create team clicked....")
 
-
+    interface OnCreateTeamListener {
+        fun onCreateTeam(team: String)
     }
 
-
-
-    sealed class DialogState {
-
-        object ShowLoading: DialogState()
-        object ShowSuccess: DialogState()
-        class ShowMesage(val message: Int): DialogState()
-
-    }
 
 
 }

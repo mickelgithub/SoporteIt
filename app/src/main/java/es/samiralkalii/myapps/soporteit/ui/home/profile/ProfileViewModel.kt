@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.Compare2ImageProfileUseCase
@@ -34,8 +34,8 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     val showSaveMenu: LiveData<Boolean>
         get()= _showSaveMenu
 
-    private val _progressVisible= MutableLiveData<LoadingDialog.DialogState>()
-    val progressVisible: LiveData<LoadingDialog.DialogState>
+    private val _progressVisible= MutableLiveData<MyDialog.DialogState>()
+    val progressVisible: LiveData<MyDialog.DialogState>
         get()= _progressVisible
 
     private val _profileChangeState= MutableLiveData<Event<ScreenState<ProfileChangeState>>>()
@@ -92,7 +92,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
     fun onSaveClick(chooseYourProfileResource: String) {
 
-        _progressVisible.value= LoadingDialog.DialogState.ShowLoading
+        _progressVisible.value= MyDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             when (error) {
@@ -118,7 +118,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
         }
     }
 
-    fun updateProgressVisible(progressVisible: LoadingDialog.DialogState) {
+    fun updateProgressVisible(progressVisible: MyDialog.DialogState) {
         _progressVisible.value= progressVisible
     }
 }

@@ -6,18 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogLoadingBinding
 
 
-class LoadingDialog: BottomSheetDialogFragment() {
+class LoadingDialog: MyDialog() {
 
     companion object {
-
-        private const val FRAGMENT_TAG= "dialog"
-        const val DIALOG_DISMISS_DELAY= 2000L
-        private const val DIALOG_FOR_MESSAGE_KEY= "message_dialog"
 
         var loadingDialog: LoadingDialog?= null
 
@@ -106,13 +101,7 @@ class LoadingDialog: BottomSheetDialogFragment() {
 
 
 
-    sealed class DialogState {
 
-        object ShowLoading: DialogState()
-        object ShowSuccess: DialogState()
-        class ShowMesage(val message: Int): DialogState()
-
-    }
 
 
 }

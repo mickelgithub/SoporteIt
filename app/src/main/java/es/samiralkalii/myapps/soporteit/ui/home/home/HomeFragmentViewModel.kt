@@ -8,7 +8,7 @@ import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamManagementChangeState
+import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
@@ -25,17 +25,22 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
 
     lateinit var user: User
 
-    private val _progressVisible= MutableLiveData<Boolean>(false)
-    val progressVisible: LiveData<Boolean>
-        get()= _progressVisible
 
-    private val _addTeamMenuItemVisible= MutableLiveData<Boolean>(true)
-    val addTeamMenuItemVisible: LiveData<Boolean>
-        get() = _addTeamMenuItemVisible
+    //create team
+    private val _dialogCreateTeamState= MutableLiveData<MyDialog.DialogState>()
+    val dialogCreateTeamState: LiveData<MyDialog.DialogState>
+        get() = _dialogCreateTeamState
 
-    private val _teamAddedOk= MutableLiveData<Event<ScreenState<TeamManagementChangeState>>>()
-    val teamAddedOk: LiveData<Event<ScreenState<TeamManagementChangeState>>>
+    fun updateDialogCreateState(state: MyDialog.DialogState) {
+        _dialogCreateTeamState.value= state
+    }
+
+    private val _teamAddedOk= MutableLiveData<Event<ScreenState<HomeFragmentChangeState>>>()
+    val teamAddedOk: LiveData<Event<ScreenState<HomeFragmentChangeState>>>
         get() = _teamAddedOk
+
+
+    //end create team
 
     private val _allUsers= MutableLiveData<List<User>>()
 
@@ -45,50 +50,36 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
 
     fun publishUser(userParam: User) {
         user= userParam
-        _addTeamMenuItemVisible.value= !user.teamCreated
     }
 
     fun onTeamCreateClick(teamName: String) {
+
         logger.debug("On team create clicked")
 
-        _progressVisible.value= true
+
+        _dialogCreateTeamState.value= MyDialog.DialogState.ShowDialog
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            _progressVisible.postValue(false)
             logger.error(error.toString(), error)
             when (error) {
                 is FirebaseNetworkException -> {
-                    _teamAddedOk.postValue(
-                        Event(
-                            ScreenState.Render(
-                                TeamManagementChangeState.ShowMessage(
-                                    R.string.no_internet_connection)))
-                    )
+                    _teamAddedOk.postValue(Event(ScreenState.Render(HomeFragmentChangeState.ShowMessage(R.string.no_internet_connection))))
                 }
                 else -> {
-                    _teamAddedOk.postValue(
-                        Event(
-                            ScreenState.Render(
-                                TeamManagementChangeState.ShowMessage(
-                                    R.string.no_internet_connection)))
-                    )
+                    _teamAddedOk.postValue(Event(ScreenState.Render(HomeFragmentChangeState.ShowMessage(R.string.no_internet_connection))))
                 }
             }
         }
-
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
                 addTeamUseCase(Team(teamName), user.id)
             }.await()
-            _progressVisible.value = false
-            _addTeamMenuItemVisible.value= false
-            _teamAddedOk.value= Event(ScreenState.Render(TeamManagementChangeState.teamAddedOk))
+            _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
         }
 
     }
 
     fun loadAllUsers() {
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            _progressVisible.postValue(false)
             logger.error(error.toString(), error)
             when (error) {
                 is FirebaseNetworkException -> {
@@ -126,6 +117,8 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
     fun onGroupCreateClick() {
         logger.debug("On group create clicked")
     }
+
+
 
 
 }

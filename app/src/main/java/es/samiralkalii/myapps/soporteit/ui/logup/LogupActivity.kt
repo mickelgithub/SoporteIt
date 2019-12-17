@@ -20,10 +20,7 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
-import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
-import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
-import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
-import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.*
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
@@ -48,8 +45,6 @@ class LogupActivity : AppCompatActivity(),
     private lateinit var transitionMngLogUpToLogIn: Transition
 
     private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
-
-    private var loadingDialog: LoadingDialog?= null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,9 +112,9 @@ class LogupActivity : AppCompatActivity(),
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
-                LoadingDialog.DialogState.ShowLoading -> LoadingDialog.showMe(supportFragmentManager)
-                LoadingDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                is LoadingDialog.DialogState.ShowMesage -> LoadingDialog.dismissMe(it.message)
+                MyDialog.DialogState.ShowLoading -> LoadingDialog.showMe(supportFragmentManager)
+                MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
+                is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)
             }
         })
     }
@@ -133,12 +128,12 @@ class LogupActivity : AppCompatActivity(),
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         profile_image.startAnimation(shake)
                     }
-                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
-                    Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, LoadingDialog.DIALOG_DISMISS_DELAY)
+                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                    Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, MyDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LoginState.ShowMessage -> {
                     logger.debug("Hubo un error en acceso, lo mostramos")
-                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowMesage(screenState.renderState.message))
+                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
                 }
             }
         }
@@ -164,18 +159,18 @@ class LogupActivity : AppCompatActivity(),
             when (screenState.renderState) {
                 is LogupState.LoggedupOk -> {
                     logger.debug("Registracion correcto, goto Home")
-                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
-                    Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, LoadingDialog.DIALOG_DISMISS_DELAY)
+                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                    Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, MyDialog.DIALOG_DISMISS_DELAY)
 
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
-                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowSuccess)
-                    Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, LoadingDialog.DIALOG_DISMISS_DELAY)
+                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                    Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")
-                    viewModel.updateProgressVisible(LoadingDialog.DialogState.ShowMesage(screenState.renderState.message))
+                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
                 }
             }
         }
