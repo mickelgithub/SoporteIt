@@ -11,6 +11,7 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamManagementChangeState
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.dialog.AlertDialogForMemberInvitation
@@ -99,6 +100,9 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
             inflater.inflate(R.menu.menu_home_fragment, menu)
             if (viewModel.user.teamCreated) {
                 menu.findItem(R.id.menu_item_create_team).setVisible(false)
+            } else {
+                menu.findItem(R.id.menu_item_create_group).setVisible(false)
+                menu.findItem(R.id.menu_item_invite).setVisible(false)
             }
         }
     }
@@ -107,6 +111,7 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
         return when (item.itemId) {
             R.id.menu_item_create_team -> {
                 logger.debug("opcion ${item.title} clicked")
+                CreateTeamDialog.showMe(activity!!.supportFragmentManager)
                 true
             }
             R.id.menu_item_invite -> {
@@ -119,12 +124,5 @@ class HomeFragment: Fragment(), AlertDialogForMemberInvitation.OnMemberSelection
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
-
-
-
-
-
-
 }

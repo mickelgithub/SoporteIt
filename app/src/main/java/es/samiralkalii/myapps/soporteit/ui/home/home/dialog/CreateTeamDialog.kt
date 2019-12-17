@@ -2,14 +2,13 @@ package es.samiralkalii.myapps.soporteit.ui.home.home.dialog
 
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.databinding.DialogLoadingBinding
+import es.samiralkalii.myapps.soporteit.databinding.DialogCreateTeamBinding
+import org.slf4j.LoggerFactory
 
 
 class CreateTeamDialog: BottomSheetDialogFragment() {
@@ -20,24 +19,16 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
         const val DIALOG_DISMISS_DELAY= 2000L
         private const val DIALOG_FOR_MESSAGE_KEY= "message_dialog"
 
-        var createTeamDialog: CreateTeamDialog?= null
-
         fun showMe(fragmentManager: FragmentManager) {
-            if (createTeamDialog== null) {
-                createTeamDialog= CreateTeamDialog().apply {
-                    isCancelable= false
-                }.also {
-                    it.show(fragmentManager, FRAGMENT_TAG)
-                }
-            }
+           CreateTeamDialog().apply {
+               isCancelable= false
+               show(fragmentManager, FRAGMENT_TAG)
+           }
         }
 
-        fun dismissMe(message: Int?) {
-            createTeamDialog?.dismiss(message)
-            createTeamDialog= null
-        }
 
-        fun showMeForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY) {
+
+        /*fun showMeForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY) {
             if (createTeamDialog== null) {
                 val bundle= Bundle().apply {
                     putInt(DIALOG_FOR_MESSAGE_KEY, message)
@@ -53,22 +44,33 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
                     }, delay)
                 }
             }
-        }
+        }*/
 
     }
 
-    private lateinit var binding: DialogLoadingBinding
+    private val logger = LoggerFactory.getLogger(CreateTeamDialog::class.java)
+    private lateinit var binding: DialogCreateTeamBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        logger.debug("OnCreate...")
+    }
 
+    fun dismissMe() {
+        dismiss()
+    }
 
+    var teamName: String= ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        binding= DialogLoadingBinding.inflate(inflater, container, false)
-        arguments?.let { args ->
+        logger.debug("onCreateView")
+
+        binding= DialogCreateTeamBinding.inflate(inflater, container, false)
+        /*arguments?.let { args ->
             args.getInt(DIALOG_FOR_MESSAGE_KEY)?.let { message ->
                 binding.animationLoading.visibility= View.GONE
                 binding.animationOk.visibility= View.GONE
@@ -77,15 +79,15 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
                     text= resources.getString(message)
                 }
             }
-        }
-
+        }*/
+        binding.fragment= this
         return binding.root
     }
 
     fun dismiss(message: Int?) {
         var delay= 0L
 
-        if (message!= null && message!= R.string.nothing) {
+        /*if (message!= null && message!= R.string.nothing) {
             binding.message.visibility = View.VISIBLE
             binding.message.text = activity!!.resources.getString(message)
             binding.animationLoading.visibility = View.GONE
@@ -102,7 +104,13 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
         }
         Handler().postDelayed({
             this.dismiss()
-        }, delay)
+        }, delay)*/
+    }
+
+    fun onCreateTeamButtonClick() {
+        logger.debug("button create team clicked....")
+
+
     }
 
 
