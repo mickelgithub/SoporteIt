@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogCreateTeamBinding
 import org.slf4j.LoggerFactory
+import kotlin.random.Random
 
 
 class CreateTeamDialog: BottomSheetDialogFragment() {
@@ -57,7 +60,13 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
     }
 
     fun dismissMe() {
-        dismiss()
+        val i= Random.nextInt()
+        if (i % 2 == 0) {
+            binding.createTeam.visibility= View.GONE
+            binding.animationLoading.visibility= View.VISIBLE
+        } else {
+            dismiss()
+        }
     }
 
     var teamName: String= ""
