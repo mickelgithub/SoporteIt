@@ -71,7 +71,7 @@ class AlertDialogForMemberInvitation: DialogFragment() {
         val builder= MaterialAlertDialogBuilder(context, R.style.MyDialogCustomTheme)
         builder.setTitle(activity!!.resources.getString(R.string.invite)+ "...")
         builder.setCancelable(false)
-        val view= LayoutInflater.from(activity!!).inflate(R.layout.invite_user_to_team, null)
+        val view= LayoutInflater.from(activity!!).inflate(R.layout.invite_member_dialog, null)
         val membersAutoComplete= view.findViewById<AppCompatAutoCompleteTextView>(R.id.members)
         adapter= MembersSuggestAdapter(activity!!, android.R.layout.simple_dropdown_item_1line)
         membersAutoComplete.setAdapter(adapter)

@@ -1,27 +1,36 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.dialog
 
 import android.content.Context
+import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.databinding.InviteMemberDialogBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import org.slf4j.LoggerFactory
 
 class InviteMemberDialog: MyDialog() {
 
     private val logger = LoggerFactory.getLogger(InviteMemberDialog::class.java)
 
-    private lateinit var onMemberSelection: OnMemberSelectionListener
+    private lateinit var onInviteMember: OnInviteMemberListener
 
     private lateinit var adapter: MembersSuggestAdapter
 
+    private lateinit var binding: InviteMemberDialogBinding
+
+    var member: String = ""
+
     companion object {
 
-        var inviteMemberDialog: InviteMemberDialog= null
+        var inviteMemberDialog: InviteMemberDialog?= null
 
         fun showDialog(fragmentManager: FragmentManager)= InviteMemberDialog().apply {
             if (inviteMemberDialog== null) {
@@ -34,43 +43,63 @@ class InviteMemberDialog: MyDialog() {
         }
 
         fun showLoading() {
-            val tempinviteMemberDialog= inviteMemberDialog!!
-            tempinviteMemberDialog.binding.teamInputLayout.editText?.isEnabled= false
-            tempinviteMemberDialog.binding.createTeam.visibility= View.GONE
-            tempinviteMemberDialog.binding.animationOk.visibility= View.GONE
-            tempinviteMemberDialog.binding.message.visibility= View.GONE
-            tempinviteMemberDialog.binding.animationLoading.visibility= View.VISIBLE
+            val tempInviteMemberDialog= inviteMemberDialog!!
+            tempInviteMemberDialog.binding.members.isEnabled= false
+            tempInviteMemberDialog.binding.inviteMember.visibility= View.GONE
+            tempInviteMemberDialog.binding.animationOk.visibility= View.GONE
+            tempInviteMemberDialog.binding.message.visibility= View.GONE
+            tempInviteMemberDialog.binding.animationLoading.visibility= View.VISIBLE
         }
 
         fun showSuccess() {
-            val tempinviteMemberDialog= inviteMemberDialog!!
-            tempinviteMemberDialog.binding.teamInputLayout.editText?.isEnabled= false
-            tempinviteMemberDialog.binding.createTeam.visibility= View.GONE
-            tempinviteMemberDialog.binding.animationLoading.visibility= View.GONE
-            tempinviteMemberDialog.binding.message.visibility= View.GONE
-            tempinviteMemberDialog.binding.animationOk.apply {
+            val tempInviteMemberDialog= inviteMemberDialog!!
+            tempInviteMemberDialog.binding.members.isEnabled= false
+            tempInviteMemberDialog.binding.inviteMember.visibility= View.GONE
+            tempInviteMemberDialog.binding.animationLoading.visibility= View.GONE
+            tempInviteMemberDialog.binding.message.visibility= View.GONE
+            tempInviteMemberDialog.binding.animationOk.apply {
                 visibility= View.VISIBLE
                 playAnimation()
             }
             Handler().postDelayed({
-                tempCreateTeamDialog.dismiss()
-                createTeamDialog= null
+                tempInviteMemberDialog.dismiss()
+                inviteMemberDialog= null
             }, DIALOG_DISMISS_DELAY)
         }
 
         fun showMessage(message: Int) {
-            val tempCreateTeamDialog= createTeamDialog!!
-            tempCreateTeamDialog.binding.teamInputLayout.editText?.isEnabled= false
-            tempCreateTeamDialog.binding.createTeam.visibility= View.GONE
-            tempCreateTeamDialog.binding.animationLoading.visibility= View.GONE
-            tempCreateTeamDialog.binding.animationOk.visibility= View.GONE
-            tempCreateTeamDialog.binding.message.visibility= View.VISIBLE
-            tempCreateTeamDialog.binding.message.setText(message)
+            val tempInviteMemberDialog= inviteMemberDialog!!
+            tempInviteMemberDialog.binding.members.isEnabled= false
+            tempInviteMemberDialog.binding.inviteMember.visibility= View.GONE
+            tempInviteMemberDialog.binding.animationLoading.visibility= View.GONE
+            tempInviteMemberDialog.binding.animationOk.visibility= View.GONE
+            tempInviteMemberDialog.binding.message.visibility= View.VISIBLE
+            tempInviteMemberDialog.binding.message.setText(message)
             Handler().postDelayed({
-                tempCreateTeamDialog.dismiss()
-                createTeamDialog= null
+                tempInviteMemberDialog.dismiss()
+                inviteMemberDialog= null
             }, DIALOG_DISMISS_DELAY)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        onInviteMember= (context as AppCompatActivity).supportFragmentManager.findFragmentByTag(
+            HomeFragment::class.java.simpleName) as OnInviteMemberListener
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        logger.debug("onCreateView")
+        binding= InviteMemberDialogBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner= viewLifecycleOwner
+        binding.fragment= this
+        return binding.root
     }
 
 
@@ -140,8 +169,12 @@ class InviteMemberDialog: MyDialog() {
         }
     }
 
-    interface OnMemberSelectionListener {
+    fun onInviteMemberClick() {
+
+    }
+
+    interface OnInviteMemberListener {
         fun onMemeberSelected(user: String)
-        fun updateUsers(users: List<User>)
+        fun LoadUsers(): List<User>
     }
 }

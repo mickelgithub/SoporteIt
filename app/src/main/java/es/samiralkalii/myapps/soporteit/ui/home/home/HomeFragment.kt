@@ -14,6 +14,7 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
 import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.dialog.AlertDialogForMemberInvitation
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory
 
 class HomeFragment: Fragment(),
     AlertDialogForMemberInvitation.OnMemberSelectionListener,
-    CreateTeamDialog.OnCreateTeamListener {
+    CreateTeamDialog.OnCreateTeamListener, InviteMemberDialog.OnInviteMemberListener {
 
     companion object {
         fun newInstance(bundle: Bundle) = HomeFragment().apply { arguments= bundle }
@@ -120,6 +121,10 @@ class HomeFragment: Fragment(),
 
     }
 
+    override fun LoadUsers(): List<User> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun updateUsers(users: List<User>) {
         val invitationFragment= activity!!.supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
         if (invitationFragment is AlertDialogForMemberInvitation) {
@@ -148,7 +153,7 @@ class HomeFragment: Fragment(),
                 true
             }
             R.id.menu_item_invite -> {
-                logger.debug("opcion ${item.title} clicked")
+                InviteMemberDialog.showDialog(activity!!.supportFragmentManager)
                 true
             }
             R.id.menu_item_create_group -> {

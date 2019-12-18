@@ -60,6 +60,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.profile= (data[KEY_PROFILE] as String?) ?: ""
             user.bossVerification= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
             user.teamCreated= (data[KEY_TEAM_CREATED] as Boolean?) ?: false
+            user.team= data[KEY_TEAM] as 
         }
     }
 
