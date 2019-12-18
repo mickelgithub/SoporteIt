@@ -63,6 +63,7 @@
     <string name="verified">Verificado</string>
     <string name="verification_pending">Verificacíon pendiente</string>
     <string name="create_new_team">Dar de alta el equipo</string>
+    <string name="invite_new_member">Invitar a un miembro</string>
 
 
     <string-array name="profile_array">

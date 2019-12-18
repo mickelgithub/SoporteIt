@@ -12,11 +12,12 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.samiralkalii.myapps.soporteit.databinding.DialogCreateTeamBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog.Companion.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import org.slf4j.LoggerFactory
 
 
-class CreateTeamDialog: BottomSheetDialogFragment() {
+class CreateTeamDialog: MyDialog() {
 
 
 
@@ -47,13 +48,12 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
 
         logger.debug("onCreateView")
         binding= DialogCreateTeamBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
         return binding.root
     }
 
     companion object {
-
-        private const val FRAGMENT_TAG= "dialog"
 
         var createTeamDialog: CreateTeamDialog?= null
 
@@ -83,11 +83,14 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
             tempCreateTeamDialog.binding.createTeam.visibility= View.GONE
             tempCreateTeamDialog.binding.animationLoading.visibility= View.GONE
             tempCreateTeamDialog.binding.message.visibility= View.GONE
-            tempCreateTeamDialog.binding.animationOk.visibility= View.VISIBLE
+            tempCreateTeamDialog.binding.animationOk.apply {
+                visibility= View.VISIBLE
+                playAnimation()
+            }
             Handler().postDelayed({
                 tempCreateTeamDialog.dismiss()
                 createTeamDialog= null
-            }, MyDialog.DIALOG_DISMISS_DELAY)
+            }, DIALOG_DISMISS_DELAY)
         }
 
         fun showMessage(message: Int) {
@@ -101,9 +104,13 @@ class CreateTeamDialog: BottomSheetDialogFragment() {
             Handler().postDelayed({
                 tempCreateTeamDialog.dismiss()
                 createTeamDialog= null
-            }, MyDialog.DIALOG_DISMISS_DELAY)
+            }, DIALOG_DISMISS_DELAY)
         }
 
+    }
+
+    fun onCreateTeamClickec() {
+        onCreateTeamListener.onCreateTeam(teamName)
     }
 
 

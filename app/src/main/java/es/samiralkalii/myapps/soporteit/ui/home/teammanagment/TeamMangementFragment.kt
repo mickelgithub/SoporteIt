@@ -60,7 +60,7 @@ class TeamMangementFragment: Fragment(), AlertDialogForMemberInvitation.OnMember
     private fun processTeamAdded(screenState: ScreenState.Render<TeamManagementChangeState>) {
         when (screenState.renderState) {
             TeamManagementChangeState.teamAddedOk -> {
-                homeViewModel.updateTeamCreated()
+                homeViewModel.updateTeamCreated(viewModel.user)
                 Toast.makeText(activity!!, "Operación realizada con exito", Toast.LENGTH_LONG).show()
             }
             is TeamManagementChangeState.ShowMessage -> {

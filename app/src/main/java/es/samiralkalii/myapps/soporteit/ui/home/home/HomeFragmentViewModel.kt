@@ -57,7 +57,7 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
         logger.debug("On team create clicked")
 
 
-        _dialogCreateTeamState.value= MyDialog.DialogState.ShowDialog
+        _dialogCreateTeamState.value= MyDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             when (error) {
@@ -73,6 +73,8 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
             async(Dispatchers.IO) {
                 addTeamUseCase(Team(teamName), user.id)
             }.await()
+            user.team= teamName
+            user.teamCreated= true
             _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
         }
 

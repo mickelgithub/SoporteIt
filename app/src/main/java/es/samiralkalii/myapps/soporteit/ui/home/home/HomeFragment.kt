@@ -1,7 +1,9 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -77,12 +79,14 @@ class HomeFragment: Fragment(),
     private fun processTeamAdded(screenState: ScreenState.Render<HomeFragmentChangeState>) {
         when (screenState.renderState) {
             HomeFragmentChangeState.teamAddedOk -> {
-                homeViewModel.updateTeamCreated()
+                homeViewModel.updateTeamCreated(viewModel.user)
                 viewModel.updateDialogCreateState(MyDialog.DialogState.ShowSuccess)
-                //Toast.makeText(activity!!, "Operación realizada con exito", Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    (activity as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
+                    (activity as AppCompatActivity).invalidateOptionsMenu()
+                }, MyDialog.DIALOG_DISMISS_DELAY)
             }
             is HomeFragmentChangeState.ShowMessage -> {
-                //Toast.makeText(activity!!, resources.getString(screenState.renderState.message), Toast.LENGTH_LONG).show()
                 viewModel.updateDialogCreateState(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
             }
         }

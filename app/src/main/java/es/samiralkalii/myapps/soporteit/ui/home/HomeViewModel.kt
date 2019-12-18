@@ -73,8 +73,9 @@ class HomeViewModel() : ViewModel() {
         user.remoteProfileImage= userParam.remoteProfileImage
     }
 
-    fun updateTeamCreated() {
-        user.teamCreated= true
+    fun updateTeamCreated(user: User) {
+        this.user.teamCreated= user.teamCreated
+        this.user.team= user.team
     }
 
     fun updateProfile(userParam: User) {
