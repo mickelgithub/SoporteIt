@@ -36,6 +36,7 @@
             android:inputType="text"
             android:maxLines="1"
             android:enabled="false"
+            android:imeOptions="actionDone"
             android:text="@={fragment.member}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

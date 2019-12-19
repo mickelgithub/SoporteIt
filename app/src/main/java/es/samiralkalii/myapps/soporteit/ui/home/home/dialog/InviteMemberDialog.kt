@@ -28,7 +28,7 @@ class InviteMemberDialog: MyDialog() {
 
     private lateinit var binding: InviteMemberDialogBinding
 
-    var member: String = ""
+    var member: String = "Espere mientras cargamos los datos"
 
     companion object {
 
@@ -45,6 +45,7 @@ class InviteMemberDialog: MyDialog() {
 
         fun showDialog() {
             inviteMemberDialog?.let {
+                it.binding.members.setText("")
                 it.binding.members.isEnabled= true
                 it.binding.inviteMember.visibility= View.VISIBLE
                 it.binding.animationOk.visibility= View.GONE
@@ -94,7 +95,7 @@ class InviteMemberDialog: MyDialog() {
 
         fun loadUsers(users: List<User>) {
             inviteMemberDialog?.let {
-                it.adapter.setData(users)
+                it.adapter.initData(users)
             }
         }
 
@@ -124,9 +125,9 @@ class InviteMemberDialog: MyDialog() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        adapter= MembersSuggestAdapter(activity!!, android.R.layout.simple_dropdown_item_1line)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        adapter= MembersSuggestAdapter(view.context, android.R.layout.simple_dropdown_item_1line)
         binding.members.setAdapter(adapter)
         binding.members.threshold= 4
 
@@ -222,5 +223,15 @@ class InviteMemberDialog: MyDialog() {
     interface OnInviteMemberListener {
         fun onMemeberSelected(user: String)
         fun LoadUsers(users: List<User>)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        logger.debug("OnStop.....")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        logger.debug("OnDestroy...")
     }
 }
