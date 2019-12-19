@@ -109,7 +109,7 @@ class CreateTeamDialog: MyDialog() {
 
     }
 
-    fun onCreateTeamClickec() {
+    fun onCreateTeamClick() {
         onCreateTeamListener.onCreateTeam(teamName)
     }
 

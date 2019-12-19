@@ -70,10 +70,12 @@ class HomeFragment: Fragment(),
 
         //end create Team
 
-
-
-        viewModel.allUsers.observe(this, Observer {
-            updateUsers(it)
+        viewModel.allUsers.observe(this, Observer { event ->
+            event.getContentIfNotHandled().let {
+                if (it!= null) {
+                    updateUsers(it)
+                }
+            }
         })
     }
 
@@ -121,15 +123,15 @@ class HomeFragment: Fragment(),
 
     }
 
-    override fun LoadUsers(): List<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun LoadUsers(users: List<User>) {
+
     }
 
     override fun updateUsers(users: List<User>) {
-        val invitationFragment= activity!!.supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
-        if (invitationFragment is AlertDialogForMemberInvitation) {
-            invitationFragment.updateUsers(users)
-        }
+
+        InviteMemberDialog.loadUsers(users)
+        InviteMemberDialog.showDialog()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -153,7 +155,8 @@ class HomeFragment: Fragment(),
                 true
             }
             R.id.menu_item_invite -> {
-                InviteMemberDialog.showDialog(activity!!.supportFragmentManager)
+                InviteMemberDialog.showDialogLoadingData(activity!!.supportFragmentManager)
+                viewModel.loadAllUsers()
                 true
             }
             R.id.menu_item_create_group -> {
@@ -164,5 +167,8 @@ class HomeFragment: Fragment(),
         }
     }
 
+    fun dismissInviteMemberDialog() {
+        InviteMemberDialog.dismissMe()
+    }
 
 }

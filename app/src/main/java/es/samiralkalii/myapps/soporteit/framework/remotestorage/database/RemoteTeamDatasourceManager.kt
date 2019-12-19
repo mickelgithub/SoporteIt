@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Team
@@ -21,7 +22,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun getAllUsersButBoses(): List<User> {
-        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFICATION, "").get().await()
+        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFICATION, "").get(Source.SERVER).await()
         val methodResult= ArrayList<User>()
         result.forEach { document ->
             val user: User= document.toObject(User::class.java)

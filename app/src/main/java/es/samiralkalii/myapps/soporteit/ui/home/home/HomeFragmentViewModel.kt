@@ -42,9 +42,9 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
 
     //end create team
 
-    private val _allUsers= MutableLiveData<List<User>>()
+    private val _allUsers= MutableLiveData<Event<List<User>>>()
 
-    val allUsers: LiveData<List<User>>
+    val allUsers: LiveData<Event<List<User>>>
         get() = _allUsers
 
 
@@ -107,7 +107,7 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
             val result= async(Dispatchers.IO) {
                 getAllUsersButBosesUseCase()
             }.await()
-            _allUsers.value= result
+            _allUsers.value= Event(result)
         }
     }
 

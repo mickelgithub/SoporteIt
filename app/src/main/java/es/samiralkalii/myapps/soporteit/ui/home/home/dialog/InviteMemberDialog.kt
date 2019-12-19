@@ -3,6 +3,8 @@ package es.samiralkalii.myapps.soporteit.ui.home.home.dialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,13 +34,22 @@ class InviteMemberDialog: MyDialog() {
 
         var inviteMemberDialog: InviteMemberDialog?= null
 
-        fun showDialog(fragmentManager: FragmentManager)= InviteMemberDialog().apply {
+        fun showDialogLoadingData(fragmentManager: FragmentManager)= InviteMemberDialog().apply {
             if (inviteMemberDialog== null) {
                 inviteMemberDialog = InviteMemberDialog().apply {
                     isCancelable = false
-                }.also {
-                    it.show(fragmentManager, FRAGMENT_TAG)
+                    show(fragmentManager, FRAGMENT_TAG)
                 }
+            }
+        }
+
+        fun showDialog() {
+            inviteMemberDialog?.let {
+                it.binding.members.isEnabled= true
+                it.binding.inviteMember.visibility= View.VISIBLE
+                it.binding.animationOk.visibility= View.GONE
+                it.binding.message.visibility= View.GONE
+                it.binding.animationLoading.visibility= View.GONE
             }
         }
 
@@ -80,6 +91,17 @@ class InviteMemberDialog: MyDialog() {
                 inviteMemberDialog= null
             }, DIALOG_DISMISS_DELAY)
         }
+
+        fun loadUsers(users: List<User>) {
+            inviteMemberDialog?.let {
+                it.adapter.setData(users)
+            }
+        }
+
+        fun dismissMe() {
+            inviteMemberDialog?.dismiss()
+            inviteMemberDialog= null
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -102,7 +124,27 @@ class InviteMemberDialog: MyDialog() {
         return binding.root
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        adapter= MembersSuggestAdapter(activity!!, android.R.layout.simple_dropdown_item_1line)
+        binding.members.setAdapter(adapter)
+        binding.members.threshold= 4
 
+        binding.members.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!s.isNullOrBlank() && s.toString().length>= 4) {
+                    adapter.setData(adapter._data.filter { user ->
+                        user.email.contains(s)
+                    })
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        })
+    }
 
     private inner class MembersSuggestAdapter(context: Context, val resource: Int): ArrayAdapter<User>(context, resource),
         Filterable {
@@ -173,8 +215,12 @@ class InviteMemberDialog: MyDialog() {
 
     }
 
+    fun dismissMe() {
+        InviteMemberDialog.dismissMe()
+    }
+
     interface OnInviteMemberListener {
         fun onMemeberSelected(user: String)
-        fun LoadUsers(): List<User>
+        fun LoadUsers(users: List<User>)
     }
 }
