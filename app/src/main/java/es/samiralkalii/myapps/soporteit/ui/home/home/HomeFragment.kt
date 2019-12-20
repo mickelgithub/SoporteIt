@@ -10,20 +10,17 @@ import androidx.lifecycle.ViewModelProviders
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
-import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
-import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.dialog.AlertDialogForMemberInvitation
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
 class HomeFragment: Fragment(),
-    AlertDialogForMemberInvitation.OnMemberSelectionListener,
     CreateTeamDialog.OnCreateTeamListener, InviteMemberDialog.OnInviteMemberListener {
 
     companion object {
@@ -66,17 +63,8 @@ class HomeFragment: Fragment(),
             }
         })
 
-
-
         //end create Team
 
-        viewModel.allUsers.observe(this, Observer { event ->
-            event.getContentIfNotHandled().let {
-                if (it!= null) {
-                    updateUsers(it)
-                }
-            }
-        })
     }
 
     private fun processTeamAdded(screenState: ScreenState.Render<HomeFragmentChangeState>) {
@@ -116,23 +104,10 @@ class HomeFragment: Fragment(),
         return binding.root
     }
 
-
-
-
     override fun onMemeberSelected(user: String) {
 
     }
 
-    override fun LoadUsers(users: List<User>) {
-
-    }
-
-    override fun updateUsers(users: List<User>) {
-
-        InviteMemberDialog.loadUsers(users)
-        InviteMemberDialog.showDialog()
-
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -155,8 +130,7 @@ class HomeFragment: Fragment(),
                 true
             }
             R.id.menu_item_invite -> {
-                InviteMemberDialog.showDialogLoadingData(activity!!.supportFragmentManager)
-                viewModel.loadAllUsers()
+                showInviteMemberDialog()
                 true
             }
             R.id.menu_item_create_group -> {
@@ -167,8 +141,14 @@ class HomeFragment: Fragment(),
         }
     }
 
-    fun dismissInviteMemberDialog() {
-        InviteMemberDialog.dismissMe()
+
+
+    private fun showInviteMemberDialog() {
+        var inviteDialog: InviteMemberDialog?= activity!!.supportFragmentManager.findFragmentByTag(InviteMemberDialog::class.java.simpleName) as InviteMemberDialog?
+        if (inviteDialog== null) {
+            inviteDialog= InviteMemberDialog.newInstance()
+            inviteDialog.show(activity!!.supportFragmentManager, InviteMemberDialog::class.java.simpleName)
+        }
     }
 
 }

@@ -21,7 +21,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         fstore.collection(USERS_REF).document(boss).update(TEAM_DOCUMENT_REF, team).await()
     }
 
-    override suspend fun getAllUsersButBoses(): List<User> {
+    override suspend fun getAllUsersButBosesAndNoTeam(): List<User> {
         val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFICATION, "").get(Source.SERVER).await()
         val methodResult= ArrayList<User>()
         result.forEach { document ->

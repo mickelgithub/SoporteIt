@@ -11,14 +11,14 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
-import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase, private val getAllUsersButBosesUseCase: GetAllUsersButBosesUseCase): ViewModel() {
+class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase, private val getAllUsersButBosesAndNoTeamUseCase: GetAllUsersButBosesAndNoTeamUseCase): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(TeamMangementViewModel::class.java)
 
@@ -110,7 +110,7 @@ class TeamMangementViewModel(private val addTeamUseCase: AddTeamUseCase, private
 
         viewModelScope.launch(errorHandler) {
             val result= async(Dispatchers.IO) {
-                getAllUsersButBosesUseCase()
+                getAllUsersButBosesAndNoTeamUseCase()
             }.await()
             _allUsers.value= result
         }

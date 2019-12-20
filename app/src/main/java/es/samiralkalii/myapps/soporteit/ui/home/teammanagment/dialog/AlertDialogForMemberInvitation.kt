@@ -57,16 +57,11 @@ class AlertDialogForMemberInvitation: DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         logger.debug("Oncreate..........................................................")
-
-
-
-
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         logger.debug("onCreateDialog.......................................................")
-
 
         val builder= MaterialAlertDialogBuilder(context, R.style.MyDialogCustomTheme)
         builder.setTitle(activity!!.resources.getString(R.string.invite)+ "...")

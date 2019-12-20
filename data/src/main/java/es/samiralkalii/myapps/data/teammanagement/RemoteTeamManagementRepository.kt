@@ -7,11 +7,11 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
 
 
     suspend fun addTeam(team: Team, boss: String)= remoteTeamManagementDatasource.addTeam(team, boss)
-    suspend fun getAllUsersButBoses()= remoteTeamManagementDatasource.getAllUsersButBoses()
+    suspend fun getAllUsersButBosesAndNoTeam()= remoteTeamManagementDatasource.getAllUsersButBosesAndNoTeam()
 
 }
 
 interface IRemoteTeamManagementDatasource {
     suspend fun addTeam(team: Team, boss: String)
-    suspend fun getAllUsersButBoses(): List<User>
+    suspend fun getAllUsersButBosesAndNoTeam(): List<User>
 }

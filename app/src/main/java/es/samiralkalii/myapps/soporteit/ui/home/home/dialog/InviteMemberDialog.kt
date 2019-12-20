@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.dialog
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -8,17 +9,32 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.InviteMemberDialogBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
+import es.samiralkalii.myapps.soporteit.ui.util.Event
+import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.soporteit.ui.util.bindImgSrc
+import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
+import kotlinx.android.synthetic.main.invite_member_dialog.*
+import kotlinx.coroutines.*
+import org.koin.android.ext.android.bind
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
-class InviteMemberDialog: MyDialog() {
+class InviteMemberDialog(): MyDialog() {
 
     private val logger = LoggerFactory.getLogger(InviteMemberDialog::class.java)
 
@@ -28,89 +44,27 @@ class InviteMemberDialog: MyDialog() {
 
     private lateinit var binding: InviteMemberDialogBinding
 
-    var member: String = "Espere mientras cargamos los datos"
+    val viewModel: InviteMemberDialogViewModel by viewModel()
+
 
     companion object {
 
-        var inviteMemberDialog: InviteMemberDialog?= null
+        fun newInstance()= InviteMemberDialog()
 
-        fun showDialogLoadingData(fragmentManager: FragmentManager)= InviteMemberDialog().apply {
-            if (inviteMemberDialog== null) {
-                inviteMemberDialog = InviteMemberDialog().apply {
-                    isCancelable = false
-                    show(fragmentManager, FRAGMENT_TAG)
-                }
-            }
-        }
-
-        fun showDialog() {
-            inviteMemberDialog?.let {
-                it.binding.members.setText("")
-                it.binding.members.isEnabled= true
-                it.binding.inviteMember.visibility= View.VISIBLE
-                it.binding.animationOk.visibility= View.GONE
-                it.binding.message.visibility= View.GONE
-                it.binding.animationLoading.visibility= View.GONE
-            }
-        }
-
-        fun showLoading() {
-            val tempInviteMemberDialog= inviteMemberDialog!!
-            tempInviteMemberDialog.binding.members.isEnabled= false
-            tempInviteMemberDialog.binding.inviteMember.visibility= View.GONE
-            tempInviteMemberDialog.binding.animationOk.visibility= View.GONE
-            tempInviteMemberDialog.binding.message.visibility= View.GONE
-            tempInviteMemberDialog.binding.animationLoading.visibility= View.VISIBLE
-        }
-
-        fun showSuccess() {
-            val tempInviteMemberDialog= inviteMemberDialog!!
-            tempInviteMemberDialog.binding.members.isEnabled= false
-            tempInviteMemberDialog.binding.inviteMember.visibility= View.GONE
-            tempInviteMemberDialog.binding.animationLoading.visibility= View.GONE
-            tempInviteMemberDialog.binding.message.visibility= View.GONE
-            tempInviteMemberDialog.binding.animationOk.apply {
-                visibility= View.VISIBLE
-                playAnimation()
-            }
-            Handler().postDelayed({
-                tempInviteMemberDialog.dismiss()
-                inviteMemberDialog= null
-            }, DIALOG_DISMISS_DELAY)
-        }
-
-        fun showMessage(message: Int) {
-            val tempInviteMemberDialog= inviteMemberDialog!!
-            tempInviteMemberDialog.binding.members.isEnabled= false
-            tempInviteMemberDialog.binding.inviteMember.visibility= View.GONE
-            tempInviteMemberDialog.binding.animationLoading.visibility= View.GONE
-            tempInviteMemberDialog.binding.animationOk.visibility= View.GONE
-            tempInviteMemberDialog.binding.message.visibility= View.VISIBLE
-            tempInviteMemberDialog.binding.message.setText(message)
-            Handler().postDelayed({
-                tempInviteMemberDialog.dismiss()
-                inviteMemberDialog= null
-            }, DIALOG_DISMISS_DELAY)
-        }
-
-        fun loadUsers(users: List<User>) {
-            inviteMemberDialog?.let {
-                it.adapter.initData(users)
-            }
-        }
-
-        fun dismissMe() {
-            inviteMemberDialog?.dismiss()
-            inviteMemberDialog= null
-        }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
+        logger.debug("onAttach....")
         onInviteMember= (context as AppCompatActivity).supportFragmentManager.findFragmentByTag(
             HomeFragment::class.java.simpleName) as OnInviteMemberListener
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = false
+        logger.debug("onCreate...")
     }
 
     override fun onCreateView(
@@ -118,7 +72,7 @@ class InviteMemberDialog: MyDialog() {
         savedInstanceState: Bundle?
     ): View? {
 
-        logger.debug("onCreateView")
+        logger.debug("onCreateView......")
         binding= InviteMemberDialogBinding.inflate(inflater, container, false)
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
@@ -127,9 +81,15 @@ class InviteMemberDialog: MyDialog() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        logger.debug("onViewCreated...")
         adapter= MembersSuggestAdapter(view.context, android.R.layout.simple_dropdown_item_1line)
         binding.members.setAdapter(adapter)
-        binding.members.threshold= 4
+        binding.members.threshold = 4
+        if (savedInstanceState!= null) {
+            binding.members.post(Runnable{
+                binding.members.dismissDropDown()
+                })
+        }
 
         binding.members.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -139,12 +99,72 @@ class InviteMemberDialog: MyDialog() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrBlank() && s.toString().length>= 4) {
                     adapter.setData(adapter._data.filter { user ->
-                        user.email.contains(s)
+                        user.email.startsWith(s)
                     })
                     adapter.notifyDataSetChanged()
                 }
             }
         })
+
+        viewModel.dialogState.observe(this, Observer{
+            when (it) {
+                DialogState.ShowLoadingData -> {
+                    viewModel.member= activity!!.resources.getString(R.string.wait_while_loading_data)
+                    binding.members.isEnabled= false
+                    binding.inviteMember.visibility= View.GONE
+                    binding.animationOk.visibility= View.GONE
+                    binding.message.visibility= View.GONE
+                    binding.animationLoading.visibility= View.VISIBLE
+                }
+                DialogState.ShowLoading -> {
+                    binding.members.isEnabled= false
+                    binding.inviteMember.visibility= View.GONE
+                    binding.animationOk.visibility= View.GONE
+                    binding.message.visibility= View.GONE
+                    binding.animationLoading.visibility= View.VISIBLE
+                }
+                DialogState.ShowDialog -> {
+                    if (activity!!.resources.getString(R.string.wait_while_loading_data)== viewModel.member) {
+                        viewModel.member= ""
+                        binding.invalidateAll()
+                    }
+                    binding.members.isEnabled= true
+                    binding.inviteMember.visibility= View.VISIBLE
+                    binding.animationOk.visibility= View.GONE
+                    binding.message.visibility= View.GONE
+                    binding.animationLoading.visibility= View.GONE
+                }
+                DialogState.ShowSuccess -> {
+                    viewModel.member= ""
+                    binding.members.isEnabled= false
+                    binding.inviteMember.visibility= View.GONE
+                    binding.animationOk.visibility= View.VISIBLE
+                    binding.message.visibility= View.GONE
+                    binding.animationLoading.visibility= View.GONE
+                    Handler().postDelayed({
+                        binding.animationOk.visibility= View.GONE
+                        binding.members.isEnabled= true
+                        binding.inviteMember.visibility= View.VISIBLE
+
+                    }, DIALOG_DISMISS_DELAY)
+                }
+                is DialogState.ShowMessage -> {
+                    binding.members.isEnabled= true
+                    binding.inviteMember.visibility= View.GONE
+                    binding.animationOk.visibility= View.GONE
+                    binding.message.apply {
+                        visibility= View.VISIBLE
+                        setText(it.message)
+                    }
+                    binding.animationLoading.visibility= View.GONE
+                }
+            }
+        })
+
+        viewModel.users.observe(this, Observer {
+                 adapter.initData(it)
+            }
+        )
     }
 
     private inner class MembersSuggestAdapter(context: Context, val resource: Int): ArrayAdapter<User>(context, resource),
@@ -177,7 +197,7 @@ class InviteMemberDialog: MyDialog() {
             android.R.layout.simple_dropdown_item_1line
             var view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.invite_member_item, parent, false)
             view.findViewById<TextView>(R.id.mail).text= user.email
-            view.findViewById<ImageView>(R.id.image).setImageDrawable(context.getDrawable(R.drawable.profile))
+            view.findViewById<ImageView>(R.id.image).bindImgSrc(if (user.remoteProfileImage.isNotBlank()) Uri.parse(user.remoteProfileImage) else null)
             return view
         }
 
@@ -212,17 +232,8 @@ class InviteMemberDialog: MyDialog() {
         }
     }
 
-    fun onInviteMemberClick() {
-
-    }
-
-    fun dismissMe() {
-        InviteMemberDialog.dismissMe()
-    }
-
     interface OnInviteMemberListener {
         fun onMemeberSelected(user: String)
-        fun LoadUsers(users: List<User>)
     }
 
     override fun onStop() {
@@ -230,8 +241,84 @@ class InviteMemberDialog: MyDialog() {
         logger.debug("OnStop.....")
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        logger.debug("onDestroyView...")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         logger.debug("OnDestroy...")
+    }
+
+    fun onInviteMemberClick() {
+        viewModel.onInviteMemberClick()
+    }
+
+    class InviteMemberDialogViewModel(private val getAllUsersButBosesAndNoTeamUseCase: GetAllUsersButBosesAndNoTeamUseCase): ViewModel() {
+
+        private val logger = LoggerFactory.getLogger(InviteMemberDialogViewModel::class.java)
+
+        private val _dialogState= MutableLiveData<DialogState>()
+        val dialogState: LiveData<DialogState>
+        get() = _dialogState
+
+        private val _users= MutableLiveData<List<User>>()
+        val users: LiveData<List<User>>
+        get() = _users
+
+        var member: String = ""
+
+        init {
+            loadAllUsersButBosesAndNoTeam()
+        }
+
+        private fun loadAllUsersButBosesAndNoTeam() {
+            logger.debug("Cargando datos de remote database...")
+            val errorHandler = CoroutineExceptionHandler { _, error ->
+                logger.error(error.toString(), error)
+                when (error) {
+                    is FirebaseNetworkException -> {
+                        _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
+                        /*_teamAddedOk.postValue(
+                            Event(
+                                ScreenState.Render(
+                                    TeamManagementChangeState.ShowMessage(
+                                        R.string.no_internet_connection)))
+                        )*/
+                    }
+                    else -> {
+                        _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
+                        /*_teamAddedOk.postValue(
+                            Event(
+                                ScreenState.Render(
+                                    TeamManagementChangeState.ShowMessage(
+                                        R.string.no_internet_connection)))
+                        )*/
+                    }
+                }
+            }
+            _dialogState.value= DialogState.ShowLoadingData
+            viewModelScope.launch(errorHandler) {
+                val result= async(Dispatchers.IO) {
+                    getAllUsersButBosesAndNoTeamUseCase()
+                }.await()
+                _users.value= result
+                _dialogState.value= DialogState.ShowDialog
+            }
+        }
+
+        fun onInviteMemberClick() {
+            _dialogState.value= DialogState.ShowLoading
+            viewModelScope.launch {
+                logger.debug("Estamos invitando a $member, espere....")
+                async {
+                    delay(10000)
+                }.await()
+                _dialogState.value= DialogState.ShowDialog
+
+            }
+
+        }
     }
 }

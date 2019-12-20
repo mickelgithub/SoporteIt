@@ -149,9 +149,9 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_home, menu)
-        if (!viewModel.user.isBoss()) {
+        /*if (!viewModel.user.isBoss()) {
             menu.findItem(R.id.menu_item_create_team).setVisible(false)
-        }
+        }*/
         return super.onCreateOptionsMenu(menu)
     }
 

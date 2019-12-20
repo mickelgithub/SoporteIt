@@ -12,14 +12,13 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
-import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private val getAllUsersButBosesUseCase: GetAllUsersButBosesUseCase): ViewModel() {
+class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeFragmentViewModel::class.java)
 
@@ -41,12 +40,6 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
 
 
     //end create team
-
-    private val _allUsers= MutableLiveData<Event<List<User>>>()
-
-    val allUsers: LiveData<Event<List<User>>>
-        get() = _allUsers
-
 
     fun publishUser(userParam: User) {
         user= userParam
@@ -80,7 +73,7 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
 
     }
 
-    fun loadAllUsers() {
+    /*fun loadAllUsers() {
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             when (error) {
@@ -109,7 +102,7 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase, private 
             }.await()
             _allUsers.value= Event(result)
         }
-    }
+    }*/
 
     /*fun onInviteClick() {
         logger.debug("On invite clicked")
