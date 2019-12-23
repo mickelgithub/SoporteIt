@@ -32,5 +32,11 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         return methodResult
     }
 
+    override suspend fun inviteUser(user: User) {
+
+
+
+    }
+
 
 }

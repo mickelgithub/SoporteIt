@@ -66,7 +66,7 @@ class AlertDialogForMemberInvitation: DialogFragment() {
         val builder= MaterialAlertDialogBuilder(context, R.style.MyDialogCustomTheme)
         builder.setTitle(activity!!.resources.getString(R.string.invite)+ "...")
         builder.setCancelable(false)
-        val view= LayoutInflater.from(activity!!).inflate(R.layout.invite_member_dialog, null)
+        val view= LayoutInflater.from(activity!!).inflate(R.layout.dialog_invite_member, null)
         val membersAutoComplete= view.findViewById<AppCompatAutoCompleteTextView>(R.id.members)
         adapter= MembersSuggestAdapter(activity!!, android.R.layout.simple_dropdown_item_1line)
         membersAutoComplete.setAdapter(adapter)
@@ -128,7 +128,7 @@ class AlertDialogForMemberInvitation: DialogFragment() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val user= data[position]
             android.R.layout.simple_dropdown_item_1line
-            var view: View= convertView ?: LayoutInflater.from(context).inflate(R.layout.invite_member_item, parent, false)
+            var view: View= convertView ?: LayoutInflater.from(context).inflate(R.layout.item_invite_member, parent, false)
             view.findViewById<TextView>(R.id.mail).text= user.email
             view.findViewById<ImageView>(R.id.image).setImageDrawable(context.getDrawable(R.drawable.profile))
             return view

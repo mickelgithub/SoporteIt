@@ -9,28 +9,18 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.databinding.InviteMemberDialogBinding
+import es.samiralkalii.myapps.soporteit.databinding.DialogInviteMemberBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
-import es.samiralkalii.myapps.soporteit.ui.util.Event
-import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.bindImgSrc
 import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
-import kotlinx.android.synthetic.main.invite_member_dialog.*
 import kotlinx.coroutines.*
-import org.koin.android.ext.android.bind
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -42,7 +32,7 @@ class InviteMemberDialog(): MyDialog() {
 
     private lateinit var adapter: MembersSuggestAdapter
 
-    private lateinit var binding: InviteMemberDialogBinding
+    private lateinit var binding: DialogInviteMemberBinding
 
     val viewModel: InviteMemberDialogViewModel by viewModel()
 
@@ -73,7 +63,7 @@ class InviteMemberDialog(): MyDialog() {
     ): View? {
 
         logger.debug("onCreateView......")
-        binding= InviteMemberDialogBinding.inflate(inflater, container, false)
+        binding= DialogInviteMemberBinding.inflate(inflater, container, false)
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
         return binding.root
@@ -86,9 +76,9 @@ class InviteMemberDialog(): MyDialog() {
         binding.members.setAdapter(adapter)
         binding.members.threshold = 4
         if (savedInstanceState!= null) {
-            binding.members.post(Runnable{
+            binding.members.post(Runnable {
                 binding.members.dismissDropDown()
-                })
+            })
         }
 
         binding.members.addTextChangedListener(object: TextWatcher {
@@ -109,23 +99,29 @@ class InviteMemberDialog(): MyDialog() {
         viewModel.dialogState.observe(this, Observer{
             when (it) {
                 DialogState.ShowLoadingData -> {
-                    viewModel.member= activity!!.resources.getString(R.string.wait_while_loading_data)
+                    viewModel.member.value= activity!!.resources.getString(R.string.wait_while_loading_data)
                     binding.members.isEnabled= false
                     binding.inviteMember.visibility= View.GONE
                     binding.animationOk.visibility= View.GONE
                     binding.message.visibility= View.GONE
-                    binding.animationLoading.visibility= View.VISIBLE
+                    binding.animationLoading.apply {
+                        visibility= View.VISIBLE
+                        playAnimation()
+                    }
                 }
                 DialogState.ShowLoading -> {
                     binding.members.isEnabled= false
                     binding.inviteMember.visibility= View.GONE
                     binding.animationOk.visibility= View.GONE
                     binding.message.visibility= View.GONE
-                    binding.animationLoading.visibility= View.VISIBLE
+                    binding.animationLoading.apply {
+                        visibility= View.VISIBLE
+                        playAnimation()
+                    }
                 }
                 DialogState.ShowDialog -> {
-                    if (activity!!.resources.getString(R.string.wait_while_loading_data)== viewModel.member) {
-                        viewModel.member= ""
+                    if (activity!!.resources.getString(R.string.wait_while_loading_data)== viewModel.member.value) {
+                        viewModel.member.value= ""
                         binding.invalidateAll()
                     }
                     binding.members.isEnabled= true
@@ -135,17 +131,19 @@ class InviteMemberDialog(): MyDialog() {
                     binding.animationLoading.visibility= View.GONE
                 }
                 DialogState.ShowSuccess -> {
-                    viewModel.member= ""
                     binding.members.isEnabled= false
                     binding.inviteMember.visibility= View.GONE
-                    binding.animationOk.visibility= View.VISIBLE
+                    binding.animationOk.apply {
+                        visibility = View.VISIBLE
+                        playAnimation()
+                    }
                     binding.message.visibility= View.GONE
                     binding.animationLoading.visibility= View.GONE
                     Handler().postDelayed({
                         binding.animationOk.visibility= View.GONE
                         binding.members.isEnabled= true
                         binding.inviteMember.visibility= View.VISIBLE
-
+                        viewModel.member.value= ""
                     }, DIALOG_DISMISS_DELAY)
                 }
                 is DialogState.ShowMessage -> {
@@ -165,6 +163,8 @@ class InviteMemberDialog(): MyDialog() {
                  adapter.initData(it)
             }
         )
+
+
     }
 
     private inner class MembersSuggestAdapter(context: Context, val resource: Int): ArrayAdapter<User>(context, resource),
@@ -195,7 +195,7 @@ class InviteMemberDialog(): MyDialog() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val user= data[position]
             android.R.layout.simple_dropdown_item_1line
-            var view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.invite_member_item, parent, false)
+            var view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_invite_member, parent, false)
             view.findViewById<TextView>(R.id.mail).text= user.email
             view.findViewById<ImageView>(R.id.image).bindImgSrc(if (user.remoteProfileImage.isNotBlank()) Uri.parse(user.remoteProfileImage) else null)
             return view
@@ -267,7 +267,18 @@ class InviteMemberDialog(): MyDialog() {
         val users: LiveData<List<User>>
         get() = _users
 
-        var member: String = ""
+        private var _internal= MutableLiveData<Boolean>(true)
+        val internal: LiveData<Boolean>
+            get() = _internal
+
+        var member= MutableLiveData<String>("")
+
+
+
+        fun onInternalExternalClick() {
+            val oldValue= _internal.value!!
+            _internal.value= !oldValue
+        }
 
         init {
             loadAllUsersButBosesAndNoTeam()
@@ -280,21 +291,9 @@ class InviteMemberDialog(): MyDialog() {
                 when (error) {
                     is FirebaseNetworkException -> {
                         _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
-                        /*_teamAddedOk.postValue(
-                            Event(
-                                ScreenState.Render(
-                                    TeamManagementChangeState.ShowMessage(
-                                        R.string.no_internet_connection)))
-                        )*/
                     }
                     else -> {
-                        _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
-                        /*_teamAddedOk.postValue(
-                            Event(
-                                ScreenState.Render(
-                                    TeamManagementChangeState.ShowMessage(
-                                        R.string.no_internet_connection)))
-                        )*/
+                        _dialogState.postValue(DialogState.ShowMessage(R.string.not_controled_error))
                     }
                 }
             }
@@ -311,11 +310,11 @@ class InviteMemberDialog(): MyDialog() {
         fun onInviteMemberClick() {
             _dialogState.value= DialogState.ShowLoading
             viewModelScope.launch {
-                logger.debug("Estamos invitando a $member, espere....")
+                logger.debug("Estamos invitando a ${member.value}, espere....")
                 async {
-                    delay(10000)
+                    delay(5000)
                 }.await()
-                _dialogState.value= DialogState.ShowDialog
+                _dialogState.value= DialogState.ShowSuccess
 
             }
 

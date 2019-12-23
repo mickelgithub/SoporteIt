@@ -66,6 +66,8 @@
     <string name="create_new_team">Dar de alta el equipo</string>
     <string name="invite_new_member">Invitar a un miembro</string>
     <string name="done">Terminar</string>
+    <string name="internal">Interno</string>
+    <string name="external">Externo</string>
 
 
     <string-array name="profile_array">
