@@ -10,7 +10,7 @@ import es.samiralkalii.myapps.soporteit.ui.util.*
 
 class SharedPreferencesManager(val context: Context): IPreferences {
 
-    override suspend fun getMessaginToken(): String=
+    override suspend fun getMessagingToken(): String=
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).getString(KEY_MESSAGING_TOKEN, "") ?: ""
 
     override suspend fun updateProfile(profile: String) {

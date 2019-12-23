@@ -32,6 +32,7 @@ fun User.toBundle()= Bundle().apply {
     putString(KEY_BOSS_VERIFICATION, bossVerification)
     putBoolean(KEY_TEAM_CREATED, teamCreated)
     putString(KEY_TEAM, team)
+    putString(KEY_MESSAGING_TOKEN, messagingToken)
 }
 
 fun Bundle.toUser()= User(
@@ -45,7 +46,8 @@ fun Bundle.toUser()= User(
     profile = getString(KEY_PROFILE, ""),
     bossVerification = getString(KEY_BOSS_VERIFICATION, ""),
     teamCreated = getBoolean(KEY_TEAM_CREATED, false),
-    team = getString(KEY_TEAM, "")
+    team = getString(KEY_TEAM, ""),
+    messagingToken = getString(KEY_MESSAGING_TOKEN, "")
 
 
 )

@@ -8,12 +8,12 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
 
     suspend fun addTeam(team: Team, boss: String)= remoteTeamManagementDatasource.addTeam(team, boss)
     suspend fun getAllUsersButBosesAndNoTeam()= remoteTeamManagementDatasource.getAllUsersButBosesAndNoTeam()
-    suspend fun inviteUser(user: User)= remoteTeamManagementDatasource.inviteUser(user)
+    suspend fun inviteUser(sender: User, destination: User)= remoteTeamManagementDatasource.sendTeamInvitationToUser(sender, destination)
 
 }
 
 interface IRemoteTeamManagementDatasource {
     suspend fun addTeam(team: Team, boss: String)
     suspend fun getAllUsersButBosesAndNoTeam(): List<User>
-    suspend fun inviteUser(user: User)
+    suspend fun sendTeamInvitationToUser(sender: User, destination: User)
 }

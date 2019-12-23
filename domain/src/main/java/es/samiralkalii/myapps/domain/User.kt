@@ -10,7 +10,8 @@ data class User(var email: String= "", var password: String= "",
                 var profile: String= "",
                 var bossVerification: String= "",
                 var teamCreated: Boolean= false,
-                var team: String= "") {
+                var team: String= "",
+                var messagingToken: String= "") {
 
     companion object {
         val EMPTY= User()
