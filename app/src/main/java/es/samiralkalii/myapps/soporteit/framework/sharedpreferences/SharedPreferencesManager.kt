@@ -27,7 +27,6 @@ class SharedPreferencesManager(val context: Context): IPreferences {
 
     override suspend fun updateTeamCreated(team: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
-            putBoolean(KEY_TEAM_CREATED, true)
             putString(KEY_TEAM, team)
         }
     }
@@ -64,7 +63,6 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putBoolean(KEY_EMAIL_VERIFIED, user.emailVerified)
             putString(KEY_PROFILE, user.profile)
             putString(KEY_BOSS_VERIFICATION, user.bossVerification)
-            putBoolean(KEY_TEAM_CREATED, user.teamCreated)
             putString(KEY_TEAM, user.team)
         }
     }
@@ -84,12 +82,11 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val emailValidated= getBoolean(KEY_EMAIL_VERIFIED, false)
             val profile= getString(KEY_PROFILE, "") ?: ""
             val bossVerification= getString(KEY_BOSS_VERIFICATION, "") ?: ""
-            val teamCreated= getBoolean(KEY_TEAM_CREATED, false) ?: false
             val team= getString(KEY_TEAM, "") ?: ""
 
             return User(email, pass, name, localProfileImage = imageProfilePath,
                 id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated,
-                profile = profile, bossVerification = bossVerification, teamCreated = teamCreated, team = team)
+                profile = profile, bossVerification = bossVerification, team = team)
         }
     }
 }

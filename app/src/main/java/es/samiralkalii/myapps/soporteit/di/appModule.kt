@@ -24,7 +24,6 @@ import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
-import es.samiralkalii.myapps.soporteit.ui.home.teammanagment.TeamMangementViewModel
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashViewModel
 import org.koin.android.viewmodel.dsl.viewModel

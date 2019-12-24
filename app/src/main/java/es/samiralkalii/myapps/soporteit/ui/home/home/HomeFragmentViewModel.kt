@@ -67,7 +67,6 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMod
                 addTeamUseCase(Team(teamName), user.id)
             }.await()
             user.team= teamName
-            user.teamCreated= true
             _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
         }
 
