@@ -43,7 +43,8 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         }
         //we have to add the user to the database
         remoteUserRepository.addUser(user)
-        remoteUserRepository.updateMessagingToken(preferenceRepository.getMessaginToken())
+        user.messagingToken= preferenceRepository.getMessagingToken()
+        remoteUserRepository.updateMessagingToken(user.messagingToken)
         preferenceRepository.saveUser(user)
         remoteUserAuthRepository.sendEmailVerification(user)
         if (TEAM_MANAGER_PROFILE== user.profile) {

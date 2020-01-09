@@ -8,6 +8,7 @@ open class MyDialog: BottomSheetDialogFragment() {
         const val DIALOG_DISMISS_DELAY= 2000L
         const val FRAGMENT_TAG= "dialog"
         const val DIALOG_FOR_MESSAGE_KEY= "message_dialog"
+        const val DIALOG_MESSAGE_COLOR= "message_color"
     }
 
     sealed class DialogState {

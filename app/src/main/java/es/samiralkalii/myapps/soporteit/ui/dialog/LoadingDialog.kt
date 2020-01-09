@@ -31,10 +31,11 @@ class LoadingDialog: MyDialog() {
             loadingDialog= null
         }
 
-        fun showMeForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY) {
+        fun showMeForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY, messageColor: Int= R.color.red_error) {
             if (loadingDialog== null) {
                 val bundle= Bundle().apply {
                     putInt(DIALOG_FOR_MESSAGE_KEY, message)
+                    putInt(DIALOG_MESSAGE_COLOR, messageColor)
                 }
                 loadingDialog= LoadingDialog().apply {
                     isCancelable= false
@@ -63,12 +64,14 @@ class LoadingDialog: MyDialog() {
 
         binding= DialogLoadingBinding.inflate(inflater, container, false)
         arguments?.let { args ->
+            val color= args.getInt(DIALOG_MESSAGE_COLOR)
             args.getInt(DIALOG_FOR_MESSAGE_KEY)?.let { message ->
                 binding.animationLoading.visibility= View.GONE
                 binding.animationOk.visibility= View.GONE
                 binding.message.apply {
                     visibility= View.VISIBLE
                     text= resources.getString(message)
+                    this.setTextColor(color)
                 }
             }
         }

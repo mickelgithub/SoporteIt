@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.ui.util.*
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory
 const val USERS_REF= "users"
 
 class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: FirebaseAuth):
-    RemoteUserRepository.IRemoteUserDatasource {
+    IRemoteUserDatasource {
 
     private val logger= LoggerFactory.getLogger(RemoteUserDatasourceManager::class.java)
 

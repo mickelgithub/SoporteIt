@@ -45,7 +45,8 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
         if (updateDatabase) {
             remoteUserRepository.updateEmailVerified(user)
         }
-        remoteUserRepository.updateMessagingToken(preferenceRepository.getMessaginToken())
+        user.messagingToken= preferenceRepository.getMessagingToken()
+        remoteUserRepository.updateMessagingToken(user.messagingToken)
         return Result.LoginOk(user)
     }
 

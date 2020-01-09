@@ -231,7 +231,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
     fun onImageBossVerificationClick() {
         if (viewModel.user.isBoss()) {
-            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verified)
+            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verified, messageColor= R.color.colorPrimary)
         } else if (viewModel.user.isVerificationPending()) {
             LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
         } else if (viewModel.user.isProfilePendingToInput(activity!!)) {
