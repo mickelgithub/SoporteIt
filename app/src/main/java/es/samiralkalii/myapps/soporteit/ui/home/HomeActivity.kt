@@ -17,6 +17,7 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
+import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import es.samiralkalii.myapps.soporteit.ui.util.view.toast

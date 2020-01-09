@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputType
 import android.view.View
-import android.widget.AutoCompleteTextView
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -62,7 +60,7 @@ class AlertDialog: DialogFragment() {
         val args= arguments!!
 
         val dialogType= args.getParcelable(DIALOG_TYPE_KEY) as DIALOG_TYPE
-        val title= args.getString(DIALOG_TITLE_KEY)
+        val title= args.getString(DIALOG_TITLE_KEY) ?: ""
 
         when (dialogType) {
             DIALOG_TYPE.MESSAGE -> {
@@ -93,11 +91,11 @@ class AlertDialog: DialogFragment() {
             builder.setCancelable(false)
         }
         builder.setPositiveButton(positiveButtonText ?: context.resources.getString(android.R.string.ok)) {
-            dialog, _ -> view?.let {
+            _, _ -> view?.let {
                 if (view is EditText) {
                     val inputText= view.text.toString()
                     if (inputText.isNotBlank()) {
-                        onValueInput((view as EditText).text.toString())
+                        onValueInput(view.text.toString())
                     }
                 }
             }

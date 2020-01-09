@@ -16,6 +16,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory

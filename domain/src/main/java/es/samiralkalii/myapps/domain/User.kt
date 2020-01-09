@@ -9,7 +9,6 @@ data class User(var email: String= "", var password: String= "",
                 var emailVerified: Boolean= false,
                 var profile: String= "",
                 var bossVerification: String= "",
-                var teamCreated: Boolean= false,
                 var team: String= "") {
 
     companion object {

@@ -36,10 +36,6 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_BOSS_VERIFICATION to bossVerification)).await()
     }
 
-    override suspend fun updateTeamCreated(boss: String) {
-        fstore.collection(USERS_REF).document(boss).update(mapOf( KEY_TEAM_CREATED to true)).await()
-    }
-
     override suspend fun updateEmailVerified(user: User) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_EMAIL_VERIFIED to true)).await()
     }
@@ -59,7 +55,6 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.emailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
             user.profile= (data[KEY_PROFILE] as String?) ?: ""
             user.bossVerification= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
-            user.teamCreated= (data[KEY_TEAM_CREATED] as Boolean?) ?: false
             user.team= (data[KEY_TEAM] as Map<String, String>?)?.let { it[KEY_NAME] as String } ?: ""
             logger.debug("hello")
         }

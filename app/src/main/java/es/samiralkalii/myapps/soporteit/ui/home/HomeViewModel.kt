@@ -74,7 +74,6 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun updateTeamCreated(user: User) {
-        this.user.teamCreated= user.teamCreated
         this.user.team= user.team
     }
 
