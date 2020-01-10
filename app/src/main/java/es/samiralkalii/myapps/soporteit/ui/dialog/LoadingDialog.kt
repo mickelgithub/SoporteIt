@@ -71,7 +71,7 @@ class LoadingDialog: MyDialog() {
                 binding.message.apply {
                     visibility= View.VISIBLE
                     text= resources.getString(message)
-                    this.setTextColor(color)
+                    setTextColor(color)
                 }
             }
         }

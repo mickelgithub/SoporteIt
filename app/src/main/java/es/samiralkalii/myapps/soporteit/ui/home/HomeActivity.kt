@@ -110,7 +110,8 @@ class HomeActivity : AppCompatActivity() {
                 logger.debug("Mostramos el home...")
                 if (supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)== null) {
                     if (viewModel.user.isBoss() && !viewModel.user.teamCreated) {
-                        supportActionBar?.title= resources.getString(R.string.team_no_created_title)
+                        supportActionBar?.title =
+                            resources.getString(R.string.team_no_created_title)
                     } else {
                         supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                     }
@@ -168,6 +169,15 @@ class HomeActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
 
+    override fun onPause() {
+        super.onPause()
+        logger.debug("onPause...")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logger.debug("onResume...")
     }
 }
