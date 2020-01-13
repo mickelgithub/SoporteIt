@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.data.authlogin
 
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.Team
 
 class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
 
@@ -11,6 +12,7 @@ class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
     suspend fun updateMessagingToken(token: String) = remoteUserDatasource.updateMessagingToken(token)
     suspend fun updateProfile(profile: String, userId: String)= remoteUserDatasource.updateProfile(profile, userId)
     suspend fun updateBossVerification(bossVerification: String, userId: String)= remoteUserDatasource.updateBossVerification(bossVerification, userId)
+    suspend fun updateTeamCreated(team: Team)= remoteUserDatasource.updateTeamCreated(team)
 
 
 }
@@ -23,5 +25,6 @@ interface IRemoteUserDatasource {
     suspend fun updateMessagingToken(token: String)
     suspend fun updateProfile(profile: String, userId: String)
     suspend fun updateBossVerification(bossVerification: String, userId: String)
+    suspend fun updateTeamCreated(team: Team)
 
 }

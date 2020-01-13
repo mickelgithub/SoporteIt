@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.preference
 
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.Team
 
 class PreferenceRepository(val preferences: IPreferences) {
 
@@ -12,7 +13,7 @@ class PreferenceRepository(val preferences: IPreferences) {
     suspend fun getMessagingToken()= preferences.getMessagingToken()
     suspend fun updateProfile(profile: String)= preferences.updateProfile(profile)
     suspend fun updateBossVerification(bossVerification: String)= preferences.updateBossVerification(bossVerification)
-    suspend fun updateTeamCreated(team: String)= preferences.updateTeamCreated(team)
+    suspend fun updateTeamCreated(team: Team)= preferences.updateTeamCreated(team)
 }
 
 interface IPreferences {
@@ -24,5 +25,5 @@ interface IPreferences {
     suspend fun getMessagingToken(): String
     suspend fun updateProfile(profile: String)
     suspend fun updateBossVerification(bossVerification: String)
-    suspend fun updateTeamCreated(team: String)
+    suspend fun updateTeamCreated(team: Team)
 }

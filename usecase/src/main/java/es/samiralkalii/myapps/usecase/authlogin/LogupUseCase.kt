@@ -29,6 +29,8 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
 
         if (TEAM_MANAGER_PROFILE== user.profile) {
             user.bossVerification= "P"
+            user.holidayDaysPerYear= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
+            user.internalEmployee= true
         }
 
         //we get user.id and user.creationDate

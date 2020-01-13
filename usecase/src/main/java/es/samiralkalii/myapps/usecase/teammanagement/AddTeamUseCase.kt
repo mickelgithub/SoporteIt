@@ -12,8 +12,9 @@ class AddTeamUseCase(val remoteTeamManagementRepository: RemoteTeamManagementRep
 
     private val logger = LoggerFactory.getLogger(AddTeamUseCase::class.java)
 
-    suspend operator fun invoke(team: Team, boss: String) {
-        remoteTeamManagementRepository.addTeam(team, boss)
-        preferenceRepository.updateTeamCreated(team.name)
+    suspend operator fun invoke(team: Team) {
+        remoteTeamManagementRepository.addTeam(team)
+        remoteUserRepository.updateTeamCreated(team)
+        preferenceRepository.updateTeamCreated(team)
     }
 }

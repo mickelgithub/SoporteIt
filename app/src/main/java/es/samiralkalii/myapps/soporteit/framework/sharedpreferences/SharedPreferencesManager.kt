@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.framework.sharedpreferences
 import android.content.Context
 import androidx.core.content.edit
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.preference.IPreferences
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.*
@@ -25,9 +26,10 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateTeamCreated(team: String) {
+    override suspend fun updateTeamCreated(team: Team) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
-            putString(KEY_TEAM, team)
+            putString(KEY_TEAM, team.name)
+            putString(KEY_TEAM_ID, team.id)
         }
     }
 
@@ -64,6 +66,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_PROFILE, user.profile)
             putString(KEY_BOSS_VERIFICATION, user.bossVerification)
             putString(KEY_TEAM, user.team)
+            putString(KEY_TEAM_ID, user.teamId)
         }
     }
 
@@ -83,10 +86,11 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val profile= getString(KEY_PROFILE, "") ?: ""
             val bossVerification= getString(KEY_BOSS_VERIFICATION, "") ?: ""
             val team= getString(KEY_TEAM, "") ?: ""
+            val teamId= getString(KEY_TEAM_ID, "") ?: ""
 
             return User(email, pass, name, localProfileImage = imageProfilePath,
                 id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated,
-                profile = profile, bossVerification = bossVerification, team = team)
+                profile = profile, bossVerification = bossVerification, team = team, teamId = teamId)
         }
     }
 }

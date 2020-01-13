@@ -16,8 +16,11 @@ const val KEY_EMAIL_VERIFIED= "emailVerified"
 const val KEY_MESSAGING_TOKEN= "messagingToken"
 const val KEY_PROFILE= "profile"
 const val KEY_BOSS_VERIFICATION= "bossVerification";
-const val KEY_TEAM_CREATED= "teamCreated"
+//const val KEY_TEAM_CREATED= "teamCreated"
 const val KEY_TEAM= "team"
+const val KEY_TEAM_ID= "teamId"
+const val KEY_HOLIDAY_DAYS_PER_YEAR= "holidayDaysPerYear"
+const val KEY_INTERNAL_EMPLOYEE= "internalEmployee"
 
 
 fun User.toBundle()= Bundle().apply {
@@ -31,6 +34,9 @@ fun User.toBundle()= Bundle().apply {
     putString(KEY_PROFILE, profile)
     putString(KEY_BOSS_VERIFICATION, bossVerification)
     putString(KEY_TEAM, team)
+    putString(KEY_TEAM_ID, teamId)
+    putInt(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDaysPerYear)
+    putBoolean(KEY_INTERNAL_EMPLOYEE, internalEmployee)
 }
 
 fun Bundle.toUser()= User(
@@ -43,7 +49,11 @@ fun Bundle.toUser()= User(
     emailVerified = getBoolean(KEY_EMAIL_VERIFIED, false),
     profile = getString(KEY_PROFILE, ""),
     bossVerification = getString(KEY_BOSS_VERIFICATION, ""),
-    team = getString(KEY_TEAM, "")
+    team = getString(KEY_TEAM, ""),
+    teamId = getString(KEY_TEAM_ID, ""),
+    holidayDaysPerYear = getInt(KEY_HOLIDAY_DAYS_PER_YEAR, User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS),
+    internalEmployee = getBoolean(KEY_INTERNAL_EMPLOYEE, false)
+
 )
 
 val User.teamCreated

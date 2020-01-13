@@ -24,6 +24,7 @@ private const val KEY_INVITATION_NOTIF_TYPE= "invitation_to_team"
 private const val KEY_USER= "user"
 private const val VALUE_USER= "user"
 private const val VALUE_GROUP= "group"
+private const val TEAM_REF= "teams"
 
 
 
@@ -31,8 +32,12 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
 
     private val logger= LoggerFactory.getLogger(RemoteTeamDatasourceManager::class.java)
 
-    override suspend fun addTeam(team: Team, boss: String) {
-        fstore.collection(USERS_REF).document(boss).update(TEAM_DOCUMENT_REF, team).await()
+    override suspend fun addTeam(team: Team) {
+        //fstore.collection(USERS_REF).document(boss).update(TEAM_DOCUMENT_REF, team).await()
+        team.members?.add(team.boss)
+        val newTeamRef= fstore.collection(TEAM_REF).document()
+        team.id= newTeamRef.id
+        newTeamRef.set(team)
     }
 
     override suspend fun getAllUsersButBosesAndNoTeam(): List<User> {

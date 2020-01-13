@@ -1,6 +1,13 @@
 package es.samiralkalii.myapps.domain.teammanagement
 
-import java.time.LocalDateTime
 import java.util.*
 
-class Team(var name: String, var creationDate: Long= Calendar.getInstance().time.time)
+data class Team(
+            var id: String?= null,
+            var name: String,
+            var nameInsensitive: String,
+            var boss: String,
+            var creationDate: Long= Calendar.getInstance().time.time,
+            var members: MutableList<String>?= MutableList<String>(0) {_ -> ""},
+            var groups: List<Group>?= emptyList()
+            )

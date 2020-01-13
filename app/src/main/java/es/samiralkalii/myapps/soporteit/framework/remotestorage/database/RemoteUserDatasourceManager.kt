@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
@@ -35,6 +36,10 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
 
     override suspend fun updateBossVerification(bossVerification: String, userId: String) {
         fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_BOSS_VERIFICATION to bossVerification)).await()
+    }
+
+    override suspend fun updateTeamCreated(team: Team) {
+        fstore.collection(USERS_REF).document(team.boss).update(mapOf( KEY_TEAM to team.name, KEY_TEAM_ID to team.id)).await()
     }
 
     override suspend fun updateEmailVerified(user: User) {

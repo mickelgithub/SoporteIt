@@ -64,7 +64,7 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMod
         }
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                addTeamUseCase(Team(teamName), user.id)
+                addTeamUseCase(Team(name= teamName, nameInsensitive = teamName.toUpperCase(), boss = user.id))
             }.await()
             user.team= teamName
             _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
