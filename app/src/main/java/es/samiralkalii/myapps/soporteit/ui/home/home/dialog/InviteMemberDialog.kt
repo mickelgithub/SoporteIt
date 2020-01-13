@@ -66,6 +66,7 @@ class InviteMemberDialog(): MyDialog() {
         binding= DialogInviteMemberBinding.inflate(inflater, container, false)
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
+        binding.executePendingBindings()
         binding.holidayDaysPerYear.setSelection(binding.holidayDaysPerYear.text!!.length)
         return binding.root
     }
@@ -73,6 +74,7 @@ class InviteMemberDialog(): MyDialog() {
     fun clearErrors() {
         viewModel.holidayDaysError.value= null
         viewModel.membersError.value= null
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
