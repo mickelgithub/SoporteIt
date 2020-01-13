@@ -7,6 +7,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.ui.util.KEY_BOSS_VERIFICATION
 import es.samiralkalii.myapps.soporteit.ui.util.KEY_MESSAGING_TOKEN
+import es.samiralkalii.myapps.soporteit.ui.util.KEY_TEAM_NAME_INSENSITIVE
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -38,6 +39,11 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         val newTeamRef= fstore.collection(TEAM_REF).document()
         team.id= newTeamRef.id
         newTeamRef.set(team)
+    }
+
+    override suspend fun isTeamAlreadyExists(team: Team): Boolean {
+        val result= fstore.collection(TEAM_REF).whereEqualTo(KEY_TEAM_NAME_INSENSITIVE, team.nameInsensitive).get().await()
+        return result!= null && result.size()>= 1
     }
 
     override suspend fun getAllUsersButBosesAndNoTeam(): List<User> {

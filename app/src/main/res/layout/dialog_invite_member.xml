@@ -10,6 +10,10 @@
             type="es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog" />
     </data>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -25,19 +29,54 @@
             android:layout_gravity="center"
             android:layout_marginTop="8dp" />
 
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/members"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            app:shapeAppearance="@style/rounded_text_field"
+            android:id="@+id/membersInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            app:error="@{fragment.viewModel.membersError}"
+            app:errorTextAppearance="@style/ErrorText">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:hint="@string/prompt_member_mail"
+                android:id="@+id/members"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingStart="10dp"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:enabled="false"
+                android:nextFocusDown="@id/holidayDaysPerYear"
+                android:imeOptions="actionNext"
+                android:text="@={fragment.viewModel.member}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            app:shapeAppearance="@style/rounded_text_field"
+            android:id="@+id/holidayDaysPerYearInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:inputType="text"
-            android:maxLines="1"
-            android:enabled="false"
-            android:imeOptions="actionDone"
-            android:text="@={fragment.viewModel.member}" />
+            app:error="@{fragment.viewModel.holidayDaysError}"
+            app:errorTextAppearance="@style/ErrorText">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/holidayDaysPerYear"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="@string/holiday_days_per_year"
+                android:inputType="number"
+                android:maxLines="1"
+                android:text="@={fragment.viewModel.holidayDays}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Switch
             android:id="@+id/internal"
@@ -60,6 +99,7 @@
             android:textColor="@{!fragment.viewModel.internal ? @android:color/black : @android:color/darker_gray}"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
             android:checked="@{!fragment.viewModel.internal}"
             android:onClick="@{() -> fragment.viewModel.onInternalExternalClick()}"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
@@ -146,5 +186,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

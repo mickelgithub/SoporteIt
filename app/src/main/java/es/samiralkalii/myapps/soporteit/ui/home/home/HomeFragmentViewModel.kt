@@ -63,11 +63,15 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMod
             }
         }
         viewModelScope.launch(errorHandler) {
-            async(Dispatchers.IO) {
+            val result= async(Dispatchers.IO) {
                 addTeamUseCase(Team(name= teamName, nameInsensitive = teamName.toUpperCase(), boss = user.id))
             }.await()
-            user.team= teamName
-            _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
+            if (result) {
+                user.team= teamName
+                _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
+            } else {
+                _teamAddedOk.postValue(Event(ScreenState.Render(HomeFragmentChangeState.ShowMessage(R.string.team_already_exist))))
+            }
         }
 
     }

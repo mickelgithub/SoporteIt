@@ -22,6 +22,8 @@ const val KEY_TEAM_ID= "teamId"
 const val KEY_HOLIDAY_DAYS_PER_YEAR= "holidayDaysPerYear"
 const val KEY_INTERNAL_EMPLOYEE= "internalEmployee"
 
+const val KEY_TEAM_NAME_INSENSITIVE= "nameInsensitive"
+
 
 fun User.toBundle()= Bundle().apply {
     putString(KEY_EMAIL, email)

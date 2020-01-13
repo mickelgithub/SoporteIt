@@ -9,6 +9,7 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
     suspend fun addTeam(team: Team)= remoteTeamManagementDatasource.addTeam(team)
     suspend fun getAllUsersButBosesAndNoTeam()= remoteTeamManagementDatasource.getAllUsersButBosesAndNoTeam()
     suspend fun inviteUser(sender: User, destination: User)= remoteTeamManagementDatasource.sendTeamInvitationToUser(sender, destination)
+    suspend fun isTeamAlreadyExists(team: Team): Boolean= remoteTeamManagementDatasource.isTeamAlreadyExists(team)
 
 }
 
@@ -16,4 +17,5 @@ interface IRemoteTeamManagementDatasource {
     suspend fun addTeam(team: Team)
     suspend fun getAllUsersButBosesAndNoTeam(): List<User>
     suspend fun sendTeamInvitationToUser(sender: User, destination: User)
+    suspend fun isTeamAlreadyExists(team: Team): Boolean
 }

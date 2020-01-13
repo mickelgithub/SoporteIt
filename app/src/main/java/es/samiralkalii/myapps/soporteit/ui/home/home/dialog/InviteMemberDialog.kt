@@ -66,7 +66,13 @@ class InviteMemberDialog(): MyDialog() {
         binding= DialogInviteMemberBinding.inflate(inflater, container, false)
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
+        binding.holidayDaysPerYear.setSelection(binding.holidayDaysPerYear.text!!.length)
         return binding.root
+    }
+
+    fun clearErrors() {
+        viewModel.holidayDaysError.value= null
+        viewModel.membersError.value= null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,12 +93,23 @@ class InviteMemberDialog(): MyDialog() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clearErrors()
                 if (!s.isNullOrBlank() && s.toString().length>= 4) {
                     adapter.setData(adapter._data.filter { user ->
                         user.email.startsWith(s)
                     })
                     adapter.notifyDataSetChanged()
                 }
+            }
+        })
+
+        binding.holidayDaysPerYear.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clearErrors()
             }
         })
 
@@ -272,6 +289,9 @@ class InviteMemberDialog(): MyDialog() {
             get() = _internal
 
         var member= MutableLiveData<String>("")
+        var holidayDays= MutableLiveData<String>(User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS.toString())
+        val holidayDaysError= MutableLiveData<Int?>(null)
+        val membersError= MutableLiveData<Int?>(null)
 
 
 
@@ -308,16 +328,21 @@ class InviteMemberDialog(): MyDialog() {
         }
 
         fun onInviteMemberClick() {
-            _dialogState.value= DialogState.ShowLoading
-            viewModelScope.launch {
-                logger.debug("Estamos invitando a ${member.value}, espere....")
-                async {
-                    delay(5000)
-                }.await()
-                _dialogState.value= DialogState.ShowSuccess
+            if (holidayDays.value!!.isBlank()) {
+                holidayDaysError.value = R.string.value_mandatory
+            } else if (member.value!!.isBlank()) {
+                membersError.value= R.string.value_mandatory
+            } else {
+                _dialogState.value= DialogState.ShowLoading
+                viewModelScope.launch {
+                    logger.debug("Estamos invitando a ${member.value}, espere....")
+                    async {
+                        delay(5000)
+                    }.await()
+                    _dialogState.value= DialogState.ShowSuccess
 
+                }
             }
-
         }
     }
 }

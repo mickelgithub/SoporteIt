@@ -8,6 +8,8 @@
     <string name="registration">Darse de alta</string>
     <string name="log_in">Acceso</string>
     <string name="preference_file">es.samiralkalii.myapps.soporteit.preferencias</string>
+    <string name="holiday_days_per_year">¿Cuántos dias de vacaciones?</string>
+    <string name="prompt_member_mail">Indicar el mail del miembro</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -25,7 +27,9 @@
     <string name="user_collision">Ya existe este usuario!!!</string>
     <string name="no_internet_connection">Error de conexion, comprueba el acceso a Internet</string>
     <string name="not_controled_error">Error no controlado</string>
+    <string name="team_already_exist">No se puede crear el equipo porque ya existe</string>
     <string name="already_logged_up">Si ya estas registrado, haz click</string>
+    <string name="value_mandatory">El valor es obligatorio</string>
     <string name="no_account">Si no tienes cuenta, registrate</string>
     <string name="her">Aqui</string>
     <string name="instructions_to_validate_your_email">Te queda un ultimo paso para utilizar esta aplicación, revisa tu correo y siga las instrucciones.</string>
