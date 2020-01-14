@@ -5,9 +5,7 @@ import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Team
-import es.samiralkalii.myapps.soporteit.ui.util.KEY_BOSS_VERIFICATION
-import es.samiralkalii.myapps.soporteit.ui.util.KEY_MESSAGING_TOKEN
-import es.samiralkalii.myapps.soporteit.ui.util.KEY_TEAM_NAME_INSENSITIVE
+import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -33,12 +31,12 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
 
     private val logger= LoggerFactory.getLogger(RemoteTeamDatasourceManager::class.java)
 
-    override suspend fun addTeam(team: Team) {
-        //fstore.collection(USERS_REF).document(boss).update(TEAM_DOCUMENT_REF, team).await()
+    override suspend fun addTeam(team: Team): String {
         team.members?.add(team.boss)
         val newTeamRef= fstore.collection(TEAM_REF).document()
         team.id= newTeamRef.id
         newTeamRef.set(team)
+        return newTeamRef.id
     }
 
     override suspend fun isTeamAlreadyExists(team: Team): Boolean {
@@ -47,7 +45,11 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun getAllUsersButBosesAndNoTeam(): List<User> {
-        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFICATION, "").get(Source.SERVER).await()
+        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFICATION, "")
+            .whereEqualTo(KEY_EMAIL_VERIFIED, true)
+            .whereGreaterThanOrEqualTo(KEY_TEAM_ID, "")
+            .whereLessThanOrEqualTo(KEY_TEAM_ID, "")
+            .get(Source.SERVER).await()
         val methodResult= ArrayList<User>()
         result.forEach { document ->
             val user: User= document.toObject(User::class.java)

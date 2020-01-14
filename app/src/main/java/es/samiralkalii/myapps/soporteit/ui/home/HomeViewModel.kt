@@ -75,6 +75,7 @@ class HomeViewModel() : ViewModel() {
 
     fun updateTeamCreated(user: User) {
         this.user.team= user.team
+        this.user.teamId= user.teamId
     }
 
     fun updateProfile(userParam: User) {

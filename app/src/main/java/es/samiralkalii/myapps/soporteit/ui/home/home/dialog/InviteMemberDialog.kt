@@ -20,6 +20,7 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.bindImgSrc
 import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.InviteUserUseCase
 import kotlinx.coroutines.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -280,7 +281,8 @@ class InviteMemberDialog(): MyDialog() {
         viewModel.onInviteMemberClick()
     }
 
-    class InviteMemberDialogViewModel(private val getAllUsersButBosesAndNoTeamUseCase: GetAllUsersButBosesAndNoTeamUseCase): ViewModel() {
+    class InviteMemberDialogViewModel(private val getAllUsersButBosesAndNoTeamUseCase: GetAllUsersButBosesAndNoTeamUseCase,
+                                      private val inviteUserUseCase: InviteUserUseCase): ViewModel() {
 
         private val logger = LoggerFactory.getLogger(InviteMemberDialogViewModel::class.java)
 

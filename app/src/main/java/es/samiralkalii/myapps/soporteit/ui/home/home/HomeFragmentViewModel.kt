@@ -66,8 +66,9 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMod
             val result= async(Dispatchers.IO) {
                 addTeamUseCase(Team(name= teamName, nameInsensitive = teamName.toUpperCase(), boss = user.id))
             }.await()
-            if (result) {
+            if (result.isNotBlank()) {
                 user.team= teamName
+                user.teamId= result
                 _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
             } else {
                 _teamAddedOk.postValue(Event(ScreenState.Render(HomeFragmentChangeState.ShowMessage(R.string.team_already_exist))))

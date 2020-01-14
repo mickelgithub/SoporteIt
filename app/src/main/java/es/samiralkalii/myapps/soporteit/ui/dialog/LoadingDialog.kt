@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogLoadingBinding
@@ -64,14 +65,14 @@ class LoadingDialog: MyDialog() {
 
         binding= DialogLoadingBinding.inflate(inflater, container, false)
         arguments?.let { args ->
-            val color= args.getInt(DIALOG_MESSAGE_COLOR)
+            val color= args.getInt(DIALOG_MESSAGE_COLOR) ?: R.color.red_error
             args.getInt(DIALOG_FOR_MESSAGE_KEY)?.let { message ->
                 binding.animationLoading.visibility= View.GONE
                 binding.animationOk.visibility= View.GONE
                 binding.message.apply {
                     visibility= View.VISIBLE
                     text= resources.getString(message)
-                    setTextColor(color)
+                    setTextColor(ContextCompat.getColor(context, color))
                 }
             }
         }
