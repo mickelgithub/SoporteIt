@@ -61,7 +61,8 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.emailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
             user.profile= (data[KEY_PROFILE] as String?) ?: ""
             user.bossVerification= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
-            user.team= (data[KEY_TEAM] as Map<String, String>?)?.let { it[KEY_NAME] as String } ?: ""
+            user.team= (data[KEY_TEAM] as String?) ?: ""
+            user.teamId= (data[KEY_TEAM_ID] as String?) ?: ""
             logger.debug("hello")
         }
     }

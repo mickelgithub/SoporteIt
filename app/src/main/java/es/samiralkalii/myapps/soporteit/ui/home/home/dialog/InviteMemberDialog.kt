@@ -120,6 +120,7 @@ class InviteMemberDialog(): MyDialog() {
                 DialogState.ShowLoadingData -> {
                     viewModel.member.value= activity!!.resources.getString(R.string.wait_while_loading_data)
                     binding.members.isEnabled= false
+                    binding.holidayDaysPerYear.isEnabled= false
                     binding.inviteMember.visibility= View.GONE
                     binding.animationOk.visibility= View.GONE
                     binding.message.visibility= View.GONE
@@ -130,6 +131,7 @@ class InviteMemberDialog(): MyDialog() {
                 }
                 DialogState.ShowLoading -> {
                     binding.members.isEnabled= false
+                    binding.holidayDaysPerYear.isEnabled= false
                     binding.inviteMember.visibility= View.GONE
                     binding.animationOk.visibility= View.GONE
                     binding.message.visibility= View.GONE
@@ -144,6 +146,7 @@ class InviteMemberDialog(): MyDialog() {
                         binding.invalidateAll()
                     }
                     binding.members.isEnabled= true
+                    binding.holidayDaysPerYear.isEnabled= true
                     binding.inviteMember.visibility= View.VISIBLE
                     binding.animationOk.visibility= View.GONE
                     binding.message.visibility= View.GONE
@@ -151,6 +154,7 @@ class InviteMemberDialog(): MyDialog() {
                 }
                 DialogState.ShowSuccess -> {
                     binding.members.isEnabled= false
+                    binding.holidayDaysPerYear.isEnabled= false
                     binding.inviteMember.visibility= View.GONE
                     binding.animationOk.apply {
                         visibility = View.VISIBLE
@@ -161,12 +165,14 @@ class InviteMemberDialog(): MyDialog() {
                     Handler().postDelayed({
                         binding.animationOk.visibility= View.GONE
                         binding.members.isEnabled= true
+                        binding.holidayDaysPerYear.isEnabled= true
                         binding.inviteMember.visibility= View.VISIBLE
                         viewModel.member.value= ""
                     }, DIALOG_DISMISS_DELAY)
                 }
                 is DialogState.ShowMessage -> {
                     binding.members.isEnabled= true
+                    binding.holidayDaysPerYear.isEnabled= true
                     binding.inviteMember.visibility= View.GONE
                     binding.animationOk.visibility= View.GONE
                     binding.message.apply {
