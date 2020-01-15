@@ -5,6 +5,7 @@ import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.InviteUserUseCase
 import org.koin.dsl.module
 
 
@@ -18,4 +19,5 @@ val useCaseModule= module {
     factory { NotifyMessagingUseCase(get(), get(), get()) }
     factory { AddTeamUseCase(get(), get(), get()) }
     factory { GetAllUsersButBosesAndNoTeamUseCase(get()) }
+    factory { InviteUserUseCase(get()) }
 }

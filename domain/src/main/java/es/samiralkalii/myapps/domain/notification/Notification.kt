@@ -23,15 +23,16 @@ enum class NotifState {
 }
 
 data class Notification (
-    var id: String,
+    var id: String?= null,
     var type: NotifType,
     var senderType: SenderType= SenderType.USER,
     var sender: String,
     var sendDate: Long= Calendar.getInstance().time.time,
     var destinationType: DestinationType= DestinationType.USER,
     var destination: String,
-    var team: String,
-    var teamId: String,
+    var team: String?,
+    var teamId: String?,
     var state: NotifState= NotifState.PENDING,
-    var deleted: Boolean= false
+    var deleted: Boolean?= false,
+    var deletionDate: Long?= 0L
 )

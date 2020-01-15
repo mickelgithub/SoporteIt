@@ -17,6 +17,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
+import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -147,7 +148,7 @@ class HomeFragment: Fragment(),
     private fun showInviteMemberDialog() {
         var inviteDialog: InviteMemberDialog?= activity!!.supportFragmentManager.findFragmentByTag(InviteMemberDialog::class.java.simpleName) as InviteMemberDialog?
         if (inviteDialog== null) {
-            inviteDialog= InviteMemberDialog.newInstance()
+            inviteDialog= InviteMemberDialog.newInstance(user.toBundle())
             inviteDialog.show(activity!!.supportFragmentManager, InviteMemberDialog::class.java.simpleName)
         }
     }

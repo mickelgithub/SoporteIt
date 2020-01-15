@@ -4,12 +4,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.NotifType
+import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.domain.teammanagement.Team
-import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.soporteit.ui.util.KEY_BOSS_VERIFICATION
+import es.samiralkalii.myapps.soporteit.ui.util.KEY_EMAIL_VERIFIED
+import es.samiralkalii.myapps.soporteit.ui.util.KEY_TEAM_ID
+import es.samiralkalii.myapps.soporteit.ui.util.KEY_TEAM_NAME_INSENSITIVE
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 private const val TEAM_DOCUMENT_REF= "team"
@@ -24,6 +27,8 @@ private const val KEY_USER= "user"
 private const val VALUE_USER= "user"
 private const val VALUE_GROUP= "group"
 private const val TEAM_REF= "teams"
+private const val NOTIFS_SENT= "notifsSent"
+private const val NOTIFS_RECEIVED= "notifsReceived"
 
 
 
@@ -59,23 +64,27 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         return methodResult
     }
 
-    override suspend fun sendTeamInvitationToUser(sender: User, destination: User) {
+    override suspend fun inviteUserToTeam(sender: User, destination: User) {
 
-        val notifRef= fstore.collection(NOTIFICATION_REF).document()
-        notifRef.set(mapOf<String, Any>(
-            KEY_TYPE to KEY_INVITATION_NOTIF_TYPE,
-            KEY_NOTIF_SENDER to mapOf<String, String>(
-                KEY_USER to sender.id,
-                KEY_MESSAGING_TOKEN to sender.messagingToken,
-                KEY_DATE to Calendar.getInstance().time.time.toString()
-            ),
-            KEY_DESTINATION to mapOf<String, String>(
-                KEY_TYPE to VALUE_USER,
-                KEY_VALUE to destination.id,
-                KEY_MESSAGING_TOKEN to destination.messagingToken
-            )
-        ))
+        val notification= Notification(
+            type= NotifType.ACTION_INVITE_TEAM,
+            sender = sender.id,
+            destination = destination.id,
+            team = sender.team,
+            teamId = sender.teamId
+        )
+        fstore.runTransaction { transaction ->
+            val notifRef= fstore.collection(NOTIFICATION_REF).document()
+            //we add a notification to top level notifications
+            notification.id= notifRef.id
+            val addTopLevelNotif= notifRef.set(notification.copy(deleted = null, deletionDate = null))
+            val addSentNotifsenderNotifRef= fstore.collection(USERS_REF).document(sender.id)
+                .collection(NOTIFS_SENT).document(notification.id!!).set(notification)
+            val addReceivedNotif= fstore.collection(USERS_REF).document(destination.id)
+                .collection(NOTIFS_RECEIVED).document(notification.id!!).set(notification)
+
+        }.await()
+
     }
-
 
 }

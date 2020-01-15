@@ -30,6 +30,7 @@
     <string name="team_already_exist">No se puede crear el equipo porque ya existe</string>
     <string name="already_logged_up">Si ya estas registrado, haz click</string>
     <string name="value_mandatory">El valor es obligatorio</string>
+    <string name="user_not_exist">El usuario no existe</string>
     <string name="no_account">Si no tienes cuenta, registrate</string>
     <string name="her">Aqui</string>
     <string name="instructions_to_validate_your_email">Te queda un ultimo paso para utilizar esta aplicación, revisa tu correo y siga las instrucciones.</string>

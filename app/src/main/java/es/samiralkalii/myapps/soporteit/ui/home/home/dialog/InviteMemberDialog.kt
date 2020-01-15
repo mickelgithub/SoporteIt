@@ -19,6 +19,7 @@ import es.samiralkalii.myapps.soporteit.databinding.DialogInviteMemberBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.bindImgSrc
+import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.InviteUserUseCase
 import kotlinx.coroutines.*
@@ -37,10 +38,14 @@ class InviteMemberDialog(): MyDialog() {
 
     val viewModel: InviteMemberDialogViewModel by viewModel()
 
+    private lateinit var user: User
+
 
     companion object {
 
-        fun newInstance()= InviteMemberDialog()
+        fun newInstance(bundle: Bundle)= InviteMemberDialog().apply {
+            this.arguments= bundle
+        }
 
     }
 
@@ -55,6 +60,8 @@ class InviteMemberDialog(): MyDialog() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = false
+        user= (arguments as Bundle).toUser()
+        viewModel.publishUser(user)
         logger.debug("onCreate...")
     }
 
@@ -303,7 +310,11 @@ class InviteMemberDialog(): MyDialog() {
         val holidayDaysError= MutableLiveData<Int?>(null)
         val membersError= MutableLiveData<Int?>(null)
 
+        lateinit var user: User
 
+        fun publishUser(userParam: User) {
+            user= userParam
+        }
 
         fun onInternalExternalClick() {
             val oldValue= _internal.value!!
@@ -343,15 +354,35 @@ class InviteMemberDialog(): MyDialog() {
             } else if (member.value!!.isBlank()) {
                 membersError.value= R.string.value_mandatory
             } else {
-                _dialogState.value= DialogState.ShowLoading
-                viewModelScope.launch {
-                    logger.debug("Estamos invitando a ${member.value}, espere....")
-                    async {
-                        delay(5000)
-                    }.await()
-                    _dialogState.value= DialogState.ShowSuccess
+                val userToInviteList= _users.value?.filter { user -> user.email== member.value }
+                if (userToInviteList== null || userToInviteList.size== 0) {
+                    membersError.value= R.string.user_not_exist
+                } else {
+                    val userToInvite = userToInviteList[0]
+                    _dialogState.value = DialogState.ShowLoading
+                    val errorHandler = CoroutineExceptionHandler { _, error ->
+                        logger.error(error.toString(), error)
+                        when (error) {
+                            is FirebaseNetworkException -> {
+                                _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
+                            }
+                            else -> {
+                                _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
+                            }
+                        }
+                    }
+                    viewModelScope.launch(errorHandler) {
 
+                        logger.debug("Estamos invitando a ${member.value}, espere....")
+                        async(Dispatchers.IO) {
+
+                            inviteUserUseCase(user, userToInvite)
+                        }.await()
+                        _dialogState.value = DialogState.ShowSuccess
+
+                    }
                 }
+
             }
         }
     }

@@ -6,7 +6,6 @@ import com.google.firebase.storage.FirebaseStorage
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserStorageDataSource
-import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
 import es.samiralkalii.myapps.notification.INotification
@@ -48,5 +47,5 @@ val appModule= module {
     viewModel { HomeViewModel()}
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { HomeFragmentViewModel(get()) }
-    viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get()) }
+    viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get(), get()) }
 }
