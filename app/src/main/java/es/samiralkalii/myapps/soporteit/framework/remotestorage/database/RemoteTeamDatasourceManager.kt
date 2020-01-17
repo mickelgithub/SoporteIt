@@ -67,6 +67,8 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         val notification= Notification(
             type= NotifType.ACTION_INVITE_TEAM,
             sender = sender.id,
+            senderName = sender.name,
+            senderEmail = sender.email,
             destination = destination.id,
             team = sender.team,
             teamId = sender.teamId

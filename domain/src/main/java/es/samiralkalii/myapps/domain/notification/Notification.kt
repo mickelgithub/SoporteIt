@@ -27,6 +27,8 @@ data class Notification (
     var type: NotifType,
     var senderType: SenderType= SenderType.USER,
     var sender: String,
+    var senderName: String?= null,
+    var senderEmail: String?= null,
     var sendDate: Long= Calendar.getInstance().time.time,
     var destinationType: DestinationType= DestinationType.USER,
     var destination: String,
