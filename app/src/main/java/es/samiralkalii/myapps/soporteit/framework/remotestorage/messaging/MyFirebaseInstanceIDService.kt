@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
 
-
-
 class MyFirebaseInstanceIDService() : CoroutineScope, FirebaseMessagingService() {
 
     private val logger = LoggerFactory.getLogger(MyFirebaseInstanceIDService::class.java)
@@ -49,11 +47,12 @@ class MyFirebaseInstanceIDService() : CoroutineScope, FirebaseMessagingService()
         with(remoteMsg.data) {
             val messageId= this[MESSAGE_ID_KEY] ?: ""
             val result= this[RESULT_KEY] ?: ""
+            val to= this[MESSAGE_TO_KEY] ?: ""
             val body= this[MESSAGE_BODY_KEY] ?: ""
-            async(Dispatchers.IO) {
-                notifyMessagingUseCase.invoke(messageId, result, body)
-            }
             logger.debug("the message received is $messageId -> $result")
+            async(Dispatchers.IO) {
+                notifyMessagingUseCase(messageId, result, to, body)
+            }
         }
 
     }

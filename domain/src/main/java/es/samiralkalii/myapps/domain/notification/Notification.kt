@@ -4,7 +4,8 @@ import java.util.*
 
 enum class NotifType {
     ACTION_INVITE_TEAM,
-    INFO
+    INFO,
+    NONE
 }
 
 enum class SenderType {
@@ -23,18 +24,22 @@ enum class NotifState {
 }
 
 data class Notification (
-    var id: String?= null,
-    var type: NotifType,
+    var id: String= "",
+    var type: NotifType= NotifType.NONE,
     var senderType: SenderType= SenderType.USER,
-    var sender: String,
-    var senderName: String?= null,
-    var senderEmail: String?= null,
+    var sender: String= "",
+    var senderName: String= "",
+    var senderEmail: String= "",
     var sendDate: Long= Calendar.getInstance().time.time,
     var destinationType: DestinationType= DestinationType.USER,
-    var destination: String,
-    var team: String?,
-    var teamId: String?,
+    var destination: String= "",
+    var team: String= "",
+    var teamId: String= "",
     var state: NotifState= NotifState.PENDING,
-    var deleted: Boolean?= false,
-    var deletionDate: Long?= 0L
-)
+    var deleted: Boolean= false,
+    var deletionDate: Long= 0L
+) {
+    companion object {
+        val EMPTY= Notification()
+    }
+}

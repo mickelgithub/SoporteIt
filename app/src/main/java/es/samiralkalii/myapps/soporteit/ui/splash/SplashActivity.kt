@@ -62,6 +62,7 @@ class SplashActivity : AppCompatActivity() {
     companion object {
 
         const val GOTO_PROFILE= 1
+        const val GOTO_NOTIFICATIONS= 2
         const val GOTO_KEY= "GOTO"
 
 
@@ -72,8 +73,15 @@ class SplashActivity : AppCompatActivity() {
             return intent
         }
 
+        fun getIntentToNotificationsScreen(context: Context): Intent {
+            val intent = Intent(context, SplashActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }.putExtra(GOTO_KEY, GOTO_NOTIFICATIONS)
+            return intent
+        }
+
         enum class GOTO {
-            PROFILE, PROFILE_PROFILE_NEEDED, HOME
+            PROFILE, PROFILE_PROFILE_NEEDED, HOME, NOTIFICATIONS
         }
     }
 }

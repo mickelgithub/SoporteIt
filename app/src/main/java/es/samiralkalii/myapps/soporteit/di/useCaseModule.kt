@@ -1,5 +1,6 @@
 package es.samiralkalii.myapps.soporteit.di
 
+import es.samiralkalii.myapps.data.notifications.RemoteNotificationsRepository
 import es.samiralkalii.myapps.usecase.authlogin.*
 import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
@@ -16,8 +17,9 @@ val useCaseModule= module {
     factory { Compare2ImageProfileUseCase(get()) }
     factory { SaveProfileChangeUseCase(get(), get(), get(), get()) }
     factory { RegisterMessagingTokenUseCase(get(), get()) }
-    factory { NotifyMessagingUseCase(get(), get(), get()) }
+    factory { NotifyMessagingUseCase(get(), get(), get(), get()) }
     factory { AddTeamUseCase(get(), get(), get()) }
     factory { GetAllUsersButBosesAndNoTeamUseCase(get()) }
     factory { InviteUserUseCase(get()) }
+    factory { RemoteNotificationsRepository(get()) }
 }

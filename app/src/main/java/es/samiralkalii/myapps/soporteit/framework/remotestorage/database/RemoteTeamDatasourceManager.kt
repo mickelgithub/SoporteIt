@@ -25,7 +25,7 @@ private const val VALUE_USER= "user"
 private const val VALUE_GROUP= "group"
 private const val TEAM_REF= "teams"
 private const val NOTIFS_SENT= "notifsSent"
-private const val NOTIFS_RECEIVED= "notifsReceived"
+const val NOTIFS_RECEIVED= "notifsReceived"
 private const val IN_PROGRESS= "in_progress"
 
 
@@ -73,15 +73,15 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             team = sender.team,
             teamId = sender.teamId
         )
-        fstore.runTransaction { transaction ->
+        fstore.runTransaction { _ ->
             val notifRef= fstore.collection(NOTIFICATION_REF).document()
             //we add a notification to top level notifications
             notification.id= notifRef.id
-            notifRef.set(notification.copy(deleted = null, deletionDate = null))
+            notifRef.set(notification)
             fstore.collection(USERS_REF).document(sender.id)
-                .collection(NOTIFS_SENT).document(notification.id!!).set(notification)
+                .collection(NOTIFS_SENT).document(notification.id).set(notification)
             fstore.collection(USERS_REF).document(destination.id)
-                .collection(NOTIFS_RECEIVED).document(notification.id!!).set(notification)
+                .collection(NOTIFS_RECEIVED).document(notification.id).set(notification)
             fstore.collection(USERS_REF).document(destination.id).update(mapOf(
                 KEY_TEAM to IN_PROGRESS,
                 KEY_TEAM_ID to IN_PROGRESS

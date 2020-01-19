@@ -49,6 +49,9 @@ class HomeViewModel() : ViewModel() {
             (gotoExtra== SplashActivity.GOTO_PROFILE ||  user.bossVerification== "P") -> {
                 _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
             }
+            (gotoExtra== SplashActivity.GOTO_NOTIFICATIONS) -> {
+                _goto.value = Event(SplashActivity.Companion.GOTO.NOTIFICATIONS)
+            }
             else -> {
                 _goto.value= Event(SplashActivity.Companion.GOTO.HOME)
             }

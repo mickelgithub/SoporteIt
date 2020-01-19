@@ -44,8 +44,22 @@ class NotificationManager(val context: Context): INotification {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true).build())
         }
+    }
 
+    override fun showNotificationInvitationToTeam(title: String, body: String) {
+        val intent= SplashActivity.getIntentToNotificationsScreen(context)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
-
+        with(NotificationManagerCompat.from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(101, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(body))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true).build())
+        }
     }
 }

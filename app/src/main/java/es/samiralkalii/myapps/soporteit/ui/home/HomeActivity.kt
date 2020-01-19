@@ -15,6 +15,7 @@ import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
+import es.samiralkalii.myapps.soporteit.ui.home.notificactions.NotificationsFragment
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
@@ -116,6 +117,14 @@ class HomeActivity : AppCompatActivity() {
                         supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                     }
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeFragment.newInstance(viewModel.user.toBundle()), HomeFragment::class.java.simpleName).commit()
+                }
+
+            }
+            SplashActivity.Companion.GOTO.NOTIFICATIONS -> {
+                logger.debug("Mostramos notificaciones...")
+                if (supportFragmentManager.findFragmentByTag(NotificationsFragment::class.java.simpleName)== null) {
+                    supportActionBar?.title = resources.getString(R.string.notifications_title)
+                    supportFragmentManager.beginTransaction().replace(R.id.container, NotificationsFragment.newInstance(viewModel.user.toBundle()), NotificationsFragment::class.java.simpleName).commit()
                 }
 
             }

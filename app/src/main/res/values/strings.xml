@@ -37,6 +37,7 @@
     <string name="profile">Perfil</string>
     <string name="team_created_title">Equipo: %1$s</string>
     <string name="team_no_created_title">Equipo: Pendiente de crear</string>
+    <string name="notifications_title">Notificaciones</string>
     <string name="absence">Ausencias</string>
     <string name="notifications">Notifs</string>
     <string name="holidays">Vacas</string>
