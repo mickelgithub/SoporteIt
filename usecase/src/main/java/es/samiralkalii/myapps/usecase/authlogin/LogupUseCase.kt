@@ -9,6 +9,7 @@ import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
 private const val TEAM_MANAGER_PROFILE= "Responsable de equipo";
+private const val PENDING= "P"
 
 class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                    private val remoteUserRepository: RemoteUserRepository,
@@ -28,7 +29,7 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         logger.debug("Vamos a registar el usuario ${user.email}")
 
         if (TEAM_MANAGER_PROFILE== user.profile) {
-            user.bossVerification= "P"
+            user.bossVerification= PENDING
             user.holidayDaysPerYear= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
             user.internalEmployee= true
         }

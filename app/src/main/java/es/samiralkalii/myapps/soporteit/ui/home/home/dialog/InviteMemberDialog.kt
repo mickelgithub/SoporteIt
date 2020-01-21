@@ -375,8 +375,9 @@ class InviteMemberDialog(): MyDialog() {
 
                         logger.debug("Estamos invitando a ${member.value}, espere....")
                         async(Dispatchers.IO) {
-
-                            inviteUserUseCase(user, userToInvite)
+                            val localHolidayDays= holidayDays.value!!.toInt()
+                            val localInternal= _internal.value!!
+                            inviteUserUseCase(user, userToInvite, localInternal, localHolidayDays)
                         }.await()
                         _dialogState.value = DialogState.ShowSuccess
 

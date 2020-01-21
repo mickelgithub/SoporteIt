@@ -2,6 +2,8 @@ package es.samiralkalii.myapps.usecase.messaging
 
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.data.notifications.RemoteNotificationsRepository
+import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.notification.NotificationRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
@@ -12,6 +14,8 @@ const val MESSAGE_ID_KEY= "messageId"
 const val RESULT_KEY= "result"
 const val MESSAGE_BODY_KEY= "body"
 const val MESSAGE_TO_KEY= "to"
+
+const val PENDING= "P"
 
 const val BOSS_VERIFICATION_TITLE=  "Verification Jefe de Equipo"
 const val BOSS_VERIFICATION_DESC_OK= "Hemos verificado que eres responsable de equipo\n \uD83D\uDE42\uD83D\uDE42\uD83D\uDE42"
@@ -49,10 +53,15 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
             MESSAGE_ID_INVITATION_TO_BE_PART_OF_TEAM -> {
                 val notifId= body
                 val notification= remoteNotificationsRepository.getNotificationReceivedById(userId, notifId)
+                preferenceRepository.updateTeamCreated(Team(id = notification.teamId, name = notification.team,
+                    boss = notification.sender, nameInsensitive = notification.team.toUpperCase()), teamInvitationState = PENDING)
+                val remoteUser= User.EMPTY
+                remoteUser.id= notification.destination
+                remoteUserRepository.getUserInfo(remoteUser)
+                preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDaysPerYear, remoteUser.internalEmployee)
                 title = INVITATION_TO_BE_PART_OF_TEAM_TITLE
-
                 notifBody= "El responsable de equipo '"+ notification.senderName+
-                        "("+ notification.senderEmail+ ")' te ha invitado para formar parte del equipo '"+
+                        "' ("+ notification.senderEmail+ ") te ha invitado para formar parte del equipo '"+
                         notification.team+ "'"
                 notificationRepository.showNotificationInvitationToTeam(title, notifBody)
             }

@@ -10,6 +10,7 @@ import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import org.slf4j.LoggerFactory
 
+
 fun User.isBoss()= this.bossVerification== "S"
 fun User.isProfilePendingToInput(context: Context)= this.profile== "" ||this.profile== context.resources.getString(
     R.string.choose_profile)
@@ -88,8 +89,6 @@ class HomeViewModel() : ViewModel() {
     fun updateBossVerification(bossVerification: String) {
         user.bossVerification= bossVerification
     }
-
-
 
     fun updateGoto(gotoParam: SplashActivity.Companion.GOTO) {
         _goto.value= Event(gotoParam)

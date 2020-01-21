@@ -26,10 +26,25 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateTeamCreated(team: Team) {
+    override suspend fun updateTeamCreated(team: Team, teamInvitationState: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_TEAM, team.name)
             putString(KEY_TEAM_ID, team.id)
+            putString(KEY_BOSS, team.boss)
+            putString(KEY_TEAM_INVITATION_STATE, teamInvitationState)
+        }
+    }
+
+    override suspend fun updateTeamInvitationState(teamInvitationState: String) {
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            putString(KEY_TEAM_INVITATION_STATE, teamInvitationState)
+        }
+    }
+
+    override suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean) {
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            putLong(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDays)
+            putBoolean(KEY_INTERNAL_EMPLOYEE, internal)
         }
     }
 
@@ -67,6 +82,9 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_BOSS_VERIFICATION, user.bossVerification)
             putString(KEY_TEAM, user.team)
             putString(KEY_TEAM_ID, user.teamId)
+            putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState)
+            putLong(KEY_HOLIDAY_DAYS_PER_YEAR, user.holidayDaysPerYear)
+            putBoolean(KEY_INTERNAL_EMPLOYEE, user.internalEmployee)
         }
     }
 
@@ -87,10 +105,14 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val bossVerification= getString(KEY_BOSS_VERIFICATION, "") ?: ""
             val team= getString(KEY_TEAM, "") ?: ""
             val teamId= getString(KEY_TEAM_ID, "") ?: ""
+            val teamInvitationState= getString(KEY_TEAM_INVITATION_STATE, "") ?: ""
+            val holidayDays= getLong(KEY_HOLIDAY_DAYS_PER_YEAR, 22L) ?: 22L
+            val internalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false) ?: false
 
             return User(email, pass, name, localProfileImage = imageProfilePath,
                 id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated,
-                profile = profile, bossVerification = bossVerification, team = team, teamId = teamId)
+                profile = profile, bossVerification = bossVerification, team = team, teamId = teamId,
+                teamInvitationState = teamInvitationState, holidayDaysPerYear = holidayDays, internalEmployee = internalEmployee)
         }
     }
 }

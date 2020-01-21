@@ -44,17 +44,18 @@ class MyFirebaseInstanceIDService() : CoroutineScope, FirebaseMessagingService()
 
     override fun onMessageReceived(remoteMsg: RemoteMessage) {
         super.onMessageReceived(remoteMsg)
-        with(remoteMsg.data) {
-            val messageId= this[MESSAGE_ID_KEY] ?: ""
-            val result= this[RESULT_KEY] ?: ""
-            val to= this[MESSAGE_TO_KEY] ?: ""
-            val body= this[MESSAGE_BODY_KEY] ?: ""
-            logger.debug("the message received is $messageId -> $result")
-            async(Dispatchers.IO) {
-                notifyMessagingUseCase(messageId, result, to, body)
+        launch(Dispatchers.Main) {
+            with(remoteMsg.data) {
+                val messageId= this[MESSAGE_ID_KEY] ?: ""
+                val result= this[RESULT_KEY] ?: ""
+                val to= this[MESSAGE_TO_KEY] ?: ""
+                val body= this[MESSAGE_BODY_KEY] ?: ""
+                logger.debug("the message received is $messageId -> $result")
+                withContext(Dispatchers.IO) {
+                    notifyMessagingUseCase(messageId, result, to, body)
+                }
             }
         }
-
     }
 
     override fun onDestroy() {

@@ -4,7 +4,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
-import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.ui.util.*
@@ -39,7 +38,21 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     }
 
     override suspend fun updateTeamCreated(team: Team) {
-        fstore.collection(USERS_REF).document(team.boss).update(mapOf( KEY_TEAM to team.name, KEY_TEAM_ID to team.id)).await()
+        fstore.collection(USERS_REF).document(team.boss).update(
+            mapOf( KEY_TEAM to team.name, KEY_TEAM_ID to team.id)).await()
+    }
+
+    override suspend fun updateTeamInvitationState(user: User, teamInvitationState: String) {
+        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_TEAM_INVITATION_STATE to teamInvitationState))
+    }
+
+    override suspend fun updateHolidayDaysAndInternalState(
+        userId: String,
+        holidayDays: Int,
+        internal: Boolean
+    ) {
+        fstore.collection(USERS_REF).document(userId).update(mapOf(KEY_HOLIDAY_DAYS_PER_YEAR to holidayDays,
+            KEY_INTERNAL_EMPLOYEE to internal))
     }
 
     override suspend fun updateEmailVerified(user: User) {
@@ -63,6 +76,9 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.bossVerification= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
             user.team= (data[KEY_TEAM] as String?) ?: ""
             user.teamId= (data[KEY_TEAM_ID] as String?) ?: ""
+            user.teamInvitationState= (data[KEY_TEAM_INVITATION_STATE] as String?) ?: ""
+            user.holidayDaysPerYear= (data[KEY_HOLIDAY_DAYS_PER_YEAR] as Long?) ?: 22L
+            user.internalEmployee= (data[KEY_INTERNAL_EMPLOYEE] as Boolean?) ?: false
             logger.debug("hello")
         }
     }

@@ -13,6 +13,9 @@ class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
     suspend fun updateProfile(profile: String, userId: String)= remoteUserDatasource.updateProfile(profile, userId)
     suspend fun updateBossVerification(bossVerification: String, userId: String)= remoteUserDatasource.updateBossVerification(bossVerification, userId)
     suspend fun updateTeamCreated(team: Team)= remoteUserDatasource.updateTeamCreated(team)
+    suspend fun updateTeamInvitationState(user: User, teamInvitationState: String)= remoteUserDatasource.updateTeamInvitationState(user, teamInvitationState)
+    suspend fun updateHolidayDaysAndInternalState(userId: String, holidayDays: Int, internal: Boolean)= remoteUserDatasource.updateHolidayDaysAndInternalState(
+        userId, holidayDays, internal)
 
 
 }
@@ -26,5 +29,7 @@ interface IRemoteUserDatasource {
     suspend fun updateProfile(profile: String, userId: String)
     suspend fun updateBossVerification(bossVerification: String, userId: String)
     suspend fun updateTeamCreated(team: Team)
+    suspend fun updateTeamInvitationState(user: User, teamInvitationState: String)
+    suspend fun updateHolidayDaysAndInternalState(userId: String, holidayDays: Int, internal: Boolean)
 
 }

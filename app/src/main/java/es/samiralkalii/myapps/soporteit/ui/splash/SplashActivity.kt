@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.startLogupActivity
@@ -19,12 +20,8 @@ class SplashActivity : AppCompatActivity() {
 
     private val logger= LoggerFactory.getLogger(SplashActivity::class.java)
 
-    private var gotoExtra: Int= -1
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        gotoExtra= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
 
         viewModel.checkUserAuth()
 
@@ -40,11 +37,11 @@ class SplashActivity : AppCompatActivity() {
             when (screenState.renderState) {
                 is SplashState.LoggedIn -> {
                     logger.debug("Logged in, goto home")
-                    startHomeActivity(screenState.renderState.user.toBundle(), gotoExtra)
+                    startHomeActivityyy(screenState.renderState.user)
                 }
                 is SplashState.Relogged -> {
                     logger.debug("relogged in, goto home")
-                    startHomeActivity(screenState.renderState.user.toBundle(), gotoExtra)
+                    startHomeActivityyy(screenState.renderState.user)
                 }
                 SplashState.FirstAccess -> {
                     logger.debug("First access, goto signUp")
@@ -59,11 +56,25 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
+    private fun startHomeActivityyy(user: User) {
+        val gotoExtra= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
+        val replyTeamInvitacion= intent.getStringExtra(SplashActivity.REPLY_TEAM_INVITATION_KEY) ?: ""
+        user.teamInvitationState= replyTeamInvitacion
+        if (replyTeamInvitacion.isNotBlank()) {
+            viewModel.publishUser(user)
+            viewModel.acceptTeamInvitacion(user, replyTeamInvitacion)
+        }
+        startHomeActivity(user.toBundle(), gotoExtra)
+    }
+
     companion object {
 
         const val GOTO_PROFILE= 1
         const val GOTO_NOTIFICATIONS= 2
+        const val GOTO_HOME= 3
         const val GOTO_KEY= "GOTO"
+        const val REPLY_TEAM_INVITATION_KEY= "accept_team_invitation"
+        const val REPLY_TEAM_INVITATION_OK= "S"
 
 
         fun getIntentToProfileScreen(context: Context): Intent {
@@ -77,6 +88,13 @@ class SplashActivity : AppCompatActivity() {
             val intent = Intent(context, SplashActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }.putExtra(GOTO_KEY, GOTO_NOTIFICATIONS)
+            return intent
+        }
+
+        fun getIntentToHomeScreen(context: Context, replyTeamInvitacion: String= ""): Intent {
+            val intent = Intent(context, SplashActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }.putExtra(GOTO_KEY, GOTO_HOME).putExtra(REPLY_TEAM_INVITATION_KEY, replyTeamInvitacion)
             return intent
         }
 

@@ -11,6 +11,7 @@ import es.samiralkalii.myapps.notification.INotification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 
+
 fun createNotificationChannel(context: Context) {
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
@@ -26,6 +27,8 @@ fun createNotificationChannel(context: Context) {
     }
 }
 
+const val NOTIF_ID= 101
+
 class NotificationManager(val context: Context): INotification {
 
     override fun showNotificationBossUpdated(title: String, body: String) {
@@ -35,7 +38,7 @@ class NotificationManager(val context: Context): INotification {
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(101, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+            notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle()
@@ -47,19 +50,34 @@ class NotificationManager(val context: Context): INotification {
     }
 
     override fun showNotificationInvitationToTeam(title: String, body: String) {
-        val intent= SplashActivity.getIntentToNotificationsScreen(context)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        //intent when clicking notificaciont body
+        //val intent= SplashActivity.getIntentToNotificationsScreen(context)
+        //val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        //intent when clicking accept action
+        val acceptInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_OK)
+        val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, 0)
+
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(101, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+            notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle()
                     .bigText(body))
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent)
+                //.setContentIntent(pendingIntent)
+                .addAction(0, context.resources.getString(R.string.accept), acceptInvitacionPendingIntent)
                 .setAutoCancel(true).build())
         }
     }
+
+    override fun cancelNotification() {
+        with(NotificationManagerCompat.from(context)) {
+            //cancel(NOTIF_ID)
+            cancelAll()
+        }
+    }
+
+
 }

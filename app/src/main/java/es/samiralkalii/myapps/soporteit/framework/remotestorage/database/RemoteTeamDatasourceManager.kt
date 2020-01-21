@@ -1,5 +1,6 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
@@ -8,6 +9,7 @@ import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.usecase.messaging.PENDING
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 
@@ -27,6 +29,7 @@ private const val TEAM_REF= "teams"
 private const val NOTIFS_SENT= "notifsSent"
 const val NOTIFS_RECEIVED= "notifsReceived"
 private const val IN_PROGRESS= "in_progress"
+private const val MEMBERS_FIELD= "members"
 
 
 
@@ -83,12 +86,19 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             fstore.collection(USERS_REF).document(destination.id)
                 .collection(NOTIFS_RECEIVED).document(notification.id).set(notification)
             fstore.collection(USERS_REF).document(destination.id).update(mapOf(
-                KEY_TEAM to IN_PROGRESS,
-                KEY_TEAM_ID to IN_PROGRESS
+                KEY_TEAM to notification.team,
+                KEY_TEAM_ID to notification.teamId,
+                KEY_BOSS to notification.sender,
+                KEY_TEAM_INVITATION_STATE to PENDING
             ))
 
         }.await()
 
+    }
+
+    override suspend fun addUserToTeam(user: User) {
+        val refMembers= fstore.collection(TEAM_REF).document(user.teamId)
+        refMembers.update(MEMBERS_FIELD, FieldValue.arrayUnion(user.id))
     }
 
 }

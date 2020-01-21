@@ -18,6 +18,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.NotificationsFragment
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
+import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity.Companion.REPLY_TEAM_INVITATION_OK
 import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
@@ -39,6 +40,7 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val goto= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
+
 
         binding= ActivityHomeBinding.inflate(layoutInflater)
         viewModel.publishUserAndGoto(intent.extras?.toUser() ?: User(), goto)
@@ -114,11 +116,18 @@ class HomeActivity : AppCompatActivity() {
                         supportActionBar?.title =
                             resources.getString(R.string.team_no_created_title)
                     } else {
-                        supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
+                        if (viewModel.user.isBoss()) {
+                            supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
+                        } else {
+                            if (viewModel.user.teamInvitationState== REPLY_TEAM_INVITATION_OK) {
+                                supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
+                            } else {
+                                supportActionBar?.title= resources.getString(R.string.team_created_title, "")
+                            }
+                        }
                     }
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeFragment.newInstance(viewModel.user.toBundle()), HomeFragment::class.java.simpleName).commit()
                 }
-
             }
             SplashActivity.Companion.GOTO.NOTIFICATIONS -> {
                 logger.debug("Mostramos notificaciones...")
@@ -128,13 +137,6 @@ class HomeActivity : AppCompatActivity() {
                 }
 
             }
-            /*SplashActivity.Companion.GOTO.TEAM_MANAGEMENT -> {
-                //bottomNav.menu.getItem(0).isCheckable= false
-                if (supportFragmentManager.findFragmentByTag(TeamMangementFragment::class.java.simpleName)== null) {
-                    supportActionBar?.title= resources.getString(R.string.team_management)
-                    supportFragmentManager.beginTransaction().replace(R.id.container, TeamMangementFragment.newInstance(viewModel.user.toBundle()), TeamMangementFragment::class.java.simpleName).commit()
-                }
-            }*/
         }
     }
 

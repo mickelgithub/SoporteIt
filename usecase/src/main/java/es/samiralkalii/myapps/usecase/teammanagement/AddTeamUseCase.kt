@@ -16,7 +16,7 @@ class AddTeamUseCase(val remoteTeamManagementRepository: RemoteTeamManagementRep
         if (!remoteTeamManagementRepository.isTeamAlreadyExists(team)) {
             val teamId= remoteTeamManagementRepository.addTeam(team)
             remoteUserRepository.updateTeamCreated(team)
-            preferenceRepository.updateTeamCreated(team)
+            preferenceRepository.updateTeamCreated(team, "")
             return teamId
         }
         return ""
