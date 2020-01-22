@@ -55,8 +55,9 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 val notification= remoteNotificationsRepository.getNotificationReceivedById(userId, notifId)
                 preferenceRepository.updateTeamCreated(Team(id = notification.teamId, name = notification.team,
                     boss = notification.sender, nameInsensitive = notification.team.toUpperCase()), teamInvitationState = PENDING)
-                val remoteUser= User.EMPTY
-                remoteUser.id= notification.destination
+                val remoteUser= User.EMPTY.apply {
+                    id= notification.destination
+                }
                 remoteUserRepository.getUserInfo(remoteUser)
                 preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDaysPerYear, remoteUser.internalEmployee)
                 title = INVITATION_TO_BE_PART_OF_TEAM_TITLE
