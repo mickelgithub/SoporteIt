@@ -30,6 +30,7 @@ data class Notification (
     var sender: String= "",
     var senderName: String= "",
     var senderEmail: String= "",
+    var senderProfileImage: String= "",
     var sendDate: Long= Calendar.getInstance().time.time,
     var destinationType: DestinationType= DestinationType.USER,
     var destination: String= "",

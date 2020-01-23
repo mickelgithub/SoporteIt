@@ -72,6 +72,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             sender = sender.id,
             senderName = sender.name,
             senderEmail = sender.email,
+            senderProfileImage = sender.remoteProfileImage,
             destination = destination.id,
             team = sender.team,
             teamId = sender.teamId

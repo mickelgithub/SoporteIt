@@ -59,6 +59,7 @@ class SplashActivity : AppCompatActivity() {
     private fun startHomeActivityyy(user: User) {
         val gotoExtra= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
         val replyTeamInvitacion= intent.getStringExtra(SplashActivity.REPLY_TEAM_INVITATION_KEY) ?: ""
+        logger.debug("---------El valor desde startHomeActivityyyyy de gotoExtra es ${gotoExtra} y el valor de replyTeamInvitation es ${replyTeamInvitacion}")
         user.teamInvitationState= replyTeamInvitacion
         if (replyTeamInvitacion.isNotBlank()) {
             viewModel.publishUser(user)
@@ -76,6 +77,8 @@ class SplashActivity : AppCompatActivity() {
         const val REPLY_TEAM_INVITATION_KEY= "accept_team_invitation"
         const val REPLY_TEAM_INVITATION_OK= "S"
 
+        private val logger= LoggerFactory.getLogger(SplashActivity::class.java)
+
 
         fun getIntentToProfileScreen(context: Context): Intent {
             val intent = Intent(context, SplashActivity::class.java).apply {
@@ -92,6 +95,7 @@ class SplashActivity : AppCompatActivity() {
         }
 
         fun getIntentToHomeScreen(context: Context, replyTeamInvitacion: String= ""): Intent {
+            logger.debug("*******El valor de replyTeamInvitation es ${replyTeamInvitacion} y el GOTO es ${GOTO_HOME}")
             val intent = Intent(context, SplashActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }.putExtra(GOTO_KEY, GOTO_HOME).putExtra(REPLY_TEAM_INVITATION_KEY, replyTeamInvitacion)

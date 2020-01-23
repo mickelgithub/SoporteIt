@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.bumptech.glide.Glide
 import es.samiralkalii.myapps.notification.INotification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
@@ -49,7 +50,7 @@ class NotificationManager(val context: Context): INotification {
         }
     }
 
-    override fun showNotificationInvitationToTeam(title: String, body: String) {
+    override fun showNotificationInvitationToTeam(title: String, body: String, largeIconUrl: String) {
         //intent when clicking notificaciont body
         //val intent= SplashActivity.getIntentToNotificationsScreen(context)
         //val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
@@ -60,15 +61,34 @@ class NotificationManager(val context: Context): INotification {
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
-                .setContentTitle(title)
-                .setContentText(body)
-                .setStyle(NotificationCompat.BigTextStyle()
-                    .bigText(body))
-                .setSmallIcon(R.mipmap.ic_launcher)
-                //.setContentIntent(pendingIntent)
-                .addAction(0, context.resources.getString(R.string.accept), acceptInvitacionPendingIntent)
-                .setAutoCancel(true).build())
+
+            if (largeIconUrl.isNotBlank()) {
+                val bitmap= Glide.with(context)
+                    .asBitmap()
+                    .load(largeIconUrl)
+                    .into(100, 100)
+                    .get()
+                notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setStyle(NotificationCompat.BigTextStyle()
+                        .bigText(body))
+                    .setLargeIcon(bitmap)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    //.setContentIntent(pendingIntent)
+                    .addAction(0, context.resources.getString(R.string.accept), acceptInvitacionPendingIntent)
+                    .setAutoCancel(true).build())
+            } else {
+                notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setStyle(NotificationCompat.BigTextStyle()
+                        .bigText(body))
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    //.setContentIntent(pendingIntent)
+                    .addAction(0, context.resources.getString(R.string.accept), acceptInvitacionPendingIntent)
+                    .setAutoCancel(true).build())
+            }
         }
     }
 

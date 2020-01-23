@@ -62,9 +62,12 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDaysPerYear, remoteUser.internalEmployee)
                 title = INVITATION_TO_BE_PART_OF_TEAM_TITLE
                 notifBody= "El responsable de equipo '"+ notification.senderName+
-                        "' ("+ notification.senderEmail+ ") te ha invitado para formar parte del equipo '"+
+                        "' ("+ notification.senderEmail+ ") te ha <b>invitado</b> para formar parte del equipo '"+
                         notification.team+ "'"
-                notificationRepository.showNotificationInvitationToTeam(title, notifBody)
+
+
+
+                notificationRepository.showNotificationInvitationToTeam(title, notifBody, notification.senderProfileImage)
             }
         }
     }
