@@ -24,7 +24,6 @@ const val BOSS_VERIFICATION_OK= "S"
 const val BOSS_VERIFICATION_KO= "N"
 const val MESSAGE_ID_BOSS_VERIFICATION= "boss_verification"
 const val MESSAGE_ID_INVITATION_TO_BE_PART_OF_TEAM= "invitation_to_be_part_of_team"
-const val INVITATION_TO_BE_PART_OF_TEAM_TITLE= "Has recibido una invitación"
 
 class NotifyMessagingUseCase(val notificationRepository: NotificationRepository, val preferenceRepository: PreferenceRepository,
                              val remoteUserRepository: RemoteUserRepository, val remoteNotificationsRepository: RemoteNotificationsRepository) {
@@ -57,13 +56,6 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 }
                 remoteUserRepository.getUserInfo(remoteUser)
                 preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDaysPerYear, remoteUser.internalEmployee)
-                title = INVITATION_TO_BE_PART_OF_TEAM_TITLE
-                notifBody= "El responsable de equipo '"+ notification.senderName+
-                        "' ("+ notification.senderEmail+ ") te ha <b>invitado</b> para formar parte del equipo '"+
-                        notification.team+ "'"
-
-
-
                 notificationRepository.showNotificationInvitationToTeam(notification.senderName, notification.senderEmail, notification.team, notification.senderProfileImage)
             }
         }
