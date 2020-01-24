@@ -17,9 +17,9 @@ const val MESSAGE_TO_KEY= "to"
 
 const val PENDING= "P"
 
-const val BOSS_VERIFICATION_TITLE=  "Verification Jefe de Equipo"
-const val BOSS_VERIFICATION_DESC_OK= "Hemos verificado que eres responsable de equipo\n \uD83D\uDE42\uD83D\uDE42\uD83D\uDE42"
-const val BOSS_VERIFICATION_DESC_KO= "No hemos podido verificar que eres responsable de Equipo\n \uD83D\uDE1F\uD83D\uDE1F\uD83D\uDE1F"
+//const val BOSS_VERIFICATION_TITLE=  "Verification Jefe de Equipo"
+//const val BOSS_VERIFICATION_DESC_OK= "Hemos verificado que eres responsable de equipo\n \uD83D\uDE42\uD83D\uDE42\uD83D\uDE42"
+//const val BOSS_VERIFICATION_DESC_KO= "No hemos podido verificar que eres responsable de Equipo\n \uD83D\uDE1F\uD83D\uDE1F\uD83D\uDE1F"
 const val BOSS_VERIFICATION_OK= "S"
 const val BOSS_VERIFICATION_KO= "N"
 const val MESSAGE_ID_BOSS_VERIFICATION= "boss_verification"
@@ -38,17 +38,14 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
         val userId= to
         when (messageId) {
             MESSAGE_ID_BOSS_VERIFICATION -> {
-                title = BOSS_VERIFICATION_TITLE
                 if (result == RESULT_OK_VALUE) {
-                    notifBody= BOSS_VERIFICATION_DESC_OK
                     preferenceRepository.updateBossVerification(BOSS_VERIFICATION_OK)
                 } else {
-                    notifBody=BOSS_VERIFICATION_DESC_KO
                     remoteUserRepository.updateProfile("", userId)
                     preferenceRepository.updateProfile("")
                     preferenceRepository.updateBossVerification(BOSS_VERIFICATION_KO)
                 }
-                notificationRepository.showNotificationBossUpdated(title, notifBody)
+                notificationRepository.showNotificationBossUpdated(result== BOSS_VERIFICATION_OK)
             }
             MESSAGE_ID_INVITATION_TO_BE_PART_OF_TEAM -> {
                 val notifId= body
@@ -67,7 +64,7 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
 
 
 
-                notificationRepository.showNotificationInvitationToTeam(title, notifBody, notification.senderProfileImage)
+                notificationRepository.showNotificationInvitationToTeam(notification.senderName, notification.senderEmail, notification.team, notification.senderProfileImage)
             }
         }
     }

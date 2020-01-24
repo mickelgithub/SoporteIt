@@ -5,12 +5,15 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import es.samiralkalii.myapps.notification.INotification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
+import org.slf4j.LoggerFactory
 
 
 fun createNotificationChannel(context: Context) {
@@ -32,13 +35,18 @@ const val NOTIF_ID= 101
 
 class NotificationManager(val context: Context): INotification {
 
-    override fun showNotificationBossUpdated(title: String, body: String) {
+    private val logger = LoggerFactory.getLogger(NotificationManager::class.java)
+
+    override fun showNotificationBossUpdated(isBoss: Boolean) {
 
         val intent= SplashActivity.getIntentToProfileScreen(context)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
+            val title= context.resources.getString(R.string.notif_title_boss_verification)
+            val body= if (isBoss) context.resources.getString(R.string.notif_body_boss_verification_ok)
+                else context.resources.getString(R.string.notif_body_boss_verification_ko)
             notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
                 .setContentTitle(title)
                 .setContentText(body)
@@ -50,7 +58,7 @@ class NotificationManager(val context: Context): INotification {
         }
     }
 
-    override fun showNotificationInvitationToTeam(title: String, body: String, largeIconUrl: String) {
+    override fun showNotificationInvitationToTeam(bossName: String, bossMail: String, team: String, largeIconUrl: String) {
         //intent when clicking notificaciont body
         //val intent= SplashActivity.getIntentToNotificationsScreen(context)
         //val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
@@ -61,18 +69,24 @@ class NotificationManager(val context: Context): INotification {
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
-
+            val title= context.resources.getString(R.string.notif_title_invitation_to_be_part_of_team)
+            val body= Html.fromHtml(context.resources.getString(R.string.notif_body_invitation_to_be_part_of_team, bossName, bossMail, team))
             if (largeIconUrl.isNotBlank()) {
+                val largeIconHeight = context.resources
+                        .getDimensionPixelSize(android.R.dimen.notification_large_icon_height)
+                val largeIconWidth = context.resources
+                        .getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
+                logger.debug("los valores de width y height es ${largeIconWidth},${largeIconHeight}")
                 val bitmap= Glide.with(context)
                     .asBitmap()
                     .load(largeIconUrl)
-                    .into(100, 100)
+                    .into(largeIconWidth, largeIconHeight)
                     .get()
+
                 notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
                     .setContentTitle(title)
                     .setContentText(body)
-                    .setStyle(NotificationCompat.BigTextStyle()
-                        .bigText(body))
+                    .setStyle(NotificationCompat.BigTextStyle().bigText(body))
                     .setLargeIcon(bitmap)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     //.setContentIntent(pendingIntent)
