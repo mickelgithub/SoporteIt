@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory
 
 private const val OK= "S"
 
-class AcceptTeamInvitationUseCase(private val notificationRepository: NotificationRepository,
+class HandleTeamInvitationUseCase(private val notificationRepository: NotificationRepository,
                                   private val preferenceRepository: PreferenceRepository,
                                   private val remoteUserRepository: RemoteUserRepository,
                                   private val remoteTeamManagementRepository: RemoteTeamManagementRepository) {
 
-    private val logger = LoggerFactory.getLogger(AcceptTeamInvitationUseCase::class.java)
+    private val logger = LoggerFactory.getLogger(HandleTeamInvitationUseCase::class.java)
 
-    suspend operator fun invoke(user: User, reply: String) {
+    suspend operator fun invoke(user: User, reply: String, replyDescription: String) {
         notificationRepository.cancelNotification()
         if (OK== reply) {
             user.teamInvitationState= OK
@@ -24,6 +24,11 @@ class AcceptTeamInvitationUseCase(private val notificationRepository: Notificati
             remoteTeamManagementRepository.addUserToTeam(user)
             preferenceRepository.updateTeamInvitationState(OK)
             //Falta por actualizar el estado de la notificacion
+        } else {
+            //no se ha aceptado la invitacion
+            user.teamInvitationState= ""
+            remoteUserRepository.updateTeamInvitationState(user, OK)
+
         }
     }
 }

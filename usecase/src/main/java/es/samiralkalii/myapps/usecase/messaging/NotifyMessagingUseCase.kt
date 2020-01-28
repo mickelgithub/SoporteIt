@@ -37,6 +37,7 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
         val userId= to
         when (messageId) {
             MESSAGE_ID_BOSS_VERIFICATION -> {
+                logger.debug("boss verification notification...")
                 if (result == RESULT_OK_VALUE) {
                     preferenceRepository.updateBossVerification(BOSS_VERIFICATION_OK)
                 } else {
@@ -44,9 +45,10 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                     preferenceRepository.updateProfile("")
                     preferenceRepository.updateBossVerification(BOSS_VERIFICATION_KO)
                 }
-                notificationRepository.showNotificationBossUpdated(result== BOSS_VERIFICATION_OK)
+                notificationRepository.showNotificationBossUpdated(result== RESULT_OK_VALUE)
             }
             MESSAGE_ID_INVITATION_TO_BE_PART_OF_TEAM -> {
+                logger.debug("invitation notification...")
                 val notifId= body
                 val notification= remoteNotificationsRepository.getNotificationReceivedById(userId, notifId)
                 preferenceRepository.updateTeamCreated(Team(id = notification.teamId, name = notification.team,

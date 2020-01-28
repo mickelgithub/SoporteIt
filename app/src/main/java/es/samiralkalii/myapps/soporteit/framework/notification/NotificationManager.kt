@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import android.text.Html
-import android.text.Html.FROM_HTML_MODE_LEGACY
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
@@ -79,7 +78,7 @@ class NotificationManager(val context: Context): INotification {
             var actionDenyInvitation: NotificationCompat.Action =
                 NotificationCompat.Action.Builder(R.mipmap.ic_launcher,
                     context.resources.getString(R.string.notif_reply_label_deny_invitation), denyInvitationPendingIntent)
-                    .addRemoteInput(RemoteInput.Builder(context.resources.getString(R.string.notif_reply_label_deny_invitation)).run {
+                    .addRemoteInput(RemoteInput.Builder(KEY_TEXT_REPLY).run {
                         setLabel(context.resources.getString(R.string.notif_reply_label_deny_invitation))
                         build()
                     })

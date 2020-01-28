@@ -9,14 +9,14 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.CheckUserAuthUseCase
-import es.samiralkalii.myapps.usecase.messaging.AcceptTeamInvitationUseCase
+import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, private val acceptTeamInvitationUseCase: AcceptTeamInvitationUseCase) : ViewModel() {
+class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, private val handleTeamInvitationUseCase: HandleTeamInvitationUseCase) : ViewModel() {
 
     private val logger= LoggerFactory.getLogger(SplashViewModel::class.java)
 
@@ -66,7 +66,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
         user= userParam
     }
 
-    fun acceptTeamInvitacion(user: User, reply: String) {
+    fun handleTeamInvitacion(user: User, reply: String, replyDescription: String) {
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.debug(error.toString())
@@ -83,7 +83,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
 
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                acceptTeamInvitationUseCase(user, reply)
+                handleTeamInvitationUseCase(user, reply, replyDescription)
             }
         }
     }

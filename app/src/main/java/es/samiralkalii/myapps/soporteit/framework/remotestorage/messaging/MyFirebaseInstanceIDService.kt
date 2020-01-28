@@ -44,6 +44,7 @@ class MyFirebaseInstanceIDService() : CoroutineScope, FirebaseMessagingService()
 
     override fun onMessageReceived(remoteMsg: RemoteMessage) {
         super.onMessageReceived(remoteMsg)
+        logger.debug("Se ha recibido el mensaje de notificacion......")
         launch(Dispatchers.Main) {
             with(remoteMsg.data) {
                 val messageId= this[MESSAGE_ID_KEY] ?: ""

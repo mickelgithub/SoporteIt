@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.RemoteInput
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.framework.notification.KEY_TEXT_REPLY
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.startLogupActivity
@@ -59,11 +61,12 @@ class SplashActivity : AppCompatActivity() {
     private fun startHomeActivityyy(user: User) {
         val gotoExtra= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
         val replyTeamInvitacion= intent.getStringExtra(SplashActivity.REPLY_TEAM_INVITATION_KEY) ?: ""
+        val replyTeamInvitacionText= RemoteInput.getResultsFromIntent(intent)?.getCharSequence(KEY_TEXT_REPLY) ?: ""
         logger.debug("---------El valor desde startHomeActivityyyyy de gotoExtra es ${gotoExtra} y el valor de replyTeamInvitation es ${replyTeamInvitacion}")
         user.teamInvitationState= replyTeamInvitacion
         if (replyTeamInvitacion.isNotBlank()) {
             viewModel.publishUser(user)
-            viewModel.acceptTeamInvitacion(user, replyTeamInvitacion)
+            viewModel.handleTeamInvitacion(user, replyTeamInvitacion, replyTeamInvitacionText.toString())
         }
         startHomeActivity(user.toBundle(), gotoExtra)
     }
