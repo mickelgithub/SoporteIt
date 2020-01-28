@@ -76,6 +76,7 @@ class SplashActivity : AppCompatActivity() {
         const val GOTO_KEY= "GOTO"
         const val REPLY_TEAM_INVITATION_KEY= "accept_team_invitation"
         const val REPLY_TEAM_INVITATION_OK= "S"
+        const val REPLY_TEAM_INVITATION_KO= "N"
 
         private val logger= LoggerFactory.getLogger(SplashActivity::class.java)
 

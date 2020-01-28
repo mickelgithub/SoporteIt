@@ -57,6 +57,7 @@
     <string name="notif_body_boss_verification_ko">No hemos podido verificar que eres responsable de Equipo \uD83D\uDE1F\uD83D\uDE1F\uD83D\uDE1F</string>
     <string name="notif_title_invitation_to_be_part_of_team">Has recibido una invitación</string>
     <string name="notif_body_invitation_to_be_part_of_team">El responsable de equipo &lt;b>%1$s \'%2$s\'&lt;/b> te ha invitado para formar parte de su equipo &lt;b>%3$s</string>
+    <string name="notif_reply_label_deny_invitation">Rechazar</string>
 
     <string name="boss_profil">Responsable de equipo</string>
     <string name="java_profil">Perfil Java</string>
