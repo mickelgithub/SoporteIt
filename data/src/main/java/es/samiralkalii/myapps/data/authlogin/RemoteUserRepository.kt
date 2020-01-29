@@ -16,7 +16,7 @@ class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
     suspend fun updateTeamInvitationState(user: User, teamInvitationState: String)= remoteUserDatasource.updateTeamInvitationState(user, teamInvitationState)
     suspend fun updateHolidayDaysAndInternalState(userId: String, holidayDays: Int, internal: Boolean)= remoteUserDatasource.updateHolidayDaysAndInternalState(
         userId, holidayDays, internal)
-
+    suspend fun denyInvitationToTeam(user: User)= remoteUserDatasource.denyInvitationToTeam(user)
 
 }
 
@@ -31,5 +31,6 @@ interface IRemoteUserDatasource {
     suspend fun updateTeamCreated(team: Team)
     suspend fun updateTeamInvitationState(user: User, teamInvitationState: String)
     suspend fun updateHolidayDaysAndInternalState(userId: String, holidayDays: Int, internal: Boolean)
+    suspend fun denyInvitationToTeam(user: User)
 
 }

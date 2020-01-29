@@ -52,7 +52,12 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         internal: Boolean
     ) {
         fstore.collection(USERS_REF).document(userId).update(mapOf(KEY_HOLIDAY_DAYS_PER_YEAR to holidayDays,
-            KEY_INTERNAL_EMPLOYEE to internal))
+            KEY_INTERNAL_EMPLOYEE to internal)).await()
+    }
+
+    override suspend fun denyInvitationToTeam(user: User) {
+        fstore.collection(USERS_REF).document(user.id).update(mapOf(KEY_TEAM_INVITATION_STATE to "",
+            KEY_TEAM to "", KEY_TEAM_ID to "")).await()
     }
 
     override suspend fun updateEmailVerified(user: User) {

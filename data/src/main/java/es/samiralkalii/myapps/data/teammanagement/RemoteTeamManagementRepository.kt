@@ -11,7 +11,6 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
     suspend fun inviteUserToTeam(sender: User, destination: User)= remoteTeamManagementDatasource.inviteUserToTeam(sender, destination)
     suspend fun addUserToTeam(user: User)= remoteTeamManagementDatasource.addUserToTeam(user)
 
-
 }
 
 interface IRemoteTeamManagementDatasource {

@@ -27,7 +27,8 @@ class HandleTeamInvitationUseCase(private val notificationRepository: Notificati
         } else {
             //no se ha aceptado la invitacion
             user.teamInvitationState= ""
-            remoteUserRepository.updateTeamInvitationState(user, OK)
+            remoteTeamManagementRepository.addUserToTeam(user)
+            preferenceRepository.updateTeamInvitationState(OK)
 
         }
     }
