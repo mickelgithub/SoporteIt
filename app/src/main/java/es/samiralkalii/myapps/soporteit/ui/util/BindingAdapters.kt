@@ -7,10 +7,7 @@ import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
@@ -18,6 +15,8 @@ import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import es.samiralkalii.myapps.domain.notification.NotifType
+import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 
@@ -130,6 +129,13 @@ fun ImageView.bindBossVerification(bossVerification: String) {
         setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ok))
     } else {
         visibility= View.GONE
+    }
+}
+
+@BindingAdapter("android:text")
+fun TextView.bindTextToNotificationType(notifType: NotifType) {
+    if (notifType== NotifType.ACTION_INVITE_TEAM) {
+        text= context.resources.getString(R.string.notif_type_invitation_to_team)
     }
 }
 

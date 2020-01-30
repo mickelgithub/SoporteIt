@@ -15,7 +15,7 @@ import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.FRAGMENT_TAG
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
-import es.samiralkalii.myapps.soporteit.ui.home.notificactions.NotificationsFragment
+import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragment
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity.Companion.REPLY_TEAM_INVITATION_OK
@@ -68,7 +68,7 @@ class HomeActivity : AppCompatActivity() {
                         true
                     }
                     R.id.menu_item_notifications -> {
-                        toast("Pronto tendremos esta funcionalidad de notificaciones")
+                        viewModel.updateGoto(SplashActivity.Companion.GOTO.NOTIFICATIONS)
                         true
                     }
                     R.id.menu_item_planning -> {
@@ -131,9 +131,9 @@ class HomeActivity : AppCompatActivity() {
             }
             SplashActivity.Companion.GOTO.NOTIFICATIONS -> {
                 logger.debug("Mostramos notificaciones...")
-                if (supportFragmentManager.findFragmentByTag(NotificationsFragment::class.java.simpleName)== null) {
+                if (supportFragmentManager.findFragmentByTag(HomeNotificationsFragment::class.java.simpleName)== null) {
                     supportActionBar?.title = resources.getString(R.string.notifications_title)
-                    supportFragmentManager.beginTransaction().replace(R.id.container, NotificationsFragment.newInstance(viewModel.user.toBundle()), NotificationsFragment::class.java.simpleName).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.container, HomeNotificationsFragment.newInstance(viewModel.user.toBundle()), HomeNotificationsFragment::class.java.simpleName).commit()
                 }
 
             }

@@ -58,6 +58,9 @@
     <string name="notif_title_invitation_to_be_part_of_team">Has recibido una invitación</string>
     <string name="notif_body_invitation_to_be_part_of_team">El responsable de equipo &lt;b>%1$s \'%2$s\'&lt;/b> te ha invitado para formar parte de su equipo &lt;b>%3$s</string>
     <string name="notif_reply_label_deny_invitation">Rechazar</string>
+    <string name="notif_received">Recibidas</string>
+    <string name="notif_sent">Enviadas</string>
+    <string name="notif_type_invitation_to_team">Invitación para formar parte del equipo</string>
 
     <string name="boss_profil">Responsable de equipo</string>
     <string name="java_profil">Perfil Java</string>
@@ -81,6 +84,7 @@
     <string name="done">Terminar</string>
     <string name="internal">Interno</string>
     <string name="external">Externo</string>
+
 
 
     <string-array name="profile_array">

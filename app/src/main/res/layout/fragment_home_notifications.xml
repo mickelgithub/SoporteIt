@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -10,20 +11,20 @@
 
         <variable
             name="fragment"
-            type="es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationsFragment" />
+            type="es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragment" />
     </data>
 
-    <LinearLayout
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/notificationsPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/notifsRecyclerView"
+        <com.google.android.material.tabs.TabLayout
+            app:tabTextAppearance="@style/TabStyle"
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
-    </LinearLayout>
+    </androidx.viewpager.widget.ViewPager>
 
 </layout>

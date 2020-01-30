@@ -22,6 +22,7 @@ import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.SharedPrefer
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
+import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashViewModel
@@ -51,4 +52,5 @@ val appModule= module {
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { HomeFragmentViewModel(get()) }
     viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get(), get()) }
+    viewModel { HomeNotificationsFragmentViewModel(get()) }
 }
