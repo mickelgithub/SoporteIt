@@ -61,10 +61,16 @@ class NotificationsFragment: Fragment() {
         binding.notifsRecyclerView.layoutManager= LinearLayoutManager(activity)
         binding.notifsRecyclerView.adapter= notifsController.adapter
 
-        parentViewModel.getReceivedNotifications()
-
-        parentViewModel.receivedNotifications.observe(this, Observer {
-            notifsController.setData(it)
-        })
+        if (notificationCategory== NotificationCategory.RECEIVED) {
+            parentViewModel.getReceivedNotifications()
+            parentViewModel.receivedNotifications.observe(this, Observer {
+                notifsController.setData(it)
+            })
+        } else {
+            parentViewModel.getSentNotifications()
+            parentViewModel.sentNotifications.observe(this, Observer {
+                notifsController.setData(it)
+            })
+        }
     }
 }

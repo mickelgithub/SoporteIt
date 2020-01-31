@@ -32,6 +32,10 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
     val receivedNotifications: LiveData<List<Notification>>
         get() = _receivedNotifications
 
+    private val _sentNotifications= MutableLiveData<List<Notification>>()
+    val sentNotifications: LiveData<List<Notification>>
+        get() = _sentNotifications
+
     fun publishUser(userParam: User) {
         user= userParam
     }
@@ -63,10 +67,44 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                getNotificationsUseCase.getNotifications("mfpm76M8sSg6xAwbGCgu1Cn62UY2", NotificationCategory.RECEIVED)
+                getNotificationsUseCase.getNotifications("EQtraRxVgXOpFih2aKyeAVQgpf02", NotificationCategory.RECEIVED)
             }.await()
 
             _receivedNotifications.value = result
+        }
+    }
+
+    fun getSentNotifications() {
+
+        //_progressVisible.value= MyDialog.DialogState.ShowLoading
+        val errorHandler = CoroutineExceptionHandler { _, error ->
+            /*logger.error(error.toString(), error)
+            when (error) {
+                is FirebaseNetworkException -> {
+                    _profileChangeState.postValue(
+                        Event(
+                            ScreenState.Render(
+                                ProfileChangeState.ShowMessage(
+                                    R.string.no_internet_connection)))
+                    )
+                }
+                else -> {
+                    _profileChangeState.postValue(
+                        Event(
+                            ScreenState.Render(
+                                ProfileChangeState.ShowMessage(
+                                    R.string.no_internet_connection)))
+                    )
+                }
+            }*/
+        }
+
+        viewModelScope.launch(errorHandler) {
+            val result = async(Dispatchers.IO) {
+                getNotificationsUseCase.getNotifications("EQtraRxVgXOpFih2aKyeAVQgpf02", NotificationCategory.SENT)
+            }.await()
+
+            _sentNotifications.value = result
         }
     }
 
