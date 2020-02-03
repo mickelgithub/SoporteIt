@@ -64,12 +64,13 @@ class HomeNotificationsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.notificationsPager.adapter= NotificationsPageAdapter(activity!!)
+        //binding.notificationsPager.adapter= NotificationsPageAdapter(activity!!)
+        binding.notificationsPager.adapter= NotificationsPageAdapter(this)
 
 
     }
 
-    class NotificationsPageAdapter(val context: FragmentActivity): FragmentPagerAdapter(context.supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    class NotificationsPageAdapter(val fragment: Fragment): FragmentPagerAdapter(fragment.childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
         override fun getItem(position: Int)= if (position== 0) NotificationsFragment.newInstance(Bundle().apply { putSerializable(NOTIFICATION_CATEGORY_KEY, NotificationCategory.RECEIVED) }) else
             NotificationsFragment.newInstance(Bundle().apply { putSerializable(NOTIFICATION_CATEGORY_KEY, NotificationCategory.SENT) })
@@ -77,6 +78,12 @@ class HomeNotificationsFragment: Fragment() {
         //tendremos 2 pestañas, enviados y recibidos
         override fun getCount()= 2
 
-        override fun getPageTitle(position: Int)= if (position== 0) context.resources.getString(R.string.notif_received) else context.resources.getString(R.string.notif_sent)
+        override fun getPageTitle(position: Int)= if (position== 0) fragment.activity!!.resources.getString(R.string.notif_received) else fragment.activity!!.resources.getString(R.string.notif_sent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        logger.debug("onDestroy.....")
+
     }
 }

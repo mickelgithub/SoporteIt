@@ -24,8 +24,6 @@ class RemoteNotificationsDatasourceManager(val fstore: FirebaseFirestore): IRemo
     override suspend fun getReceivedNotifications(userid: String): List<Notification> {
         val result= fstore.collection(USERS_REF).document(userid).collection(NOTIFS_RECEIVED).whereEqualTo(
             KEY_NOTIFICATION_DELETED, false).get().await()
-        //return result?.toObjects(List::class.java) as List<Notification>
-        //return result;
         val mutableList= mutableListOf<Notification>()
         for (document in result) {
             val notif= document.toObject(Notification::class.java)
@@ -38,7 +36,13 @@ class RemoteNotificationsDatasourceManager(val fstore: FirebaseFirestore): IRemo
     override suspend fun getSentNotifications(userid: String): List<Notification> {
         val result= fstore.collection(USERS_REF).document(userid).collection(NOTIFS_SENT).whereEqualTo(
             KEY_NOTIFICATION_DELETED, false).get().await()
-        return result?.toObjects(List::class.java) as List<Notification>
+        val mutableList= mutableListOf<Notification>()
+        for (document in result) {
+            val notif= document.toObject(Notification::class.java)
+            mutableList.add(notif)
+        }
+        logger.debug("el valor de resut ....")
+        return mutableList.toList()
     }
 
 }

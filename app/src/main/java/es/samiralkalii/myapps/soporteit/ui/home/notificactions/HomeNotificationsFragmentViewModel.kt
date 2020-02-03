@@ -26,7 +26,7 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
     private val logger = LoggerFactory.getLogger(HomeNotificationsFragmentViewModel::class.java)
 
 
-    lateinit var user: User
+    private lateinit var user: User
 
     private val _receivedNotifications= MutableLiveData<List<Notification>>()
     val receivedNotifications: LiveData<List<Notification>>
@@ -37,15 +37,15 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
         get() = _sentNotifications
 
     fun publishUser(userParam: User) {
-        user= userParam
+        this.user= userParam
     }
 
     fun getReceivedNotifications() {
 
         //_progressVisible.value= MyDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            /*logger.error(error.toString(), error)
-            when (error) {
+            logger.error(error.toString(), error)
+            /*when (error) {
                 is FirebaseNetworkException -> {
                     _profileChangeState.postValue(
                         Event(
@@ -67,7 +67,7 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                getNotificationsUseCase.getNotifications("EQtraRxVgXOpFih2aKyeAVQgpf02", NotificationCategory.RECEIVED)
+                getNotificationsUseCase.getNotifications(user.id, NotificationCategory.RECEIVED)
             }.await()
 
             _receivedNotifications.value = result
@@ -78,8 +78,8 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
         //_progressVisible.value= MyDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            /*logger.error(error.toString(), error)
-            when (error) {
+            logger.error(error.toString(), error)
+            /*when (error) {
                 is FirebaseNetworkException -> {
                     _profileChangeState.postValue(
                         Event(
@@ -101,11 +101,15 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                getNotificationsUseCase.getNotifications("EQtraRxVgXOpFih2aKyeAVQgpf02", NotificationCategory.SENT)
+                getNotificationsUseCase.getNotifications(user.id, NotificationCategory.SENT)
             }.await()
 
             _sentNotifications.value = result
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        logger.debug("cleared.......")
+    }
 }
