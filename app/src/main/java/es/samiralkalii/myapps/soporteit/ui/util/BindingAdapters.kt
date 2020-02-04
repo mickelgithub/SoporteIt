@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.text.Html
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -35,6 +36,15 @@ fun View.bindVisible(visible: Boolean?) {
 @BindingAdapter("imgsrc")
 fun ImageView.bindImgSrc(imageUri: Uri?) {
     Glide.with(this.context).load(imageUri ?: R.drawable.profile)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
+        .into(this)
+}
+
+@BindingAdapter("imgsrc")
+fun ImageView.bindImgSrcfromUrlStr(imageUri: String?) {
+    Glide.with(this.context).load(if (imageUri.isNullOrBlank()) R.drawable.profile else imageUri)
+        .placeholder(R.drawable.profile)
         .diskCacheStrategy(DiskCacheStrategy.NONE)
         .skipMemoryCache(true)
         .into(this)
@@ -139,6 +149,12 @@ fun TextView.bindTextToNotificationType(notifType: NotifType) {
     }
 }
 
+
+@BindingAdapter("description")
+fun TextView.bindNotificationDescrption(notification: Notification) {
+    text= Html.fromHtml(context.resources.getString(R.string.notif_body_invitation_to_be_part_of_team,
+        notification.senderName, notification.senderEmail, notification.team))
+}
 
 
 

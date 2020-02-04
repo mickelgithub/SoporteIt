@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.epoxy.EpoxyTouchHelper
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.NotificationItemBindingModel_
 import es.samiralkalii.myapps.soporteit.databinding.FragmentNotificationsBinding
-import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragment
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationsController
-import org.koin.android.viewmodel.ext.android.sharedViewModel
-import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
 enum class NotificationCategory {
@@ -85,7 +85,8 @@ class NotificationsFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.notifsRecyclerView.layoutManager= LinearLayoutManager(activity)
+        val linearLayout= LinearLayoutManager(activity)
+        binding.notifsRecyclerView.layoutManager= linearLayout
 
         if (notificationCategory== NotificationCategory.RECEIVED) {
             binding.notifsRecyclerView.adapter= notifsReceivedController.adapter
@@ -94,6 +95,27 @@ class NotificationsFragment: Fragment() {
             binding.notifsRecyclerView.adapter= notifsSentController.adapter
             parentViewModel.getSentNotifications()
         }
+        binding.notifsRecyclerView.addItemDecoration(DividerItemDecoration(activity!!, linearLayout.orientation))
+        EpoxyTouchHelper.initSwiping(binding.notifsRecyclerView)
+            .leftAndRight()
+            .withTarget(NotificationItemBindingModel_::class.java)
+            .andCallbacks(object: EpoxyTouchHelper.SwipeCallbacks<NotificationItemBindingModel_>() {
+                override fun onSwipeCompleted(
+                    model: NotificationItemBindingModel_?,
+                    itemView: View?,
+                    position: Int,
+                    direction: Int
+                ) {
+                    if (notificationCategory== NotificationCategory.RECEIVED) {
+                        notifsReceivedController.
+
+                    } else {
+                        notifsSentController.setData(notifsSentController.currentData)
+                        notifsReceivedController.requestModelBuild()
+                    }
+                }
+
+            })
     }
 
     override fun onDestroyView() {
