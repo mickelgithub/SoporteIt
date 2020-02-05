@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.ui.home.notificactions
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -64,7 +65,11 @@ class HomeNotificationsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //binding.notificationsPager.adapter= NotificationsPageAdapter(activity!!)
+        binding.notificationsPager.setOnTouchListener(object: View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                return true
+            }
+        })
         binding.notificationsPager.adapter= NotificationsPageAdapter(this)
 
 

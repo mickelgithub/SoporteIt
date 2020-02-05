@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyTouchHelper
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.NotificationItemBindingModel_
 import es.samiralkalii.myapps.soporteit.databinding.FragmentNotificationsBinding
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragment
@@ -43,6 +44,8 @@ class NotificationsFragment: Fragment() {
     private lateinit var user: User
     private val notifsSentController= NotificationsController()
     private val notifsReceivedController= NotificationsController()
+    private var notifsReceived= mutableListOf<Notification>()
+    private var notifsSent= mutableListOf<Notification>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +53,12 @@ class NotificationsFragment: Fragment() {
         notificationCategory= arguments?.getSerializable(NOTIFICATION_CATEGORY_KEY) as NotificationCategory ?: NotificationCategory.RECEIVED
 
         parentViewModel.receivedNotifications.observe(this, Observer {
+            notifsReceived.addAll(it)
             notifsReceivedController.setData(it)
         })
 
         parentViewModel.sentNotifications.observe(this, Observer {
+            notifsSent.addAll(it)
             notifsSentController.setData(it)
         })
 
@@ -106,15 +111,14 @@ class NotificationsFragment: Fragment() {
                     position: Int,
                     direction: Int
                 ) {
-                    if (notificationCategory== NotificationCategory.RECEIVED) {
-                        notifsReceivedController.
-
-                    } else {
-                        notifsSentController.setData(notifsSentController.currentData)
-                        notifsReceivedController.requestModelBuild()
+                    if (notifsReceived.size> 0) {
+                        notifsReceived.removeAt(position)
+                        notifsSentController.setData(notifsReceived)
+                    } else if (notifsSent.size> 0) {
+                        notifsSent.removeAt(position)
+                        notifsSentController.setData(notifsSent)
                     }
                 }
-
             })
     }
 
