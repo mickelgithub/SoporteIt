@@ -14,7 +14,7 @@
             type="es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragment" />
     </data>
 
-    <androidx.viewpager.widget.ViewPager
+    <es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NonSwipeableViewPager
         android:id="@+id/notificationsPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,6 +25,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </androidx.viewpager.widget.ViewPager>
+    </es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NonSwipeableViewPager>
 
 </layout>
