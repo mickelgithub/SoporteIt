@@ -55,14 +55,15 @@ class NotificationsFragment: Fragment() {
         logger.debug("onCreate...."+ this.hashCode())
         notificationCategory= arguments?.getSerializable(NOTIFICATION_CATEGORY_KEY) as NotificationCategory ?: NotificationCategory.RECEIVED
 
-        parentViewModel.receivedNotifications.observe(this, Observer {
-            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(it)
-        })
-
-        parentViewModel.sentNotifications.observe(this, Observer {
-            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(it)
-        })
-
+        if (notificationCategory== NotificationCategory.RECEIVED) {
+            parentViewModel.receivedNotifications.observe(this, Observer {
+                (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(it)
+            })
+        } else {
+            parentViewModel.sentNotifications.observe(this, Observer {
+                (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(it)
+            })
+        }
     }
 
     override fun onCreateView(
@@ -94,11 +95,12 @@ class NotificationsFragment: Fragment() {
         val linearLayout= LinearLayoutManager(activity)
         binding.notifsRecyclerView.layoutManager= linearLayout
 
+        binding.notifsRecyclerView.adapter= NotificationAdapter(mutableListOf<Notification>())
         if (notificationCategory== NotificationCategory.RECEIVED) {
-            binding.notifsRecyclerView.adapter= NotificationAdapter(mutableListOf<Notification>())
+            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(Notification(id="")))
             parentViewModel.getReceivedNotifications()
         } else {
-            binding.notifsRecyclerView.adapter= NotificationAdapter(mutableListOf<Notification>())
+            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(Notification(id="")))
             parentViewModel.getSentNotifications()
         }
         binding.notifsRecyclerView.addItemDecoration(DividerItemDecoration(activity!!, linearLayout.orientation))
@@ -108,13 +110,15 @@ class NotificationsFragment: Fragment() {
 
             override fun onRightClicked(position: Int) {
                 super.onRightClicked(position)
+                logger.debug("OnRight clickeddddd")
             }
 
             override fun onLeftClicked(position: Int) {
                 super.onLeftClicked(position)
+                logger.debug("OnLeft clickeddddd")
             }
 
-        })
+        }, activity!!)
         val itemTouchhelper = ItemTouchHelper(swipeController)
         binding.notifsRecyclerView.addItemDecoration(object : ItemDecoration() {
             override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

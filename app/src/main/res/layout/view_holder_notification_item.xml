@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
+        android:background="@android:color/white"
         android:paddingBottom="10dp">
 
         <TextView
