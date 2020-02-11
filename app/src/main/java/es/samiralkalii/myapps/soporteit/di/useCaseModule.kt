@@ -5,6 +5,7 @@ import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
 import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
 import es.samiralkalii.myapps.usecase.notification.GetNotificationsUseCase
+import es.samiralkalii.myapps.usecase.notification.UpdateNotificationStateUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.InviteUserUseCase
@@ -24,4 +25,5 @@ val useCaseModule= module {
     factory { InviteUserUseCase(get(), get()) }
     factory { HandleTeamInvitationUseCase(get(), get(), get(), get()) }
     factory { GetNotificationsUseCase(get()) }
+    factory { UpdateNotificationStateUseCase(get()) }
 }

@@ -2,12 +2,14 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.notifications.IRemoteNotificationsDatasource
+import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.Notification
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 
 
 private const val KEY_NOTIFICATION_DELETED= "deleted"
+private const val KEY_NOTIFICATION_STATE= "state"
 
 class RemoteNotificationsDatasourceManager(val fstore: FirebaseFirestore): IRemoteNotificationsDatasource {
 
@@ -43,6 +45,10 @@ class RemoteNotificationsDatasourceManager(val fstore: FirebaseFirestore): IRemo
         }
         logger.debug("el valor de resut ....")
         return mutableList.toList()
+    }
+
+    override suspend fun updateNotificationState(userid: String, notification: String, state: NotifState) {
+        fstore.collection(USERS_REF).document(userid).collection(NOTIFS_RECEIVED).document(notification).update(mapOf( KEY_NOTIFICATION_STATE to state)).await()
     }
 
 }

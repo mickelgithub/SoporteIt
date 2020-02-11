@@ -11,7 +11,7 @@ class GetNotificationsUseCase(val remoteNotificationsRepository: RemoteNotificat
 
     private val logger = LoggerFactory.getLogger(GetNotificationsUseCase::class.java)
 
-    suspend fun getNotifications(userid: String, notifCategory: NotificationCategory)= when(notifCategory) {
+    suspend operator fun invoke(userid: String, notifCategory: NotificationCategory)= when(notifCategory) {
 
         NotificationCategory.RECEIVED -> remoteNotificationsRepository.getReceivedNotifications(userid)
         NotificationCategory.SENT -> remoteNotificationsRepository.getSentNotifications(userid)

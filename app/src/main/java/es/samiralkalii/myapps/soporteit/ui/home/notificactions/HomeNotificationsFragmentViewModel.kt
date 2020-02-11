@@ -5,16 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.usecase.notification.GetNotificationsUseCase
 import es.samiralkalii.myapps.usecase.notification.NotificationCategory
+import es.samiralkalii.myapps.usecase.notification.UpdateNotificationStateUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: GetNotificationsUseCase): ViewModel() {
+class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: GetNotificationsUseCase,
+                                         private val updateNotificationStateUseCase: UpdateNotificationStateUseCase): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeNotificationsFragmentViewModel::class.java)
 
@@ -61,7 +64,7 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                getNotificationsUseCase.getNotifications(user.id, NotificationCategory.RECEIVED)
+                getNotificationsUseCase(user.id, NotificationCategory.RECEIVED)
             }.await()
             _receivedNotifications.value = result
         }
@@ -94,7 +97,7 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                getNotificationsUseCase.getNotifications(user.id, NotificationCategory.SENT)
+                getNotificationsUseCase(user.id, NotificationCategory.SENT)
             }.await()
             _sentNotifications.value = result
         }
@@ -103,5 +106,13 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
     override fun onCleared() {
         super.onCleared()
         logger.debug("cleared.......")
+    }
+
+    fun updateNotificationStateRead(notification: Notification) {
+        viewModelScope.launch {
+            val result = async(Dispatchers.IO) {
+                updateNotificationStateUseCase(user.id, notification.id, NotifState.READ)
+            }.await()
+        }
     }
 }

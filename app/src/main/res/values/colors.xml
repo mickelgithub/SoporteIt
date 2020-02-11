@@ -8,4 +8,5 @@
     <color name="red_error">#FFBB2727</color>
 
     <color name="loading_dialog_bk">#FFFFFF</color>
+    <color name="colorPrimaryWithAlpha">#33008577</color>
 </resources>

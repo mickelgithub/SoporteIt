@@ -11,11 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
@@ -47,6 +49,13 @@ fun ImageView.bindImgSrcfromUrlStr(imageUri: String?) {
         .placeholder(R.drawable.profile)
         .diskCacheStrategy(DiskCacheStrategy.NONE)
         .skipMemoryCache(true)
+        .into(this)
+}
+
+@BindingAdapter("imgsrcwithcash")
+fun ImageView.bindImgSrcfromUrlStrwithCach(imageUri: String?) {
+    Glide.with(this.context).load(if (imageUri.isNullOrBlank()) R.drawable.profile else imageUri)
+        .placeholder(R.drawable.profile)
         .into(this)
 }
 
@@ -154,6 +163,14 @@ fun TextView.bindTextToNotificationType(notifType: NotifType) {
 fun TextView.bindNotificationDescrption(notification: Notification) {
     text= Html.fromHtml(context.resources.getString(R.string.notif_body_invitation_to_be_part_of_team,
         notification.senderName, notification.senderEmail, notification.team))
+}
+
+@BindingAdapter("android:background")
+fun ViewGroup.bindBackgroudColor(state: NotifState) {
+    if (state== NotifState.READ)
+        setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+    else
+        setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryWithAlpha))
 }
 
 
