@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.NotifState
+import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.usecase.notification.GetNotificationsUseCase
 import es.samiralkalii.myapps.usecase.notification.NotificationCategory
@@ -115,4 +116,7 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
             }.await()
         }
     }
+
+    fun isInfoNotification(notification: Notification)=  (notification.type== NotifType.INFO)
+
 }

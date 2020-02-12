@@ -34,6 +34,15 @@
                     app:lottie_loop="false"
                     app:lottie_autoPlay="false" />
 
+                <ImageView
+                    android:id="@+id/delete"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/delete" />
+
 
             </LinearLayout>
         </FrameLayout>

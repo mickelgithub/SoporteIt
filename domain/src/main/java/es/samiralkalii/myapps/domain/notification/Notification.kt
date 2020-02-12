@@ -4,6 +4,7 @@ import java.util.*
 
 enum class NotifType {
     ACTION_INVITE_TEAM,
+    REPLY,
     INFO,
     NONE
 }
