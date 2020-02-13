@@ -119,4 +119,6 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
     fun isInfoNotification(notification: Notification)=  (notification.type== NotifType.INFO)
 
+    fun isReplyNotification(notification: Notification)=  (notification.type.toString().startsWith("ACTION"))
+
 }

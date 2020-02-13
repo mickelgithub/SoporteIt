@@ -170,7 +170,7 @@ fun ViewGroup.bindBackgroudColor(state: NotifState) {
     if (state== NotifState.READ)
         setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
     else
-        setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryWithAlpha))
+        setBackgroundColor(ContextCompat.getColor(context, R.color.green))
 }
 
 

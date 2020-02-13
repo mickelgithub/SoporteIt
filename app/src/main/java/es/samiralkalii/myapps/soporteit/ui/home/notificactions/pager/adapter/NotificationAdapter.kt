@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.NotifType
@@ -50,19 +51,19 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
             val itemTop= bindingHolder.notificationItemTop
             val itemBottom= bindingHolder.notificationItemBottom
             val revealLayout= holder.binding.root as SwipeRevealLayout
+            revealLayout.close(false)
             val animationOk= holder.binding.animationOk
             bindingHolder.delete.visibility= View.GONE
+            bindingHolder.ok.visibility= View.GONE
+            bindingHolder.ko.visibility= View.GONE
             //revealLayout.dragLock(true)
             if (homeNotificationsFragmentViewModel.isInfoNotification(notifications[position]) && notifications[position].state== NotifState.PENDING) {
                 revealLayout.dragLock(true)
                 itemTop.setOnClickListener({v ->
-
-                    revealLayout.dragLock(true)
                     homeNotificationsFragmentViewModel.updateNotificationStateRead(notifications[position])
                     bindingHolder.delete.visibility= View.GONE
                     revealLayout.open(true)
                     itemBottom.visibility= View.VISIBLE
-                    bindingHolder.delete.visibility= View.GONE
                     animationOk.playAnimation()
                     revealLayout.postDelayed({
                         revealLayout.close(true)
@@ -76,26 +77,47 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
                         //recyclerView.invalidateItemDecorations()
                     }, 1300)
 
-                })/* else {
-                        revealLayout.dragLock(false)
-                        bindingHolder.delete.visibility= View.VISIBLE
-                        bindingHolder.delete.setOnClickListener({v ->
-                            logger.debug("delete clicked.....")
-                        })
-                        animationOk.visibility= View.GONE
-                    }*/
-                } else if (homeNotificationsFragmentViewModel.isInfoNotification(notifications[position])) {
+                })
+            } else if (homeNotificationsFragmentViewModel.isInfoNotification(notifications[position])) {
                 revealLayout.dragLock(false)
                 itemTop.setOnClickListener { null }
+                animationOk.visibility= View.GONE
                 bindingHolder.delete.visibility= View.VISIBLE
                 bindingHolder.delete.setOnClickListener({v ->
                     logger.debug("delete clicked.....")
                 })
+
+            } else if (homeNotificationsFragmentViewModel.isReplyNotification(notifications[position]) &&
+                notifications[position].state== NotifState.PENDING) {
                 animationOk.visibility= View.GONE
+                bindingHolder.delete.visibility= View.GONE
+                bindingHolder.ko.visibility= View.VISIBLE
+                bindingHolder.ok.visibility= View.VISIBLE
+                revealLayout.dragLock(true)
+                itemTop.setOnClickListener({v ->
+                    //homeNotificationsFragmentViewModel.updateNotificationStateRead(notifications[position])
+                    itemBottom.visibility= View.VISIBLE
+                    revealLayout.open(true)
+                    animationOk.playAnimation()
+                    /*revealLayout.postDelayed({
+                        revealLayout.close(true)
+                        itemBottom.visibility= View.INVISIBLE
+                        //notifications[position].state= NotifState.READ
+                        //fragment.updateDeletedMenuItemState(notifications)
+                    }, 1100)
+                    revealLayout.postDelayed({
+                        holder.binding.invalidateAll()
+                        notifyItemChanged(position)
+                        //recyclerView.invalidateItemDecorations()
+                    }, 1300)*/
+                    revealLayout.dragLock(false)
+
+                })
+
+
+
+
             }
-
-
-
         } else {
             holder.itemView.isClickable= false
         }
@@ -121,4 +143,5 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
         super.onAttachedToRecyclerView(recyclerView)
         this.recyclerView= recyclerView
     }
+
 }

@@ -43,6 +43,24 @@
                     android:layout_gravity="center"
                     android:src="@drawable/delete" />
 
+                <ImageView
+                    android:id="@+id/ok"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ok_icon" />
+
+                <ImageView
+                    android:id="@+id/ko"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ko" />
+
 
             </LinearLayout>
         </FrameLayout>
