@@ -4,20 +4,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import es.samiralkalii.myapps.domain.notification.NotifState
-import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
-import es.samiralkalii.myapps.soporteit.databinding.ViewHolderNotificationItemBinding
+import es.samiralkalii.myapps.soporteit.databinding.ViewHolderNotificationItemInfoBinding
+import es.samiralkalii.myapps.soporteit.ui.common.adapter.RecyclerBaseAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationsFragment
 import me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout
 import org.slf4j.LoggerFactory
 
 
-class NotificationAdapter(val notifications: MutableList<Notification>, val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel, val fragment: NotificationsFragment): RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
+class NotificationAdapter(val notifications: MutableList<Notification>, val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel, val fragment: NotificationsFragment): RecyclerBaseAdapter() {
 
     private val logger= LoggerFactory.getLogger(NotificationAdapter::class.java)
 
@@ -26,7 +26,7 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
     class NotificationViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(notification: Notification) {
-            if (binding is ViewHolderNotificationItemBinding) {
+            if (binding is ViewHolderNotificationItemInfoBinding) {
                 binding.notification= notification
                 binding.executePendingBindings()
             }
@@ -35,27 +35,23 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         if (viewType== 0) {
-            return NotificationViewHolder(ViewHolderNotificationItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            return NotificationViewHolder(ViewHolderNotificationItemInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply { lifecycleOwner= fragment.viewLifecycleOwner })
         } else {
             return NotificationViewHolder(LoadingItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
 
     }
 
-
-
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         if (holder.itemViewType== 0) {
             holder.bind(notifications[position])
-            val bindingHolder= (holder.binding as ViewHolderNotificationItemBinding)
+            val bindingHolder= (holder.binding as ViewHolderNotificationItemInfoBinding)
             val itemTop= bindingHolder.notificationItemTop
             val itemBottom= bindingHolder.notificationItemBottom
             val revealLayout= holder.binding.root as SwipeRevealLayout
             revealLayout.close(false)
             val animationOk= holder.binding.animationOk
             bindingHolder.delete.visibility= View.GONE
-            bindingHolder.ok.visibility= View.GONE
-            bindingHolder.ko.visibility= View.GONE
             //revealLayout.dragLock(true)
             if (homeNotificationsFragmentViewModel.isInfoNotification(notifications[position]) && notifications[position].state== NotifState.PENDING) {
                 revealLayout.dragLock(true)
@@ -91,8 +87,6 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
                 notifications[position].state== NotifState.PENDING) {
                 animationOk.visibility= View.GONE
                 bindingHolder.delete.visibility= View.GONE
-                bindingHolder.ko.visibility= View.VISIBLE
-                bindingHolder.ok.visibility= View.VISIBLE
                 revealLayout.dragLock(true)
                 itemTop.setOnClickListener({v ->
                     //homeNotificationsFragmentViewModel.updateNotificationStateRead(notifications[position])
@@ -129,6 +123,14 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
         } else {
             return 1
         }
+    }
+
+    override fun getLayoutIdForPosition(position: Int): Int {
+        return
+    }
+
+    override fun getViewModel(position: Int): Any? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getItemCount()= notifications.size

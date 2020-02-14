@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -110,9 +111,6 @@ class NotificationsFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val linearLayout= LinearLayoutManager(activity)
-        binding.notifsRecyclerView.layoutManager= linearLayout
-
         binding.notifsRecyclerView.adapter= NotificationAdapter(mutableListOf<Notification>(), parentViewModel, this)
         if (notificationCategory== NotificationCategory.RECEIVED) {
             (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(Notification(id="")))
@@ -121,7 +119,7 @@ class NotificationsFragment: Fragment() {
             (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(Notification(id="")))
             parentViewModel.getSentNotifications()
         }
-        binding.notifsRecyclerView.addItemDecoration(DividerItemDecoration(activity!!, linearLayout.orientation).apply {
+        binding.notifsRecyclerView.addItemDecoration(DividerItemDecoration(activity!!, LinearLayout.VERTICAL).apply {
             setDrawable(ColorDrawable(ContextCompat.getColor(activity!!, R.color.colorPrimaryDark)))
         })
 
