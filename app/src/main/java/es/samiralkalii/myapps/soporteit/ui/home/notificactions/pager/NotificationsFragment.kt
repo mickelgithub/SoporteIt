@@ -74,12 +74,12 @@ class NotificationsFragment: Fragment() {
 
         if (notificationCategory== NotificationCategory.RECEIVED) {
             parentViewModel.receivedNotifications.observe(this, Observer {
-                (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(it)
+                (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(it.map { NotificationAdapter.NotificationViewModel.InfoNotificationViewModel(it) })
                 updateDeletedMenuItemState(it)
             })
         } else {
             parentViewModel.sentNotifications.observe(this, Observer {
-                (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(it)
+                (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(it.map { NotificationAdapter.NotificationViewModel.InfoNotificationViewModel(it) })
                 updateDeletedMenuItemState(it)
             })
         }
@@ -111,12 +111,12 @@ class NotificationsFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.notifsRecyclerView.adapter= NotificationAdapter(mutableListOf<Notification>(), parentViewModel, this)
+        binding.notifsRecyclerView.adapter= NotificationAdapter(parentViewModel, this)
         if (notificationCategory== NotificationCategory.RECEIVED) {
-            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(Notification(id="")))
+            (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(listOf(NotificationAdapter.NotificationViewModel.LoadingItem))
             parentViewModel.getReceivedNotifications()
         } else {
-            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(Notification(id="")))
+            (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(listOf(NotificationAdapter.NotificationViewModel.LoadingItem))
             parentViewModel.getSentNotifications()
         }
         binding.notifsRecyclerView.addItemDecoration(DividerItemDecoration(activity!!, LinearLayout.VERTICAL).apply {

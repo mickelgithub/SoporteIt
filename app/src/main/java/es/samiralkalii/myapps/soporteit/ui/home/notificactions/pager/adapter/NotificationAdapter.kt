@@ -1,48 +1,31 @@
 package es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.Notification
-import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
-import es.samiralkalii.myapps.soporteit.databinding.ViewHolderNotificationItemInfoBinding
-import es.samiralkalii.myapps.soporteit.ui.common.adapter.RecyclerBaseAdapter
+import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.common.adapter.DataBindingAdapter
+import es.samiralkalii.myapps.soporteit.ui.common.adapter.DataBindingViewHolder
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationsFragment
-import me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout
 import org.slf4j.LoggerFactory
 
 
-class NotificationAdapter(val notifications: MutableList<Notification>, val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel, val fragment: NotificationsFragment): RecyclerBaseAdapter() {
+class NotificationAdapter(val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel, val fragment: NotificationsFragment): DataBindingAdapter<NotificationAdapter.NotificationViewModel>(DiffCallback()) {
 
     private val logger= LoggerFactory.getLogger(NotificationAdapter::class.java)
 
     private lateinit var recyclerView: RecyclerView
 
-    class NotificationViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(notification: Notification) {
-            if (binding is ViewHolderNotificationItemInfoBinding) {
-                binding.notification= notification
-                binding.executePendingBindings()
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        if (viewType== 0) {
-            return NotificationViewHolder(ViewHolderNotificationItemInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply { lifecycleOwner= fragment.viewLifecycleOwner })
-        } else {
-            return NotificationViewHolder(LoadingItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun getItemViewType(position: Int) =
+        when (getItem(position)) {
+            NotificationViewModel.LoadingItem -> R.layout.loading_item_view
+            is NotificationViewModel.InfoNotificationViewModel -> R.layout.view_holder_notification_item_info
+            is NotificationViewModel.ReplyNotificationViewModel -> R.layout.view_holder_notification_item_reply
         }
 
-    }
-
-    override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
+    /*override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         if (holder.itemViewType== 0) {
             holder.bind(notifications[position])
             val bindingHolder= (holder.binding as ViewHolderNotificationItemInfoBinding)
@@ -115,35 +98,63 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
         } else {
             holder.itemView.isClickable= false
         }
+    }*/
+
+
+    override fun onViewAttachedToWindow(holder: DataBindingViewHolder<NotificationViewModel>) {
+        super.onViewAttachedToWindow(holder)
+        logger.debug("onViewAttached....")
     }
 
-    override fun getItemViewType(position: Int): Int {
-        if (notifications[position].id.isNotBlank()) {
-            return 0
-        } else {
-            return 1
+    override fun onBindViewHolder(
+        holder: DataBindingViewHolder<NotificationViewModel>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+        logger.debug("onBindViewHolder---------------"+ position)
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<NotificationViewModel>() {
+        override fun areItemsTheSame(oldItem: NotificationViewModel, newItem: NotificationViewModel): Boolean {
+            if (oldItem is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem) {
+                return true
+            } else if (oldItem is NotificationViewModel.LoadingItem && newItem !is NotificationViewModel.LoadingItem){
+                return false;
+            } else if (oldItem !is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem){
+                return false;
+            } else {
+                return oldItem.notif!!.id== newItem.notif!!.id
+            }
+        }
+
+        override fun areContentsTheSame(oldItem: NotificationViewModel, newItem: NotificationViewModel): Boolean {
+            if (oldItem is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem) {
+                return true
+            } else if (oldItem is NotificationViewModel.LoadingItem && newItem !is NotificationViewModel.LoadingItem){
+                return false;
+            } else if (oldItem !is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem){
+                return false;
+            } else {
+                return oldItem.notif!!.id== newItem.notif!!.id
+            }
         }
     }
 
-    override fun getLayoutIdForPosition(position: Int): Int {
-        return
+    sealed class NotificationViewModel(val notif: Notification?) {
+
+        private val logger= LoggerFactory.getLogger(NotificationViewModel::class.java)
+
+        open fun onClick() {
+            logger.debug("asdasdasdasd......................................................")
+            logger.debug("se ha hecho click en ${notif!!.id}")
+        }
+
+        object LoadingItem: NotificationViewModel(null)
+        class InfoNotificationViewModel(notif: Notification): NotificationViewModel(notif)
+        class ReplyNotificationViewModel(notif: Notification): NotificationViewModel(notif)
     }
 
-    override fun getViewModel(position: Int): Any? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override fun getItemCount()= notifications.size
-
-    fun setData(data: List<Notification> ) {
-        notifications.clear()
-        notifications.addAll(data)
-        notifyDataSetChanged()
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView= recyclerView
-    }
 
 }
