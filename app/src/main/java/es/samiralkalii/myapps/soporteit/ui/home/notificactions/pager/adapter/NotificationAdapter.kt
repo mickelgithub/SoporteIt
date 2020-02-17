@@ -1,8 +1,9 @@
 package es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter
 
-import android.view.View
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.common.adapter.DataBindingAdapter
@@ -15,8 +16,6 @@ import org.slf4j.LoggerFactory
 class NotificationAdapter(val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel, val fragment: NotificationsFragment): DataBindingAdapter<NotificationAdapter.NotificationViewModel>(DiffCallback()) {
 
     private val logger= LoggerFactory.getLogger(NotificationAdapter::class.java)
-
-    private lateinit var recyclerView: RecyclerView
 
     override fun getItemViewType(position: Int) =
         when (getItem(position)) {
@@ -106,53 +105,105 @@ class NotificationAdapter(val homeNotificationsFragmentViewModel: HomeNotificati
         logger.debug("onViewAttached....")
     }
 
+    class DiffCallback : DiffUtil.ItemCallback<NotificationViewModel>() {
+
+        override fun areItemsTheSame(oldItem: NotificationViewModel, newItem: NotificationViewModel)=
+            if (oldItem is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem) {
+                true
+            } else if (oldItem is NotificationViewModel.LoadingItem && newItem !is NotificationViewModel.LoadingItem){
+                false;
+            } else if (oldItem !is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem){
+                false;
+            } else {
+                oldItem.notif!!.id== newItem.notif!!.id
+            }
+
+        override fun areContentsTheSame(oldItem: NotificationViewModel, newItem: NotificationViewModel)=
+            if (oldItem is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem) {
+                true
+            } else if (oldItem is NotificationViewModel.LoadingItem && newItem !is NotificationViewModel.LoadingItem){
+                false;
+            } else if (oldItem !is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem){
+                false;
+            } else {
+                oldItem.notif!!.id== newItem.notif!!.id &&
+                        oldItem.backgroundColor.value== newItem.backgroundColor.value &&
+                        oldItem.open.value== newItem.open.value
+
+
+
+            }
+    }
+
     override fun onBindViewHolder(
         holder: DataBindingViewHolder<NotificationViewModel>,
         position: Int,
         payloads: MutableList<Any>
     ) {
         super.onBindViewHolder(holder, position, payloads)
+
         logger.debug("onBindViewHolder---------------"+ position)
+        val item= getItem(position)
+        /*when (item) {
+            is NotificationAdapter.NotificationViewModel.InfoNotificationViewModel -> item.init()
+        }*/
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<NotificationViewModel>() {
-        override fun areItemsTheSame(oldItem: NotificationViewModel, newItem: NotificationViewModel): Boolean {
-            if (oldItem is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem) {
-                return true
-            } else if (oldItem is NotificationViewModel.LoadingItem && newItem !is NotificationViewModel.LoadingItem){
-                return false;
-            } else if (oldItem !is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem){
-                return false;
-            } else {
-                return oldItem.notif!!.id== newItem.notif!!.id
-            }
-        }
-
-        override fun areContentsTheSame(oldItem: NotificationViewModel, newItem: NotificationViewModel): Boolean {
-            if (oldItem is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem) {
-                return true
-            } else if (oldItem is NotificationViewModel.LoadingItem && newItem !is NotificationViewModel.LoadingItem){
-                return false;
-            } else if (oldItem !is NotificationViewModel.LoadingItem && newItem is NotificationViewModel.LoadingItem){
-                return false;
-            } else {
-                return oldItem.notif!!.id== newItem.notif!!.id
-            }
-        }
-    }
-
-    sealed class NotificationViewModel(val notif: Notification?) {
+    sealed class NotificationViewModel(val notif: Notification?, val parentViewModel: HomeNotificationsFragmentViewModel?, val notificationAdapter: NotificationAdapter?) {
 
         private val logger= LoggerFactory.getLogger(NotificationViewModel::class.java)
+        //0 initial state, so close without animation
+        //1 open state, we have to open with animation
+        //2 close state, we have to close with animation
+        private val _open= MutableLiveData<Int>()
+        val open: LiveData<Int>
+            get() = _open
 
-        open fun onClick() {
-            logger.debug("asdasdasdasd......................................................")
-            logger.debug("se ha hecho click en ${notif!!.id}")
+        private val _backgroundColor= MutableLiveData<Int>()
+        val backgroundColor: LiveData<Int>
+            get() = _backgroundColor
+
+        init {
+            init()
         }
 
-        object LoadingItem: NotificationViewModel(null)
-        class InfoNotificationViewModel(notif: Notification): NotificationViewModel(notif)
-        class ReplyNotificationViewModel(notif: Notification): NotificationViewModel(notif)
+
+
+        open fun init() {
+            _open.value= 0
+            _backgroundColor.value= if (notif?.state== NotifState.PENDING) R.color.notif_backgroud_ini else R.color.notif_backgroud_read
+        }
+
+
+
+        open fun onClick() {
+            logger.debug("se ha hecho click en ${notif!!.id}")
+            when(this) {
+                NotificationViewModel.LoadingItem -> {}
+                is NotificationViewModel.InfoNotificationViewModel -> {
+
+                }
+                is NotificationViewModel.ReplyNotificationViewModel -> {
+
+                }
+            }
+            if (_open.value== 0)
+                _open.value= 1
+            else if (_open.value== 1)
+                _open.value= 2
+            else if (_open.value== 2) {
+                _open.value= 1
+            }
+
+            notificationAdapter!!.notifyItemChanged(notificationAdapter.currentList.indexOf(this))
+
+        }
+
+        object LoadingItem: NotificationViewModel(null, null, null)
+        class InfoNotificationViewModel(notif: Notification, parentViewModel: HomeNotificationsFragmentViewModel, notificationAdapter: NotificationAdapter):
+            NotificationViewModel(notif, parentViewModel, notificationAdapter)
+        class ReplyNotificationViewModel(notif: Notification, parentViewModel: HomeNotificationsFragmentViewModel, notificationAdapter: NotificationAdapter):
+            NotificationViewModel(notif, parentViewModel, notificationAdapter)
     }
 
 

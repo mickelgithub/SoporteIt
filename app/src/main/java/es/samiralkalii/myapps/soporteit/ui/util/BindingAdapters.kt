@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.text.Html
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -17,7 +18,6 @@ import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
@@ -165,13 +165,40 @@ fun TextView.bindNotificationDescrption(notification: Notification) {
         notification.senderName, notification.senderEmail, notification.team))
 }
 
-@BindingAdapter("android:background")
-fun ViewGroup.bindBackgroudColor(state: NotifState) {
-    if (state== NotifState.READ)
-        setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
-    else
-        setBackgroundColor(ContextCompat.getColor(context, R.color.green))
+@BindingAdapter("open")
+fun me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout.bindOpen(open: Int) {
+    when (open) {
+        0 -> {
+            this.close(false)
+            Log.d("BINDING", "OPEN "+ 0)
+        }
+        1 -> {
+            this.open(true)
+            Log.d("BINDING", "OPEN "+ 1)
+        }
+        2 -> {
+            this.close(true)
+            Log.d("BINDING", "OPEN "+ 2)
+        }
+        else -> Unit
+    }
 }
+
+@BindingAdapter("draglock")
+fun me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout.bindLockDrag(lock: Boolean) {
+    dragLock(lock)
+}
+
+@BindingAdapter("app:background")
+fun View.bindBackgroundColor(color: Int) {
+    setBackgroundColor(ContextCompat.getColor(context, color))
+}
+
+
+
+
+
+
 
 
 
