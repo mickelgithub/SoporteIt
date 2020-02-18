@@ -160,9 +160,12 @@ fun TextView.bindTextToNotificationType(notifType: NotifType) {
 
 
 @BindingAdapter("description")
-fun TextView.bindNotificationDescrption(notification: Notification) {
-    text= Html.fromHtml(context.resources.getString(R.string.notif_body_invitation_to_be_part_of_team,
-        notification.senderName, notification.senderEmail, notification.team))
+fun TextView.bindNotificationDescrption(notification: Notification?) {
+    notification?.let {
+        text= Html.fromHtml(context.resources.getString(R.string.notif_body_invitation_to_be_part_of_team,
+            it.senderName, it.senderEmail, it.team))
+    }
+
 }
 
 @BindingAdapter("open")

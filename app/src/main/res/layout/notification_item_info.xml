@@ -3,29 +3,36 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
         <variable
             name="item"
-            type="es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationAdapter.NotificationViewModel.ReplyNotificationViewModel" />
+            type="es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate.NotificationViewModel" />
     </data>
     <me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout
+        android:id="@+id/swipe_reveal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
-        android:onClick="@{() -> item.onClick()}">
+        app:draglock="@{true}"
+        app:open="@{item.open}">
         <FrameLayout
             android:id="@+id/notification_item_bottom"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:orientation="horizontal">
-
+                android:paddingRight="20dp">
+                <ImageView
+                    android:id="@+id/delete"
+                    android:clickable="true"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/delete"
+                    app:visible="@{item.deleteVisible}"/>
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/animation_ok"
                     android:layout_width="50dp"
@@ -33,71 +40,30 @@
                     android:layout_gravity="center"
                     app:lottie_rawRes="@raw/lottie_ok"
                     app:lottie_loop="false"
-                    app:lottie_autoPlay="false" />
-
-                <ImageView
-                    android:id="@+id/delete"
-                    android:clickable="true"
-                    android:visibility="gone"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/delete" />
-
-                <ImageView
-                    android:id="@+id/ok"
-                    android:clickable="true"
-                    android:visibility="gone"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ok_icon" />
-
-                <ImageView
-                    android:id="@+id/ko"
-                    android:clickable="true"
-                    android:visibility="gone"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ko" />
-
-
-            </LinearLayout>
+                    app:lottie_autoPlay="false"
+                    app:visible="@{!item.deleteVisible}"/>
+            </FrameLayout>
         </FrameLayout>
         <FrameLayout
             android:id="@+id/notification_item_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true">
-
+            android:clickable="true"
+            android:onClick="@{()-> item.onClick()}">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp">
-
+                android:paddingBottom="10dp"
+                app:background="@{item.backgroundColor}">
                 <TextView
                     android:id="@+id/notificationType"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@{item.notif.type}"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView5"
                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Invitacion a formar parte de equipo" />
-
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/notificationDescripcion"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/info" />
-
                 <TextView
                     android:id="@+id/notificationDescripcion"
                     android:layout_width="0dp"
@@ -110,7 +76,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toBottomOf="@+id/notificationType" />
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageView4"
                     imgsrcwithcash="@{item.notif.senderProfileImage}"
@@ -120,10 +85,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
     </me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout>
-
-
 </layout>

@@ -1,24 +1,19 @@
 package es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
-import es.samiralkalii.myapps.domain.notification.NotifState
-import es.samiralkalii.myapps.domain.notification.NotifType
-import es.samiralkalii.myapps.domain.notification.Notification
+import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
-import es.samiralkalii.myapps.soporteit.databinding.ViewHolderNotificationItemBinding
-import es.samiralkalii.myapps.soporteit.databinding.ViewHolderNotificationItemInfoBinding
+import es.samiralkalii.myapps.soporteit.databinding.NotificationItemInfoBinding
+import es.samiralkalii.myapps.soporteit.databinding.NotificationItemReplyBinding
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationsFragment
-import me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout
 import org.slf4j.LoggerFactory
 
 
-class NotificationAdapter(val notifications: MutableList<Notification>, val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel, val fragment: NotificationsFragment): RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
+class NotificationAdapter(val notifications: MutableList<NotificationViewModelTemplate>, val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel, val fragment: NotificationsFragment): RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
 
     private val logger= LoggerFactory.getLogger(NotificationAdapter::class.java)
 
@@ -26,17 +21,27 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
 
     class NotificationViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(notification: Notification) {
-            if (binding is ViewHolderNotificationItemInfoBinding) {
-                binding.notification= notification
-                binding.executePendingBindings()
+        fun bind(notifViewModel: NotificationViewModelTemplate.NotificationViewModel) {
+            notifViewModel.viewHolder= this
+            notifViewModel.init()
+            when (binding) {
+                is NotificationItemInfoBinding -> {
+                    binding.item= notifViewModel
+                    binding.executePendingBindings()
+                }
+                is NotificationItemReplyBinding -> {
+                    binding.item= notifViewModel
+                    binding.executePendingBindings()
+                }
+                else -> Unit
             }
+
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        if (viewType== 0) {
-            return NotificationViewHolder(ViewHolderNotificationItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        if (viewType== R.layout.notification_item_info) {
+            return NotificationViewHolder(NotificationItemInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         } else {
             return NotificationViewHolder(LoadingItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
@@ -46,19 +51,17 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
 
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-        if (holder.itemViewType== 0) {
-            holder.bind(notifications[position])
-            val bindingHolder= (holder.binding as ViewHolderNotificationItemBinding)
+        if (holder.itemViewType== R.layout.notification_item_info) {
+            holder.bind(notifications[position] as NotificationViewModelTemplate.NotificationViewModel)
+            /*val bindingHolder= (holder.binding as NotificationItemInfoBinding)
             val itemTop= bindingHolder.notificationItemTop
             val itemBottom= bindingHolder.notificationItemBottom
             val revealLayout= holder.binding.root as SwipeRevealLayout
             revealLayout.close(false)
             val animationOk= holder.binding.animationOk
-            bindingHolder.delete.visibility= View.GONE
-            bindingHolder.ok.visibility= View.GONE
-            bindingHolder.ko.visibility= View.GONE
+            bindingHolder.delete.visibility= View.GONE*/
             //revealLayout.dragLock(true)
-            if (homeNotificationsFragmentViewModel.isInfoNotification(notifications[position]) && notifications[position].state== NotifState.PENDING) {
+            /*if (homeNotificationsFragmentViewModel.isInfoNotification(notifications[position]) && notifications[position].state== NotifState.PENDING) {
                 revealLayout.dragLock(true)
                 itemTop.setOnClickListener({v ->
                     homeNotificationsFragmentViewModel.updateNotificationStateRead(notifications[position])
@@ -118,23 +121,22 @@ class NotificationAdapter(val notifications: MutableList<Notification>, val home
 
 
 
-            }
+            }*/
         } else {
             holder.itemView.isClickable= false
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (notifications[position].id.isNotBlank()) {
-            return 0
-        } else {
-            return 1
+        if (notifications[position]== NotificationViewModelTemplate.NotificationViewModelLoading) {
+            return R.layout.loading_item_view
         }
+        return R.layout.notification_item_info
     }
 
     override fun getItemCount()= notifications.size
 
-    fun setData(data: List<Notification> ) {
+    fun setData(data: List<NotificationViewModelTemplate> ) {
         notifications.clear()
         notifications.addAll(data)
         notifyDataSetChanged()

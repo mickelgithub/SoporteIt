@@ -18,6 +18,7 @@ import es.samiralkalii.myapps.soporteit.databinding.FragmentNotificationsBinding
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragment
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationAdapter
+import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import org.slf4j.LoggerFactory
 
 
@@ -70,14 +71,14 @@ class NotificationsFragment: Fragment() {
 
         if (notificationCategory== NotificationCategory.RECEIVED) {
             parentViewModel.receivedNotifications.observe(this, Observer {
-                (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(
-                    it.map { NotificationAdapter.NotificationViewModel.InfoNotificationViewModel(it, parentViewModel, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
+                    it.map { NotificationViewModelTemplate.NotificationViewModel(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
                 updateDeletedMenuItemState(it)
             })
         } else {
             parentViewModel.sentNotifications.observe(this, Observer {
-                (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(
-                    it.map { NotificationAdapter.NotificationViewModel.InfoNotificationViewModel(it, parentViewModel, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
+                    it.map { NotificationViewModelTemplate.NotificationViewModel(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
                 updateDeletedMenuItemState(it)
             })
         }
@@ -110,12 +111,12 @@ class NotificationsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.notifsRecyclerView.setHasFixedSize(true)
-        binding.notifsRecyclerView.adapter= NotificationAdapter(parentViewModel, this)
+        binding.notifsRecyclerView.adapter= NotificationAdapter(mutableListOf<NotificationViewModelTemplate>(), parentViewModel, this)
         if (notificationCategory== NotificationCategory.RECEIVED) {
-            (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(listOf(NotificationAdapter.NotificationViewModel.LoadingItem))
+            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(NotificationViewModelTemplate.NotificationViewModelLoading))
             parentViewModel.getReceivedNotifications()
         } else {
-            (binding.notifsRecyclerView.adapter as NotificationAdapter).submitList(listOf(NotificationAdapter.NotificationViewModel.LoadingItem))
+            (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(listOf(NotificationViewModelTemplate.NotificationViewModelLoading))
             parentViewModel.getSentNotifications()
         }
         binding.notifsRecyclerView.addItemDecoration(DividerItemDecoration(activity!!, LinearLayout.VERTICAL).apply {
