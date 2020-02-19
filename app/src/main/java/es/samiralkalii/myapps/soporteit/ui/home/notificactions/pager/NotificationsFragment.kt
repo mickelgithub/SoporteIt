@@ -72,13 +72,13 @@ class NotificationsFragment: Fragment() {
         if (notificationCategory== NotificationCategory.RECEIVED) {
             parentViewModel.receivedNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
-                    it.map { NotificationViewModelTemplate.NotificationViewModel(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                    it.map { NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
                 updateDeletedMenuItemState(it)
             })
         } else {
             parentViewModel.sentNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
-                    it.map { NotificationViewModelTemplate.NotificationViewModel(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                    it.map { NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
                 updateDeletedMenuItemState(it)
             })
         }
@@ -122,7 +122,6 @@ class NotificationsFragment: Fragment() {
         binding.notifsRecyclerView.addItemDecoration(DividerItemDecoration(activity!!, LinearLayout.VERTICAL).apply {
             setDrawable(ColorDrawable(ContextCompat.getColor(activity!!, R.color.colorPrimaryDark)))
         })
-
     }
 
     override fun onDestroyView() {
@@ -145,7 +144,6 @@ class NotificationsFragment: Fragment() {
         return when (item.itemId) {
             R.id.menu_item_delete_notifications -> {
                 logger.debug("opcion ${item.title} clickeded...")
-
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate.NotificationViewModel" />
+            type="es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate.NotificationViewModelInfo" />
     </data>
     <me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout
         android:layout_width="match_parent"

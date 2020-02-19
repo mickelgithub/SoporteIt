@@ -21,7 +21,7 @@ class NotificationAdapter(val notifications: MutableList<NotificationViewModelTe
 
     class NotificationViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(notifViewModel: NotificationViewModelTemplate.NotificationViewModel) {
+        fun bind(notifViewModel: NotificationViewModelTemplate.NotificationViewModelInfo) {
             notifViewModel.viewHolder= this
             notifViewModel.init()
             when (binding) {
@@ -35,7 +35,6 @@ class NotificationAdapter(val notifications: MutableList<NotificationViewModelTe
                 }
                 else -> Unit
             }
-
         }
     }
 
@@ -48,11 +47,9 @@ class NotificationAdapter(val notifications: MutableList<NotificationViewModelTe
 
     }
 
-
-
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         if (holder.itemViewType== R.layout.notification_item_info) {
-            holder.bind(notifications[position] as NotificationViewModelTemplate.NotificationViewModel)
+            holder.bind(notifications[position] as NotificationViewModelTemplate.NotificationViewModelInfo)
             /*val bindingHolder= (holder.binding as NotificationItemInfoBinding)
             val itemTop= bindingHolder.notificationItemTop
             val itemBottom= bindingHolder.notificationItemBottom
