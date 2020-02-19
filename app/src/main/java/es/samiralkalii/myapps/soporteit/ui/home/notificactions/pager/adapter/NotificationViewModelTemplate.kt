@@ -30,7 +30,7 @@ sealed class NotificationViewModelTemplate() {
         val deleteVisible: LiveData<Boolean>
             get() = _deleteVisible
 
-        private val _backgroundColor= MutableLiveData<Int>(R.color.notif_backgroud_ini)
+        private val _backgroundColor= MutableLiveData<Int>(R.color.notif_backgroud_new)
         val backgroundColor: LiveData<Int>
             get() = _backgroundColor
 
@@ -45,20 +45,22 @@ sealed class NotificationViewModelTemplate() {
 
         fun init() {
             if (notif.state== NotifState.PENDING) {
-                _backgroundColor.value= R.color.notif_backgroud_ini
+                _backgroundColor.value= R.color.notif_backgroud_new
             } else {
                 _backgroundColor.value= R.color.notif_backgroud_read
             }
-            _deleteVisible.value = (notif.state == NotifState.READ) ?: false
+            _deleteVisible.value = (notif.state == NotifState.READ)
         }
 
-        fun onClick() {
+        fun onNotificationItemViewClick() {
             logger.debug("clicked.....")
             if (notif.type == NotifType.INFO) {
-                val notificationItemInfoBinding =
-                    viewHolder.binding as NotificationItemInfoBinding
-                onItemInfoClick(notificationItemInfoBinding)
+                onItemInfoClick(viewHolder.binding as NotificationItemInfoBinding)
             }
+        }
+
+        fun onDeleteClick() {
+            logger.debug("onDelete click...")
         }
 
         private fun onItemInfoClick(notificationItemInfoBinding: NotificationItemInfoBinding) {
@@ -83,6 +85,8 @@ sealed class NotificationViewModelTemplate() {
 
     }
 
+    //**********************************************************************************************
+
     class NotificationViewModelReply(val notif: Notification, val adapter: NotificationAdapter): NotificationViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(NotificationViewModelReply::class.java)
@@ -93,7 +97,7 @@ sealed class NotificationViewModelTemplate() {
         val deleteVisible: LiveData<Boolean>
             get() = _deleteVisible
 
-        private val _backgroundColor= MutableLiveData<Int>(R.color.notif_backgroud_ini)
+        private val _backgroundColor= MutableLiveData<Int>(R.color.notif_backgroud_new)
         val backgroundColor: LiveData<Int>
             get() = _backgroundColor
 
@@ -108,55 +112,45 @@ sealed class NotificationViewModelTemplate() {
 
         fun init() {
             if (notif.state== NotifState.PENDING) {
-                _backgroundColor.value= R.color.notif_backgroud_ini
+                _backgroundColor.value= R.color.notif_backgroud_new
             } else {
                 _backgroundColor.value= R.color.notif_backgroud_read
             }
-            _deleteVisible.value = (notif.state == NotifState.READ) ?: false
+            _deleteVisible.value = (notif.state == NotifState.READ)
         }
 
-        fun onClick() {
+        fun onNotificationItemViewClick() {
             logger.debug("clicked.....")
-            when (notif.type) {
-                NotifType.INFO -> {
-                    val notificationItemInfoBinding= viewHolder.binding as NotificationItemInfoBinding
-                    onItemInfoClick(notificationItemInfoBinding)
-                }
-                NotifType.ACTION_INVITE_TEAM -> {
-                    val notificationItemReplyBinding= viewHolder.binding as NotificationItemReplyBinding
-                    onItemReplyClick(notificationItemReplyBinding)
-                }
+            if (notif.type== NotifType.ACTION_INVITE_TEAM) {
+                onItemReplyClick(viewHolder.binding as NotificationItemReplyBinding)
             }
+
         }
 
-        private fun onItemInfoClick(notificationItemInfoBinding: NotificationItemInfoBinding) {
-            if (isItemClosed()) {
-                _open.value= OPEN_WITH_ANIMATION
-                if (notif.state== NotifState.PENDING) {
-                    notificationItemInfoBinding.animationOk.playAnimation()
-                    notif.state= NotifState.READ
-                    viewHolder.binding.root.postDelayed({
-                        adapter.notifyItemChanged(viewHolder.adapterPosition)
-                    }, ANIMATION_DURATION)
-                }
-                notificationItemInfoBinding.invalidateAll()
-            } else {
-                _open.value= CLOSE_WITH_ANIMATION
-                notificationItemInfoBinding.invalidateAll()
-            }
+        fun onNotificationItemViewLongClick() {
+            logger.debug("Long click.....")
+        }
+
+        fun onDeleteClick() {
+            logger.debug("onDelete click...")
+        }
+
+        fun onKoClick() {
+            logger.debug("KO click")
+        }
+
+        fun onOkClick() {
+            logger.debug("OK click")
         }
 
         private fun onItemReplyClick(notificationItemReplyBinding: NotificationItemReplyBinding) {
             if (isItemClosed()) {
                 _open.value= OPEN_WITH_ANIMATION
-                if (notif.state== NotifState.PENDING) {
-
-                }
-                notificationItemInfoBinding.invalidateAll()
             } else {
                 _open.value= CLOSE_WITH_ANIMATION
-                notificationItemInfoBinding.invalidateAll()
+
             }
+            notificationItemReplyBinding.invalidateAll()
         }
 
         private fun isItemClosed()= (_open.value== CLOSE_WITH_ANIMATION ||

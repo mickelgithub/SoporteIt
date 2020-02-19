@@ -21,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 
 
@@ -195,6 +196,17 @@ fun me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout.bindLockDrag(loc
 @BindingAdapter("app:background")
 fun View.bindBackgroundColor(color: Int) {
     setBackgroundColor(ContextCompat.getColor(context, color))
+}
+
+@BindingAdapter("app:onLongClick")
+fun View.bindOnLongClick(item: NotificationViewModelTemplate) {
+    setOnLongClickListener {_ ->
+        if (item is NotificationViewModelTemplate.NotificationViewModelReply) {
+            item.onNotificationItemViewLongClick()
+        }
+        true
+    }
+
 }
 
 

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.NotifState
+import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentNotificationsBinding
@@ -72,13 +73,15 @@ class NotificationsFragment: Fragment() {
         if (notificationCategory== NotificationCategory.RECEIVED) {
             parentViewModel.receivedNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
-                    it.map { NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                    it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) else
+                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
                 updateDeletedMenuItemState(it)
             })
         } else {
             parentViewModel.sentNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
-                    it.map { NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                    it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) else
+                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
                 updateDeletedMenuItemState(it)
             })
         }

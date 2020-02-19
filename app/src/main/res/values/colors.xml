@@ -9,7 +9,7 @@
 
     <color name="loading_dialog_bk">#FFFFFF</color>
 
-    <color name="notif_backgroud_ini">#CECECE</color>
+    <color name="notif_backgroud_new">#F5EAEA</color>
     <color name="notif_backgroud_read">#FFFFFF</color>
 
 </resources>

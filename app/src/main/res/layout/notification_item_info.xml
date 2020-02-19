@@ -37,6 +37,8 @@
                 <ImageView
                     android:id="@+id/delete"
                     android:clickable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:onClick="@{()-> item.onDeleteClick()}"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
@@ -49,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:onClick="@{()-> item.onClick()}">
+            android:onClick="@{()-> item.onNotificationItemViewClick()}" >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,6 +66,15 @@
                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Invitacion a formar parte de equipo" />
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/notificationDescripcion"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/info" />
                 <TextView
                     android:id="@+id/notificationDescripcion"
                     android:layout_width="0dp"
