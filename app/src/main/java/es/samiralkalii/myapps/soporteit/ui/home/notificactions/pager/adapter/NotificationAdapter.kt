@@ -38,16 +38,13 @@ class NotificationAdapter(val notifications: MutableList<NotificationViewModelTe
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        if (viewType== R.layout.notification_item_info) {
-            return NotificationViewHolder(NotificationItemInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        } else {
-            return NotificationViewHolder(LoadingItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        }
-
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder= when (viewType) {
+            R.layout.notification_item_info -> NotificationViewHolder(NotificationItemInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            R.layout.notification_item_reply -> NotificationViewHolder(NotificationItemReplyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            else ->  NotificationViewHolder(LoadingItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
-    override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NotificationAdapter.NotificationViewHolder, position: Int) {
         if (holder.itemViewType== R.layout.notification_item_info) {
             holder.bind(notifications[position] as NotificationViewModelTemplate.NotificationViewModelInfo)
             /*val bindingHolder= (holder.binding as NotificationItemInfoBinding)
@@ -125,10 +122,14 @@ class NotificationAdapter(val notifications: MutableList<NotificationViewModelTe
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (notifications[position]== NotificationViewModelTemplate.NotificationViewModelLoading) {
-            return R.layout.loading_item_view
+        when (notifications[position]) {
+            NotificationViewModelTemplate.NotificationViewModelLoading ->
+                return R.layout.loading_item_view
+            is NotificationViewModelTemplate.NotificationViewModelInfo ->
+                return R.layout.notification_item_info
+            is NotificationViewModelTemplate.NotificationViewModelReply ->
+                return R.layout.notification_item_reply
         }
-        return R.layout.notification_item_info
     }
 
     override fun getItemCount()= notifications.size

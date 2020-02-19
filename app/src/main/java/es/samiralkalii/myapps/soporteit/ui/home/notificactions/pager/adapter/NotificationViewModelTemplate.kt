@@ -7,6 +7,7 @@ import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.NotificationItemInfoBinding
+import es.samiralkalii.myapps.soporteit.databinding.NotificationItemReplyBinding
 import org.slf4j.LoggerFactory
 
 
@@ -82,8 +83,6 @@ sealed class NotificationViewModelTemplate() {
 
     }
 
-    object NotificationViewModelLoading: NotificationViewModelTemplate()
-
     class NotificationViewModelReply(val notif: Notification, val adapter: NotificationAdapter): NotificationViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(NotificationViewModelReply::class.java)
@@ -118,10 +117,15 @@ sealed class NotificationViewModelTemplate() {
 
         fun onClick() {
             logger.debug("clicked.....")
-            if (notif.type == NotifType.INFO) {
-                val notificationItemInfoBinding =
-                    viewHolder.binding as NotificationItemInfoBinding
-                onItemInfoClick(notificationItemInfoBinding)
+            when (notif.type) {
+                NotifType.INFO -> {
+                    val notificationItemInfoBinding= viewHolder.binding as NotificationItemInfoBinding
+                    onItemInfoClick(notificationItemInfoBinding)
+                }
+                NotifType.ACTION_INVITE_TEAM -> {
+                    val notificationItemReplyBinding= viewHolder.binding as NotificationItemReplyBinding
+                    onItemReplyClick(notificationItemReplyBinding)
+                }
             }
         }
 
@@ -142,9 +146,24 @@ sealed class NotificationViewModelTemplate() {
             }
         }
 
+        private fun onItemReplyClick(notificationItemReplyBinding: NotificationItemReplyBinding) {
+            if (isItemClosed()) {
+                _open.value= OPEN_WITH_ANIMATION
+                if (notif.state== NotifState.PENDING) {
+
+                }
+                notificationItemInfoBinding.invalidateAll()
+            } else {
+                _open.value= CLOSE_WITH_ANIMATION
+                notificationItemInfoBinding.invalidateAll()
+            }
+        }
+
         private fun isItemClosed()= (_open.value== CLOSE_WITH_ANIMATION ||
                 _open.value== CLOSE_WITHOUT_ANIMATION)
 
     }
+
+    object NotificationViewModelLoading: NotificationViewModelTemplate()
 
 }

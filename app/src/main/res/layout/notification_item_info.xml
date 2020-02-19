@@ -25,14 +25,6 @@
                 android:gravity="center"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
-                <ImageView
-                    android:id="@+id/delete"
-                    android:clickable="true"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/delete"
-                    app:visible="@{item.deleteVisible}"/>
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/animation_ok"
                     android:layout_width="50dp"
@@ -42,6 +34,14 @@
                     app:lottie_loop="false"
                     app:lottie_autoPlay="false"
                     app:visible="@{!item.deleteVisible}"/>
+                <ImageView
+                    android:id="@+id/delete"
+                    android:clickable="true"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/delete"
+                    app:visible="@{item.deleteVisible}"/>
             </FrameLayout>
         </FrameLayout>
         <FrameLayout
