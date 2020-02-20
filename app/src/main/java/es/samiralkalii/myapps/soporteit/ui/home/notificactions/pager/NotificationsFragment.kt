@@ -40,7 +40,7 @@ class NotificationsFragment: Fragment() {
 
     private lateinit var binding: FragmentNotificationsBinding
 
-    private lateinit var notificationCategory: NotificationCategory
+    lateinit var notificationCategory: NotificationCategory
 
     companion object {
         fun newInstance(bundle: Bundle) = NotificationsFragment().apply { arguments= bundle }
@@ -74,14 +74,14 @@ class NotificationsFragment: Fragment() {
             parentViewModel.receivedNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
                     it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) else
-                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) })
+                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel, this) })
                 updateDeletedMenuItemState(it)
             })
         } else {
             parentViewModel.sentNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
                     it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) else
-                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) })
+                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel, this) })
                 updateDeletedMenuItemState(it)
             })
         }
