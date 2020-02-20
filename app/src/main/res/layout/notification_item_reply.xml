@@ -31,7 +31,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    tools:visibility="gone"
                     app:visible="@{!item.deleteVisible}">
                     <ImageView
                         android:id="@+id/ko"
@@ -56,7 +55,7 @@
                 <ImageView
                     android:id="@+id/delete"
                     android:clickable="true"
-                    android:onClick="@{()-> item.onDeleteClick()"
+                    android:onClick="@{()-> item.onDeleteClick()}"
                     android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_width="50dp"

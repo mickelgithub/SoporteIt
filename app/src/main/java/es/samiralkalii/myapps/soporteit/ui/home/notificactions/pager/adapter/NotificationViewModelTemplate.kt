@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.NotificationItemInfoBinding
 import es.samiralkalii.myapps.soporteit.databinding.NotificationItemReplyBinding
+import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import org.slf4j.LoggerFactory
 
 
@@ -20,7 +22,8 @@ sealed class NotificationViewModelTemplate() {
 
     private val logger= LoggerFactory.getLogger(NotificationViewModelTemplate::class.java)
 
-    class NotificationViewModelInfo(val notif: Notification, val adapter: NotificationAdapter): NotificationViewModelTemplate() {
+    class NotificationViewModelInfo(val notif: Notification, val adapter: NotificationAdapter,
+                                    val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel): NotificationViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(NotificationViewModelInfo::class.java)
 
@@ -60,7 +63,10 @@ sealed class NotificationViewModelTemplate() {
         }
 
         fun onDeleteClick() {
-            logger.debug("onDelete click...")
+            logger.debug("delete clicked.....")
+            homeNotificationsFragmentViewModel.deleteNotification(notif.id)
+            adapter.notifications.removeAt(viewHolder.adapterPosition)
+            adapter.notifyItemRemoved(viewHolder.adapterPosition)
         }
 
         private fun onItemInfoClick(notificationItemInfoBinding: NotificationItemInfoBinding) {
@@ -69,6 +75,7 @@ sealed class NotificationViewModelTemplate() {
                 if (notif.state== NotifState.PENDING) {
                     notificationItemInfoBinding.animationOk.playAnimation()
                     notif.state= NotifState.READ
+                    homeNotificationsFragmentViewModel.updateNotificationStateRead(notif.id, NotifState.READ)
                     viewHolder.binding.root.postDelayed({
                         adapter.notifyItemChanged(viewHolder.adapterPosition)
                     }, ANIMATION_DURATION)
@@ -87,7 +94,8 @@ sealed class NotificationViewModelTemplate() {
 
     //**********************************************************************************************
 
-    class NotificationViewModelReply(val notif: Notification, val adapter: NotificationAdapter): NotificationViewModelTemplate() {
+    class NotificationViewModelReply(val notif: Notification, val adapter: NotificationAdapter,
+                                     val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel): NotificationViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(NotificationViewModelReply::class.java)
 
@@ -136,11 +144,23 @@ sealed class NotificationViewModelTemplate() {
         }
 
         fun onKoClick() {
-            logger.debug("KO click")
+            logger.debug("delete clicked.....")
+            homeNotificationsFragmentViewModel.deleteNotification(notif.id)
+            adapter.notifications.removeAt(viewHolder.adapterPosition)
+            adapter.notifyItemRemoved(viewHolder.adapterPosition)
         }
 
         fun onOkClick() {
             logger.debug("OK click")
+            notif.state= NotifState.READ
+            homeNotificationsFragmentViewModel.updateNotificationStateRead(notif.id, NotifState.READ)
+            homeNotificationsFragmentViewModel.replyNotification(notif.id, Reply.OK, "")
+            _backgroundColor.value= R.color.notif_backgroud_read
+            _open.value= CLOSE_WITH_ANIMATION
+            (viewHolder.binding as NotificationItemReplyBinding).invalidateAll()
+            viewHolder.binding.root.postDelayed({
+                adapter.notifyItemChanged(viewHolder.adapterPosition)
+            }, ANIMATION_DURATION)
         }
 
         private fun onItemReplyClick(notificationItemReplyBinding: NotificationItemReplyBinding) {

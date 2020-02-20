@@ -7,7 +7,7 @@ enum class NotificationCategory {
     RECEIVED, SENT
 }
 
-class GetNotificationsUseCase(val remoteNotificationsRepository: RemoteNotificationsRepository) {
+class GetNotificationsUseCase(private val remoteNotificationsRepository: RemoteNotificationsRepository) {
 
     private val logger = LoggerFactory.getLogger(GetNotificationsUseCase::class.java)
 

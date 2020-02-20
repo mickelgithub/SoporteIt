@@ -8,9 +8,8 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.NotifState
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
-import es.samiralkalii.myapps.usecase.notification.GetNotificationsUseCase
-import es.samiralkalii.myapps.usecase.notification.NotificationCategory
-import es.samiralkalii.myapps.usecase.notification.UpdateNotificationStateUseCase
+import es.samiralkalii.myapps.domain.notification.Reply
+import es.samiralkalii.myapps.usecase.notification.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -18,7 +17,9 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: GetNotificationsUseCase,
-                                         private val updateNotificationStateUseCase: UpdateNotificationStateUseCase): ViewModel() {
+                                         private val updateNotificationStateUseCase: UpdateNotificationStateUseCase,
+                                         private val deleteNotificationUseCase: DeleteNotificationUseCase,
+                                         private val replyNotificationUseCase: ReplyNotificationUseCase): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeNotificationsFragmentViewModel::class.java)
 
@@ -109,10 +110,26 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
         logger.debug("cleared.......")
     }
 
-    fun updateNotificationStateRead(notification: Notification) {
+    fun updateNotificationStateRead(notification: String, notifState: NotifState) {
         viewModelScope.launch {
             val result = async(Dispatchers.IO) {
-                updateNotificationStateUseCase(user.id, notification.id, NotifState.READ)
+                updateNotificationStateUseCase(user.id, notification, notifState)
+            }.await()
+        }
+    }
+
+    fun deleteNotification(notification: String) {
+        viewModelScope.launch {
+            val result = async(Dispatchers.IO) {
+                deleteNotificationUseCase(user.id, notification)
+            }.await()
+        }
+    }
+
+    fun replyNotification(notification: String, reply: Reply, reasonKo: String) {
+        viewModelScope.launch {
+            val result = async(Dispatchers.IO) {
+                replyNotificationUseCase(user.id, notification, reply, reasonKo)
             }.await()
         }
     }

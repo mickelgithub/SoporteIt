@@ -24,7 +24,11 @@ enum class NotifState {
     READ
 }
 
-data class Notification (
+enum class Reply {
+    NONE, OK, KO
+}
+
+data class Notification(
     var id: String= "",
     var type: NotifType= NotifType.NONE,
     var senderType: SenderType= SenderType.USER,
@@ -39,8 +43,11 @@ data class Notification (
     var teamId: String= "",
     var state: NotifState= NotifState.PENDING,
     var deleted: Boolean= false,
-    var deletionDate: Long= 0L
-) {
+    var deletionDate: Long= 0L,
+    var reply: Reply= Reply.NONE,
+    var replyDate: Long= 0L,
+    var reasonKo: String= "") {
+
     companion object {
         val EMPTY= Notification()
     }

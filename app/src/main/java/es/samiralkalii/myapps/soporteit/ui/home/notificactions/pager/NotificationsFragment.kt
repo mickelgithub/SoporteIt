@@ -73,15 +73,15 @@ class NotificationsFragment: Fragment() {
         if (notificationCategory== NotificationCategory.RECEIVED) {
             parentViewModel.receivedNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
-                    it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) else
-                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                    it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) else
+                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) })
                 updateDeletedMenuItemState(it)
             })
         } else {
             parentViewModel.sentNotifications.observe(this, Observer {
                 (binding.notifsRecyclerView.adapter as NotificationAdapter).setData(
-                    it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter) else
-                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter) })
+                    it.map { if (it.type== NotifType.INFO) NotificationViewModelTemplate.NotificationViewModelInfo(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) else
+                        NotificationViewModelTemplate.NotificationViewModelReply(it, binding.notifsRecyclerView.adapter as NotificationAdapter, parentViewModel) })
                 updateDeletedMenuItemState(it)
             })
         }

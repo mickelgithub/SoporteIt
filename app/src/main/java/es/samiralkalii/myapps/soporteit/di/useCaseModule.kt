@@ -4,7 +4,9 @@ import es.samiralkalii.myapps.usecase.authlogin.*
 import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
 import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
+import es.samiralkalii.myapps.usecase.notification.DeleteNotificationUseCase
 import es.samiralkalii.myapps.usecase.notification.GetNotificationsUseCase
+import es.samiralkalii.myapps.usecase.notification.ReplyNotificationUseCase
 import es.samiralkalii.myapps.usecase.notification.UpdateNotificationStateUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
@@ -26,4 +28,6 @@ val useCaseModule= module {
     factory { HandleTeamInvitationUseCase(get(), get(), get(), get()) }
     factory { GetNotificationsUseCase(get()) }
     factory { UpdateNotificationStateUseCase(get()) }
+    factory { DeleteNotificationUseCase(get()) }
+    factory { ReplyNotificationUseCase(get()) }
 }

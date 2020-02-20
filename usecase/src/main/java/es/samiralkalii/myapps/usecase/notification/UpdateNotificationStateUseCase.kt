@@ -4,7 +4,7 @@ import es.samiralkalii.myapps.data.notifications.RemoteNotificationsRepository
 import es.samiralkalii.myapps.domain.notification.NotifState
 import org.slf4j.LoggerFactory
 
-class UpdateNotificationStateUseCase(val remoteNotificationsRepository: RemoteNotificationsRepository) {
+class UpdateNotificationStateUseCase(private val remoteNotificationsRepository: RemoteNotificationsRepository) {
 
     private val logger = LoggerFactory.getLogger(UpdateNotificationStateUseCase::class.java)
 
