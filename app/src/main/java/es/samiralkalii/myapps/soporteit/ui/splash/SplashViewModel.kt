@@ -30,7 +30,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
     fun checkUserAuth() {
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            logger.debug(error.toString())
+            logger.debug("........................."+ error.toString())
             when (error) {
                 is FirebaseNetworkException -> {
                     _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))
@@ -66,7 +66,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
         user= userParam
     }
 
-    fun handleTeamInvitacion(user: User, reply: String, replyDescription: String) {
+    fun handleTeamInvitacion(user: User, reply: String, replyDescription: String, notifId: String) {
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.debug(error.toString())
@@ -83,7 +83,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
 
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                handleTeamInvitationUseCase(user, reply, replyDescription)
+                handleTeamInvitationUseCase(user, reply, replyDescription, notifId)
             }
         }
     }

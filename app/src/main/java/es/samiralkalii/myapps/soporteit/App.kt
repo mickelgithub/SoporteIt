@@ -13,25 +13,17 @@ import timber.log.Timber
 
 
 class App: Application() {
-
     override fun onCreate() {
         super.onCreate()
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-
         // Start Koin
         startKoin{
             androidLogger()
             androidContext(this@App)
             modules(listOf(appModule, dataModule, useCaseModule))
         }
-
         createNotificationChannel(this)
-
-
     }
-
-
 }

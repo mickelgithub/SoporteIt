@@ -59,15 +59,15 @@ class NotificationManager(val context: Context): INotification {
         }
     }
 
-    override fun showNotificationInvitationToTeam(bossName: String, bossMail: String, team: String, largeIconUrl: String) {
+    override fun showNotificationInvitationToTeam(bossName: String, bossMail: String, team: String, largeIconUrl: String, notificationId: String) {
         //intent when clicking notificaciont body
         //val intent= SplashActivity.getIntentToNotificationsScreen(context)
         //val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         //intent when clicking accept action
-        val acceptInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_OK)
+        val acceptInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_OK, notificationId)
         val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, 0)
 
-        val denyInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_KO)
+        val denyInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_KO, notificationId)
         val denyInvitationPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, 0)
 
 

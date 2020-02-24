@@ -57,7 +57,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
 
     override suspend fun denyInvitationToTeam(user: User) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf(KEY_TEAM_INVITATION_STATE to "",
-            KEY_TEAM to "", KEY_TEAM_ID to "")).await()
+            KEY_TEAM to "", KEY_TEAM_ID to "", KEY_BOSS to "")).await()
     }
 
     override suspend fun updateEmailVerified(user: User) {

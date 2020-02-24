@@ -25,7 +25,7 @@ val useCaseModule= module {
     factory { AddTeamUseCase(get(), get(), get()) }
     factory { GetAllUsersButBosesAndNoTeamUseCase(get()) }
     factory { InviteUserUseCase(get(), get()) }
-    factory { HandleTeamInvitationUseCase(get(), get(), get(), get()) }
+    factory { HandleTeamInvitationUseCase(get(), get(), get(), get(), get()) }
     factory { GetNotificationsUseCase(get()) }
     factory { UpdateNotificationStateUseCase(get()) }
     factory { DeleteNotificationUseCase(get()) }

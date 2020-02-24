@@ -58,7 +58,8 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 }
                 remoteUserRepository.getUserInfo(remoteUser)
                 preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDaysPerYear, remoteUser.internalEmployee)
-                notificationRepository.showNotificationInvitationToTeam(notification.senderName, notification.senderEmail, notification.team, notification.senderProfileImage)
+                notificationRepository.showNotificationInvitationToTeam(notification.senderName, notification.senderEmail, notification.team,
+                    notification.senderProfileImage, notifId)
             }
         }
     }

@@ -16,6 +16,7 @@ class PreferenceRepository(val preferences: IPreferences) {
     suspend fun updateTeamCreated(team: Team, teamInvitationState: String)= preferences.updateTeamCreated(team, teamInvitationState)
     suspend fun updateTeamInvitationState(teamInvitationState: String)= preferences.updateTeamInvitationState(teamInvitationState)
     suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean)= preferences.updateHolidayDaysAndInternalState(holidayDays, internal)
+    suspend fun denyInvitationToTeam(user: User)= preferences.denyInvitationToTeam(user)
 }
 
 interface IPreferences {
@@ -30,4 +31,5 @@ interface IPreferences {
     suspend fun updateTeamCreated(team: Team, teamInvitationState: String)
     suspend fun updateTeamInvitationState(teamInvitationState: String)
     suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean)
+    suspend fun denyInvitationToTeam(user: User)
 }

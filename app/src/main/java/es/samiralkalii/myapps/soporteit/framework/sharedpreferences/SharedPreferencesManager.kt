@@ -48,6 +48,15 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
+    override suspend fun denyInvitationToTeam(user: User) {
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            putString(KEY_TEAM, "")
+            putString(KEY_TEAM_ID, "")
+            putString(KEY_BOSS, "")
+            putString(KEY_TEAM_INVITATION_STATE, "")
+        }
+    }
+
 
     override suspend fun updateMessagingToken(token: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {

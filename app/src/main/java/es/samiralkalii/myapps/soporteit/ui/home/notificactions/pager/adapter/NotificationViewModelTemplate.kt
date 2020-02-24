@@ -169,7 +169,6 @@ sealed class NotificationViewModelTemplate() {
         fun onOkClick() {
             logger.debug("OK click")
             notif.state= NotifState.READ
-            homeNotificationsFragmentViewModel.updateNotificationStateRead(notif.id, NotifState.READ)
             homeNotificationsFragmentViewModel.replyNotification(notif.id, Reply.OK, "")
             _backgroundColor.value= R.color.notif_backgroud_read
             _open.value= CLOSE_WITH_ANIMATION
@@ -198,8 +197,7 @@ sealed class NotificationViewModelTemplate() {
             promptTextDialog= null
             viewHolder.binding.root.postDelayed({
                 notif.state= NotifState.READ
-                homeNotificationsFragmentViewModel.updateNotificationStateRead(notif.id, NotifState.READ)
-                homeNotificationsFragmentViewModel.replyNotification(notif.id, Reply.OK, reasonKo)
+                homeNotificationsFragmentViewModel.replyNotification(notif.id, Reply.KO, reasonKo)
                 _backgroundColor.value= R.color.notif_backgroud_read
                 _open.value= CLOSE_WITH_ANIMATION
                 (viewHolder.binding as NotificationItemReplyBinding).invalidateAll()
