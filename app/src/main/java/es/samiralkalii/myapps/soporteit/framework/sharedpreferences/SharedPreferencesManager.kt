@@ -117,11 +117,14 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val teamInvitationState= getString(KEY_TEAM_INVITATION_STATE, "") ?: ""
             val holidayDays= getLong(KEY_HOLIDAY_DAYS_PER_YEAR, 22L) ?: 22L
             val internalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false) ?: false
+            val messaginToken= getString(KEY_MESSAGING_TOKEN, "") ?: ""
 
             return User(email, pass, name, localProfileImage = imageProfilePath,
-                id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate, emailVerified = emailValidated,
-                profile = profile, bossVerification = bossVerification, team = team, teamId = teamId,
-                teamInvitationState = teamInvitationState, holidayDaysPerYear = holidayDays, internalEmployee = internalEmployee)
+                id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate,
+                emailVerified = emailValidated, profile = profile, bossVerification = bossVerification,
+                team = team, teamId = teamId, teamInvitationState = teamInvitationState,
+                holidayDaysPerYear = holidayDays, internalEmployee = internalEmployee,
+                messagingToken = messaginToken)
         }
     }
 }

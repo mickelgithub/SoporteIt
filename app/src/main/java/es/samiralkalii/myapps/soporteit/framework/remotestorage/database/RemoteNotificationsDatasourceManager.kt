@@ -71,7 +71,7 @@ class RemoteNotificationsDatasourceManager(val fstore: FirebaseFirestore): IRemo
     ) {
         fstore.collection(USERS_REF).document(userid).collection(NOTIFS_RECEIVED).document(notification).update(mapOf( KEY_NOTIFICATION_REPLY to reply,
             KEY_NOTIFICATION_REPLY_DATE to Date().time, KEY_NOTIFICATION_REASON_KO to reasonKo, KEY_NOTIFICATION_STATE to NotifState.READ
-        )).await()
+        ))
     }
 
 

@@ -65,10 +65,10 @@ class NotificationManager(val context: Context): INotification {
         //val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         //intent when clicking accept action
         val acceptInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_OK, notificationId)
-        val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, 0)
+        val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val denyInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_KO, notificationId)
-        val denyInvitationPendingIntent= PendingIntent.getActivity(context, 0, denyInvitationIntent, 0)
+        val denyInvitationPendingIntent= PendingIntent.getActivity(context, 0, denyInvitationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
 
         with(NotificationManagerCompat.from(context)) {
@@ -90,41 +90,29 @@ class NotificationManager(val context: Context): INotification {
                     .build()
 
             val body= Html.fromHtml(context.resources.getString(R.string.notif_body_invitation_to_be_part_of_team, bossName, bossMail, team))
+            val builder= NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .addAction(actionAcceptInvitation)
+                .addAction(actionDenyInvitation)
+                .setAutoCancel(true)
             if (largeIconUrl.isNotBlank()) {
                 val largeIconHeight = context.resources
-                        .getDimensionPixelSize(android.R.dimen.notification_large_icon_height)
+                    .getDimensionPixelSize(android.R.dimen.notification_large_icon_height)
                 val largeIconWidth = context.resources
-                        .getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
+                    .getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
                 logger.debug("los valores de width y height es ${largeIconWidth},${largeIconHeight}")
-                val bitmap= Glide.with(context)
+                val bitmap = Glide.with(context)
                     .asBitmap()
                     .load(largeIconUrl)
                     .into(largeIconWidth, largeIconHeight)
                     .get()
-
-                notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-                    .setLargeIcon(bitmap)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    //.setContentIntent(pendingIntent)
-                    //.addAction(0, context.resources.getString(R.string.accept), acceptInvitacionPendingIntent)
-                    .addAction(actionAcceptInvitation)
-                    .addAction(actionDenyInvitation)
-                    .setAutoCancel(true).build())
-            } else {
-                notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setStyle(NotificationCompat.BigTextStyle()
-                        .bigText(body))
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    //.setContentIntent(pendingIntent)
-                    .addAction(actionAcceptInvitation)
-                    .addAction(actionDenyInvitation)
-                    .setAutoCancel(true).build())
+                builder.setLargeIcon(bitmap)
             }
+            notify(NOTIF_ID, builder.build())
+
         }
     }
 

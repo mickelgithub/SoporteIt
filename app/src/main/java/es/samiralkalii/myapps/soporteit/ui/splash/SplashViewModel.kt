@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.CheckUserAuthUseCase
@@ -66,7 +67,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
         user= userParam
     }
 
-    fun handleTeamInvitacion(user: User, reply: String, replyDescription: String, notifId: String) {
+    fun handleTeamInvitacion(user: User, reply: Reply, replyDescription: String, notifId: String) {
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.debug(error.toString())

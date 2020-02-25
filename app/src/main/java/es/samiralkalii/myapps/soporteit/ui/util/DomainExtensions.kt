@@ -42,6 +42,7 @@ fun User.toBundle()= Bundle().apply {
     putString(KEY_TEAM_INVITATION_STATE, teamInvitationState)
     putLong(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDaysPerYear)
     putBoolean(KEY_INTERNAL_EMPLOYEE, internalEmployee)
+    putString(KEY_MESSAGING_TOKEN, messagingToken)
 }
 
 fun Bundle.toUser()= User(
@@ -59,7 +60,9 @@ fun Bundle.toUser()= User(
     boss = getString(KEY_BOSS, ""),
     teamInvitationState = getString(KEY_TEAM_INVITATION_STATE, ""),
     holidayDaysPerYear = getLong(KEY_HOLIDAY_DAYS_PER_YEAR, User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS),
-    internalEmployee = getBoolean(KEY_INTERNAL_EMPLOYEE, false)
+    internalEmployee = getBoolean(KEY_INTERNAL_EMPLOYEE, false),
+    messagingToken = getString(KEY_MESSAGING_TOKEN, "")
+
 )
 
 val User.teamCreated

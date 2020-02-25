@@ -20,6 +20,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotifications
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
+import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.slf4j.LoggerFactory
 
 
@@ -68,6 +69,7 @@ class NotificationsFragment: Fragment() {
         super.onCreate(savedInstanceState)
         logger.debug("onCreate...."+ this.hashCode())
         setHasOptionsMenu(true)
+        user= (arguments as Bundle).toUser()
         notificationCategory= arguments?.getSerializable(NOTIFICATION_CATEGORY_KEY) as NotificationCategory ?: NotificationCategory.RECEIVED
 
         if (notificationCategory== NotificationCategory.RECEIVED) {

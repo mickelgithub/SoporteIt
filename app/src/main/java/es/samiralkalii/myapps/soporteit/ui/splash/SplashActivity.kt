@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.RemoteInput
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.framework.notification.KEY_TEXT_REPLY
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
@@ -66,7 +67,7 @@ class SplashActivity : AppCompatActivity() {
         user.teamInvitationState= replyTeamInvitacion
         if (replyTeamInvitacion.isNotBlank()) {
             viewModel.publishUser(user)
-            viewModel.handleTeamInvitacion(user, replyTeamInvitacion, replyTeamInvitacionText.toString(), notifId)
+            viewModel.handleTeamInvitacion(user, (if (replyTeamInvitacion== REPLY_TEAM_INVITATION_OK) Reply.OK else Reply.KO), replyTeamInvitacionText.toString(), notifId)
         }
         startHomeActivity(user.toBundle(), gotoExtra)
     }
