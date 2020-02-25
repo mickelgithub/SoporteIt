@@ -68,7 +68,7 @@ class NotificationManager(val context: Context): INotification {
         val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, 0)
 
         val denyInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_KO, notificationId)
-        val denyInvitationPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, 0)
+        val denyInvitationPendingIntent= PendingIntent.getActivity(context, 0, denyInvitationIntent, 0)
 
 
         with(NotificationManagerCompat.from(context)) {
