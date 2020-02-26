@@ -31,7 +31,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
     fun checkUserAuth() {
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            logger.debug("........................."+ error.toString())
+            logger.debug(".........................${error.toString()}")
             when (error) {
                 is FirebaseNetworkException -> {
                     _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))

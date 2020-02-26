@@ -24,12 +24,6 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 
-
-@BindingAdapter("android:enabled")
-fun View.bindEnabled(enabledParam: Boolean) {
-    isEnabled= enabledParam
-}
-
 @BindingAdapter("visible")
 fun View.bindVisible(visible: Boolean?) {
     visibility= if (visible== true) View.VISIBLE else View.GONE
@@ -200,13 +194,12 @@ fun View.bindBackgroundColor(color: Int) {
 
 @BindingAdapter("app:onLongClick")
 fun View.bindOnLongClick(item: NotificationViewModelTemplate) {
-    setOnLongClickListener {_ ->
+    setOnLongClickListener { _ ->
         if (item is NotificationViewModelTemplate.NotificationViewModelReply) {
             item.onNotificationItemViewLongClick()
         }
         true
     }
-
 }
 
 

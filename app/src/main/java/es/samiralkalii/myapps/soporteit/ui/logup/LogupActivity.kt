@@ -21,12 +21,7 @@ import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
-import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
-import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
-import es.samiralkalii.myapps.soporteit.ui.util.toBundle
-import es.samiralkalii.myapps.soporteit.ui.util.view.IMAGE_MIMETYPE
-import es.samiralkalii.myapps.soporteit.ui.util.view.PERMISSION_REQUEST_CODE
-import es.samiralkalii.myapps.soporteit.ui.util.view.PICK_IMAGE
+import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
 import org.koin.android.viewmodel.ext.android.viewModel

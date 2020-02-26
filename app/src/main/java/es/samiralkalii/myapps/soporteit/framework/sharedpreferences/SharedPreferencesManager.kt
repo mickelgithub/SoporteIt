@@ -80,7 +80,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
     override suspend fun saveUser(user: User) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_ID, user.id)
-            putString(KEY_NAME, user.name);
+            putString(KEY_NAME, user.name)
             putString(KEY_EMAIL, user.email)
             putString(KEY_PASS, user.password)
             putString(KEY_LOCAL_PROFILE_IMAGE, user.localProfileImage)
@@ -115,16 +115,17 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val team= getString(KEY_TEAM, "") ?: ""
             val teamId= getString(KEY_TEAM_ID, "") ?: ""
             val teamInvitationState= getString(KEY_TEAM_INVITATION_STATE, "") ?: ""
-            val holidayDays= getLong(KEY_HOLIDAY_DAYS_PER_YEAR, 22L) ?: 22L
-            val internalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false) ?: false
+            val holidayDays= getLong(KEY_HOLIDAY_DAYS_PER_YEAR, 22L)
+            val internalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false)
             val messaginToken= getString(KEY_MESSAGING_TOKEN, "") ?: ""
+            val boss= getString(KEY_BOSS, "") ?: ""
 
             return User(email, pass, name, localProfileImage = imageProfilePath,
                 id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate,
                 emailVerified = emailValidated, profile = profile, bossVerification = bossVerification,
                 team = team, teamId = teamId, teamInvitationState = teamInvitationState,
                 holidayDaysPerYear = holidayDays, internalEmployee = internalEmployee,
-                messagingToken = messaginToken)
+                messagingToken = messaginToken, boss = boss)
         }
     }
 }

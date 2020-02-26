@@ -22,7 +22,7 @@ import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity.Companion.REPLY
 import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
-import es.samiralkalii.myapps.soporteit.ui.util.view.toast
+import es.samiralkalii.myapps.soporteit.ui.util.toast
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel

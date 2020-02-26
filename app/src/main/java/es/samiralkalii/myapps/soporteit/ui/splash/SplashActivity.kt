@@ -3,17 +3,13 @@ package es.samiralkalii.myapps.soporteit.ui.splash
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.RemoteInput
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.framework.notification.KEY_TEXT_REPLY
-import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
-import es.samiralkalii.myapps.soporteit.ui.util.startHomeActivity
-import es.samiralkalii.myapps.soporteit.ui.util.startLogupActivity
-import es.samiralkalii.myapps.soporteit.ui.util.toBundle
+import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -52,7 +48,7 @@ class SplashActivity : AppCompatActivity() {
                 }
                 is SplashState.ShowMessage -> {
                     logger.debug("Error SignIn")
-                    Toast.makeText(this, screenState.renderState.message, Toast.LENGTH_SHORT).show()
+                    toast(resources.getString(screenState.renderState.message))
                     this.finish()
                 }
             }
@@ -60,9 +56,9 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun startHomeActivityyy(user: User) {
-        val gotoExtra= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
-        val replyTeamInvitacion= intent.getStringExtra(SplashActivity.REPLY_TEAM_INVITATION_KEY) ?: ""
-        val notifId= intent.getStringExtra(SplashActivity.NOTIF_ID_KEY) ?: ""
+        val gotoExtra= intent.getIntExtra(GOTO_KEY, -1)
+        val replyTeamInvitacion= intent.getStringExtra(REPLY_TEAM_INVITATION_KEY) ?: ""
+        val notifId= intent.getStringExtra(NOTIF_ID_KEY) ?: ""
         val replyTeamInvitacionText= RemoteInput.getResultsFromIntent(intent)?.getCharSequence(KEY_TEXT_REPLY) ?: ""
         user.teamInvitationState= replyTeamInvitacion
         if (replyTeamInvitacion.isNotBlank()) {
@@ -101,7 +97,6 @@ class SplashActivity : AppCompatActivity() {
         }
 
         fun getIntentToHomeScreen(context: Context, replyTeamInvitacion: String= "", notificationId: String): Intent {
-            logger.debug("*******El valor de replyTeamInvitation es ${replyTeamInvitacion} y el GOTO es ${GOTO_HOME}")
             val intent = Intent(context, SplashActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }.putExtra(GOTO_KEY, GOTO_HOME).putExtra(REPLY_TEAM_INVITATION_KEY, replyTeamInvitacion).putExtra(NOTIF_ID_KEY, notificationId)

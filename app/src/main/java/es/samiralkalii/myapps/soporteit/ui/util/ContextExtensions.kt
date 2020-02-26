@@ -5,10 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.widget.Toast
 import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupActivity
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 
+fun Context.toast(msg: String, duration: Int= Toast.LENGTH_SHORT)=
+    Toast.makeText(this, msg, duration).show()
 
 fun Context.startLogupActivity()= Intent(this, LogupActivity::class.java).also {
     it.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION

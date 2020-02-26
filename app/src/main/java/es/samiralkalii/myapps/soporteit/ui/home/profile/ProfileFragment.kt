@@ -22,11 +22,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.isBoss
 import es.samiralkalii.myapps.soporteit.ui.home.isProfilePendingToInput
 import es.samiralkalii.myapps.soporteit.ui.home.isVerificationPending
-import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
-import es.samiralkalii.myapps.soporteit.ui.util.toUser
-import es.samiralkalii.myapps.soporteit.ui.util.view.IMAGE_MIMETYPE
-import es.samiralkalii.myapps.soporteit.ui.util.view.PERMISSION_REQUEST_CODE
-import es.samiralkalii.myapps.soporteit.ui.util.view.PICK_IMAGE
+import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 

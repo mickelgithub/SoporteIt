@@ -20,12 +20,12 @@ private const val OPEN_WITH_ANIMATION= 1
 private const val CLOSE_WITH_ANIMATION= 2
 private const val ANIMATION_DURATION= 1300L
 
-sealed class NotificationViewModelTemplate() {
+sealed class NotificationViewModelTemplate {
 
     private val logger= LoggerFactory.getLogger(NotificationViewModelTemplate::class.java)
 
-    class NotificationViewModelInfo(val notif: Notification, val adapter: NotificationAdapter,
-                                    val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel): NotificationViewModelTemplate() {
+    class NotificationViewModelInfo(val notif: Notification, private val adapter: NotificationAdapter,
+                                    private val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel): NotificationViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(NotificationViewModelInfo::class.java)
 
@@ -97,9 +97,9 @@ sealed class NotificationViewModelTemplate() {
 
     //**********************************************************************************************
 
-    class NotificationViewModelReply(val notif: Notification, val adapter: NotificationAdapter,
-                                     val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel,
-                                     val fragment: NotificationsFragment): NotificationViewModelTemplate(), PromptTextDialog.OnTextEnteredListener {
+    class NotificationViewModelReply(val notif: Notification, private val adapter: NotificationAdapter,
+                                     private val homeNotificationsFragmentViewModel: HomeNotificationsFragmentViewModel,
+                                     private val fragment: NotificationsFragment): NotificationViewModelTemplate(), PromptTextDialog.OnTextEnteredListener {
 
         private val logger= LoggerFactory.getLogger(NotificationViewModelReply::class.java)
 
@@ -117,7 +117,7 @@ sealed class NotificationViewModelTemplate() {
         val open: LiveData<Int>
             get() = _open
 
-        var promptTextDialog: PromptTextDialog?= null
+        private var promptTextDialog: PromptTextDialog?= null
 
         init {
             init()
@@ -180,24 +180,23 @@ sealed class NotificationViewModelTemplate() {
         }
 
         private fun onItemReplyClick(notificationItemReplyBinding: NotificationItemReplyBinding) {
-            if (isItemClosed()) {
+            if (isItemClosed())
                 _open.value= OPEN_WITH_ANIMATION
-            } else {
+            else
                 _open.value= CLOSE_WITH_ANIMATION
 
-            }
             notificationItemReplyBinding.invalidateAll()
         }
 
         private fun isItemClosed()= (_open.value== CLOSE_WITH_ANIMATION ||
                 _open.value== CLOSE_WITHOUT_ANIMATION)
 
-        override fun onTextEntered(reasonKo: String) {
+        override fun onTextEntered(input: String) {
             promptTextDialog?.dismiss()
             promptTextDialog= null
             viewHolder.binding.root.postDelayed({
                 notif.state= NotifState.READ
-                homeNotificationsFragmentViewModel.replyNotification(notif.id, Reply.KO, reasonKo)
+                homeNotificationsFragmentViewModel.replyNotification(notif.id, Reply.KO, input)
                 _backgroundColor.value= R.color.notif_backgroud_read
                 _open.value= CLOSE_WITH_ANIMATION
                 (viewHolder.binding as NotificationItemReplyBinding).invalidateAll()

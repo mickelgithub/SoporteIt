@@ -94,7 +94,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             when (error) {
                 is FirebaseNetworkException -> {
                     _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.no_internet_connection))))
-                    //_progressVisible.postValue(LoadingDialog.DialogState.ShowMesage(R.string.no_internet_connection))
                 }
                 is FirebaseAuthInvalidCredentialsException -> {
                     if (error.toString().contains("email address is badly formatted")) {
