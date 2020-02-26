@@ -94,6 +94,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState)
             putLong(KEY_HOLIDAY_DAYS_PER_YEAR, user.holidayDaysPerYear)
             putBoolean(KEY_INTERNAL_EMPLOYEE, user.internalEmployee)
+            putString(KEY_BOSS, user.boss)
         }
     }
 

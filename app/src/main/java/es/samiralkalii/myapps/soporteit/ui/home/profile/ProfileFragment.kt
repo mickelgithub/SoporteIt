@@ -75,7 +75,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
-                MyDialog.DialogState.ShowLoading -> LoadingDialog.showMe(activity!!.supportFragmentManager)
+                MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(activity!!.supportFragmentManager)
                 MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
                 is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)
             }
@@ -227,11 +227,11 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
     fun onImageBossVerificationClick() {
         if (viewModel.user.isBoss()) {
-            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verified, messageColor= R.color.colorPrimary)
+            LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verified, messageColor= R.color.colorPrimary)
         } else if (viewModel.user.isVerificationPending()) {
-            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
+            LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
         } else if (viewModel.user.isProfilePendingToInput(activity!!)) {
-            LoadingDialog.showMeForAwhile(activity!!.supportFragmentManager, R.string.profile_is_needed)
+            LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.profile_is_needed)
         }
     }
 

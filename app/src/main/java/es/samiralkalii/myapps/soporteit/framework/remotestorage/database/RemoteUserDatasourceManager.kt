@@ -72,6 +72,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     }
 
     override suspend fun getUserInfo(user: User) {
+
         val result= fstore.collection(USERS_REF).document(user.id).get().await()
         if (result!= null && result.data!= null) {
             val data= result.data!!
@@ -86,7 +87,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.teamInvitationState= (data[KEY_TEAM_INVITATION_STATE] as String?) ?: ""
             user.holidayDaysPerYear= (data[KEY_HOLIDAY_DAYS_PER_YEAR] as Long?) ?: 22L
             user.internalEmployee= (data[KEY_INTERNAL_EMPLOYEE] as Boolean?) ?: false
-            logger.debug("hello")
+            user.boss= (data[KEY_BOSS] as String?) ?: ""
         }
     }
 

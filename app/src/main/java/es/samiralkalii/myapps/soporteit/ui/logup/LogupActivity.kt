@@ -107,7 +107,7 @@ class LogupActivity : AppCompatActivity(),
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
-                MyDialog.DialogState.ShowLoading -> LoadingDialog.showMe(supportFragmentManager)
+                MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(supportFragmentManager)
                 MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
                 is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)
             }

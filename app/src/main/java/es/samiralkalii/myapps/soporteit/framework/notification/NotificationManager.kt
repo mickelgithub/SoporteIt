@@ -65,7 +65,7 @@ class NotificationManager(val context: Context): INotification {
         //val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         //intent when clicking accept action
         val acceptInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_OK, notificationId)
-        val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 0, acceptInvitationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 1, acceptInvitationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val denyInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_KO, notificationId)
         val denyInvitationPendingIntent= PendingIntent.getActivity(context, 0, denyInvitationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -98,6 +98,7 @@ class NotificationManager(val context: Context): INotification {
                 .addAction(actionAcceptInvitation)
                 .addAction(actionDenyInvitation)
                 .setAutoCancel(true)
+                .setOngoing(true)
             if (largeIconUrl.isNotBlank()) {
                 val largeIconHeight = context.resources
                     .getDimensionPixelSize(android.R.dimen.notification_large_icon_height)

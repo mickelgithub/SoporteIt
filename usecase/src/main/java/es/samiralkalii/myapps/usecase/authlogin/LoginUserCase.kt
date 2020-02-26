@@ -26,7 +26,7 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
         remoteUserAuthRepository.signInUser(user, true)
         //login correcto
         //we get user.name, user.localProfileImage and user.remoteProfileImage
-        val isEmailAlreadyVerified= user.emailVerified
+        val isEmailVerified= user.emailVerified
         remoteUserRepository.getUserInfo(user)
         if (user.remoteProfileImage.isNotBlank()) {
             val imageInputStream= remoteUserStorageRepository.getProfileImage(user)
@@ -37,8 +37,8 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
         }
         //if the mail is verified and is not updated en firebase databaase, we have to do it
         var updateDatabase= false
-        if (isEmailAlreadyVerified && !user.emailVerified) {
-            user.emailVerified= isEmailAlreadyVerified
+        if (isEmailVerified && !user.emailVerified) {
+            user.emailVerified= isEmailVerified
             updateDatabase= true
         }
         preferenceRepository.saveUser(user)

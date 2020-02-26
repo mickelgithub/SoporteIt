@@ -17,7 +17,7 @@ class LoadingDialog: MyDialog() {
 
         var loadingDialog: LoadingDialog?= null
 
-        fun showMe(fragmentManager: FragmentManager) {
+        fun showLoading(fragmentManager: FragmentManager) {
             if (loadingDialog== null) {
                 loadingDialog= LoadingDialog().apply {
                     isCancelable= false
@@ -32,7 +32,7 @@ class LoadingDialog: MyDialog() {
             loadingDialog= null
         }
 
-        fun showMeForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY, messageColor: Int= R.color.red_error) {
+        fun showMessageDialogForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY, messageColor: Int= R.color.red_error) {
             if (loadingDialog== null) {
                 val bundle= Bundle().apply {
                     putInt(DIALOG_FOR_MESSAGE_KEY, message)
@@ -54,9 +54,6 @@ class LoadingDialog: MyDialog() {
     }
 
     private lateinit var binding: DialogLoadingBinding
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,10 +99,5 @@ class LoadingDialog: MyDialog() {
             this.dismiss()
         }, delay)
     }
-
-
-
-
-
 
 }
