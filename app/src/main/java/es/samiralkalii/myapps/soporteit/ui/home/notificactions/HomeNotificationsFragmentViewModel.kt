@@ -38,10 +38,11 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
     val sentNotifications: LiveData<List<Notification>>
         get() = _sentNotifications
 
+    private val _show
+
     fun publishUser(userParam: User) {
         this.user= userParam
     }
-
 
     fun getReceivedNotifications() {
 
