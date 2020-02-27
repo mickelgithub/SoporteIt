@@ -9,8 +9,6 @@ import es.samiralkalii.myapps.notification.NotificationRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
-private const val OK= "S"
-
 class HandleTeamInvitationUseCase(private val notificationRepository: NotificationRepository,
                                   private val preferenceRepository: PreferenceRepository,
                                   private val remoteUserRepository: RemoteUserRepository,
@@ -23,14 +21,14 @@ class HandleTeamInvitationUseCase(private val notificationRepository: Notificati
     suspend operator fun invoke(user: User, reply: Reply, replyDescription: String, notifId: String) {
         notificationRepository.cancelNotification()
         if (reply== Reply.OK) {
-            user.teamInvitationState= OK
-            remoteUserRepository.updateTeamInvitationState(user, OK)
+            user.teamInvitationState= reply
+            remoteUserRepository.updateTeamInvitationState(user, reply)
             remoteTeamManagementRepository.addUserToTeam(user)
             remoteNotificationsRepository.replyNotification(user.id, notifId, reply, "")
-            preferenceRepository.updateTeamInvitationState(OK)
+            preferenceRepository.updateTeamInvitationState(reply)
         } else {
             //no se ha aceptado la invitacion
-            user.teamInvitationState= ""
+            user.teamInvitationState= Reply.NONE
             user.boss= ""
             user.team= ""
             user.teamId= ""

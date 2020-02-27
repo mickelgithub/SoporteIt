@@ -2,7 +2,7 @@ package es.samiralkalii.myapps.soporteit.ui.util
 
 import android.os.Bundle
 import es.samiralkalii.myapps.domain.User
-
+import es.samiralkalii.myapps.domain.notification.Reply
 
 
 const val KEY_EMAIL= "email"
@@ -39,7 +39,7 @@ fun User.toBundle()= Bundle().apply {
     putString(KEY_TEAM, team)
     putString(KEY_TEAM_ID, teamId)
     putString(KEY_BOSS, boss)
-    putString(KEY_TEAM_INVITATION_STATE, teamInvitationState)
+    putString(KEY_TEAM_INVITATION_STATE, teamInvitationState.toString())
     putLong(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDaysPerYear)
     putBoolean(KEY_INTERNAL_EMPLOYEE, internalEmployee)
     putString(KEY_MESSAGING_TOKEN, messagingToken)
@@ -58,7 +58,7 @@ fun Bundle.toUser()= User(
     team = getString(KEY_TEAM, ""),
     teamId = getString(KEY_TEAM_ID, ""),
     boss = getString(KEY_BOSS, ""),
-    teamInvitationState = getString(KEY_TEAM_INVITATION_STATE, ""),
+    teamInvitationState = Reply.valueOf(getString(KEY_TEAM_INVITATION_STATE, Reply.NONE.toString())),
     holidayDaysPerYear = getLong(KEY_HOLIDAY_DAYS_PER_YEAR, User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS),
     internalEmployee = getBoolean(KEY_INTERNAL_EMPLOYEE, false),
     messagingToken = getString(KEY_MESSAGING_TOKEN, "")

@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
@@ -18,11 +19,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragment
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
-import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity.Companion.REPLY_TEAM_INVITATION_OK
-import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
-import es.samiralkalii.myapps.soporteit.ui.util.toBundle
-import es.samiralkalii.myapps.soporteit.ui.util.toUser
-import es.samiralkalii.myapps.soporteit.ui.util.toast
+import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -38,9 +35,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val goto= intent.getIntExtra(SplashActivity.GOTO_KEY, -1)
-
 
         binding= ActivityHomeBinding.inflate(layoutInflater)
         viewModel.publishUserAndGoto(intent.extras?.toUser() ?: User(), goto)
@@ -119,7 +114,7 @@ class HomeActivity : AppCompatActivity() {
                         if (viewModel.user.isBoss()) {
                             supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                         } else {
-                            if (viewModel.user.teamInvitationState== REPLY_TEAM_INVITATION_OK) {
+                            if (viewModel.user.teamInvitationState== Reply.OK) {
                                 supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                             } else {
                                 supportActionBar?.title= resources.getString(R.string.team_created_title, "")
@@ -135,7 +130,6 @@ class HomeActivity : AppCompatActivity() {
                     supportActionBar?.title = resources.getString(R.string.notifications_title)
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeNotificationsFragment.newInstance(viewModel.user.toBundle()), HomeNotificationsFragment::class.java.simpleName).commit()
                 }
-
             }
         }
     }
@@ -162,9 +156,6 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_home, menu)
-        /*if (!viewModel.user.isBoss()) {
-            menu.findItem(R.id.menu_item_create_team).setVisible(false)
-        }*/
         return super.onCreateOptionsMenu(menu)
     }
 

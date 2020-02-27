@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.coroutines.tasks.await
@@ -42,7 +43,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             mapOf( KEY_TEAM to team.name, KEY_TEAM_ID to team.id)).await()
     }
 
-    override suspend fun updateTeamInvitationState(user: User, teamInvitationState: String) {
+    override suspend fun updateTeamInvitationState(user: User, teamInvitationState: Reply) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_TEAM_INVITATION_STATE to teamInvitationState))
     }
 
@@ -84,7 +85,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             user.bossVerification= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
             user.team= (data[KEY_TEAM] as String?) ?: ""
             user.teamId= (data[KEY_TEAM_ID] as String?) ?: ""
-            user.teamInvitationState= (data[KEY_TEAM_INVITATION_STATE] as String?) ?: ""
+            user.teamInvitationState= Reply.valueOf(data[KEY_TEAM_INVITATION_STATE] as String)
             user.holidayDaysPerYear= (data[KEY_HOLIDAY_DAYS_PER_YEAR] as Long?) ?: 22L
             user.internalEmployee= (data[KEY_INTERNAL_EMPLOYEE] as Boolean?) ?: false
             user.boss= (data[KEY_BOSS] as String?) ?: ""

@@ -72,7 +72,7 @@ class HomeNotificationsFragment: Fragment() {
 
     }
 
-    class NotificationsPageAdapter(val fragment: Fragment, val user: User): FragmentPagerAdapter(fragment.childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    class NotificationsPageAdapter(val fragment: Fragment, val user: User): FragmentPagerAdapter(fragment.childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
         override fun getItem(position: Int)= if (position== 0) NotificationsFragment.newInstance(user.toBundle().apply { putSerializable(NOTIFICATION_CATEGORY_KEY, NotificationCategory.RECEIVED) }) else
             NotificationsFragment.newInstance(Bundle().apply {

@@ -172,6 +172,9 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision))))
                         _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.nothing))
                     }
+                    is com.google.firebase.FirebaseApiNotAvailableException -> {
+                        _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.firebase_api_no_available))))
+                    }
                     else -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
                         _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.no_internet_connection))

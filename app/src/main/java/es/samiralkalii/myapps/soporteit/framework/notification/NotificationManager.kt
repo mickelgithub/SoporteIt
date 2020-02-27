@@ -60,45 +60,21 @@ class NotificationManager(val context: Context): INotification {
     }
 
     override fun showNotificationInvitationToTeam(bossName: String, bossMail: String, team: String, largeIconUrl: String, notificationId: String) {
-        //intent when clicking notificaciont body
-        //val intent= SplashActivity.getIntentToNotificationsScreen(context)
-        //val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        //intent when clicking accept action
-        val acceptInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_OK, notificationId)
-        val acceptInvitacionPendingIntent= PendingIntent.getActivity(context, 1, acceptInvitationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val denyInvitationIntent= SplashActivity.getIntentToHomeScreen(context, SplashActivity.REPLY_TEAM_INVITATION_KO, notificationId)
-        val denyInvitationPendingIntent= PendingIntent.getActivity(context, 0, denyInvitationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
+        val intent= SplashActivity.getIntentToNotificationsScreen(context)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
             val title= context.resources.getString(R.string.notif_title_invitation_to_be_part_of_team)
-
-            var actionDenyInvitation: NotificationCompat.Action =
-                NotificationCompat.Action.Builder(R.mipmap.ic_launcher,
-                    context.resources.getString(R.string.notif_reply_label_deny_invitation), denyInvitationPendingIntent)
-                    .addRemoteInput(RemoteInput.Builder(KEY_TEXT_REPLY).run {
-                        setLabel(context.resources.getString(R.string.notif_reply_label_deny_invitation))
-                        build()
-                    })
-                    .build()
-
-            val actionAcceptInvitation: NotificationCompat.Action =
-                NotificationCompat.Action.Builder(R.mipmap.ic_launcher,
-                    context.resources.getString(R.string.accept), acceptInvitacionPendingIntent)
-                    .build()
-
             val body= Html.fromHtml(context.resources.getString(R.string.notif_body_invitation_to_be_part_of_team, bossName, bossMail, team))
             val builder= NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(body))
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .addAction(actionAcceptInvitation)
-                .addAction(actionDenyInvitation)
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .setOngoing(true)
             if (largeIconUrl.isNotBlank()) {
                 val largeIconHeight = context.resources
                     .getDimensionPixelSize(android.R.dimen.notification_large_icon_height)
@@ -113,7 +89,6 @@ class NotificationManager(val context: Context): INotification {
                 builder.setLargeIcon(bitmap)
             }
             notify(NOTIF_ID, builder.build())
-
         }
     }
 

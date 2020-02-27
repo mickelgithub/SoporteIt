@@ -40,7 +40,6 @@ class InviteMemberDialog(): MyDialog() {
 
     private lateinit var user: User
 
-
     companion object {
 
         fun newInstance(bundle: Bundle)= InviteMemberDialog().apply {
@@ -196,8 +195,6 @@ class InviteMemberDialog(): MyDialog() {
                  adapter.initData(it)
             }
         )
-
-
     }
 
     private inner class MembersSuggestAdapter(context: Context, val resource: Int): ArrayAdapter<User>(context, resource),

@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.framework.sharedpreferences
 import android.content.Context
 import androidx.core.content.edit
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.preference.IPreferences
 import es.samiralkalii.myapps.soporteit.R
@@ -35,9 +36,9 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateTeamInvitationState(teamInvitationState: String) {
+    override suspend fun updateTeamInvitationState(teamInvitationState: Reply) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
-            putString(KEY_TEAM_INVITATION_STATE, teamInvitationState)
+            putString(KEY_TEAM_INVITATION_STATE, teamInvitationState.toString())
         }
     }
 
@@ -91,7 +92,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_BOSS_VERIFICATION, user.bossVerification)
             putString(KEY_TEAM, user.team)
             putString(KEY_TEAM_ID, user.teamId)
-            putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState)
+            putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
             putLong(KEY_HOLIDAY_DAYS_PER_YEAR, user.holidayDaysPerYear)
             putBoolean(KEY_INTERNAL_EMPLOYEE, user.internalEmployee)
             putString(KEY_BOSS, user.boss)
@@ -115,7 +116,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val bossVerification= getString(KEY_BOSS_VERIFICATION, "") ?: ""
             val team= getString(KEY_TEAM, "") ?: ""
             val teamId= getString(KEY_TEAM_ID, "") ?: ""
-            val teamInvitationState= getString(KEY_TEAM_INVITATION_STATE, "") ?: ""
+            val teamInvitationState= Reply.valueOf(getString(KEY_TEAM_INVITATION_STATE, Reply.NONE.toString()) ?: Reply.NONE.toString())
             val holidayDays= getLong(KEY_HOLIDAY_DAYS_PER_YEAR, 22L)
             val internalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false)
             val messaginToken= getString(KEY_MESSAGING_TOKEN, "") ?: ""

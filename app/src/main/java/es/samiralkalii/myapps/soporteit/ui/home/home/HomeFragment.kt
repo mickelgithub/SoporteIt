@@ -143,8 +143,6 @@ class HomeFragment: Fragment(),
         }
     }
 
-
-
     private fun showInviteMemberDialog() {
         var inviteDialog: InviteMemberDialog?= activity!!.supportFragmentManager.findFragmentByTag(InviteMemberDialog::class.java.simpleName) as InviteMemberDialog?
         if (inviteDialog== null) {

@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.usecase.messaging
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.data.notifications.RemoteNotificationsRepository
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.notification.NotificationRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
@@ -52,7 +53,7 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 val notifId= body
                 val notification= remoteNotificationsRepository.getNotificationReceivedById(userId, notifId)
                 preferenceRepository.updateTeamCreated(Team(id = notification.teamId, name = notification.team,
-                    boss = notification.sender, nameInsensitive = notification.team.toUpperCase()), teamInvitationState = PENDING)
+                    boss = notification.sender, nameInsensitive = notification.team.toUpperCase()), teamInvitationState = Reply.PENDING.toString())
                 val remoteUser= User.EMPTY.apply {
                     id= notification.destination
                 }

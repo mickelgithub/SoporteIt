@@ -7,6 +7,7 @@ import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasourc
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.usecase.messaging.PENDING
@@ -90,7 +91,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
                 KEY_TEAM to notification.team,
                 KEY_TEAM_ID to notification.teamId,
                 KEY_BOSS to notification.sender,
-                KEY_TEAM_INVITATION_STATE to PENDING
+                KEY_TEAM_INVITATION_STATE to Reply.PENDING
             ))
 
         }.await()

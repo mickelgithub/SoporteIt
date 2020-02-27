@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.preference
 
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team
 
 class PreferenceRepository(val preferences: IPreferences) {
@@ -14,7 +15,7 @@ class PreferenceRepository(val preferences: IPreferences) {
     suspend fun updateProfile(profile: String)= preferences.updateProfile(profile)
     suspend fun updateBossVerification(bossVerification: String)= preferences.updateBossVerification(bossVerification)
     suspend fun updateTeamCreated(team: Team, teamInvitationState: String)= preferences.updateTeamCreated(team, teamInvitationState)
-    suspend fun updateTeamInvitationState(teamInvitationState: String)= preferences.updateTeamInvitationState(teamInvitationState)
+    suspend fun updateTeamInvitationState(teamInvitationState: Reply)= preferences.updateTeamInvitationState(teamInvitationState)
     suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean)= preferences.updateHolidayDaysAndInternalState(holidayDays, internal)
     suspend fun denyInvitationToTeam(user: User)= preferences.denyInvitationToTeam(user)
 }
@@ -29,7 +30,7 @@ interface IPreferences {
     suspend fun updateProfile(profile: String)
     suspend fun updateBossVerification(bossVerification: String)
     suspend fun updateTeamCreated(team: Team, teamInvitationState: String)
-    suspend fun updateTeamInvitationState(teamInvitationState: String)
+    suspend fun updateTeamInvitationState(teamInvitationState: Reply)
     suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean)
     suspend fun denyInvitationToTeam(user: User)
 }

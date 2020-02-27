@@ -1,5 +1,7 @@
 package es.samiralkalii.myapps.domain
 
+import es.samiralkalii.myapps.domain.notification.Reply
+
 data class User(var email: String= "", var password: String= "",
                 var name: String= "",
                 var id: String= "",
@@ -11,7 +13,7 @@ data class User(var email: String= "", var password: String= "",
                 var bossVerification: String= "",
                 var team: String= "",
                 var teamId: String= "",
-                var teamInvitationState: String = "",
+                var teamInvitationState: Reply = Reply.NONE,
                 var boss: String= "",
                 var messagingToken: String= "",
                 var holidayDaysPerYear: Long= DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS,

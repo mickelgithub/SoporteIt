@@ -25,7 +25,7 @@ enum class NotifState {
 }
 
 enum class Reply {
-    NONE, OK, KO
+    NONE, OK, KO, PENDING
 }
 
 data class Notification(
