@@ -54,7 +54,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_TEAM, "")
             putString(KEY_TEAM_ID, "")
             putString(KEY_BOSS, "")
-            putString(KEY_TEAM_INVITATION_STATE, "")
+            putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
         }
     }
 

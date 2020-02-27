@@ -19,7 +19,6 @@ class HandleTeamInvitationUseCase(private val notificationRepository: Notificati
     private val logger = LoggerFactory.getLogger(HandleTeamInvitationUseCase::class.java)
 
     suspend operator fun invoke(user: User, reply: Reply, replyDescription: String, notifId: String) {
-        notificationRepository.cancelNotification()
         if (reply== Reply.OK) {
             user.teamInvitationState= reply
             remoteUserRepository.updateTeamInvitationState(user, reply)
@@ -33,7 +32,6 @@ class HandleTeamInvitationUseCase(private val notificationRepository: Notificati
             user.team= ""
             user.teamId= ""
             remoteUserRepository.denyInvitationToTeam(user)
-            logger.debug("........................${Thread.currentThread().name}")
             remoteNotificationsRepository.replyNotification(user.id, notifId, reply, replyDescription)
             preferenceRepository.denyInvitationToTeam(user)
         }
