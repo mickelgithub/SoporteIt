@@ -57,14 +57,6 @@ class SplashActivity : AppCompatActivity() {
 
     private fun startHomeActivityyy(user: User) {
         val gotoExtra= intent.getIntExtra(GOTO_KEY, -1)
-        //val replyTeamInvitacion= intent.getStringExtra(REPLY_TEAM_INVITATION_KEY) ?: ""
-        //val notifId= intent.getStringExtra(NOTIF_ID_KEY) ?: ""
-        //val replyTeamInvitacionText= RemoteInput.getResultsFromIntent(intent)?.getCharSequence(KEY_TEXT_REPLY) ?: ""
-        //user.teamInvitationState= replyTeamInvitacion
-        /*if (replyTeamInvitacion.isNotBlank()) {
-            viewModel.publishUser(user)
-            viewModel.handleTeamInvitacion(user, (if (replyTeamInvitacion== REPLY_TEAM_INVITATION_OK) Reply.OK else Reply.KO), replyTeamInvitacionText.toString(), notifId)
-        }*/
         startHomeActivity(user.toBundle(), gotoExtra)
     }
 
@@ -74,10 +66,6 @@ class SplashActivity : AppCompatActivity() {
         const val GOTO_NOTIFICATIONS= 2
         const val GOTO_HOME= 3
         const val GOTO_KEY= "GOTO"
-        //const val REPLY_TEAM_INVITATION_KEY= "accept_team_invitation"
-        //const val REPLY_TEAM_INVITATION_OK= "S"
-        //const val REPLY_TEAM_INVITATION_KO= "N"
-        //const val NOTIF_ID_KEY= "notifi_id"
 
         private val logger= LoggerFactory.getLogger(SplashActivity::class.java)
 
@@ -95,13 +83,6 @@ class SplashActivity : AppCompatActivity() {
             }.putExtra(GOTO_KEY, GOTO_NOTIFICATIONS)
             return intent
         }
-
-        /*fun getIntentToHomeScreen(context: Context, replyTeamInvitacion: String= "", notificationId: String): Intent {
-            val intent = Intent(context, SplashActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }.putExtra(GOTO_KEY, GOTO_HOME).putExtra(REPLY_TEAM_INVITATION_KEY, replyTeamInvitacion).putExtra(NOTIF_ID_KEY, notificationId)
-            return intent
-        }*/
 
         enum class GOTO {
             PROFILE, PROFILE_PROFILE_NEEDED, HOME, NOTIFICATIONS

@@ -6,7 +6,6 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
-
 class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                            private val preferenceRepository: PreferenceRepository,
                            private val remoteUserRepository: RemoteUserRepository) {
@@ -25,8 +24,10 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
         remoteUserRepository.updateEmailVerified(user)
     }
 
-    suspend operator fun invoke(): Result {
-        val user = preferenceRepository.getUser()
+    suspend operator fun invoke(user: User): Result {
+        if (user== User.EMPTY) {
+            user.copy(preferenceRepository.getUser())
+        }
         val emailVerified= user.emailVerified
         val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
         if (loggedIn) {

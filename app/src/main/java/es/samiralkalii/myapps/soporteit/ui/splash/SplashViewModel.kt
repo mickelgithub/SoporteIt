@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.GlobalState
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.CheckUserAuthUseCase
 import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
@@ -43,7 +44,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                checkUserAuthUseCase()
+                checkUserAuthUseCase(GlobalState.user)
             }.await()
             when (result) {
                 is CheckUserAuthUseCase.Result.Logged -> {
