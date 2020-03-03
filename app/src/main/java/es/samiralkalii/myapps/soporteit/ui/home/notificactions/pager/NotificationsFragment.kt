@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.NotifState
@@ -35,7 +35,7 @@ class NotificationsFragment: Fragment() {
     private val logger= LoggerFactory.getLogger(NotificationsFragment::class.java)
 
     private val parentViewModel: HomeNotificationsFragmentViewModel by lazy {
-        ViewModelProviders.of(activity!!.supportFragmentManager.findFragmentByTag(
+        ViewModelProvider(activity!!.supportFragmentManager.findFragmentByTag(
             HomeNotificationsFragment::class.java.simpleName)!!)[HomeNotificationsFragmentViewModel::class.java]
     }
 
@@ -56,7 +56,7 @@ class NotificationsFragment: Fragment() {
     fun updateDeletedMenuItemState(notifs: List<Notification>) {
         showDeleteNotificationsItemMenu= isThereReadNotifs(notifs)
         (activity as AppCompatActivity).invalidateOptionsMenu()
-        if (notifs!= null && notifs.size>0) {
+        if (notifs.size>0) {
             showDeleteNotificationsItemMenu= isThereReadNotifs(notifs)
         } else {
             showDeleteNotificationsItemMenu= false
@@ -70,7 +70,7 @@ class NotificationsFragment: Fragment() {
         logger.debug("onCreate...."+ this.hashCode())
         setHasOptionsMenu(true)
         user= (arguments as Bundle).toUser()
-        notificationCategory= arguments?.getSerializable(NOTIFICATION_CATEGORY_KEY) as NotificationCategory ?: NotificationCategory.RECEIVED
+        notificationCategory= arguments?.getSerializable(NOTIFICATION_CATEGORY_KEY) as NotificationCategory
 
         if (notificationCategory== NotificationCategory.RECEIVED) {
             parentViewModel.receivedNotifications.observe(this, Observer {

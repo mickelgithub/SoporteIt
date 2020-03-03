@@ -127,7 +127,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             }.await()
             when (result) {
                 is LoginUserCase.Result.LoginOk -> {
-                    //_progressVisible.value = LoadingDialog.DialogState.ShowSuccess
                     _loginState.value = Event(ScreenState.Render(LoginState.LoginOk(result.user)))
                 }
             }

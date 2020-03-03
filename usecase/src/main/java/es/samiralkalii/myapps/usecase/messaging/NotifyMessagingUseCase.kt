@@ -33,8 +33,6 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
 
     suspend operator fun invoke(messageId: String, result:String, to: String, body: String) {
 
-        var title= ""
-        var notifBody= ""
         val userId= to
         when (messageId) {
             MESSAGE_ID_BOSS_VERIFICATION -> {
@@ -53,7 +51,7 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 val notifId= body
                 val notification= remoteNotificationsRepository.getNotificationReceivedById(userId, notifId)
                 preferenceRepository.updateTeamCreated(Team(id = notification.teamId, name = notification.team,
-                    boss = notification.sender, nameInsensitive = notification.team.toUpperCase()), teamInvitationState = Reply.PENDING.toString())
+                    boss = notification.sender, nameInsensitive = notification.team.toUpperCase()), teamInvitationState = Reply.PENDING)
                 val remoteUser= User.EMPTY.apply {
                     id= notification.destination
                 }

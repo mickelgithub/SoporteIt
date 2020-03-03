@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
@@ -92,6 +93,16 @@ class HomeViewModel() : ViewModel() {
 
     fun updateGoto(gotoParam: SplashActivity.Companion.GOTO) {
         _goto.value= Event(gotoParam)
+    }
+
+    fun updateUser(user: User, reply: Reply) {
+        user.teamInvitationState= reply
+        if (reply== Reply.KO) {
+            user.teamInvitationState= Reply.NONE
+            user.boss= ""
+            user.team= ""
+            user.teamId= ""
+        }
     }
 
 }

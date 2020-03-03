@@ -62,8 +62,8 @@ class LoadingDialog: MyDialog() {
 
         binding= DialogLoadingBinding.inflate(inflater, container, false)
         arguments?.let { args ->
-            val color= args.getInt(DIALOG_MESSAGE_COLOR) ?: R.color.red_error
-            args.getInt(DIALOG_FOR_MESSAGE_KEY)?.let { message ->
+            val color= args.getInt(DIALOG_MESSAGE_COLOR)
+            args.getInt(DIALOG_FOR_MESSAGE_KEY).let { message ->
                 binding.animationLoading.visibility= View.GONE
                 binding.animationOk.visibility= View.GONE
                 binding.message.apply {

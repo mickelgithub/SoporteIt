@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeNotificationsBinding
@@ -30,7 +31,7 @@ class HomeNotificationsFragment: Fragment() {
 
     private val viewModel: HomeNotificationsFragmentViewModel by viewModel()
     private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(activity!!)[HomeViewModel::class.java]
+        ViewModelProvider(activity!!)[HomeViewModel::class.java]
     }
 
     companion object {
@@ -43,6 +44,10 @@ class HomeNotificationsFragment: Fragment() {
         user= (arguments as Bundle).toUser()
         viewModel.publishUser(user)
         setHasOptionsMenu(true)
+
+        viewModel.teamInvitationReply.observe(this, Observer {
+            homeViewModel.updateUser(user, it)
+        })
     }
 
     override fun onCreateView(

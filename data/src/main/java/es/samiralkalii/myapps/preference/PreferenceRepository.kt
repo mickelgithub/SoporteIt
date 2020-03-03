@@ -14,7 +14,7 @@ class PreferenceRepository(val preferences: IPreferences) {
     suspend fun getMessagingToken()= preferences.getMessagingToken()
     suspend fun updateProfile(profile: String)= preferences.updateProfile(profile)
     suspend fun updateBossVerification(bossVerification: String)= preferences.updateBossVerification(bossVerification)
-    suspend fun updateTeamCreated(team: Team, teamInvitationState: String)= preferences.updateTeamCreated(team, teamInvitationState)
+    suspend fun updateTeamCreated(team: Team, teamInvitationState: Reply)= preferences.updateTeamCreated(team, teamInvitationState)
     suspend fun updateTeamInvitationState(teamInvitationState: Reply)= preferences.updateTeamInvitationState(teamInvitationState)
     suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean)= preferences.updateHolidayDaysAndInternalState(holidayDays, internal)
     suspend fun denyInvitationToTeam(user: User)= preferences.denyInvitationToTeam(user)
@@ -29,7 +29,7 @@ interface IPreferences {
     suspend fun getMessagingToken(): String
     suspend fun updateProfile(profile: String)
     suspend fun updateBossVerification(bossVerification: String)
-    suspend fun updateTeamCreated(team: Team, teamInvitationState: String)
+    suspend fun updateTeamCreated(team: Team, teamInvitationState: Reply)
     suspend fun updateTeamInvitationState(teamInvitationState: Reply)
     suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean)
     suspend fun denyInvitationToTeam(user: User)

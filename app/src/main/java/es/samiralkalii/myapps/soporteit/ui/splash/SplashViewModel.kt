@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.ui.GlobalState
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.CheckUserAuthUseCase
 import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
@@ -44,7 +43,7 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
 
         viewModelScope.launch(errorHandler) {
             val result = async(Dispatchers.IO) {
-                checkUserAuthUseCase(GlobalState.user)
+                checkUserAuthUseCase()
             }.await()
             when (result) {
                 is CheckUserAuthUseCase.Result.Logged -> {
@@ -62,31 +61,5 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
             }
         }
     }
-
-    fun publishUser(userParam: User) {
-        user= userParam
-    }
-
-    /*fun handleTeamInvitacion(user: User, reply: Reply, replyDescription: String, notifId: String) {
-
-        val errorHandler = CoroutineExceptionHandler { _, error ->
-            logger.debug(error.toString())
-            when (error) {
-                is FirebaseNetworkException -> {
-                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))
-                }
-                else -> {
-                    _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.not_controled_error)))
-                }
-            }
-        }
-
-
-        viewModelScope.launch(errorHandler) {
-            async(Dispatchers.IO) {
-                handleTeamInvitationUseCase(user, reply, replyDescription, notifId)
-            }
-        }
-    }*/
 
 }

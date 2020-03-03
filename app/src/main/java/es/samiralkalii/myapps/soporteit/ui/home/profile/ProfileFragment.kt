@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
@@ -37,7 +37,7 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
     private val viewModel: ProfileViewModel by viewModel()
     private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(activity!!)[HomeViewModel::class.java]
+        ViewModelProvider(activity!!)[HomeViewModel::class.java]
     }
 
     private lateinit var user: User

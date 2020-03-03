@@ -38,11 +38,14 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
     val sentNotifications: LiveData<List<Notification>>
         get() = _sentNotifications
 
-    private val _show
 
     fun publishUser(userParam: User) {
         this.user= userParam
     }
+
+    private val _teamInvitationReply= MutableLiveData<Reply>()
+    val teamInvitationReply: LiveData<Reply>
+        get() = _teamInvitationReply
 
     fun getReceivedNotifications() {
 
@@ -117,7 +120,7 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
     fun updateNotificationStateRead(notification: String, notifState: NotifState) {
         viewModelScope.launch {
-            val result = async(Dispatchers.IO) {
+            async(Dispatchers.IO) {
                 updateNotificationStateUseCase(user.id, notification, notifState)
             }.await()
         }
@@ -125,7 +128,7 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
     fun deleteNotification(notification: String) {
         viewModelScope.launch {
-            val result = async(Dispatchers.IO) {
+            async(Dispatchers.IO) {
                 deleteNotificationUseCase(user.id, notification)
             }.await()
         }
@@ -133,10 +136,12 @@ class HomeNotificationsFragmentViewModel(private val getNotificationsUseCase: Ge
 
     fun replyNotification(notification: String, reply: Reply, reasonKo: String) {
         viewModelScope.launch {
-            val result = async(Dispatchers.IO) {
+            async(Dispatchers.IO) {
                 handleTeamInvitationUserCase(user, reply, reasonKo, notification)
             }.await()
         }
+        logger.debug("Estamos aqui despues de ${reply.toString()} operacion")
+        _teamInvitationReply.value= reply
     }
 
     fun isInfoNotification(notification: Notification)=  (notification.type== NotifType.INFO)

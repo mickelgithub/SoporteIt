@@ -27,12 +27,12 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateTeamCreated(team: Team, teamInvitationState: String) {
+    override suspend fun updateTeamCreated(team: Team, teamInvitationState: Reply) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_TEAM, team.name)
             putString(KEY_TEAM_ID, team.id)
             putString(KEY_BOSS, team.boss)
-            putString(KEY_TEAM_INVITATION_STATE, teamInvitationState)
+            putString(KEY_TEAM_INVITATION_STATE, teamInvitationState.toString())
         }
     }
 

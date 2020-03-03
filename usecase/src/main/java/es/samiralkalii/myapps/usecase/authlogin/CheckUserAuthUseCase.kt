@@ -24,10 +24,8 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
         remoteUserRepository.updateEmailVerified(user)
     }
 
-    suspend operator fun invoke(user: User): Result {
-        if (user== User.EMPTY) {
-            user.copy(preferenceRepository.getUser())
-        }
+    suspend operator fun invoke(): Result {
+        val user = preferenceRepository.getUser()
         val emailVerified= user.emailVerified
         val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
         if (loggedIn) {

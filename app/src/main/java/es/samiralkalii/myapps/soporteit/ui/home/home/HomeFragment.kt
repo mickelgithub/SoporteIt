@@ -6,7 +6,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
@@ -33,7 +33,7 @@ class HomeFragment: Fragment(),
 
     private val viewModel: HomeFragmentViewModel by viewModel()
     private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(activity!!)[HomeViewModel::class.java]
+        ViewModelProvider(activity!!)[HomeViewModel::class.java]
     }
 
     private lateinit var user: User

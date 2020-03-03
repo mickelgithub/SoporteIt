@@ -92,14 +92,14 @@ class SwipeRevealLayout : ViewGroup {
             SUPER_INSTANCE_STATE,
             super.onSaveInstanceState()
         )
-        return super.onSaveInstanceState()
+        return super.onSaveInstanceState() as Parcelable
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
-        var state = state
+        //var state = state
         val bundle = state as Bundle
-        state = bundle.getParcelable(SUPER_INSTANCE_STATE)
-        super.onRestoreInstanceState(state)
+        val mystate = bundle.getParcelable<Parcelable>(SUPER_INSTANCE_STATE)
+        super.onRestoreInstanceState(mystate)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -170,9 +170,9 @@ class SwipeRevealLayout : ViewGroup {
             var matchParentWidth = false
             if (childParams != null) {
                 matchParentHeight = childParams.height == LayoutParams.MATCH_PARENT ||
-                        childParams.height == LayoutParams.FILL_PARENT
+                        childParams.height == LayoutParams.MATCH_PARENT
                 matchParentWidth = childParams.width == LayoutParams.MATCH_PARENT ||
-                        childParams.width == LayoutParams.FILL_PARENT
+                        childParams.width == LayoutParams.MATCH_PARENT
             }
             if (matchParentHeight) {
                 measuredChildHeight = maxBottom - minTop
@@ -220,28 +220,28 @@ class SwipeRevealLayout : ViewGroup {
      * {@inheritDoc}
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var widthMeasureSpec = widthMeasureSpec
-        var heightMeasureSpec = heightMeasureSpec
+        var myWidthMeasureSpec = widthMeasureSpec
+        var myHeightMeasureSpec = heightMeasureSpec
         if (childCount < 2) {
             throw RuntimeException("Layout must have two children")
         }
         val params = layoutParams
-        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val widthMode = MeasureSpec.getMode(myWidthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(myHeightMeasureSpec)
         var desiredWidth = 0
         var desiredHeight = 0
         // first find the largest child
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            measureChild(child, widthMeasureSpec, heightMeasureSpec)
+            measureChild(child, myWidthMeasureSpec, myHeightMeasureSpec)
             desiredWidth = Math.max(child.measuredWidth, desiredWidth)
             desiredHeight = Math.max(child.measuredHeight, desiredHeight)
         }
         // create new measure spec using the largest child width
-        widthMeasureSpec = MeasureSpec.makeMeasureSpec(desiredWidth, widthMode)
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(desiredHeight, heightMode)
-        val measuredWidth = MeasureSpec.getSize(widthMeasureSpec)
-        val measuredHeight = MeasureSpec.getSize(heightMeasureSpec)
+        myWidthMeasureSpec = MeasureSpec.makeMeasureSpec(desiredWidth, widthMode)
+        myHeightMeasureSpec = MeasureSpec.makeMeasureSpec(desiredHeight, heightMode)
+        val measuredWidth = MeasureSpec.getSize(myWidthMeasureSpec)
+        val measuredHeight = MeasureSpec.getSize(myHeightMeasureSpec)
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val childParams = child.layoutParams
@@ -253,7 +253,7 @@ class SwipeRevealLayout : ViewGroup {
                     child.minimumWidth = measuredWidth
                 }
             }
-            measureChild(child, widthMeasureSpec, heightMeasureSpec)
+            measureChild(child, myWidthMeasureSpec, myHeightMeasureSpec)
             desiredWidth = Math.max(child.measuredWidth, desiredWidth)
             desiredHeight = Math.max(child.measuredHeight, desiredHeight)
         }
@@ -350,14 +350,14 @@ class SwipeRevealLayout : ViewGroup {
     }
 
     private val mainOpenLeft: Int
-        private get() = when (mDragEdge) {
+        get() = when (mDragEdge) {
             DRAG_EDGE_LEFT -> mRectMainClose.left + mSecondaryView!!.width
             DRAG_EDGE_RIGHT -> mRectMainClose.left - mSecondaryView!!.width
             else -> 0
         }
 
     private val mainOpenTop: Int
-        private get() {
+        get() {
             return when (mDragEdge) {
                 DRAG_EDGE_LEFT -> mRectMainClose.top
                 DRAG_EDGE_RIGHT -> mRectMainClose.top
@@ -366,10 +366,10 @@ class SwipeRevealLayout : ViewGroup {
         }
 
     private val secOpenLeft: Int
-        private get() = mRectSecClose.left
+        get() = mRectSecClose.left
 
     private val secOpenTop: Int
-        private get() = mRectSecClose.top
+        get() = mRectSecClose.top
 
     private fun initRects() { // close position of main view
         mRectMainClose[mMainView!!.left, mMainView!!.top, mMainView!!.right] = mMainView!!.bottom
@@ -481,7 +481,7 @@ class SwipeRevealLayout : ViewGroup {
         }
 
     private val distToClosestEdge: Int
-        private get() {
+        get() {
             when (mDragEdge) {
                 DRAG_EDGE_LEFT -> {
                     val pivotRight = mRectMainClose.left + mSecondaryView!!.width
@@ -502,7 +502,7 @@ class SwipeRevealLayout : ViewGroup {
         }
 
     private val halfwayPivotHorizontal: Int
-        private get() {
+        get() {
             return if (mDragEdge == DRAG_EDGE_LEFT) {
                 mRectMainClose.left + mSecondaryView!!.width / 2
             } else {
