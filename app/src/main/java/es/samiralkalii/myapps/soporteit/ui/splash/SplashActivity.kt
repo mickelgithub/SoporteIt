@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
-import es.samiralkalii.myapps.domain.notification.Reply
-import es.samiralkalii.myapps.soporteit.framework.notification.KEY_TEXT_REPLY
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -20,6 +18,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        hideSystemUI()
 
         viewModel.checkUserAuth()
 
@@ -28,6 +27,8 @@ class SplashActivity : AppCompatActivity() {
                 processState(it)
             }
         })
+
+
     }
 
     private fun processState(screenState: ScreenState.Render<SplashState>?) {

@@ -73,6 +73,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                app:startIconDrawable="@drawable/ic_person"
                 app:shapeAppearance="@style/rounded_text_field"
                 android:id="@+id/nameInputLayout"
                 android:layout_width="match_parent"
@@ -99,6 +100,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/mailInputLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                app:startIconDrawable="@drawable/ic_mail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -123,6 +125,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                app:startIconDrawable="@drawable/ic_password"
                 app:shapeAppearance="@style/rounded_text_field"
                 android:id="@+id/passInputLayout"
                 app:error="@{viewModel.passwordError}"
@@ -147,6 +150,56 @@
                     android:nextFocusDown= "@+id/profil_spinner"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/retypePassInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                app:error="@{viewModel.passwordError}"
+                app:errorTextAppearance="@style/ErrorText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passInputLayout"
+                app:passwordToggleEnabled="true"
+                app:shapeAppearance="@style/rounded_text_field"
+                app:startIconDrawable="@drawable/ic_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/retypePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/retype_password"
+                    android:inputType="textPassword"
+                    android:nextFocusDown="@+id/profil_spinner"
+                    android:text="@={viewModel.user.password}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/areasInputLayout"
+                app:startIconDrawable="@drawable/ic_group"
+                style="@style/AppTheme.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:shapeAppearance="@style/rounded_text_field"
+                app:layout_constraintTop_toBottomOf="@+id/retypePassInputLayout">
+
+                <AutoCompleteTextView
+                    style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                    android:id="@+id/my_spinner_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Elige el area"
+                    android:editable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <Button
                 android:id="@+id/button"
@@ -159,9 +212,9 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfileSpinner" />
+                app:layout_constraintTop_toBottomOf="@+id/areasInputLayout" />
 
-            <FrameLayout
+            <!--<FrameLayout
                 android:id="@+id/frameLayoutProfileSpinner"
                 android:layout_width="0dp"
                 android:layout_height="46dp"
@@ -171,8 +224,9 @@
                 android:background="@drawable/bg_spinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passInputLayout"
+                app:layout_constraintTop_toBottomOf="@+id/retypePassInputLayout"
                 app:spinner_state="@{viewModel.spinnerState}">
+
 
                 <Spinner
                     android:id="@+id/profil_spinner"
@@ -196,7 +250,7 @@
                 android:textSize="12sp"
                 app:visible="@{viewModel.spinnerState== 1}"
                 app:layout_constraintStart_toStartOf="@+id/frameLayoutProfileSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfileSpinner" />
+                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfileSpinner" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

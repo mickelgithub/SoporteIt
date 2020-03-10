@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.animation.AnimationUtils
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -44,6 +45,8 @@ class LogupActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        hideSystemUI()
 
         binding= ActivityLogupBinding.inflate(layoutInflater)
         binding.viewModel= viewModel
@@ -96,14 +99,26 @@ class LogupActivity : AppCompatActivity(),
                 }
             }
         })
-        bindingLogup.profilSpinner.isFocusableInTouchMode= true
+        /*bindingLogup.profilSpinner.isFocusableInTouchMode= true
         bindingLogup.profilSpinner.setOnFocusChangeListener{ _, hasFocus ->
             if (hasFocus) {
                 viewModel.indicateSpinnerState(2)
             } else {
                 viewModel.indicateSpinnerState(0)
             }
-        }
+        }*/
+
+        val dows = arrayOf(
+            "Lunes",
+            "Martes",
+            "Miercoles",
+            "Jueves",
+            "Viernes",
+            "Sabado",
+            "Domingo"
+        )
+        val adapter = ArrayAdapter<String>(this, R.layout.spinner_item, dows)
+        my_spinner_dropdown.setAdapter(adapter)
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
@@ -261,5 +276,14 @@ class LogupActivity : AppCompatActivity(),
 
     //---------------------------------------------------------------------------------
 
+    override fun onResume() {
+        super.onResume()
 
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        logger.debug("......................(${areasInputLayout.width}, ${areasInputLayout.height})")
+        logger.debug("++++++++++++++++++++++(${mailInputLayout.width}, ${mailInputLayout.height})")
+    }
 }

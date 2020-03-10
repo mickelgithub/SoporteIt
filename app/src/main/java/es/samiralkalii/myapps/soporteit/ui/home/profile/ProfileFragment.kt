@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
-import es.samiralkalii.myapps.soporteit.ui.GlobalState
 import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog

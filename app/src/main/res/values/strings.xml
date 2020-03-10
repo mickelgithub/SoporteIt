@@ -3,6 +3,7 @@
     <string name="name">Nombre</string>
     <string name="mail">Email</string>
     <string name="password">Contraseña</string>
+    <string name="retype_password">Repetir Contraseña</string>
     <string name="register">Registrarse</string>
     <string name="logIn">Acceder</string>
     <string name="registration">Darse de alta</string>
@@ -86,7 +87,6 @@
     <string name="done">Terminar</string>
     <string name="internal">Interno</string>
     <string name="external">Externo</string>
-
 
 
     <string-array name="profile_array">
