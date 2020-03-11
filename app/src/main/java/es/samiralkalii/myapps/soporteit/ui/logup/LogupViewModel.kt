@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.net.Uri
+import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,13 +25,24 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 
+
 private const val CHOOSE_PROFILE= "Elige tu perfil"
 
 class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
-    val user= User()
+    //val user= User()
+
+    var name= ""
+    var email= ""
+    var password= ""
+    var passwordConfirmation= ""
+    var area= ""
+    var department= ""
+    var localProfileImage= ""
+
+    private lateinit var user: User
 
     private val _logupState= MutableLiveData<Event<ScreenState<LogupState>>>()
     val logupState: LiveData<Event<ScreenState<LogupState>>>
@@ -60,6 +72,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val passwordError: LiveData<Int?>
         get()= _passwordError
 
+    private val _confirmationPasswordError= MutableLiveData<Int?>()
+    val confirmationPasswordError: LiveData<Int?>
+        get()= _confirmationPasswordError
+
     private val _spinnerState= MutableLiveData<Int>(0)
     val spinnerState: LiveData<Int>
         get()= _spinnerState
@@ -67,6 +83,22 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     private val _loginOrLogUp= MutableLiveData<Int>(0)
     val loginOrLogUp: LiveData<Int>
         get()= _loginOrLogUp
+
+    private val _showLoading= MutableLiveData<Boolean>(true)
+    val showLoading: LiveData<Boolean>
+        get() = _showLoading
+
+    private val _departments= MutableLiveData<String>()
+    val deparments: LiveData<String>
+    get() = _departments
+
+    private val _areas= MutableLiveData<String>()
+    val areas: LiveData<String>
+        get() = _areas
+
+    init {
+        Handler().postDelayed({_showLoading.value= false}, 3000)
+    }
 
     private fun clearErrorsLogUp() {
         _nameError.value= null
@@ -141,12 +173,16 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         clearErrorsLogUp()
 
-        if (user.name.isBlank() || user.name.length< 4) {
+        if (name.isBlank() || name.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error
-        } else if (user.email.isBlank()) {
+        } else if (email.isBlank()) {
             _emailError.value = R.string.email_incorrect_message_error
-        } else if (user.password.isBlank()) {
+        } else if (password.isBlank()) {
             _passwordError.value = R.string.password_incorrect_logup_message_error
+        } else if (passwordConfirmation.isBlank()) {
+            _confirmationPasswordError.value = R.string.password_incorrect_logup_message_error
+        } else if (passwordConfirmation.isNotBlank() && password.isNotBlank() && password!= passwordConfirmation) {
+            _confirmationPasswordError.value = R.string.passwords_not_equals_logup_message_error
         } else if (user.profile.isBlank() || user.profile== CHOOSE_PROFILE) {
             _spinnerState.value= 1
         } else {

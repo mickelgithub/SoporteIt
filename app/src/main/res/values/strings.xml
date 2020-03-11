@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SoporteIt</string>
-    <string name="name">Nombre</string>
+    <string name="name">Nombre Completo</string>
     <string name="mail">Email</string>
     <string name="password">Contraseña</string>
     <string name="retype_password">Repetir Contraseña</string>
@@ -24,12 +24,14 @@
     <string name="email_incorrect_message_error">Email incorrecto</string>
     <string name="user_not_exist_message_error">No existe el usuario</string>
     <string name="password_incorrect_logup_message_error">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="passwords_not_equals_logup_message_error">Las contraseñas deben coincidir</string>
     <string name="password_incorrect_login_message_error">La contraseña es incorrecta</string>
     <string name="user_collision">Ya existe este usuario!!!</string>
     <string name="no_internet_connection">Error de conexion, comprueba el acceso a Internet</string>
     <string name="not_controled_error">Error no controlado</string>
     <string name="team_already_exist">No se puede crear el equipo porque ya existe</string>
     <string name="already_logged_up">Si ya estas registrado, haz click</string>
+    <string name="wait_for_data">Espere...</string>
     <string name="firebase_api_no_available">No tienes instalado el api de google</string>
     <string name="value_mandatory">El valor es obligatorio</string>
     <string name="user_not_exist">El usuario no existe</string>
@@ -87,6 +89,8 @@
     <string name="done">Terminar</string>
     <string name="internal">Interno</string>
     <string name="external">Externo</string>
+    <string name="choose_area">Eligir el Area</string>
+    <string name="choose_department">Eligir el Departamento</string>
 
 
     <string-array name="profile_array">

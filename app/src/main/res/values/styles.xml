@@ -39,11 +39,22 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
+    <style name="GeneralInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
+        <item name="shapeAppearance">@style/rounded_text_field</item>
+    </style>
+
+    <style name="PasswordInputLayoutStyle" parent="GeneralInputLayoutStyle">
+        <item name="passwordToggleEnabled">true</item>
+    </style>
 
 
     <style name="rounded_text_field" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">24dp</item>
     </style>
 
     <style name="AppBottomSheetDialogTheme"
@@ -106,13 +117,6 @@
 
     <style name="AppTheme.ExposedDropdownMenu"
         parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-        <!-- color of box ONLY, not dropdown -->
-
-
-
-
-        <!-- Gain access to additional styling for the child AutoCompleteTextView,
-             which includes this spinner's dropdown/popup menu -->
         <item name="materialThemeOverlay">@null</item>
     </style>
 
@@ -123,12 +127,6 @@
         <!-- background color of dropdown (popup) items -->
         <item name="colorSurface">@color/white</item>
         <item name="boxStrokeColor">@color/mtrl_outlined_stroke_color</item>
-        <!--
-         When this overlay is applied, the AutoCompleteTextView
-         loses padding. Luckily, we can restore it by defining
-         a style that should be applied to all AutoCompletTextView(s)
-         in this theme/overlay
-         -->
         <item name="autoCompleteTextViewStyle">@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle</item>
     </style>
 

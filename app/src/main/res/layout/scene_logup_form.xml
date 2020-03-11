@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="es.samiralkalii.myapps.soporteit.R" />
         <variable
             name="viewModel"
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel" />
@@ -15,11 +16,11 @@
     </data>
 
     <ScrollView
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".ui.logup.LogupActivity">
@@ -28,19 +29,214 @@
                 android:id="@+id/profile_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_marginTop="32dp"
-                android:src="@drawable/profile"
-                app:imgsrc="@{viewModel.imageProfile}"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp"
+                android:layout_marginTop="40dp"
                 android:onClick="@{()-> activity.onImageProfileClick()}"
+                android:src="@drawable/profile"
+                app:civ_border_color="@color/colorPrimaryDark"
+                app:civ_border_width="2dp"
+                app:imgsrc="@{viewModel.imageProfile}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name_input_layout"
+                style="@style/GeneralInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                app:error="@{viewModel.nameError}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_image"
+                app:startIconDrawable="@drawable/ic_person">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:inputType="textPersonName"
+                    android:nextFocusDown="@+id/email"
+                    android:text="@={viewModel.name}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/mail_input_layout"
+                style="@style/GeneralInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                app:error="@{viewModel.emailError}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
+                app:startIconDrawable="@drawable/ic_mail">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mail"
+                    android:inputType="textEmailAddress"
+                    android:nextFocusDown="@+id/password"
+                    android:text="@={viewModel.email}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/pass_input_layout"
+                style="@style/PasswordInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                app:error="@{viewModel.passwordError}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mail_input_layout"
+                app:startIconDrawable="@drawable/ic_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:nextFocusDown="@+id/password_confirmation"
+                    android:text="@={viewModel.password}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/pass_confirmation_input_layout"
+                style="@style/PasswordInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                app:error="@{viewModel.confirmationPasswordError}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pass_input_layout"
+                app:startIconDrawable="@drawable/ic_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_confirmation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/retype_password"
+                    android:inputType="textPassword"
+                    android:text="@={viewModel.passwordConfirmation}"
+                    android:imeOptions="actionDone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loading_areas"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="@+id/areas_input_layout"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/areas_input_layout"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:visible="@{viewModel.showLoading}"
+                app:lottie_rawRes="@raw/loader" />
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/areas_input_layout"
+                style="@style/AppTheme.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/loading_areas"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pass_confirmation_input_layout"
+                app:shapeAppearance="@style/rounded_text_field"
+                app:startIconDrawable="@drawable/ic_area">
+
+                <AutoCompleteTextView
+                    android:id="@+id/areas_dropdown"
+                    style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_area }"
+                    android:nextFocusDown="@+id/departments_dropdown" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loading_depts"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="@+id/departments_input_layout"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/departments_input_layout"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:visible="@{viewModel.showLoading}"
+                app:lottie_rawRes="@raw/loader" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/departments_input_layout"
+                style="@style/AppTheme.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/loading_depts"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/areas_input_layout"
+                app:shapeAppearance="@style/rounded_text_field"
+                app:startIconDrawable="@drawable/ic_group">
+
+                <AutoCompleteTextView
+                    android:id="@+id/departments_dropdown"
+                    style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    app:data="@{viewModel.department}"
+                    android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_department }" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:onClick="@{()-> viewModel.onLogupClick()}"
+                android:text="@string/register"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/departments_input_layout" />
+
             <TextView
-                android:id="@+id/alreadyLoggedUp"
+                android:id="@+id/already_loggedup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -63,156 +259,13 @@
                 android:onClick="@{()-> viewModel.onAlreadyLoggedUpClick()}"
                 android:text="@string/her"
                 android:padding="6dp"
-                android:textColor="#000000"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBaseline_toBaselineOf="@id/alreadyLoggedUp"
+                app:layout_constraintBaseline_toBaselineOf="@id/already_loggedup"
                 tools:text="@string/her"
                 android:focusable="true" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                app:startIconDrawable="@drawable/ic_person"
-                app:shapeAppearance="@style/rounded_text_field"
-                android:id="@+id/nameInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="64dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_image"
-                app:errorTextAppearance="@style/ErrorText"
-                app:error="@{viewModel.nameError}" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/name"
-                    android:inputType="textPersonName"
-                    android:nextFocusDown="@+id/email"
-                    android:text="@={viewModel.user.name}" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/mailInputLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                app:startIconDrawable="@drawable/ic_mail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                app:error="@{viewModel.emailError}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nameInputLayout"
-                app:errorTextAppearance="@style/ErrorText"
-                app:shapeAppearance="@style/rounded_text_field">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/mail"
-                    android:inputType="textEmailAddress"
-                    android:nextFocusDown="@+id/password"
-                    android:text="@={viewModel.user.email}" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                app:startIconDrawable="@drawable/ic_password"
-                app:shapeAppearance="@style/rounded_text_field"
-                android:id="@+id/passInputLayout"
-                app:error="@{viewModel.passwordError}"
-                app:passwordToggleEnabled="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:errorTextAppearance="@style/ErrorText"
-                app:layout_constraintTop_toBottomOf="@+id/mailInputLayout">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/password"
-                    android:inputType="textPassword"
-                    android:text="@={viewModel.user.password}"
-                    android:nextFocusDown= "@+id/profil_spinner"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/retypePassInputLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                app:error="@{viewModel.passwordError}"
-                app:errorTextAppearance="@style/ErrorText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passInputLayout"
-                app:passwordToggleEnabled="true"
-                app:shapeAppearance="@style/rounded_text_field"
-                app:startIconDrawable="@drawable/ic_password">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/retypePassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/retype_password"
-                    android:inputType="textPassword"
-                    android:nextFocusDown="@+id/profil_spinner"
-                    android:text="@={viewModel.user.password}" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/areasInputLayout"
-                app:startIconDrawable="@drawable/ic_group"
-                style="@style/AppTheme.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:shapeAppearance="@style/rounded_text_field"
-                app:layout_constraintTop_toBottomOf="@+id/retypePassInputLayout">
-
-                <AutoCompleteTextView
-                    style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
-                    android:id="@+id/my_spinner_dropdown"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Elige el area"
-                    android:editable="false" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="54dp"
-                android:onClick="@{()-> viewModel.onLogupClick()}"
-                android:text="@string/register"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/areasInputLayout" />
 
             <!--<FrameLayout
                 android:id="@+id/frameLayoutProfileSpinner"

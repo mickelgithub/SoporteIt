@@ -16,7 +16,7 @@
         android:fadingMode="fade_in">
 
         <targets>
-            <target android:targetId="@id/nameInputLayout" />
+            <target android:targetId="@id/name_input_layout" />
         </targets>
     </fade>
 

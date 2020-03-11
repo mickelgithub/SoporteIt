@@ -118,7 +118,7 @@ class LogupActivity : AppCompatActivity(),
             "Domingo"
         )
         val adapter = ArrayAdapter<String>(this, R.layout.spinner_item, dows)
-        my_spinner_dropdown.setAdapter(adapter)
+        areas_dropdown.setAdapter(adapter)
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
@@ -134,7 +134,7 @@ class LogupActivity : AppCompatActivity(),
             when (screenState.renderState) {
                 is LoginState.LoginOk -> {
                     logger.debug("Login correcto, goto Home")
-                    if (viewModel.user.localProfileImage.isNotBlank()) {
+                    if (viewModel.localProfileImage.isNotBlank()) {
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         profile_image.startAnimation(shake)
                     }
@@ -283,7 +283,7 @@ class LogupActivity : AppCompatActivity(),
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        logger.debug("......................(${areasInputLayout.width}, ${areasInputLayout.height})")
-        logger.debug("++++++++++++++++++++++(${mailInputLayout.width}, ${mailInputLayout.height})")
+        logger.debug("......................(${areas_input_layout.width}, ${areas_input_layout.height})")
+        logger.debug("++++++++++++++++++++++(${mail_input_layout.width}, ${mail_input_layout.height})")
     }
 }

@@ -98,6 +98,7 @@ fun Spinner.bindEntries(opcion: String, value: String?) {
     this.setSelection(itemSelectedIndex)
 }
 
+
 @InverseBindingAdapter(attribute = "value", event="valueAttrChanged")
 fun Spinner.getValue(): String {
     return this.selectedItem as String
