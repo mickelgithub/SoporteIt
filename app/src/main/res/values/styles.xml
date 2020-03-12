@@ -120,16 +120,6 @@
         <item name="materialThemeOverlay">@null</item>
     </style>
 
-    <!-- customization of the material theme for use as
-         an overlay for the ExposedDropdownMenu style  -->
-    <style name="AppTheme.ExposedDropdownMenu.MaterialThemeOverlay"
-        parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <!-- background color of dropdown (popup) items -->
-        <item name="colorSurface">@color/white</item>
-        <item name="boxStrokeColor">@color/mtrl_outlined_stroke_color</item>
-        <item name="autoCompleteTextViewStyle">@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle</item>
-    </style>
-
     <!-- style the AutoCompleteTextView of our material spinner -->
     <style name="AppTheme.ExposedDropdownMenu.AutoCompleteStyle">
         <!-- restore padding to sanity -->

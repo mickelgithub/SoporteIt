@@ -108,7 +108,7 @@ class LogupActivity : AppCompatActivity(),
             }
         }*/
 
-        val dows = arrayOf(
+        /*val dows = arrayOf(
             "Lunes",
             "Martes",
             "Miercoles",
@@ -118,7 +118,11 @@ class LogupActivity : AppCompatActivity(),
             "Domingo"
         )
         val adapter = ArrayAdapter<String>(this, R.layout.spinner_item, dows)
-        areas_dropdown.setAdapter(adapter)
+        areas_dropdown.setAdapter(adapter)*/
+
+        viewModel.area.observe(this, Observer {
+            logger.debug("el valor de area es ")
+        })
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {

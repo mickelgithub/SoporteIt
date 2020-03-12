@@ -11,12 +11,14 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.common.AreasDepartments
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.LoginUserCase
 import es.samiralkalii.myapps.usecase.authlogin.LogupUseCase
+import es.samiralkalii.myapps.usecase.common.GetAreasDepartmentsUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -28,7 +30,7 @@ import java.io.File
 
 private const val CHOOSE_PROFILE= "Elige tu perfil"
 
-class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase) : ViewModel() {
+class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase, private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
@@ -38,9 +40,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     var email= ""
     var password= ""
     var passwordConfirmation= ""
-    var area= ""
     var department= ""
     var localProfileImage= ""
+
+    private lateinit var areasDepartments: AreasDepartments
 
     private lateinit var user: User
 
@@ -88,16 +91,30 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val showLoading: LiveData<Boolean>
         get() = _showLoading
 
-    private val _departments= MutableLiveData<String>()
-    val deparments: LiveData<String>
+    private val _departments= MutableLiveData<List<String>>()
+    val deparments: LiveData<List<String>>
     get() = _departments
 
-    private val _areas= MutableLiveData<String>()
-    val areas: LiveData<String>
+    private val _areas= MutableLiveData<List<String>>()
+    val areas: LiveData<List<String>>
         get() = _areas
 
+    private val _area= MutableLiveData<String>()
+    val area: String?= ""
+
     init {
-        Handler().postDelayed({_showLoading.value= false}, 3000)
+
+        val errorHandler = CoroutineExceptionHandler { _, error ->
+            logger.error(error.toString(), error)
+        }
+
+        viewModelScope.launch(errorHandler) {
+            areasDepartments= async(Dispatchers.IO) {
+                getAreasDepartmentsUseCase()
+            }.await()
+            _showLoading.value= false
+            _areas.value= areasDepartments.areasDepartments.keys.toList()
+        }
     }
 
     private fun clearErrorsLogUp() {

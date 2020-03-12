@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.di
 
 import es.samiralkalii.myapps.usecase.authlogin.*
+import es.samiralkalii.myapps.usecase.common.GetAreasDepartmentsUseCase
 import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
 import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
@@ -30,4 +31,5 @@ val useCaseModule= module {
     factory { UpdateNotificationStateUseCase(get()) }
     factory { DeleteNotificationUseCase(get()) }
     factory { ReplyNotificationUseCase(get()) }
+    factory { GetAreasDepartmentsUseCase(get()) }
 }

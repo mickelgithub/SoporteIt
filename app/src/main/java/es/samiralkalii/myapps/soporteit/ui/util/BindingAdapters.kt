@@ -23,12 +23,49 @@ import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
+import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
 
 @BindingAdapter("visible")
 fun View.bindVisible(visible: Boolean?) {
     visibility= if (visible== true) View.VISIBLE else View.GONE
 }
 
+@BindingAdapter("data")
+fun AutoCompleteTextView.bindData(data: List<String>?) {
+    if (data!= null && !data.isEmpty()) {
+        val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, data)
+        setAdapter(adapter)
+    }
+}
+
+@BindingAdapter("valueAttrChanged")
+fun AutoCompleteTextView.setListeners(inverseBindingListener: InverseBindingListener?) {
+
+    if (inverseBindingListener== null) {
+        onItemClickListener= null
+    } else {
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                if (tag != position) {
+                    inverseBindingListener.onChange()
+
+                    if ((listSelection as String) != context.resources.getString(R.string.choose_profile)) {
+
+                        //viewmodel?.updateShowSaveMenu()
+                        hideSoftKeybord(this@setListeners.context)
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+}
+
+@InverseBindingAdapter(attribute = "value", event="valueAttrChanged")
+fun AutoCompleteTextView.getValue(): String {
+    return this.listSelection as String
+}
 
 @BindingAdapter("imgsrc")
 fun ImageView.bindImgSrc(imageUri: Uri?) {
