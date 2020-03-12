@@ -23,7 +23,6 @@ import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
-import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
 
 @BindingAdapter("visible")
 fun View.bindVisible(visible: Boolean?) {
