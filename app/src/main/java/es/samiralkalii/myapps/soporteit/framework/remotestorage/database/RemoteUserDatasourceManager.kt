@@ -68,7 +68,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     }
 
     override suspend fun updateImageProfile(user: User) {
-        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_LOCAL_PROFILE_IMAGE to user.localProfileImage,
+        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_LOCAL_PROFILE_IMAGE to user.profileImage,
             KEY_REMOTE_PROFILE_IMAGE to user.remoteProfileImage)).await()
     }
 
@@ -77,18 +77,18 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         val result= fstore.collection(USERS_REF).document(user.id).get().await()
         if (result!= null && result.data!= null) {
             val data= result.data!!
-            user.name= (data[KEY_NAME] as String?) ?: ""
-            user.localProfileImage= (data[KEY_LOCAL_PROFILE_IMAGE] as String?) ?: ""
+            /*user.name= (data[KEY_NAME] as String?) ?: ""
+            user.profileImage= (data[KEY_LOCAL_PROFILE_IMAGE] as String?) ?: ""
             user.remoteProfileImage= (data[KEY_REMOTE_PROFILE_IMAGE] as String?) ?: ""
-            user.emailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
+            user.isEmailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
             user.profile= (data[KEY_PROFILE] as String?) ?: ""
-            user.bossVerification= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
+            user.bossVerified= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
             user.team= (data[KEY_TEAM] as String?) ?: ""
             user.teamId= (data[KEY_TEAM_ID] as String?) ?: ""
             user.teamInvitationState= Reply.valueOf(data[KEY_TEAM_INVITATION_STATE] as String)
             user.holidayDaysPerYear= (data[KEY_HOLIDAY_DAYS_PER_YEAR] as Long?) ?: 22L
             user.internalEmployee= (data[KEY_INTERNAL_EMPLOYEE] as Boolean?) ?: false
-            user.boss= (data[KEY_BOSS] as String?) ?: ""
+            user.isBoss= (data[KEY_BOSS] as String?) ?: ""*/
         }
     }
 

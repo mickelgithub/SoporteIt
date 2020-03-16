@@ -30,16 +30,16 @@ fun User.toBundle()= Bundle().apply {
     putString(KEY_EMAIL, email)
     putString(KEY_NAME, name)
     putString(KEY_ID, id)
-    putString(KEY_LOCAL_PROFILE_IMAGE, localProfileImage)
+    putString(KEY_LOCAL_PROFILE_IMAGE, profileImage)
     putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
-    putLong(KEY_CREATION_DATE, creationDate)
-    putBoolean(KEY_EMAIL_VERIFIED, emailVerified)
+    putLong(KEY_CREATION_DATE, createdAt)
+    putBoolean(KEY_EMAIL_VERIFIED, isEmailVerified)
     putString(KEY_PROFILE, profile)
-    putString(KEY_BOSS_VERIFICATION, bossVerification)
-    putString(KEY_TEAM, team)
-    putString(KEY_TEAM_ID, teamId)
-    putString(KEY_BOSS, boss)
-    putString(KEY_TEAM_INVITATION_STATE, teamInvitationState.toString())
+    //putString(KEY_BOSS_VERIFICATION, bossVerified)
+    //putString(KEY_TEAM, team)
+    //putString(KEY_TEAM_ID, teamId)
+    //putString(KEY_BOSS, isBoss)
+    //putString(KEY_TEAM_INVITATION_STATE, teamInvitationState.toString())
     putLong(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDaysPerYear)
     putBoolean(KEY_INTERNAL_EMPLOYEE, internalEmployee)
     putString(KEY_MESSAGING_TOKEN, messagingToken)
@@ -49,16 +49,16 @@ fun Bundle.toUser()= User(
     email= getString(KEY_EMAIL, ""),
     name = getString(KEY_NAME, ""),
     id= getString(KEY_ID, ""),
-    localProfileImage = getString(KEY_LOCAL_PROFILE_IMAGE, ""),
+    profileImage = getString(KEY_LOCAL_PROFILE_IMAGE, ""),
     remoteProfileImage = getString(KEY_REMOTE_PROFILE_IMAGE, ""),
-    creationDate = getLong(KEY_CREATION_DATE, 0L),
-    emailVerified = getBoolean(KEY_EMAIL_VERIFIED, false),
+    createdAt = getLong(KEY_CREATION_DATE, 0L),
+    isEmailVerified = getBoolean(KEY_EMAIL_VERIFIED, false),
     profile = getString(KEY_PROFILE, ""),
-    bossVerification = getString(KEY_BOSS_VERIFICATION, ""),
-    team = getString(KEY_TEAM, ""),
-    teamId = getString(KEY_TEAM_ID, ""),
-    boss = getString(KEY_BOSS, ""),
-    teamInvitationState = Reply.valueOf(getString(KEY_TEAM_INVITATION_STATE, Reply.NONE.toString())),
+    //bossVerified = getString(KEY_BOSS_VERIFICATION, ""),
+    //team = getString(KEY_TEAM, ""),
+    //teamId = getString(KEY_TEAM_ID, ""),
+    //isBoss = getString(KEY_BOSS, ""),
+    //teamInvitationState = Reply.valueOf(getString(KEY_TEAM_INVITATION_STATE, Reply.NONE.toString())),
     holidayDaysPerYear = getLong(KEY_HOLIDAY_DAYS_PER_YEAR, User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS),
     internalEmployee = getBoolean(KEY_INTERNAL_EMPLOYEE, false),
     messagingToken = getString(KEY_MESSAGING_TOKEN, "")
@@ -66,4 +66,4 @@ fun Bundle.toUser()= User(
 )
 
 val User.teamCreated
-    get() = this.team.isNotBlank()
+    get() = true//this.team.isNotBlank()

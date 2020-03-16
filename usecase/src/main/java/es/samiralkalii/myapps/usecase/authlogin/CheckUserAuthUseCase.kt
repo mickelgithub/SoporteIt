@@ -26,11 +26,11 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
 
     suspend operator fun invoke(): Result {
         val user = preferenceRepository.getUser()
-        val emailVerified= user.emailVerified
+        val emailVerified= user.isEmailVerified
         val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
         if (loggedIn) {
             logger.debug("active session...")
-            if (!emailVerified && user.emailVerified) {
+            if (!emailVerified && user.isEmailVerified) {
                 //we have to update this informacion en preferences
                 //and update it in firebase database
                 updateEmailVerified(user)
@@ -44,7 +44,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
                 //we have to login
                 logger.debug("expired session, login taking data from preferences...")
                 remoteUserAuthRepository.signInUser(user, false)
-                if (!emailVerified && user.emailVerified) {
+                if (!emailVerified && user.isEmailVerified) {
                     //we have to update this informacion en preferences
                     //and update it in firebase database
                     updateEmailVerified(user)

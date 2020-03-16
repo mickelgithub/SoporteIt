@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.title= getString(R.string.app_name)
 
-        if (!viewModel.user.emailVerified) {
+        if (!viewModel.user.isEmailVerified) {
             bottomNav.visibility= View.GONE
             finishMeInAwhile(5000L)
         } else {
@@ -107,18 +107,18 @@ class HomeActivity : AppCompatActivity() {
             SplashActivity.Companion.GOTO.HOME -> {
                 logger.debug("Mostramos el home...")
                 if (supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)== null) {
-                    if (viewModel.user.isBoss() && !viewModel.user.teamCreated) {
+                    if (viewModel.user.isBoss && !viewModel.user.teamCreated) {
                         supportActionBar?.title =
                             resources.getString(R.string.team_no_created_title)
                     } else {
-                        if (viewModel.user.isBoss()) {
-                            supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
+                        if (viewModel.user.isBoss) {
+                            //supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                         } else {
-                            if (viewModel.user.teamInvitationState== Reply.OK) {
+                            /*if (viewModel.user.teamInvitationState== Reply.OK) {
                                 supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                             } else {
                                 supportActionBar?.title= resources.getString(R.string.team_created_title, "")
-                            }
+                            }*/
                         }
                     }
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeFragment.newInstance(viewModel.user.toBundle()), HomeFragment::class.java.simpleName).commit()
@@ -146,7 +146,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun finishMeInAwhile(delay: Long) {
-        if (!viewModel.user.emailVerified) {
+        if (!viewModel.user.isEmailVerified) {
             Handler().postDelayed({
                 finish()
             }, delay)

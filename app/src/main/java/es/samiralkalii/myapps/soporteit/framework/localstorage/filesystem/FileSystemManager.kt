@@ -17,7 +17,7 @@ class FileSystemManager(val context: Context): IFileSystemManager {
     private val logger = LoggerFactory.getLogger(FileSystemManager::class.java)
 
     override suspend fun deleteImageProfile(user: User) {
-        val internalFile= File(context.filesDir, "${PROFILE_IMAGE_NAME}.${user.localProfileImage.fileExtension()}")
+        val internalFile= File(context.filesDir, "${PROFILE_IMAGE_NAME}.${user.profileImage.fileExtension()}")
         if (internalFile.exists()) {
             internalFile.delete()
         }
@@ -37,7 +37,7 @@ class FileSystemManager(val context: Context): IFileSystemManager {
             context.openFileOutput(internalFile.name, Context.MODE_PRIVATE).use {
                 it.write(input.readBytes())
             }
-            user.localProfileImage= internalFile.absolutePath
+            //user.profileImage= internalFile.absolutePath
         }
         return internalFile
     }

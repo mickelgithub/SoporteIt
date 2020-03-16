@@ -16,6 +16,7 @@ open class MyDialog: BottomSheetDialogFragment() {
         object ShowDialog: DialogState()
         object ShowLoading: DialogState()
         object ShowSuccess: DialogState()
+        object DismissInmediatly: DialogState()
         class ShowMessage(val message: Int): DialogState()
 
     }

@@ -29,9 +29,9 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         logger.debug("Vamos a registar el usuario ${user.email}")
 
         if (TEAM_MANAGER_PROFILE== user.profile) {
-            user.bossVerification= PENDING
-            user.holidayDaysPerYear= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
-            user.internalEmployee= true
+            //**user.bossVerified= PENDING
+            //**user.holidayDaysPerYear= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
+            //**user.internalEmployee= true
         }
 
         //we get user.id and user.creationDate
@@ -46,7 +46,7 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         }
         //we have to add the user to the database
         remoteUserRepository.addUser(user)
-        user.messagingToken= preferenceRepository.getMessagingToken()
+        //**user.messagingToken= preferenceRepository.getMessagingToken()
         remoteUserRepository.updateMessagingToken(user.messagingToken)
         preferenceRepository.saveUser(user)
         remoteUserAuthRepository.sendEmailVerification(user)

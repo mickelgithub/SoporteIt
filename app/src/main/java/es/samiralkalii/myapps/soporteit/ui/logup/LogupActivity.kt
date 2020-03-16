@@ -21,6 +21,7 @@ import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
+import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog.Companion.DIALOG_DISMISS_DELAY
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
@@ -34,13 +35,25 @@ class LogupActivity : AppCompatActivity(),
     private val viewModel: LogupViewModel by viewModel()
     private lateinit var binding: ActivityLogupBinding
     private lateinit var bindingLogup: SceneLogupFormBinding
-    private lateinit var bindingLogin: SceneLoginFormBinding
+    private val bindingLogin: SceneLoginFormBinding by lazy {
+        initLoginBinding()
+    }
+
+    private fun initLoginBinding(): SceneLoginFormBinding {
+        val bindingLogin= SceneLoginFormBinding.inflate(layoutInflater, container, false)
+        bindingLogin.viewModel= viewModel
+        bindingLogin.lifecycleOwner= this
+        bindingLogin.activity= this
+        scene2= Scene(container, bindingLogin.root)
+        return bindingLogin
+    }
+
+
     private lateinit var scene1: Scene
     private lateinit var scene2: Scene
     private lateinit var transitionMngLogUpToLogIn: Transition
 
     private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,12 +72,6 @@ class LogupActivity : AppCompatActivity(),
 
         scene1= Scene(container, bindingLogup.root)
         scene1.enter()
-
-        bindingLogin= SceneLoginFormBinding.inflate(layoutInflater, container, false)
-        bindingLogin.viewModel= viewModel
-        bindingLogin.lifecycleOwner= this
-        bindingLogin.activity= this
-        scene2= Scene(container, bindingLogin.root)
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
@@ -103,7 +110,19 @@ class LogupActivity : AppCompatActivity(),
             when (it) {
                 MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(supportFragmentManager)
                 MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                is MyDialog.DialogState.ShowMessage -> LoadingDialog.showMessageDialogForAwhile(supportFragmentManager, it.message)
+                MyDialog.DialogState.DismissInmediatly -> {
+                    LoadingDialog.dismissMeInmediatly()
+                    Handler().postDelayed({
+                        viewModel.updateShowLoadingAreasDepartments(false)
+                    }, 500)
+                }
+                is MyDialog.DialogState.ShowMessage -> {
+                    LoadingDialog.dismissMe(it.message)
+                    Handler().postDelayed({
+                        viewModel.updateShowLoadingAreasDepartments(false)
+                    }, DIALOG_DISMISS_DELAY+ 500)
+
+                }
             }
         })
 
@@ -118,7 +137,7 @@ class LogupActivity : AppCompatActivity(),
             when (screenState.renderState) {
                 is LoginState.LoginOk -> {
                     logger.debug("Login correcto, goto Home")
-                    if (viewModel.localProfileImage.isNotBlank()) {
+                    if (viewModel.imageProfile.value.toString().isNotBlank()) {
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         profile_image.startAnimation(shake)
                     }
@@ -260,14 +279,5 @@ class LogupActivity : AppCompatActivity(),
 
     //---------------------------------------------------------------------------------
 
-    override fun onResume() {
-        super.onResume()
 
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        logger.debug("......................(${areas_input_layout.width}, ${areas_input_layout.height})")
-        logger.debug("++++++++++++++++++++++(${mail_input_layout.width}, ${mail_input_layout.height})")
-    }
 }

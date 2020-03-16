@@ -12,10 +12,10 @@ import es.samiralkalii.myapps.soporteit.ui.util.Event
 import org.slf4j.LoggerFactory
 
 
-fun User.isBoss()= this.bossVerification== "S"
+//fun User.isBoss()= this.bossVerified== "S"
 fun User.isProfilePendingToInput(context: Context)= this.profile== "" ||this.profile== context.resources.getString(
     R.string.choose_profile)
-fun User.isVerificationPending()= this.bossVerification== "P"
+//fun User.isVerificationPending()= this.bossVerified== "P"
 
 
 class HomeViewModel() : ViewModel() {
@@ -43,12 +43,12 @@ class HomeViewModel() : ViewModel() {
     fun publishUserAndGoto(userParam: User, gotoParam: Int) {
         gotoExtra= gotoParam
         user= userParam
-        _emailValidated.value= user.emailVerified
+        _emailValidated.value= user.isEmailVerified
         when {
-            (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") -> {
+            (gotoExtra== SplashActivity.GOTO_PROFILE && !user.bossVerified) -> {
                 _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
             }
-            (gotoExtra== SplashActivity.GOTO_PROFILE ||  user.bossVerification== "P") -> {
+            (gotoExtra== SplashActivity.GOTO_PROFILE ||  !user.bossVerified) -> {
                 _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
             }
             (gotoExtra== SplashActivity.GOTO_NOTIFICATIONS) -> {
@@ -74,21 +74,21 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun updateProfileImage(userParam: User) {
-        user.localProfileImage= userParam.localProfileImage
-        user.remoteProfileImage= userParam.remoteProfileImage
+        //user.profileImage= userParam.profileImage
+        //user.remoteProfileImage= userParam.remoteProfileImage
     }
 
     fun updateTeamCreated(user: User) {
-        this.user.team= user.team
-        this.user.teamId= user.teamId
+        //this.user.team= user.team
+        //this.user.teamId= user.teamId
     }
 
     fun updateProfile(userParam: User) {
-        user.profile= userParam.profile
+        //user.profile= userParam.profile
     }
 
     fun updateBossVerification(bossVerification: String) {
-        user.bossVerification= bossVerification
+        //user.bossVerified= bossVerification
     }
 
     fun updateGoto(gotoParam: SplashActivity.Companion.GOTO) {
@@ -96,12 +96,12 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun updateUser(user: User, reply: Reply) {
-        user.teamInvitationState= reply
+        //user.teamInvitationState= reply
         if (reply== Reply.KO) {
-            user.teamInvitationState= Reply.NONE
-            user.boss= ""
+            /*user.teamInvitationState= Reply.NONE
+            user.isBoss= ""
             user.team= ""
-            user.teamId= ""
+            user.teamId= ""*/
         }
     }
 

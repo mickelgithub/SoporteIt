@@ -53,9 +53,9 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
     fun publishUser(userParam: User) {
         user= userParam
-        logger.debug(user.localProfileImage+ "desde profileViewModelllll")
-        if (user.localProfileImage.isNotBlank()) {
-            _imageProfile.value= Uri.fromFile(File(user.localProfileImage))
+        logger.debug(user.profileImage+ "desde profileViewModelllll")
+        if (user.profileImage.isNotBlank()) {
+            _imageProfile.value= Uri.fromFile(File(user.profileImage))
         }
         currentProfile= user.profile
     }
@@ -67,13 +67,13 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
     fun updateImageProfile(imgUri: Uri?) {
         _imageProfile.value= imgUri
-        if (user.localProfileImage.isBlank() && imgUri!= null) {
+        if (user.profileImage.isBlank() && imgUri!= null) {
             imageChanged= true
             _showSaveMenu.value= true
-        } else if (!user.localProfileImage.isBlank() && imgUri== null) {
+        } else if (!user.profileImage.isBlank() && imgUri== null) {
             imageChanged= true
             _showSaveMenu.value = true
-        } else if (user.localProfileImage.isBlank() && imgUri== null) {
+        } else if (user.profileImage.isBlank() && imgUri== null) {
             imageChanged= false
             _showSaveMenu.value= false
         } else {
@@ -81,7 +81,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
                 val equals = async(Dispatchers.IO) {
                     compare2ImageProfileUseCase(
                         imgUri.toString(),
-                        user.localProfileImage
+                        user.profileImage
                     )
                 }.await()
                 imageChanged= !equals

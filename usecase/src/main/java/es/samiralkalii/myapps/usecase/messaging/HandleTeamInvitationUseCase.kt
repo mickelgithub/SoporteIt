@@ -20,17 +20,17 @@ class HandleTeamInvitationUseCase(private val notificationRepository: Notificati
 
     suspend operator fun invoke(user: User, reply: Reply, replyDescription: String, notifId: String) {
         if (reply== Reply.OK) {
-            user.teamInvitationState= reply
+            //user.teamInvitationState= reply
             remoteUserRepository.updateTeamInvitationState(user, reply)
             remoteTeamManagementRepository.addUserToTeam(user)
             remoteNotificationsRepository.replyNotification(user.id, notifId, reply, "")
             preferenceRepository.updateTeamInvitationState(reply)
         } else {
             //no se ha aceptado la invitacion
-            user.teamInvitationState= Reply.NONE
-            user.boss= ""
+            /*user.teamInvitationState= Reply.NONE
+            user.isBoss= ""
             user.team= ""
-            user.teamId= ""
+            user.teamId= ""*/
             remoteUserRepository.denyInvitationToTeam(user)
             remoteNotificationsRepository.replyNotification(user.id, notifId, reply, replyDescription)
             preferenceRepository.denyInvitationToTeam(user)

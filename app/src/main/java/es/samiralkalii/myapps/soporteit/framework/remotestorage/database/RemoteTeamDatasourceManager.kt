@@ -74,9 +74,9 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             senderName = sender.name,
             senderEmail = sender.email,
             senderProfileImage = sender.remoteProfileImage,
-            destination = destination.id,
-            team = sender.team,
-            teamId = sender.teamId
+            destination = destination.id
+            //team = sender.team,
+            //teamId = sender.teamId
         )
         fstore.runTransaction { _ ->
             val notifRef= fstore.collection(NOTIFICATION_REF).document()
@@ -99,8 +99,8 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun addUserToTeam(user: User) {
-        val refMembers= fstore.collection(TEAM_REF).document(user.teamId)
-        refMembers.update(MEMBERS_FIELD, FieldValue.arrayUnion(user.id))
+        /*val refMembers= fstore.collection(TEAM_REF).document(user.teamId)
+        refMembers.update(MEMBERS_FIELD, FieldValue.arrayUnion(user.id))*/
     }
 
 }

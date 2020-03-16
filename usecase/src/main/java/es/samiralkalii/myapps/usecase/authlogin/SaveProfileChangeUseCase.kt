@@ -12,45 +12,52 @@ class SaveProfileChangeUseCase(private val preferenceRepository: PreferenceRepos
                                private val remoteUserStorageRepository: RemoteUserStorageRepository,
                                private val fileSystemRepository: FileSystemRepository) {
 
-    private val logger= LoggerFactory.getLogger(SaveProfileChangeUseCase::class.java)
+    private val logger = LoggerFactory.getLogger(SaveProfileChangeUseCase::class.java)
 
 
-    suspend operator fun invoke(user: User, imageUri: String, imageChanged: Boolean, chooseYourProfile: String) {
+    suspend operator fun invoke(
+        user: User,
+        imageUri: String,
+        imageChanged: Boolean,
+        chooseYourProfile: String
+    ) {
         if (imageChanged) {
-            if (user.localProfileImage.isBlank() && imageUri.isNotBlank()) {
+            if (user.profileImage.isBlank() && imageUri.isNotBlank()) {
                 //profileImage added
-                val imageAdded= fileSystemRepository.copyFileFromExternalToInternal(user, imageUri)
-                user.localProfileImage= imageAdded.absolutePath
+                val imageAdded = fileSystemRepository.copyFileFromExternalToInternal(user, imageUri)
+                //**user.profileImage= imageAdded.absolutePath
                 remoteUserStorageRepository.saveProfileImage(user, imageAdded)
                 remoteUserRepository.updateImageProfile(user)
                 preferenceRepository.updateImageProfile(user)
-            } else if (user.localProfileImage.isNotBlank() && imageUri.isBlank()) {
+            } else if (user.profileImage.isNotBlank() && imageUri.isBlank()) {
                 //profileImage deleted
-                remoteUserStorageRepository.deleleProfileImage(user, user.localProfileImage)
+                remoteUserStorageRepository.deleleProfileImage(user, user.profileImage)
                 fileSystemRepository.deleteImageProfile(user)
-                user.localProfileImage= ""
-                user.remoteProfileImage= ""
+                //**user.profileImage= ""
+                //**user.remoteProfileImage= ""
                 remoteUserRepository.updateImageProfile(user)
                 preferenceRepository.updateImageProfile(user)
             } else {
                 //profileImage changed
-                val imageAdded= fileSystemRepository.copyFileFromExternalToInternal(user, imageUri)
-                val oldFileName= user.localProfileImage
-                user.localProfileImage= imageAdded.absolutePath
+                val imageAdded = fileSystemRepository.copyFileFromExternalToInternal(user, imageUri)
+                val oldFileName = user.profileImage
+                //**user.profileImage= imageAdded.absolutePath
                 remoteUserStorageRepository.deleleProfileImage(user, oldFileName)
                 remoteUserStorageRepository.saveProfileImage(user, imageAdded)
                 remoteUserRepository.updateImageProfile(user)
                 preferenceRepository.updateImageProfile(user)
             }
         }
+    }
+}
         //we check if the profile has been introduced
-        if (user.profile.isNotBlank() && user.profile!= chooseYourProfile && user.bossVerification== "N") {
-            user.bossVerification= ""
+        /*if (user.profile.isNotBlank() && user.profile!= chooseYourProfile && user.bossVerified== "N") {
+            //**user.bossVerified= ""
             remoteUserRepository.updateProfile(user.profile, user.id)
-            remoteUserRepository.updateBossVerification(user.bossVerification, user.id)
-            preferenceRepository.updateBossVerification(user.bossVerification)
+            //**remoteUserRepository.updateBossVerification(user.bossVerified, user.id)
+            //**preferenceRepository.updateBossVerification(user.bossVerified)
             preferenceRepository.updateProfile(user.profile)
 
         }
     }
-}
+}*/

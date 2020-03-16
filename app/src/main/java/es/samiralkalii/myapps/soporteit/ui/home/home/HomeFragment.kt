@@ -14,7 +14,6 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
-import es.samiralkalii.myapps.soporteit.ui.home.isBoss
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
@@ -75,7 +74,7 @@ class HomeFragment: Fragment(),
                 homeViewModel.updateTeamCreated(viewModel.user)
                 viewModel.updateDialogCreateState(MyDialog.DialogState.ShowSuccess)
                 Handler().postDelayed({
-                    (activity as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
+                    //(activity as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                     (activity as AppCompatActivity).invalidateOptionsMenu()
                 }, MyDialog.DIALOG_DISMISS_DELAY)
             }
@@ -113,7 +112,7 @@ class HomeFragment: Fragment(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        if (viewModel.user.isBoss()) {
+        if (viewModel.user.isBoss) {
             inflater.inflate(R.menu.menu_home_fragment, menu)
             if (viewModel.user.teamCreated) {
                 menu.findItem(R.id.menu_item_create_team).setVisible(false)

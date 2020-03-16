@@ -37,7 +37,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     var email= ""
     var password= ""
     var passwordConfirmation= ""
-    var localProfileImage= ""
 
     private lateinit var areasDepartments: AreasDepartments
 
@@ -75,9 +74,14 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val confirmationPasswordError: LiveData<Int?>
         get()= _confirmationPasswordError
 
-    private val _spinnerState= MutableLiveData<Int>(0)
-    val spinnerState: LiveData<Int>
-        get()= _spinnerState
+    private val _areaError= MutableLiveData<Int?>()
+    val areaError: LiveData<Int?>
+        get() = _areaError
+
+    private val _departmentError= MutableLiveData<Int?>()
+    val departmentError: LiveData<Int?>
+        get() = _departmentError
+
 
     private val _loginOrLogUp= MutableLiveData<Int>(0)
     val loginOrLogUp: LiveData<Int>
@@ -99,7 +103,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val department= MutableLiveData<String>()
 
     init {
-        logger.debug("Cargando las areas...")
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             var message= -1
@@ -113,14 +116,14 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                     message= R.string.not_controled_error
                 }
             }
-            _showLoading.value= false
             _progressVisible.value= MyDialog.DialogState.ShowMessage(message)
         }
         viewModelScope.launch(errorHandler) {
+            _progressVisible.value= MyDialog.DialogState.ShowLoading
             areasDepartments= async(Dispatchers.IO) {
                 getAreasDepartmentsUseCase()
             }.await()
-            _showLoading.value= false
+            _progressVisible.value= MyDialog.DialogState.DismissInmediatly
             _areas.value= areasDepartments.areasDepartments.keys.toList()
         }
     }
@@ -129,11 +132,9 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         _nameError.value= null
         _emailError.value= null
         _passwordError.value= null
-        _spinnerState.value= 0
-    }
-
-    fun indicateSpinnerState(state: Int) {
-        _spinnerState.value= state
+        _confirmationPasswordError.value= null
+        _areaError.value= null
+        _departmentError.value= null
     }
 
     private fun clearErrorsLogin() {
@@ -177,8 +178,8 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         viewModelScope.launch(errorHandler) {
             val result= async(Dispatchers.IO) {
                 val resultLoginIn= loginUserCase(user)
-                if (!user.localProfileImage.isBlank()) {
-                    _imageProfile.postValue(Uri.fromFile(File(user.localProfileImage)))
+                if (!user.profileImage.isBlank()) {
+                    _imageProfile.postValue(Uri.fromFile(File(user.profileImage)))
                 }
                 resultLoginIn
             }.await()
@@ -208,8 +209,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             _confirmationPasswordError.value = R.string.password_incorrect_logup_message_error
         } else if (passwordConfirmation.isNotBlank() && password.isNotBlank() && password!= passwordConfirmation) {
             _confirmationPasswordError.value = R.string.passwords_not_equals_logup_message_error
-        } else if (user.profile.isBlank() || user.profile== CHOOSE_PROFILE) {
-            _spinnerState.value= 1
+        } else if (area.value.isNullOrBlank()) {
+            _areaError.value = R.string.area_incorrect
+        } else if (department.value.isNullOrBlank()) {
+            _departmentError.value= R.string.department_incorrect
         } else {
             _progressVisible.value= MyDialog.DialogState.ShowLoading
             val errorHandler = CoroutineExceptionHandler { _, error ->
@@ -244,19 +247,28 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-                    logupUseCase(user, imageProfile.value?.toString() ?: "")
+                    val user= User(name= name, email = email, password = password,
+                        profileImage = _imageProfile.value?.toString() ?: "")
+
+
+                    //**logupUseCase(user, imageProfile.value?.toString() ?: "")
+
                 }.await()
                 _progressVisible.value = MyDialog.DialogState.ShowSuccess
                 when (result) {
-                    is LogupUseCase.Result.LoggedUpOk -> {
+                    /*is LogupUseCase.Result.LoggedUpOk -> {
                         _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                     }
                     is LogupUseCase.Result.LoggedUpAsManagerTeamOk -> {
                         _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
-                    }
+                    }*/
                 }
             }
         }
+    }
+
+    fun updateShowLoadingAreasDepartments(show: Boolean) {
+        _showLoading.value= show
     }
 
     fun onLogupClick()= logupUser()

@@ -20,10 +20,10 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
         if (fbAuth.currentUser!= null) {
             val currentUser= fbAuth.currentUser as FirebaseUser
             if (user!= User.EMPTY) {
-                if (!user.emailVerified) {
+                if (!user.isEmailVerified) {
                     currentUser.reload().await()
                     if (currentUser.isEmailVerified) {
-                        user.emailVerified= true
+                        //user.isEmailVerified= true
                     }
                 }
             }
@@ -37,19 +37,19 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
         if (authResult.user!= null) {
             val firebaseUser = authResult.user as FirebaseUser
             if (firstTime) {
-                user.id = firebaseUser.uid
-                user.creationDate = firebaseUser.metadata?.creationTimestamp ?: 0L
+                /*user.id = firebaseUser.uid
+                user.createdAt = firebaseUser.metadata?.creationTimestamp ?: 0L*/
             }
-            if (!user.emailVerified) {
-                user.emailVerified= firebaseUser.isEmailVerified
+            if (!user.isEmailVerified) {
+                //user.isEmailVerified= firebaseUser.isEmailVerified
             }
         }
     }
 
     override suspend fun logupUser(user: User) {
         val authResult = fbAuth.createUserWithEmailAndPassword(user.email, user.password).await()
-        user.creationDate= authResult.user?.metadata?.creationTimestamp ?: 0L
-        user.id= authResult.user?.uid ?: ""
+        /*user.createdAt= authResult.user?.metadata?.creationTimestamp ?: 0L
+        user.id= authResult.user?.uid ?: ""*/
     }
 
 }

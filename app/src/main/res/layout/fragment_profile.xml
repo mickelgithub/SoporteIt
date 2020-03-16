@@ -111,7 +111,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
             app:srcCompat="@drawable/profession" />
 
-        <FrameLayout
+        <!--<FrameLayout
             android:id="@+id/frameLayoutProfileSpinner"
             android:layout_width="0dp"
             android:layout_height="46dp"
@@ -122,21 +122,46 @@
             app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:visible='@{viewModel.user.bossVerification.equals("N")}'>
+            app:visible='@{viewModel.user.bossVerified.equals("N")}'>-->
+        <FrameLayout
+            android:id="@+id/frameLayoutProfileSpinner"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_spinner_profile_fragment"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView">
 
-            <Spinner
+            <!--<Spinner
                 android:id="@+id/profil_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                app:option='@{viewModel.user.bossVerification}'
+                app:option="@{viewModel.user.bossVerified}"
                 app:value="@={viewModel.user.profile}"
                 app:viewmodel="@{viewModel}"
-                />
+                />-->
+
 
 
         </FrameLayout>
+
+        <!--<ImageView
+            android:id="@+id/boss_verification_state_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/frameLayoutProfileSpinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/frameLayoutProfileSpinner"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:onClick="@{()-> fragment.onImageBossVerificationClick()}"
+            app:srcCompat="@{viewModel.user.bossVerified}" />-->
 
         <ImageView
             android:id="@+id/boss_verification_state_image"
@@ -148,8 +173,22 @@
             app:layout_constraintTop_toTopOf="@+id/frameLayoutProfileSpinner"
             android:clickable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:onClick="@{()-> fragment.onImageBossVerificationClick()}"
-            app:srcCompat="@{viewModel.user.bossVerification}" />
+            android:onClick="@{()-> fragment.onImageBossVerificationClick()}" />
+
+        <!--<TextView
+            android:id="@+id/profile_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/backgroud_rounded"
+            android:text="@{viewModel.user.profile}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:visible='@{!viewModel.user.bossVerified.equals("N")}' />-->
 
         <TextView
             android:id="@+id/profile_text"
@@ -163,8 +202,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:visible='@{!viewModel.user.bossVerification.equals("N")}' />
+            app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

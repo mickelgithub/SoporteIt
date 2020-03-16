@@ -32,6 +32,11 @@ class LoadingDialog: MyDialog() {
             loadingDialog= null
         }
 
+        fun dismissMeInmediatly() {
+            loadingDialog?.dismissInmediatly()
+            loadingDialog= null
+        }
+
         fun showMessageDialogForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY, messageColor: Int= R.color.red_error) {
             if (loadingDialog== null) {
                 val bundle= Bundle().apply {
@@ -77,7 +82,7 @@ class LoadingDialog: MyDialog() {
         return binding.root
     }
 
-    fun dismiss(message: Int?) {
+    private fun dismiss(message: Int?) {
         var delay= 0L
 
         if (message!= null && message!= R.string.nothing) {
@@ -98,6 +103,10 @@ class LoadingDialog: MyDialog() {
         Handler().postDelayed({
             this.dismiss()
         }, delay)
+    }
+
+    private fun dismissInmediatly() {
+        this.dismiss()
     }
 
 }

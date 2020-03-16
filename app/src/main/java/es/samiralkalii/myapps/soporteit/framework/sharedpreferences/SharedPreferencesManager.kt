@@ -54,7 +54,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_TEAM, "")
             putString(KEY_TEAM_ID, "")
             putString(KEY_BOSS, "")
-            putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
+            //putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
         }
     }
 
@@ -67,7 +67,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
 
     override suspend fun updateImageProfile(user: User) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
-            putString(KEY_LOCAL_PROFILE_IMAGE, user.localProfileImage)
+            putString(KEY_LOCAL_PROFILE_IMAGE, user.profileImage)
             putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
         }
     }
@@ -84,18 +84,18 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_NAME, user.name)
             putString(KEY_EMAIL, user.email)
             putString(KEY_PASS, user.password)
-            putString(KEY_LOCAL_PROFILE_IMAGE, user.localProfileImage)
+            putString(KEY_LOCAL_PROFILE_IMAGE, user.profileImage)
             putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
-            putLong(KEY_CREATION_DATE, user.creationDate)
-            putBoolean(KEY_EMAIL_VERIFIED, user.emailVerified)
+            putLong(KEY_CREATION_DATE, user.createdAt)
+            putBoolean(KEY_EMAIL_VERIFIED, user.isEmailVerified)
             putString(KEY_PROFILE, user.profile)
-            putString(KEY_BOSS_VERIFICATION, user.bossVerification)
-            putString(KEY_TEAM, user.team)
-            putString(KEY_TEAM_ID, user.teamId)
-            putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
+            //putString(KEY_BOSS_VERIFICATION, user.bossVerified)
+            //putString(KEY_TEAM, user.team)
+            //putString(KEY_TEAM_ID, user.teamId)
+            //putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
             putLong(KEY_HOLIDAY_DAYS_PER_YEAR, user.holidayDaysPerYear)
             putBoolean(KEY_INTERNAL_EMPLOYEE, user.internalEmployee)
-            putString(KEY_BOSS, user.boss)
+            //putString(KEY_BOSS, user.isBoss)
         }
     }
 
@@ -113,21 +113,20 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val creationDate= getLong(KEY_CREATION_DATE, 0L)
             val emailValidated= getBoolean(KEY_EMAIL_VERIFIED, false)
             val profile= getString(KEY_PROFILE, "") ?: ""
-            val bossVerification= getString(KEY_BOSS_VERIFICATION, "") ?: ""
+            val bossVerification= getBoolean(KEY_BOSS_VERIFICATION, false) ?: false
             val team= getString(KEY_TEAM, "") ?: ""
             val teamId= getString(KEY_TEAM_ID, "") ?: ""
             val teamInvitationState= Reply.valueOf(getString(KEY_TEAM_INVITATION_STATE, Reply.NONE.toString()) ?: Reply.NONE.toString())
             val holidayDays= getLong(KEY_HOLIDAY_DAYS_PER_YEAR, 22L)
             val internalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false)
             val messaginToken= getString(KEY_MESSAGING_TOKEN, "") ?: ""
-            val boss= getString(KEY_BOSS, "") ?: ""
+            val boss= getBoolean(KEY_BOSS, false) ?: false
 
-            return User(email, pass, name, localProfileImage = imageProfilePath,
-                id= id, remoteProfileImage = imageProfileUrl, creationDate = creationDate,
-                emailVerified = emailValidated, profile = profile, bossVerification = bossVerification,
-                team = team, teamId = teamId, teamInvitationState = teamInvitationState,
+            return User(email, pass, name, profileImage = imageProfilePath,
+                id= id, remoteProfileImage = imageProfileUrl, createdAt = creationDate,
+                isEmailVerified = emailValidated, profile = profile, bossVerified = bossVerification,
                 holidayDaysPerYear = holidayDays, internalEmployee = internalEmployee,
-                messagingToken = messaginToken, boss = boss)
+                messagingToken = messaginToken, isBoss = boss)
         }
     }
 }
