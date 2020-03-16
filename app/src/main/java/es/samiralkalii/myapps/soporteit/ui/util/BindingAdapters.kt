@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -23,47 +25,51 @@ import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
+import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
+import org.slf4j.LoggerFactory
 
-@BindingAdapter("visible")
-fun View.bindVisible(visible: Boolean?) {
-    visibility= if (visible== true) View.VISIBLE else View.GONE
+@BindingAdapter("app:valueAttrChanged")
+fun AutoCompleteTextView.setListeners(attrChange: InverseBindingListener) {
+    this.onItemClickListener = if (attrChange != null) {
+        object : AdapterView.OnItemClickListener {
+            override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                attrChange.onChange()
+            }
+        }
+    } else {
+        null
+    }
+}
+
+@InverseBindingAdapter(attribute = "value")
+fun AutoCompleteTextView.getValue(): String? {
+    if (adapter!= null) {
+        val myAdapter= adapter as ArrayAdapter<String>
+        return adapter.getItem(myAdapter.getPosition(text.toString())) as String
+    }
+    return null
+}
+
+@BindingAdapter("value")
+fun AutoCompleteTextView.bindValue(value: String?) {
+    if (value!= null && text.toString()!= value) {
+        setText(value)
+    }
 }
 
 @BindingAdapter("data")
 fun AutoCompleteTextView.bindData(data: List<String>?) {
-    if (data!= null && !data.isEmpty()) {
-        val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, data)
+    val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
+    if (data!= null && data.size> 0) {
+        val adapter = ArrayAdapter(context, R.layout.spinner_item, R.id.tvItem, data)
         setAdapter(adapter)
     }
 }
 
-@BindingAdapter("valueAttrChanged")
-fun AutoCompleteTextView.setListeners(inverseBindingListener: InverseBindingListener?) {
 
-    if (inverseBindingListener== null) {
-        onItemClickListener= null
-    } else {
-        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                if (tag != position) {
-                    inverseBindingListener.onChange()
-
-                    if ((listSelection as String) != context.resources.getString(R.string.choose_profile)) {
-
-                        //viewmodel?.updateShowSaveMenu()
-                        hideSoftKeybord(this@setListeners.context)
-                    }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-    }
-}
-
-@InverseBindingAdapter(attribute = "value", event="valueAttrChanged")
-fun AutoCompleteTextView.getValue(): String {
-    return this.listSelection as String
+@BindingAdapter("visible")
+fun View.bindVisible(visible: Boolean?) {
+    visibility= if (visible== true) View.VISIBLE else View.GONE
 }
 
 @BindingAdapter("imgsrc")

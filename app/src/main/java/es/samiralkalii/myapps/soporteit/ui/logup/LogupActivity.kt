@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.animation.AnimationUtils
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -99,37 +98,18 @@ class LogupActivity : AppCompatActivity(),
                 }
             }
         })
-        /*bindingLogup.profilSpinner.isFocusableInTouchMode= true
-        bindingLogup.profilSpinner.setOnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus) {
-                viewModel.indicateSpinnerState(2)
-            } else {
-                viewModel.indicateSpinnerState(0)
-            }
-        }*/
-
-        /*val dows = arrayOf(
-            "Lunes",
-            "Martes",
-            "Miercoles",
-            "Jueves",
-            "Viernes",
-            "Sabado",
-            "Domingo"
-        )
-        val adapter = ArrayAdapter<String>(this, R.layout.spinner_item, dows)
-        areas_dropdown.setAdapter(adapter)*/
-
-        viewModel.area.observe(this, Observer {
-            logger.debug("el valor de area es ")
-        })
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
                 MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(supportFragmentManager)
                 MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)
+                is MyDialog.DialogState.ShowMessage -> LoadingDialog.showMessageDialogForAwhile(supportFragmentManager, it.message)
             }
+        })
+
+        viewModel.area.observe(this, Observer {
+            if (it!= null)
+                viewModel.updateDepartmentsOfArea(it)
         })
     }
 

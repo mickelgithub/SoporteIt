@@ -1,7 +1,6 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.net.Uri
-import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +9,7 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.common.AreasDepartments
 import es.samiralkalii.myapps.soporteit.R
@@ -27,20 +27,16 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 
-
 private const val CHOOSE_PROFILE= "Elige tu perfil"
 
 class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase, private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
-    //val user= User()
-
     var name= ""
     var email= ""
     var password= ""
     var passwordConfirmation= ""
-    var department= ""
     var localProfileImage= ""
 
     private lateinit var areasDepartments: AreasDepartments
@@ -99,15 +95,27 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val areas: LiveData<List<String>>
         get() = _areas
 
-    private val _area= MutableLiveData<String>()
-    val area: String?= ""
+    val area= MutableLiveData<String>()
+    val department= MutableLiveData<String>()
 
     init {
-
+        logger.debug("Cargando las areas...")
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
+            var message= -1
+            when (error) {
+                is FirebaseFirestoreException -> {
+                    if (error.code== FirebaseFirestoreException.Code.UNAVAILABLE) {
+                        message= R.string.no_internet_connection
+                    }
+                }
+                else -> {
+                    message= R.string.not_controled_error
+                }
+            }
+            _showLoading.value= false
+            _progressVisible.value= MyDialog.DialogState.ShowMessage(message)
         }
-
         viewModelScope.launch(errorHandler) {
             areasDepartments= async(Dispatchers.IO) {
                 getAreasDepartmentsUseCase()
@@ -192,7 +200,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         if (name.isBlank() || name.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error
-        } else if (email.isBlank()) {
+        } else if (email.isBlank() || !email.contains("@")) {
             _emailError.value = R.string.email_incorrect_message_error
         } else if (password.isBlank()) {
             _passwordError.value = R.string.password_incorrect_logup_message_error
@@ -268,6 +276,14 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     fun noAcountClick() {
         _loginOrLogUp.value= TO_LOG_UP
         clearErrorsLogin()
+    }
+
+    fun updateDepartmentsOfArea(area: String?) {
+
+        if (areasDepartments.getDepartments(area!!)!= _departments.value) {
+            _departments.value= areasDepartments.getDepartments(area!!)
+            department.value= ""
+        }
     }
 
     companion object {

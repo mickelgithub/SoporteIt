@@ -3,20 +3,20 @@
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:transitionOrdering="together">
-
-
-
     <changeBounds
-        android:duration="1000"
-        android:interpolator="@android:anim/bounce_interpolator">
+        android:duration="800"
+        android:interpolator="@android:anim/overshoot_interpolator">
     </changeBounds>
 
     <fade
         android:duration="100"
         android:fadingMode="fade_in">
-
         <targets>
             <target android:targetId="@id/name_input_layout" />
+            <target android:targetId="@id/pass_confirmation_input_layout" />
+            <target android:targetId="@id/areas_input_layout" />
+            <target android:targetId="@id/departments_input_layout" />
+            <target android:targetId="@id/is_boss" />
         </targets>
     </fade>
 

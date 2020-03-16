@@ -9,7 +9,6 @@
         <variable
             name="viewModel"
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel" />
-
         <variable
             name="activity"
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupActivity" />
@@ -18,18 +17,16 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:animateLayoutChanges="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".ui.logup.LogupActivity">
-
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="32dp"
                 android:onClick="@{()-> activity.onImageProfileClick()}"
                 android:src="@drawable/profile"
                 app:civ_border_color="@color/colorPrimaryDark"
@@ -39,21 +36,19 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/name_input_layout"
                 style="@style/GeneralInputLayoutStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
                 app:error="@{viewModel.nameError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profile_image"
                 app:startIconDrawable="@drawable/ic_person">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
                     android:layout_width="match_parent"
@@ -63,21 +58,19 @@
                     android:nextFocusDown="@+id/email"
                     android:text="@={viewModel.name}" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/mail_input_layout"
                 style="@style/GeneralInputLayoutStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 app:error="@{viewModel.emailError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
                 app:startIconDrawable="@drawable/ic_mail">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@id/email"
                     android:layout_width="match_parent"
@@ -87,21 +80,19 @@
                     android:nextFocusDown="@+id/password"
                     android:text="@={viewModel.email}" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/pass_input_layout"
                 style="@style/PasswordInputLayoutStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 app:error="@{viewModel.passwordError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mail_input_layout"
                 app:startIconDrawable="@drawable/ic_password">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
@@ -111,31 +102,28 @@
                     android:nextFocusDown="@+id/password_confirmation"
                     android:text="@={viewModel.password}" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/pass_confirmation_input_layout"
                 style="@style/PasswordInputLayoutStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 app:error="@{viewModel.confirmationPasswordError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pass_input_layout"
                 app:startIconDrawable="@drawable/ic_password">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password_confirmation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/retype_password"
+                    android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:text="@={viewModel.passwordConfirmation}"
-                    android:imeOptions="actionDone" />
+                    android:text="@={viewModel.passwordConfirmation}" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/loading_areas"
                 android:layout_width="0dp"
@@ -152,36 +140,30 @@
                 app:lottie_loop="true"
                 app:visible="@{viewModel.showLoading}"
                 app:lottie_rawRes="@raw/loader" />
-
-
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/areas_input_layout"
                 style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/loading_areas"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pass_confirmation_input_layout"
                 app:shapeAppearance="@style/rounded_text_field"
                 app:startIconDrawable="@drawable/ic_area">
-
                 <AutoCompleteTextView
                     android:id="@+id/areas_dropdown"
                     style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                    value="@={viewModel.area}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_area }"
-                    app:data="@{viewModel.areas}"
-                    app:value="@={viewModel.area}"
-                    android:nextFocusDown="@+id/departments_dropdown" />
-
+                    android:nextFocusDown="@+id/departments_dropdown"
+                    app:data="@{viewModel.areas}" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/loading_depts"
                 android:layout_width="0dp"
@@ -198,44 +180,41 @@
                 app:lottie_loop="true"
                 app:visible="@{viewModel.showLoading}"
                 app:lottie_rawRes="@raw/loader" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/departments_input_layout"
                 style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/loading_depts"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/areas_input_layout"
                 app:shapeAppearance="@style/rounded_text_field"
                 app:startIconDrawable="@drawable/ic_group">
-
                 <AutoCompleteTextView
                     android:id="@+id/departments_dropdown"
                     style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                    value="@={viewModel.department}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
-                    android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_department }" />
+                    android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_department }"
+                    app:data="@{viewModel.deparments}" />
             </com.google.android.material.textfield.TextInputLayout>
-
-
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:onClick="@{()-> viewModel.onLogupClick()}"
                 android:text="@string/register"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/departments_input_layout" />
-
+                app:layout_constraintTop_toBottomOf="@+id/is_boss" />
             <TextView
                 android:id="@+id/already_loggedup"
                 android:layout_width="wrap_content"
@@ -248,7 +227,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/her"
                 app:layout_constraintTop_toBottomOf="@+id/button"
                 tools:text="@string/already_logged_up" />
-
             <TextView
                 android:id="@+id/her"
                 android:layout_width="wrap_content"
@@ -267,47 +245,15 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/already_loggedup"
                 tools:text="@string/her"
                 android:focusable="true" />
-
-            <!--<FrameLayout
-                android:id="@+id/frameLayoutProfileSpinner"
-                android:layout_width="0dp"
-                android:layout_height="46dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/retypePassInputLayout"
-                app:spinner_state="@{viewModel.spinnerState}">
-
-
-                <Spinner
-                    android:id="@+id/profil_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    app:value="@={viewModel.user.profile}"
-                    app:option='@{""}'/>
-
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/textView4"
+            <Switch
+                android:id="@+id/is_boss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="4dp"
-                android:text="@string/profile_mandatory"
-                android:textColor="@color/red_error"
-                android:textSize="12sp"
-                app:visible="@{viewModel.spinnerState== 1}"
-                app:layout_constraintStart_toStartOf="@+id/frameLayoutProfileSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayoutProfileSpinner" />-->
-
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/is_boss"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/departments_input_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
-
 </layout>

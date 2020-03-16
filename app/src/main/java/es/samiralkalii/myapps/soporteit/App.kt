@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit
 
 import android.app.Application
+import android.util.Log
 import es.samiralkalii.myapps.soporteit.di.appModule
 import es.samiralkalii.myapps.soporteit.di.dataModule
 import es.samiralkalii.myapps.soporteit.di.useCaseModule
