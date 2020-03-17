@@ -18,7 +18,8 @@ fun Context.toast(msg: String, duration: Int= Toast.LENGTH_SHORT)=
     Toast.makeText(this, msg, duration).show()
 
 fun Context.startLogupActivity()= Intent(this, LogupActivity::class.java).also {
-    it.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
+    //it.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
+    it.flags= Intent.FLAG_ACTIVITY_NO_ANIMATION
     startActivity(it)
 }
 

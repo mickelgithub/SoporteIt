@@ -54,13 +54,9 @@ class LogupActivity : AppCompatActivity(),
     private lateinit var scene2: Scene
     private lateinit var transitionMngLogUpToLogIn: Transition
 
-    lateinit var bossCategories: List<String>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideSystemUI()
-
-        bossCategories= resources.getStringArray(R.array.boss_categories).toList()
 
         binding= ActivityLogupBinding.inflate(layoutInflater)
         binding.viewModel= viewModel
@@ -115,6 +111,7 @@ class LogupActivity : AppCompatActivity(),
         viewModel.area.observe(this, Observer {
             viewModel.updateDepartmentsOfArea(it)
         })
+
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {

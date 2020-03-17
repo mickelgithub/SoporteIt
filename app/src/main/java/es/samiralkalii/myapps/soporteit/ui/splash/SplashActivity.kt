@@ -45,6 +45,7 @@ class SplashActivity : AppCompatActivity() {
                 SplashState.FirstAccess -> {
                     logger.debug("First access, goto signUp")
                     startLogupActivity()
+                    this.finish()
                 }
                 is SplashState.ShowMessage -> {
                     logger.debug("Error SignIn")

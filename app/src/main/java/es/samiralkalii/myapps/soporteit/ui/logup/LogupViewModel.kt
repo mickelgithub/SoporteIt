@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.common.AreasDepartments
+import es.samiralkalii.myapps.domain.common.BossCategories
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
@@ -19,6 +20,7 @@ import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.LoginUserCase
 import es.samiralkalii.myapps.usecase.authlogin.LogupUseCase
 import es.samiralkalii.myapps.usecase.common.GetAreasDepartmentsUseCase
+import es.samiralkalii.myapps.usecase.common.GetBossCategoriesUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -29,7 +31,8 @@ import java.io.File
 
 private const val CHOOSE_PROFILE= "Elige tu perfil"
 
-class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase, private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase) : ViewModel() {
+class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase, private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase,
+private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
@@ -37,9 +40,9 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     var email= ""
     var password= ""
     var passwordConfirmation= ""
-    var bossCategory= ""
 
     private lateinit var areasDepartments: AreasDepartments
+    private lateinit var bossCategories: BossCategories
 
     private lateinit var user: User
 
@@ -100,9 +103,14 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     val areas: LiveData<List<String>>
         get() = _areas
 
+    private val _bossCategories= MutableLiveData<List<String>>()
+    val bossCategoriesObservable: LiveData<List<String>>
+        get() = _bossCategories
+
     val area= MutableLiveData<String>()
     val department= MutableLiveData<String>()
     val isBoss= MutableLiveData<Boolean>()
+    val bossCategory= MutableLiveData<String>()
 
     init {
 
@@ -113,6 +121,8 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 is FirebaseFirestoreException -> {
                     if (error.code== FirebaseFirestoreException.Code.UNAVAILABLE) {
                         message= R.string.no_internet_connection
+                    } else {
+                        message = R.string.not_controled_error
                     }
                 }
                 else -> {
@@ -123,11 +133,22 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             _progressVisible.value= MyDialog.DialogState.ShowMessageDialog(message)
         }
         viewModelScope.launch(errorHandler) {
-            areasDepartments= async(Dispatchers.IO) {
+            val deferedAreaDepartment= async(Dispatchers.IO) {
                 getAreasDepartmentsUseCase()
-            }.await()
-            _showLoading.value= false
+            }
+            val deferedBossCategories= async(Dispatchers.IO) {
+                getBossCategoriesUseCase()
+            }
+            areasDepartments= deferedAreaDepartment.await()
+            bossCategories= deferedBossCategories.await()
             _areas.value= areasDepartments.areasDepartments.keys.map { it.name }.toList()
+           bossCategories.getBossCategoriesName().let {
+               _bossCategories.value= it
+               if (!it.isEmpty()) {
+                   bossCategory.value= it[0]
+               }
+           }
+            _showLoading.value= false
         }
     }
 
@@ -287,7 +308,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     }
 
     fun updateDepartmentsOfArea(area: String?) {
-        val departments= areasDepartments.getDepartments(area!!).map { it.name }
+        val departments= areasDepartments.getDepartmentsName(area!!)
         if (departments!= _departments.value) {
             _departments.value= departments
             department.value= ""

@@ -225,9 +225,10 @@
                     android:id="@+id/boss_categories_dropdown"
                     style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
                     value="@={viewModel.bossCategory}"
+                    android:textSize="14dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:data="@{activity.bossCategories}"
+                    app:data="@{viewModel.bossCategoriesObservable}"
                     android:editable="false"
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -281,6 +282,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="32dp"
+                android:textSize="12dp"
                 android:checked="@={viewModel.isBoss()}"
                 android:text="@string/is_boss"
                 app:layout_constraintStart_toStartOf="parent"

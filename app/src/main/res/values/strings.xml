@@ -68,13 +68,6 @@
     <string name="notif_received">Recibidas</string>
     <string name="notif_sent">Enviadas</string>
     <string name="notif_type_invitation_to_team">Invitación para formar parte del equipo</string>
-
-    <array name="boss_categories">
-        <item>Jefe Proyecto</item>
-        <item>Jefe Area</item>
-        <item>Director IT</item>
-    </array>
-
     <string name="boss_profil">Responsable de equipo</string>
     <string name="java_profil">Perfil Java</string>
     <string name="cobol_profil">Perfil Cobol</string>

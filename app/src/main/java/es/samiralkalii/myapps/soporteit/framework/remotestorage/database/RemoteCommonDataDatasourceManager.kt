@@ -3,14 +3,13 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.common.IRemoteCommonDataDataSource
-import es.samiralkalii.myapps.domain.common.Area
-import es.samiralkalii.myapps.domain.common.AreasDepartments
-import es.samiralkalii.myapps.domain.common.Department
+import es.samiralkalii.myapps.domain.common.*
 import kotlinx.coroutines.tasks.await
 
 private const val AREAS_REF= "areas"
 private const val KEY_NAME= "name"
 private const val DEPARTMENTS_REF= "departments"
+private const val BOSS_CATEGORIES_REF= "bossCategories"
 
 class RemoteCommonDataDatasourceManager(private val fstore: FirebaseFirestore): IRemoteCommonDataDataSource {
 
@@ -32,5 +31,17 @@ class RemoteCommonDataDatasourceManager(private val fstore: FirebaseFirestore): 
             }
         }
         return AreasDepartments(areasDepartments)
+    }
+
+    override suspend fun getBossCategorties(): BossCategories {
+        val bossCategories= mutableListOf<BossCategory>()
+        val categoriesResult= fstore.collection(BOSS_CATEGORIES_REF).get(Source.SERVER).await()
+        if (!categoriesResult.isEmpty) {
+            for (categoryDocument in categoriesResult) {
+                val categoryName = categoryDocument.data.get(KEY_NAME) as String
+                bossCategories.add(BossCategory(categoryDocument.id, categoryName))
+            }
+        }
+        return BossCategories(bossCategories)
     }
 }
