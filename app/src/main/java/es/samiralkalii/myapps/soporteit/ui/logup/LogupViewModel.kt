@@ -119,11 +119,11 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             _progressVisible.value= MyDialog.DialogState.ShowMessage(message)
         }
         viewModelScope.launch(errorHandler) {
-            _progressVisible.value= MyDialog.DialogState.ShowLoading
+            //_progressVisible.value= MyDialog.DialogState.ShowLoading
             areasDepartments= async(Dispatchers.IO) {
                 getAreasDepartmentsUseCase()
             }.await()
-            _progressVisible.value= MyDialog.DialogState.DismissInmediatly
+            //_progressVisible.value= MyDialog.DialogState.DismissInmediatly
             _areas.value= areasDepartments.areasDepartments.keys.toList()
         }
     }

@@ -127,8 +127,7 @@ class LogupActivity : AppCompatActivity(),
         })
 
         viewModel.area.observe(this, Observer {
-            if (it!= null)
-                viewModel.updateDepartmentsOfArea(it)
+            viewModel.updateDepartmentsOfArea(it)
         })
     }
 

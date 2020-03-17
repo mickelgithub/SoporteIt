@@ -17,7 +17,39 @@ class LoadingDialog: MyDialog() {
 
         var loadingDialog: LoadingDialog?= null
 
-        fun showLoading(fragmentManager: FragmentManager) {
+        fun processDialog(dialogState: DialogState, fragmentManager: FragmentManager) {
+            when (dialogState) {
+                is DialogState.ShowDialog -> {
+                    showDialog(fragmentManager, dialogState.message, dialogState.modal, dialogState.error)
+                }
+                DialogState.ShowProgress -> {
+                    showProgress(fragmentManager)
+                }
+                is DialogState.UpdateSuccess -> {
+                    showSuccessAndHide(dialogState.delay)
+                }
+            }
+        }
+
+        private fun showDialog(fragmentManager: FragmentManager, message: Int, modal: Boolean, error: Boolean) {
+            if (loadingDialog== null) {
+                loadingDialog= LoadingDialog().apply {
+                    isCancelable= !modal
+                    if (message> -1) {
+                        val bundle= Bundle().apply {
+                            putInt(DIALOG_FOR_MESSAGE_KEY, message)
+                            if (!error) {
+                                putInt(DIALOG_MESSAGE_COLOR, R.color.colorPrimary)
+                            }
+                        }
+                    }
+                }.also {
+                    it.show(fragmentManager, FRAGMENT_TAG)
+                }
+            }
+        }
+
+        private fun showProgress(fragmentManager: FragmentManager) {
             if (loadingDialog== null) {
                 loadingDialog= LoadingDialog().apply {
                     isCancelable= false
@@ -27,12 +59,13 @@ class LoadingDialog: MyDialog() {
             }
         }
 
-        fun dismissMe(message: Int?) {
-            loadingDialog?.dismiss(message)
+
+        private fun showSuccessAndHide(delay: Long) {
+            loadingDialog?.updateSuccessAndHide(delay)
             loadingDialog= null
         }
 
-        fun dismissMeInmediatly() {
+        private fun hideDialog(delay: Long) {
             loadingDialog?.dismissInmediatly()
             loadingDialog= null
         }
@@ -82,6 +115,13 @@ class LoadingDialog: MyDialog() {
         return binding.root
     }
 
+    private fun updateSuccessAndHide(delay: Long) {
+        binding.animationLoading.visibility= View.GONE
+        binding.animationOk.visibility= View.VISIBLE
+        binding.message.visibility= View.GONE
+        dismissDialog(delay)
+    }
+
     private fun dismiss(message: Int?) {
         var delay= 0L
 
@@ -105,8 +145,14 @@ class LoadingDialog: MyDialog() {
         }, delay)
     }
 
-    private fun dismissInmediatly() {
-        this.dismiss()
+    private fun dismissDialog(delay: Long) {
+        if (delay> 0) {
+            binding.root.postDelayed({
+                dismiss()
+            }, delay)
+        } else {
+            dismiss()
+        }
     }
 
 }
