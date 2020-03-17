@@ -6,6 +6,7 @@
 
     <data>
         <import type="es.samiralkalii.myapps.soporteit.R" />
+        <import type="android.view.View" />
         <variable
             name="viewModel"
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel" />
@@ -205,6 +206,32 @@
                     android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_department }"
                     app:data="@{viewModel.deparments}" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/boss_categories_input_layout"
+                style="@style/AppTheme.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="@{viewModel.isBoss() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/is_boss"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/is_boss"
+                app:shapeAppearance="@style/rounded_text_field"
+                app:startIconDrawable="@drawable/ic_boss">
+
+                <AutoCompleteTextView
+                    android:id="@+id/boss_categories_dropdown"
+                    style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                    value="@={viewModel.bossCategory}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:data="@{activity.bossCategories}"
+                    android:editable="false"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
@@ -247,12 +274,14 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/already_loggedup"
                 tools:text="@string/her"
                 android:focusable="true" />
+
             <Switch
                 android:id="@+id/is_boss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
+                android:checked="@={viewModel.isBoss()}"
                 android:text="@string/is_boss"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/departments_input_layout" />

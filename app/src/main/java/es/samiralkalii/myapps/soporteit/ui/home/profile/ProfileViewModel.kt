@@ -92,7 +92,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
     fun onSaveClick(chooseYourProfileResource: String) {
 
-        _progressVisible.value= MyDialog.DialogState.ShowLoading
+        //_progressVisible.value= MyDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             when (error) {

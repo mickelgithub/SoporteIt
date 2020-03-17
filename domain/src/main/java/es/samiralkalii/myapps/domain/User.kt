@@ -1,7 +1,5 @@
 package es.samiralkalii.myapps.domain
 
-import es.samiralkalii.myapps.domain.notification.Reply
-
 data class User(
     val email: String= "",
     val password: String= "",
@@ -13,11 +11,13 @@ data class User(
     val isEmailVerified: Boolean= false,
     val profile: String= "",
     val bossVerified: Boolean= false,
-    val bossLevel: BossLevel= BossLevel.PROJECT_MANAGER,
+    val bossCategory: BossCategory= BossCategory.PROJECT_MANAGER,
     val isBoss: Boolean= false,
     val messagingToken: String= "",
     val holidayDaysPerYear: Long= DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS,
-    val internalEmployee: Boolean= true
+    val internalEmployee: Boolean= false,
+    val area: String= "",
+    val department: String= ""
                 ) {
 
     companion object {
@@ -26,10 +26,10 @@ data class User(
         val DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS= 26L
     }
 
-    enum class BossLevel {
+    enum class BossCategory {
         PROJECT_MANAGER,
-        PROJECT_MANAGER_BOSS,
-        IT_DIRECTOR
+        AREA_PROJECT_MANAGER,
+        IT_DIRECTOR;
     }
 
 

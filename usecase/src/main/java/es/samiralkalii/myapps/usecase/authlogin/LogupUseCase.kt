@@ -25,10 +25,10 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
 
     }
 
-    suspend operator fun invoke(user: User, profileImage: String= ""): Result {
+    suspend operator fun invoke(user: User): Result {
         logger.debug("Vamos a registar el usuario ${user.email}")
 
-        if (TEAM_MANAGER_PROFILE== user.profile) {
+        if (user.isBoss) {
             //**user.bossVerified= PENDING
             //**user.holidayDaysPerYear= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
             //**user.internalEmployee= true
@@ -38,12 +38,12 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         remoteUserAuthRepository.logupUser(user)
         //registration OK
         //we have to add the user profile image de local and remote storage
-        if (profileImage.isNotBlank()) {
+        /*if (profileImage.isNotBlank()) {
             //we get user.localProfileImage
             val profileImageFile = fileSystemRepository.copyFileFromExternalToInternal(user, profileImage)
             //we get user.remoteProfileImage
             remoteUserStorageRepository.saveProfileImage(user, profileImageFile)
-        }
+        }*/
         //we have to add the user to the database
         remoteUserRepository.addUser(user)
         //**user.messagingToken= preferenceRepository.getMessagingToken()

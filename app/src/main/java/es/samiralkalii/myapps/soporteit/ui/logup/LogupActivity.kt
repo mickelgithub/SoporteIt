@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.transition.Scene
 import androidx.transition.Transition
@@ -21,16 +22,18 @@ import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
-import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog.Companion.DIALOG_DISMISS_DELAY
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
+private const val DELAY_SHOW_DIALOG_ERROR= 300L
 
 class LogupActivity : AppCompatActivity(),
     PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
+
+    private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
 
     private val viewModel: LogupViewModel by viewModel()
     private lateinit var binding: ActivityLogupBinding
@@ -47,18 +50,17 @@ class LogupActivity : AppCompatActivity(),
         scene2= Scene(container, bindingLogin.root)
         return bindingLogin
     }
-
-
     private lateinit var scene1: Scene
     private lateinit var scene2: Scene
     private lateinit var transitionMngLogUpToLogIn: Transition
 
-    private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
+    lateinit var bossCategories: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         hideSystemUI()
+
+        bossCategories= resources.getStringArray(R.array.boss_categories).toList()
 
         binding= ActivityLogupBinding.inflate(layoutInflater)
         binding.viewModel= viewModel
@@ -75,14 +77,12 @@ class LogupActivity : AppCompatActivity(),
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
-
         viewModel.logupState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { screenState ->
                 if (screenState is ScreenState.Render) {
                     processStateLogUp(screenState)
                 }
             }
-
         })
 
         viewModel.loginState.observe(this, Observer {
@@ -107,23 +107,9 @@ class LogupActivity : AppCompatActivity(),
         })
 
         viewModel.progressVisible.observe(this, Observer {
-            when (it) {
-                MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(supportFragmentManager)
-                MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                MyDialog.DialogState.DismissInmediatly -> {
-                    LoadingDialog.dismissMeInmediatly()
-                    Handler().postDelayed({
-                        viewModel.updateShowLoadingAreasDepartments(false)
-                    }, 500)
-                }
-                is MyDialog.DialogState.ShowMessage -> {
-                    LoadingDialog.dismissMe(it.message)
-                    Handler().postDelayed({
-                        viewModel.updateShowLoadingAreasDepartments(false)
-                    }, DIALOG_DISMISS_DELAY+ 500)
-
-                }
-            }
+            Handler().postDelayed({
+                LoadingDialog.processDialog(it, supportFragmentManager)
+            }, DELAY_SHOW_DIALOG_ERROR)
         })
 
         viewModel.area.observe(this, Observer {
@@ -140,12 +126,12 @@ class LogupActivity : AppCompatActivity(),
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         profile_image.startAnimation(shake)
                     }
-                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
                     Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, MyDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LoginState.ShowMessage -> {
                     logger.debug("Hubo un error en acceso, lo mostramos")
-                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
                 }
             }
         }
@@ -171,18 +157,18 @@ class LogupActivity : AppCompatActivity(),
             when (screenState.renderState) {
                 is LogupState.LoggedupOk -> {
                     logger.debug("Registracion correcto, goto Home")
-                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
                     Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, MyDialog.DIALOG_DISMISS_DELAY)
 
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
-                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
                     Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")
-                    viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
                 }
             }
         }

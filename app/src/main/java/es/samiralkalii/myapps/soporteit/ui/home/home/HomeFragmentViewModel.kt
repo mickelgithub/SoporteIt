@@ -49,7 +49,7 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMod
 
         logger.debug("On team create clicked")
 
-        _dialogCreateTeamState.value= MyDialog.DialogState.ShowLoading
+        //_dialogCreateTeamState.value= MyDialog.DialogState.ShowLoading
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             when (error) {

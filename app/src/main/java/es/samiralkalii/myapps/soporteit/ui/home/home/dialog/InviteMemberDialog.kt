@@ -122,9 +122,9 @@ class InviteMemberDialog(): MyDialog() {
             }
         })
 
-        viewModel.dialogState.observe(this, Observer{
+        viewModel.dialogState.observe(viewLifecycleOwner, Observer{
             when (it) {
-                DialogState.ShowLoadingData -> {
+                /*DialogState.ShowLoadingData -> {
                     viewModel.member.value= activity!!.resources.getString(R.string.wait_while_loading_data)
                     binding.members.isEnabled= false
                     binding.holidayDaysPerYear.isEnabled= false
@@ -187,11 +187,11 @@ class InviteMemberDialog(): MyDialog() {
                         setText(it.message)
                     }
                     binding.animationLoading.visibility= View.GONE
-                }
+                }*/
             }
         })
 
-        viewModel.users.observe(this, Observer {
+        viewModel.users.observe(viewLifecycleOwner, Observer {
                  adapter.initData(it)
             }
         )
@@ -328,20 +328,20 @@ class InviteMemberDialog(): MyDialog() {
                 logger.error(error.toString(), error)
                 when (error) {
                     is FirebaseNetworkException -> {
-                        _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
+                        //_dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
                     }
                     else -> {
-                        _dialogState.postValue(DialogState.ShowMessage(R.string.not_controled_error))
+                        //_dialogState.postValue(DialogState.ShowMessage(R.string.not_controled_error))
                     }
                 }
             }
-            _dialogState.value= DialogState.ShowLoadingData
+            //_dialogState.value= DialogState.ShowLoadingData
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
                     getAllUsersButBosesAndNoTeamUseCase()
                 }.await()
                 _users.value= result
-                _dialogState.value= DialogState.ShowDialog
+                //_dialogState.value= DialogState.ShowDialog
             }
         }
 
@@ -356,15 +356,15 @@ class InviteMemberDialog(): MyDialog() {
                     membersError.value= R.string.user_not_exist
                 } else {
                     val userToInvite = userToInviteList[0]
-                    _dialogState.value = DialogState.ShowLoading
+                    //_dialogState.value = DialogState.ShowLoading
                     val errorHandler = CoroutineExceptionHandler { _, error ->
                         logger.error(error.toString(), error)
                         when (error) {
                             is FirebaseNetworkException -> {
-                                _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
+                                //_dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
                             }
                             else -> {
-                                _dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
+                                //_dialogState.postValue(DialogState.ShowMessage(R.string.no_internet_connection))
                             }
                         }
                     }
@@ -376,7 +376,7 @@ class InviteMemberDialog(): MyDialog() {
                             val localInternal= _internal.value!!
                             inviteUserUseCase(user, userToInvite, localInternal, localHolidayDays)
                         }.await()
-                        _dialogState.value = DialogState.ShowSuccess
+                        //_dialogState.value = DialogState.ShowSuccess
 
                     }
                 }

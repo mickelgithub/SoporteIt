@@ -8,15 +8,14 @@ open class MyDialog(): BottomSheetDialogFragment() {
         const val DIALOG_DISMISS_DELAY= 2000L
         const val FRAGMENT_TAG= "dialog"
         const val DIALOG_FOR_MESSAGE_KEY= "message_dialog"
-        const val DIALOG_MESSAGE_COLOR= "message_color"
+        const val DIALOG_ERROR_INDICATION_KEY= "message_error"
     }
 
     sealed class DialogState {
-        class ShowDialog(val message: Int= -1, val modal: Boolean= true, val error: Boolean= false): DialogState()
-        object ShowProgress: DialogState()
+        class ShowProgressDialog(val message: Int= -1): DialogState()
         class UpdateSuccess(val delay: Long= DIALOG_DISMISS_DELAY): DialogState()
-        class UpdateMessage(val message: Int, val modal: Boolean, val error: Boolean, val delay: Long)
-        class HideDialog(val delay: Long): DialogState()
-
+        class UpdateMessage(val message: Int, val error: Boolean= true, val delay: Long= DIALOG_DISMISS_DELAY): DialogState()
+        class HideDialog(val delay: Long= DIALOG_DISMISS_DELAY): DialogState()
+        class ShowMessageDialog(val message: Int, val error: Boolean= true): DialogState()
     }
 }

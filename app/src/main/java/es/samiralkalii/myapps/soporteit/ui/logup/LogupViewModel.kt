@@ -37,6 +37,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     var email= ""
     var password= ""
     var passwordConfirmation= ""
+    var bossCategory= ""
 
     private lateinit var areasDepartments: AreasDepartments
 
@@ -101,8 +102,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
     val area= MutableLiveData<String>()
     val department= MutableLiveData<String>()
+    val isBoss= MutableLiveData<Boolean>()
 
     init {
+
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             var message= -1
@@ -116,15 +119,15 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                     message= R.string.not_controled_error
                 }
             }
-            _progressVisible.value= MyDialog.DialogState.ShowMessage(message)
+            _showLoading.value= false
+            _progressVisible.value= MyDialog.DialogState.ShowMessageDialog(message)
         }
         viewModelScope.launch(errorHandler) {
-            //_progressVisible.value= MyDialog.DialogState.ShowLoading
             areasDepartments= async(Dispatchers.IO) {
                 getAreasDepartmentsUseCase()
             }.await()
-            //_progressVisible.value= MyDialog.DialogState.DismissInmediatly
-            _areas.value= areasDepartments.areasDepartments.keys.toList()
+            _showLoading.value= false
+            _areas.value= areasDepartments.areasDepartments.keys.map { it.name }.toList()
         }
     }
 
@@ -146,7 +149,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
         clearErrorsLogin()
 
-        _progressVisible.value= MyDialog.DialogState.ShowLoading
+        _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             when (error) {
@@ -159,13 +162,13 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                     } else if (error.toString().contains("The password is invalid")) {
                         _passwordError.postValue(R.string.password_incorrect_login_message_error)
                     }
-                    _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.nothing))
+                    _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
                 }
                 is FirebaseAuthInvalidUserException -> {
                     if (error.toString().contains("There is no user record corresponding to this identifier")) {
                         _emailError.postValue(R.string.user_not_exist_message_error)
                     }
-                    _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.nothing))
+                    _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
                 }
                 is com.google.firebase.FirebaseApiNotAvailableException -> {
                     _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.firebase_api_no_available))))
@@ -191,14 +194,8 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         }
     }
 
-    fun updateProgressVisible(progressVisible: MyDialog.DialogState) {
-        _progressVisible.value= progressVisible
-    }
-
     fun logupUser() {
-
         clearErrorsLogUp()
-
         if (name.isBlank() || name.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error
         } else if (email.isBlank() || !email.contains("@")) {
@@ -214,47 +211,50 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         } else if (department.value.isNullOrBlank()) {
             _departmentError.value= R.string.department_incorrect
         } else {
-            _progressVisible.value= MyDialog.DialogState.ShowLoading
+            _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
                 when (error) {
                     is FirebaseNetworkException -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
-                        _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.no_internet_connection))
+                        _progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
                     }
                     is FirebaseAuthInvalidCredentialsException -> {
                         if (error.toString().contains("email address is badly formatted")) {
                             _emailError.postValue(R.string.email_incorrect_message_error)
-                            _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.nothing))
+                            _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
                         } else if (error.toString().contains("The given password is invalid")) {
                             _passwordError.postValue(R.string.password_incorrect_logup_message_error)
-                            _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.nothing))
+                            _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
                         }
                     }
                     is FirebaseAuthUserCollisionException -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision))))
-                        _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.nothing))
+                        _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
                     }
                     is com.google.firebase.FirebaseApiNotAvailableException -> {
                         _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.firebase_api_no_available))))
                     }
                     else -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
-                        _progressVisible.postValue(MyDialog.DialogState.ShowMessage(R.string.no_internet_connection))
+                        _progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
                     }
                 }
             }
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
+                    val isEmployeeBoss= isBoss.value ?: false
                     val user= User(name= name, email = email, password = password,
-                        profileImage = _imageProfile.value?.toString() ?: "")
+                        profileImage = _imageProfile.value?.toString() ?: "", area= area.value!!,
+                    department = department.value!!, isBoss = isEmployeeBoss
+                    )
 
 
-                    //**logupUseCase(user, imageProfile.value?.toString() ?: "")
+                    logupUseCase(user)
 
                 }.await()
-                _progressVisible.value = MyDialog.DialogState.ShowSuccess
+                _progressVisible.value = MyDialog.DialogState.UpdateSuccess()
                 when (result) {
                     /*is LogupUseCase.Result.LoggedUpOk -> {
                         _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
@@ -265,10 +265,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 }
             }
         }
-    }
-
-    fun updateShowLoadingAreasDepartments(show: Boolean) {
-        _showLoading.value= show
     }
 
     fun onLogupClick()= logupUser()
@@ -291,9 +287,9 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     }
 
     fun updateDepartmentsOfArea(area: String?) {
-
-        if (areasDepartments.getDepartments(area!!)!= _departments.value) {
-            _departments.value= areasDepartments.getDepartments(area!!)
+        val departments= areasDepartments.getDepartments(area!!).map { it.name }
+        if (departments!= _departments.value) {
+            _departments.value= departments
             department.value= ""
         }
     }

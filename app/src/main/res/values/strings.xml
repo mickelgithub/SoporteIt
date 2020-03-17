@@ -50,7 +50,7 @@
     <string name="notifications">Notifs</string>
     <string name="holidays">Vacas</string>
     <string name="save">Guardar</string>
-    <string name="is_boss">¿Eres Jefe de equipo?</string>
+    <string name="is_boss">¿Eres Coordinador?</string>
     <string name="general_notif_channel_name">Notificaciones generales</string>
     <string name="general_notif_channel_id">es.samiralkalii.myapps.soporteit_notif_generales_id</string>
     <string name="profile_mandatory">El perfil es obligatorio</string>
@@ -68,6 +68,12 @@
     <string name="notif_received">Recibidas</string>
     <string name="notif_sent">Enviadas</string>
     <string name="notif_type_invitation_to_team">Invitación para formar parte del equipo</string>
+
+    <array name="boss_categories">
+        <item>Jefe Proyecto</item>
+        <item>Jefe Area</item>
+        <item>Director IT</item>
+    </array>
 
     <string name="boss_profil">Responsable de equipo</string>
     <string name="java_profil">Perfil Java</string>

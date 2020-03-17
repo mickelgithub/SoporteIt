@@ -48,10 +48,10 @@ class HomeFragment: Fragment(),
         //create Tream
         viewModel.dialogCreateTeamState.observe(this, Observer {
             when (it) {
-                MyDialog.DialogState.ShowDialog    -> CreateTeamDialog.showDialog(activity!!.supportFragmentManager)
+                /*MyDialog.DialogState.ShowDialog    -> CreateTeamDialog.showDialog(activity!!.supportFragmentManager)
                 MyDialog.DialogState.ShowLoading   -> CreateTeamDialog.showLoading()
                 MyDialog.DialogState.ShowSuccess   -> CreateTeamDialog.showSuccess()
-                is MyDialog.DialogState.ShowMessage -> CreateTeamDialog.showMessage(it.message)
+                is MyDialog.DialogState.ShowMessage -> CreateTeamDialog.showMessage(it.message)*/
             }
         })
 
@@ -72,14 +72,14 @@ class HomeFragment: Fragment(),
         when (screenState.renderState) {
             HomeFragmentChangeState.teamAddedOk -> {
                 homeViewModel.updateTeamCreated(viewModel.user)
-                viewModel.updateDialogCreateState(MyDialog.DialogState.ShowSuccess)
+                //viewModel.updateDialogCreateState(MyDialog.DialogState.ShowSuccess)
                 Handler().postDelayed({
                     //(activity as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
                     (activity as AppCompatActivity).invalidateOptionsMenu()
                 }, MyDialog.DIALOG_DISMISS_DELAY)
             }
             is HomeFragmentChangeState.ShowMessage -> {
-                viewModel.updateDialogCreateState(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+                //viewModel.updateDialogCreateState(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
             }
         }
     }
@@ -127,7 +127,7 @@ class HomeFragment: Fragment(),
         return when (item.itemId) {
             R.id.menu_item_create_team -> {
                 logger.debug("opcion ${item.title} clicked")
-                viewModel.updateDialogCreateState(MyDialog.DialogState.ShowDialog)
+                //viewModel.updateDialogCreateState(MyDialog.DialogState.ShowDialog)
                 true
             }
             R.id.menu_item_invite -> {

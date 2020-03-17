@@ -72,9 +72,9 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
-                MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(activity!!.supportFragmentManager)
+               /* MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(activity!!.supportFragmentManager)
                 MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)
+                is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)*/
             }
         })
 
@@ -85,10 +85,10 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
             ProfileChangeState.changeOk -> {
                 homeViewModel.updateProfileImage(user)
                 //homeViewModel.updateBossVerification(user.bossVerified)
-                viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
             }
             is ProfileChangeState.ShowMessage -> {
-                viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+                //viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
             }
         }
     }
@@ -224,11 +224,11 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
     fun onImageBossVerificationClick() {
         if (viewModel.user.isBoss) {
-            LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verified, messageColor= R.color.colorPrimary)
+            //LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verified, messageColor= R.color.colorPrimary)
         } /*else if (viewModel.user.isVerificationPending()) {
             LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
         }*/ else if (viewModel.user.isProfilePendingToInput(activity!!)) {
-            LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.profile_is_needed)
+            //LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.profile_is_needed)
         }
     }
 

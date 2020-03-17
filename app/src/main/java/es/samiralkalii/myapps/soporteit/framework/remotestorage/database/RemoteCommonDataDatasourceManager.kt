@@ -3,9 +3,10 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.common.IRemoteCommonDataDataSource
+import es.samiralkalii.myapps.domain.common.Area
 import es.samiralkalii.myapps.domain.common.AreasDepartments
+import es.samiralkalii.myapps.domain.common.Department
 import kotlinx.coroutines.tasks.await
-import org.slf4j.LoggerFactory
 
 private const val AREAS_REF= "areas"
 private const val KEY_NAME= "name"
@@ -13,23 +14,20 @@ private const val DEPARTMENTS_REF= "departments"
 
 class RemoteCommonDataDatasourceManager(private val fstore: FirebaseFirestore): IRemoteCommonDataDataSource {
 
-    private val logger= LoggerFactory.getLogger(RemoteCommonDataDatasourceManager::class.java)
-
     override suspend fun getAreasDepartments(): AreasDepartments {
-        val areasDepartments= mutableMapOf<String, List<String>>()
+        val areasDepartments= mutableMapOf<Area, List<Department>>()
         val areasResult= fstore.collection(AREAS_REF).get(Source.SERVER).await()
         if (!areasResult.isEmpty) {
             for (areaDocument in areasResult) {
                 val area= areaDocument.data.get(KEY_NAME) as String
-                val departments= mutableListOf<String>()
+                val departments= mutableListOf<Department>()
                 val departmentsResult= fstore.collection(AREAS_REF).document(areaDocument.id).collection(DEPARTMENTS_REF).get(Source.SERVER).await()
-                logger.debug("por aqui")
                 if (!departmentsResult.isEmpty) {
-                    for (departmentDocumento in departmentsResult) {
-                        val department= departmentDocumento.data.get(KEY_NAME) as String
-                        departments.add(department)
+                    for (departmentDocument in departmentsResult) {
+                        val department= departmentDocument.data.get(KEY_NAME) as String
+                        departments.add(Department(departmentDocument.id, department))
                     }
-                    areasDepartments[area]= departments
+                    areasDepartments[Area(areaDocument.id, area)]= departments
                 }
             }
         }

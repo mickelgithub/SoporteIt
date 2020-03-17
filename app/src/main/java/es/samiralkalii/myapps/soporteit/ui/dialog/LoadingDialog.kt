@@ -6,41 +6,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogLoadingBinding
+import org.koin.android.ext.android.bind
 
 
 class LoadingDialog: MyDialog() {
 
     companion object {
 
-        var loadingDialog: LoadingDialog?= null
+        //var loadingDialog: LoadingDialog?= null
 
         fun processDialog(dialogState: DialogState, fragmentManager: FragmentManager) {
             when (dialogState) {
-                is DialogState.ShowDialog -> {
-                    showDialog(fragmentManager, dialogState.message, dialogState.modal, dialogState.error)
+                is DialogState.ShowProgressDialog -> {
+                    showProgressDialog(fragmentManager, dialogState.message)
                 }
-                DialogState.ShowProgress -> {
-                    showProgress(fragmentManager)
+                is DialogState.ShowMessageDialog -> {
+                    showMessageDialog(fragmentManager, dialogState.message, dialogState.error)
                 }
                 is DialogState.UpdateSuccess -> {
-                    showSuccessAndHide(dialogState.delay)
+                    updateSuccessAndHide(fragmentManager, dialogState.delay)
+                }
+                is DialogState.UpdateMessage -> {
+                    updateMessageAndHide(fragmentManager, dialogState.message, dialogState.delay, dialogState.error)
+                }
+                is DialogState.HideDialog -> {
+                    hideDialog(fragmentManager, dialogState.delay)
                 }
             }
         }
-
-        private fun showDialog(fragmentManager: FragmentManager, message: Int, modal: Boolean, error: Boolean) {
+        private fun showProgressDialog(fragmentManager: FragmentManager, message: Int) {
+            var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
             if (loadingDialog== null) {
-                loadingDialog= LoadingDialog().apply {
-                    isCancelable= !modal
+                LoadingDialog().apply {
+                    isCancelable= false
                     if (message> -1) {
-                        val bundle= Bundle().apply {
+                        Bundle().apply {
                             putInt(DIALOG_FOR_MESSAGE_KEY, message)
-                            if (!error) {
-                                putInt(DIALOG_MESSAGE_COLOR, R.color.colorPrimary)
-                            }
+                        }.also {
+                            arguments= it
                         }
                     }
                 }.also {
@@ -48,47 +55,36 @@ class LoadingDialog: MyDialog() {
                 }
             }
         }
-
-        private fun showProgress(fragmentManager: FragmentManager) {
+        private fun showMessageDialog(fragmentManager: FragmentManager, message: Int, error: Boolean) {
+            var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
             if (loadingDialog== null) {
-                loadingDialog= LoadingDialog().apply {
-                    isCancelable= false
+                LoadingDialog().apply {
+                    isCancelable= true
+                    Bundle().apply {
+                        putInt(DIALOG_FOR_MESSAGE_KEY, message)
+                        if (!error) {
+                            putBoolean(DIALOG_ERROR_INDICATION_KEY, error)
+                        }
+                    }.also {
+                        arguments= it
+                    }
                 }.also {
                     it.show(fragmentManager, FRAGMENT_TAG)
                 }
             }
         }
-
-
-        private fun showSuccessAndHide(delay: Long) {
+        private fun updateSuccessAndHide(fragmentManager: FragmentManager, delay: Long) {
+            var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
             loadingDialog?.updateSuccessAndHide(delay)
-            loadingDialog= null
         }
-
-        private fun hideDialog(delay: Long) {
-            loadingDialog?.dismissInmediatly()
-            loadingDialog= null
+        private fun updateMessageAndHide(fragmentManager: FragmentManager, message: Int, delay: Long, error: Boolean) {
+            var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
+            loadingDialog?.updateMessageAndHide(message, delay, error)
         }
-
-        fun showMessageDialogForAwhile(fragmentManager: FragmentManager, message: Int, delay: Long= DIALOG_DISMISS_DELAY, messageColor: Int= R.color.red_error) {
-            if (loadingDialog== null) {
-                val bundle= Bundle().apply {
-                    putInt(DIALOG_FOR_MESSAGE_KEY, message)
-                    putInt(DIALOG_MESSAGE_COLOR, messageColor)
-                }
-                loadingDialog= LoadingDialog().apply {
-                    isCancelable= false
-                    arguments= bundle
-                }.also {
-                    it.show(fragmentManager, FRAGMENT_TAG)
-                    Handler().postDelayed({
-                        loadingDialog?.dismiss()
-                        loadingDialog= null
-                    }, delay)
-                }
-            }
+        private fun hideDialog(fragmentManager: FragmentManager, delay: Long) {
+            var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
+            loadingDialog?.dismissDialog(delay)
         }
-
     }
 
     private lateinit var binding: DialogLoadingBinding
@@ -99,52 +95,39 @@ class LoadingDialog: MyDialog() {
     ): View? {
 
         binding= DialogLoadingBinding.inflate(inflater, container, false)
-        arguments?.let { args ->
-            val color= args.getInt(DIALOG_MESSAGE_COLOR)
-            args.getInt(DIALOG_FOR_MESSAGE_KEY).let { message ->
-                binding.animationLoading.visibility= View.GONE
-                binding.animationOk.visibility= View.GONE
-                binding.message.apply {
-                    visibility= View.VISIBLE
-                    text= resources.getString(message)
-                    setTextColor(ContextCompat.getColor(context, color))
-                }
+        val message= arguments?.getInt(DIALOG_FOR_MESSAGE_KEY, -1) ?: -1
+        val isError= arguments?.getBoolean(DIALOG_ERROR_INDICATION_KEY, true) ?: true
+        binding.message.visibility= if (message> -1) {
+            if (!isError) {
+                binding.message.setTextColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
             }
+            binding.message.setText(message)
+            binding.animationLoading.visibility= View.GONE
+            binding.animationOk.visibility= View.GONE
+            View.VISIBLE
+        } else {
+            binding.animationLoading.visibility= View.VISIBLE
+            binding.animationOk.visibility= View.GONE
+            View.GONE
         }
-
         return binding.root
     }
-
     private fun updateSuccessAndHide(delay: Long) {
         binding.animationLoading.visibility= View.GONE
         binding.animationOk.visibility= View.VISIBLE
         binding.message.visibility= View.GONE
         dismissDialog(delay)
     }
-
-    private fun dismiss(message: Int?) {
-        var delay= 0L
-
-        if (message!= null && message!= R.string.nothing) {
-            binding.message.visibility = View.VISIBLE
-            binding.message.text = activity!!.resources.getString(message)
-            binding.animationLoading.visibility = View.GONE
-            binding.animationOk.visibility = View.GONE
-            delay = DIALOG_DISMISS_DELAY
-        } else if (message== null) {
-            binding.message.visibility= View.GONE
-            binding.animationLoading.visibility= View.GONE
-            binding.animationOk.apply {
-                visibility= View.VISIBLE
-                playAnimation()
-            }
-            delay= DIALOG_DISMISS_DELAY
+    private fun updateMessageAndHide(message: Int, delay: Long, error: Boolean) {
+        binding.animationLoading.visibility= View.GONE
+        binding.animationOk.visibility= View.GONE
+        binding.message.visibility= View.VISIBLE
+        binding.message.setText(message)
+        if (!error) {
+            binding.message.setTextColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
         }
-        Handler().postDelayed({
-            this.dismiss()
-        }, delay)
+        dismissDialog(delay)
     }
-
     private fun dismissDialog(delay: Long) {
         if (delay> 0) {
             binding.root.postDelayed({
@@ -154,5 +137,4 @@ class LoadingDialog: MyDialog() {
             dismiss()
         }
     }
-
 }

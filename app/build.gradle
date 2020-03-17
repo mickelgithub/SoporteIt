@@ -87,11 +87,6 @@ dependencies {
     //kapt 'androidx.room:room-compiler:2.2.1'
 
     implementation 'com.airbnb.android:lottie:3.4.0'
-
-    implementation 'com.airbnb.android:epoxy:3.9.0'
-    implementation 'com.airbnb.android:epoxy-databinding:3.9.0'
-    // Add the annotation processor if you are using Epoxy's annotations (recommended)
-    kapt 'com.airbnb.android:epoxy-processor:3.9.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
