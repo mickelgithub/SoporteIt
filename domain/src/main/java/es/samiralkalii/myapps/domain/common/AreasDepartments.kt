@@ -7,7 +7,9 @@ class AreasDepartments(val areasDepartments: Map<Area, List<Department>>) {
         return areasDepartments[areaEntry]!!.map { it.name }
     }
 
+    fun getArea(area: String)= areasDepartments.keys.filter { it.name.equals(area, true) }.first()
 
+    fun getDepartment(area: String, department: String)= areasDepartments.get(getArea(area))!!.filter { it.name.equals(department, true) }.first()
 
     fun isEmpty()= areasDepartments.isEmpty()
 

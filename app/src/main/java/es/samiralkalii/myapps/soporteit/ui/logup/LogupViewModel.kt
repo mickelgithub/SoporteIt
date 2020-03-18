@@ -1,10 +1,7 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -36,10 +33,59 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
-    var name= ""
-    var email= ""
-    var password= ""
-    var passwordConfirmation= ""
+    val name= MutableLiveData<String>("")
+    val email= MutableLiveData<String>("")
+    val password= MutableLiveData<String>("")
+    val passwordConfirmation= MutableLiveData<String>("")
+    val area= MutableLiveData<String>("")
+    val department= MutableLiveData<String>("")
+    val isBoss= MutableLiveData<Boolean>()
+    val bossCategory= MutableLiveData<String>("")
+    val buttonLogupEnabled= MediatorLiveData<Boolean>().apply {
+        value= false
+        var nameCorrect= false
+        var emailCorrect= false
+        var passCorrect= false
+        var passConfirmationCorrect= false
+        var areaCorrect= false
+        var departCorrect= false
+        addSource(name, { x -> x?.let {
+            nameCorrect= it.isNotBlank() && it.length>= 4
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+            }
+        })
+        addSource(email, { x -> x?.let {
+            emailCorrect= it.isNotBlank() && it.contains("@")
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+        }
+        })
+        addSource(password, { x -> x?.let {
+            passCorrect= it.isNotBlank()
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+        }
+        })
+        addSource(passwordConfirmation, { x -> x?.let {
+            passConfirmationCorrect= it.isNotBlank()
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+        }
+        })
+        addSource(area, { x -> x?.let {
+            areaCorrect= it.isNotBlank()
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+        }
+        })
+        addSource(department, { x -> x?.let {
+            departCorrect= it.isNotBlank()
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+        }
+        })
+    }
 
     private lateinit var areasDepartments: AreasDepartments
     private lateinit var bossCategories: BossCategories
@@ -86,7 +132,6 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     val departmentError: LiveData<Int?>
         get() = _departmentError
 
-
     private val _loginOrLogUp= MutableLiveData<Int>(0)
     val loginOrLogUp: LiveData<Int>
         get()= _loginOrLogUp
@@ -96,7 +141,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
         get() = _showLoading
 
     private val _departments= MutableLiveData<List<String>>()
-    val deparments: LiveData<List<String>>
+    val departments: LiveData<List<String>>
     get() = _departments
 
     private val _areas= MutableLiveData<List<String>>()
@@ -107,10 +152,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     val bossCategoriesObservable: LiveData<List<String>>
         get() = _bossCategories
 
-    val area= MutableLiveData<String>()
-    val department= MutableLiveData<String>()
-    val isBoss= MutableLiveData<Boolean>()
-    val bossCategory= MutableLiveData<String>()
+
 
     init {
 
@@ -217,15 +259,15 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
 
     fun logupUser() {
         clearErrorsLogUp()
-        if (name.isBlank() || name.length< 4) {
+        if (name.value!!.isBlank() || name.value!!.length< 4) {
             _nameError.value = R.string.name_incorrect_message_error
-        } else if (email.isBlank() || !email.contains("@")) {
+        } else if (email.value!!.isBlank() || !email.value!!.contains("@")) {
             _emailError.value = R.string.email_incorrect_message_error
-        } else if (password.isBlank()) {
+        } else if (password.value!!.isBlank()) {
             _passwordError.value = R.string.password_incorrect_logup_message_error
-        } else if (passwordConfirmation.isBlank()) {
+        } else if (passwordConfirmation.value!!.isBlank()) {
             _confirmationPasswordError.value = R.string.password_incorrect_logup_message_error
-        } else if (passwordConfirmation.isNotBlank() && password.isNotBlank() && password!= passwordConfirmation) {
+        } else if (passwordConfirmation.value!!.isNotBlank() && password.value!!.isNotBlank() && password!= passwordConfirmation) {
             _confirmationPasswordError.value = R.string.passwords_not_equals_logup_message_error
         } else if (area.value.isNullOrBlank()) {
             _areaError.value = R.string.area_incorrect
@@ -265,11 +307,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-                    val isEmployeeBoss= isBoss.value ?: false
-                    val user= User(name= name, email = email, password = password,
-                        profileImage = _imageProfile.value?.toString() ?: "", area= area.value!!,
-                    department = department.value!!, isBoss = isEmployeeBoss
-                    )
+
 
 
                     logupUseCase(user)
@@ -286,6 +324,19 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun createUser(): User {
+        val isEmployeeBoss= isBoss.value ?: false
+        val bossCategoryObj= if (isEmployeeBoss) bossCategories.getBossCategory(bossCategory.value!!) else null
+        val areaObj= areasDepartments.getArea(area.value!!)
+        val departmentObj= areasDepartments.getDepartment(area.value!!, department.value!!)
+        return User(name= name.value!!, email = email.value!!, password = password.value!!,
+            profileImage = _imageProfile.value?.toString() ?: "", area= areaObj.name,
+            areaId = areaObj.id, department = departmentObj.name, departmentId = departmentObj.id,
+            isBoss = isEmployeeBoss, bossCategory = bossCategoryObj?.name ?: "",
+            bossCategoryId = bossCategoryObj?.id ?: "",
+            bossLevel = bossCategoryObj?.level ?: 0)
     }
 
     fun onLogupClick()= logupUser()
@@ -308,10 +359,12 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     }
 
     fun updateDepartmentsOfArea(area: String?) {
-        val departments= areasDepartments.getDepartmentsName(area!!)
-        if (departments!= _departments.value) {
-            _departments.value= departments
-            department.value= ""
+        if (!area.isNullOrBlank()) {
+            val departments= areasDepartments.getDepartmentsName(area!!)
+            if (departments!= _departments.value) {
+                _departments.value= departments
+                department.value= ""
+            }
         }
     }
 

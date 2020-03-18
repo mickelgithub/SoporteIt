@@ -4,14 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
 import android.os.Handler
 import android.view.animation.AnimationUtils
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.transition.Scene
 import androidx.transition.Transition
@@ -21,6 +15,7 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityLogupBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
+import es.samiralkalii.myapps.soporteit.ui.BaseActivity
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.android.synthetic.main.activity_logup.*
@@ -30,7 +25,7 @@ import org.slf4j.LoggerFactory
 
 private const val DELAY_SHOW_DIALOG_ERROR= 300L
 
-class LogupActivity : AppCompatActivity(),
+class LogupActivity : BaseActivity(),
     PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
 
     private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
@@ -41,6 +36,9 @@ class LogupActivity : AppCompatActivity(),
     private val bindingLogin: SceneLoginFormBinding by lazy {
         initLoginBinding()
     }
+    private lateinit var scene1: Scene
+    private lateinit var scene2: Scene
+    private lateinit var transitionMngLogUpToLogIn: Transition
 
     private fun initLoginBinding(): SceneLoginFormBinding {
         val bindingLogin= SceneLoginFormBinding.inflate(layoutInflater, container, false)
@@ -50,12 +48,9 @@ class LogupActivity : AppCompatActivity(),
         scene2= Scene(container, bindingLogin.root)
         return bindingLogin
     }
-    private lateinit var scene1: Scene
-    private lateinit var scene2: Scene
-    private lateinit var transitionMngLogUpToLogIn: Transition
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun initUI() {
         hideSystemUI()
 
         binding= ActivityLogupBinding.inflate(layoutInflater)
@@ -72,7 +67,9 @@ class LogupActivity : AppCompatActivity(),
         scene1.enter()
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
+    }
 
+    override fun initStateObservation() {
         viewModel.logupState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { screenState ->
                 if (screenState is ScreenState.Render) {
@@ -111,7 +108,6 @@ class LogupActivity : AppCompatActivity(),
         viewModel.area.observe(this, Observer {
             viewModel.updateDepartmentsOfArea(it)
         })
-
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {
@@ -209,21 +205,6 @@ class LogupActivity : AppCompatActivity(),
         }
     }
 
-
-    private fun checkPermission(): Boolean {
-        val result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-        return result == PackageManager.PERMISSION_GRANTED
-    }
-    private fun requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            Toast.makeText(this, getString(es.samiralkalii.myapps.soporteit.R.string.read_permission_indication), Toast.LENGTH_LONG).show();
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
-        }
-    }
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -246,10 +227,10 @@ class LogupActivity : AppCompatActivity(),
         when (profilePhotoSource) {
             PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.CAMERA -> logger.debug("Camera clicked.........")
             PickUpProfilePhotoBottonSheetDialog.ProfilePhotoSource.GALLERY -> {
-                if (checkPermission()) {
+                if (checkStoragePermission()) {
                     showChooserToPickImage()
                 } else {
-                    requestPermission()
+                    requestStoragePermissions()
                 }
             }
         }
@@ -258,8 +239,5 @@ class LogupActivity : AppCompatActivity(),
     override fun deleteImageProfile() {
         viewModel.updateImageProfile(null)
     }
-
-    //---------------------------------------------------------------------------------
-
 
 }

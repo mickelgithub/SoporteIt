@@ -4,6 +4,8 @@ class BossCategories(val bossCategories: List<BossCategory>) {
 
     fun getBossCategoriesName()= bossCategories.map { it.name }
 
+    fun getBossCategory(name: String)= bossCategories.filter { it.name.equals(name, true) }.first()
+
 }
 
-data class BossCategory(val id: String, val name: String)
+data class BossCategory(val id: String, val name: String, val level: Int)

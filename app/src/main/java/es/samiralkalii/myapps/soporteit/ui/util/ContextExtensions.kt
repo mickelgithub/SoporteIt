@@ -1,7 +1,9 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -9,6 +11,8 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupActivity
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
@@ -57,5 +61,19 @@ fun AppCompatActivity.hideSystemUI() {
         newUiOptions = newUiOptions xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
     window.getDecorView().setSystemUiVisibility(newUiOptions)
-
 }
+
+fun AppCompatActivity.requestStoragePermissions() {
+    if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        Toast.makeText(this, getString(es.samiralkalii.myapps.soporteit.R.string.read_permission_indication), Toast.LENGTH_LONG).show();
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
+    } else {
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
+    }
+}
+
+fun AppCompatActivity.checkStoragePermission(): Boolean {
+    val result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    return result == PackageManager.PERMISSION_GRANTED
+}
+

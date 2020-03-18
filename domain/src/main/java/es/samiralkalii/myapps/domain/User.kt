@@ -7,33 +7,29 @@ data class User(
     val id: String= "",
     val profileImage: String= "",
     val remoteProfileImage: String= "",
-    val createdAt: Long= 0,
+    val createdAt: String= "",
     val isEmailVerified: Boolean= false,
     val profile: String= "",
-    val bossVerified: Boolean= false,
-    val bossCategory: BossCategory= BossCategory.PROJECT_MANAGER,
+    val profileId: String= "",
+    val bossCategory: String= "",
+    val bossCategoryId: String= "",
+    val bossLevel: Int= 0,
     val isBoss: Boolean= false,
+    val bossVerified: Boolean= false,
     val messagingToken: String= "",
-    val holidayDaysPerYear: Long= DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS,
+    val holidayDays: Int= DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS,
     val internalEmployee: Boolean= false,
     val area: String= "",
-    val department: String= ""
+    val areaId: String= "",
+    val department: String= "",
+    val departmentId: String= ""
                 ) {
 
     companion object {
         val EMPTY= User()
-        val DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS= 22L
-        val DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS= 26L
+        val DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS= 22
+        val DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS= 26
     }
-
-    enum class BossCategory {
-        PROJECT_MANAGER,
-        AREA_PROJECT_MANAGER,
-        IT_DIRECTOR;
-    }
-
-
-
 }
 
 

@@ -6,29 +6,31 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.ui.BaseActivity
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
-class SplashActivity : AppCompatActivity() {
-
-    private val viewModel: SplashViewModel by viewModel()
+class SplashActivity : BaseActivity() {
 
     private val logger= LoggerFactory.getLogger(SplashActivity::class.java)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val viewModel: SplashViewModel by viewModel()
+
+    override fun initUI() {
         hideSystemUI()
+    }
 
-        viewModel.checkUserAuth()
-
+    override fun initStateObservation() {
         viewModel.splashState.observe(this, Observer {
             if (it is ScreenState.Render) {
                 processState(it)
             }
         })
+    }
 
-
+    override fun initLoading() {
+        viewModel.checkUserAuth()
     }
 
     private fun processState(screenState: ScreenState.Render<SplashState>?) {
