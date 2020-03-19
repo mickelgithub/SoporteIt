@@ -42,9 +42,9 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateHolidayDaysAndInternalState(holidayDays: Long, internal: Boolean) {
+    override suspend fun updateHolidayDaysAndInternalState(holidayDays: Int, internal: Boolean) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
-            putLong(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDays)
+            putInt(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDays)
             putBoolean(KEY_INTERNAL_EMPLOYEE, internal)
         }
     }
@@ -86,14 +86,14 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_PASS, user.password)
             putString(KEY_LOCAL_PROFILE_IMAGE, user.profileImage)
             putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
-            putLong(KEY_CREATION_DATE, user.createdAt)
+            putString(KEY_CREATION_DATE, user.createdAt)
             putBoolean(KEY_EMAIL_VERIFIED, user.isEmailVerified)
             putString(KEY_PROFILE, user.profile)
             //putString(KEY_BOSS_VERIFICATION, user.bossVerified)
             //putString(KEY_TEAM, user.team)
             //putString(KEY_TEAM_ID, user.teamId)
             //putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
-            putLong(KEY_HOLIDAY_DAYS_PER_YEAR, user.holidayDaysPerYear)
+            putInt(KEY_HOLIDAY_DAYS_PER_YEAR, user.holidayDays)
             putBoolean(KEY_INTERNAL_EMPLOYEE, user.internalEmployee)
             //putString(KEY_BOSS, user.isBoss)
         }
@@ -122,11 +122,12 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val messaginToken= getString(KEY_MESSAGING_TOKEN, "") ?: ""
             val boss= getBoolean(KEY_BOSS, false) ?: false
 
-            return User(email, pass, name, profileImage = imageProfilePath,
+            /*return User(email, pass, name, profileImage = imageProfilePath,
                 id= id, remoteProfileImage = imageProfileUrl, createdAt = creationDate,
                 isEmailVerified = emailValidated, profile = profile, bossVerified = bossVerification,
                 holidayDaysPerYear = holidayDays, internalEmployee = internalEmployee,
-                messagingToken = messaginToken, isBoss = boss)
+                messagingToken = messaginToken, isBoss = boss)*/
+            return User()
         }
     }
 }

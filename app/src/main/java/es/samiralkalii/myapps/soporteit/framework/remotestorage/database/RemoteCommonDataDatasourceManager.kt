@@ -8,6 +8,7 @@ import kotlinx.coroutines.tasks.await
 
 private const val AREAS_REF= "areas"
 private const val KEY_NAME= "name"
+private const val KEY_CATEGORY_LEVEL= "level"
 private const val DEPARTMENTS_REF= "departments"
 private const val BOSS_CATEGORIES_REF= "bossCategories"
 
@@ -39,7 +40,8 @@ class RemoteCommonDataDatasourceManager(private val fstore: FirebaseFirestore): 
         if (!categoriesResult.isEmpty) {
             for (categoryDocument in categoriesResult) {
                 val categoryName = categoryDocument.data.get(KEY_NAME) as String
-                bossCategories.add(BossCategory(categoryDocument.id, categoryName))
+                val categoryLevel = (categoryDocument.data.get(KEY_CATEGORY_LEVEL) as Long).toInt()
+                bossCategories.add(BossCategory(categoryDocument.id, categoryName, categoryLevel))
             }
         }
         return BossCategories(bossCategories)

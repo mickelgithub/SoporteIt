@@ -267,7 +267,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
             _passwordError.value = R.string.password_incorrect_logup_message_error
         } else if (passwordConfirmation.value!!.isBlank()) {
             _confirmationPasswordError.value = R.string.password_incorrect_logup_message_error
-        } else if (passwordConfirmation.value!!.isNotBlank() && password.value!!.isNotBlank() && password!= passwordConfirmation) {
+        } else if (passwordConfirmation.value!!.isNotBlank() && password.value!!.isNotBlank() && password.value!= passwordConfirmation.value) {
             _confirmationPasswordError.value = R.string.passwords_not_equals_logup_message_error
         } else if (area.value.isNullOrBlank()) {
             _areaError.value = R.string.area_incorrect

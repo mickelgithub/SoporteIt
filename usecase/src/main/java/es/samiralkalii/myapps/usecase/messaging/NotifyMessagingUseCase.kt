@@ -56,7 +56,7 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                     //id= notification.destination
                 }
                 remoteUserRepository.getUserInfo(remoteUser)
-                preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDaysPerYear, remoteUser.internalEmployee)
+                preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDays, remoteUser.internalEmployee)
                 notificationRepository.showNotificationInvitationToTeam(notification.senderName, notification.senderEmail, notification.team,
                     notification.senderProfileImage, notifId)
             }

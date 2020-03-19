@@ -32,7 +32,7 @@ fun User.toBundle()= Bundle().apply {
     putString(KEY_ID, id)
     putString(KEY_LOCAL_PROFILE_IMAGE, profileImage)
     putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
-    putLong(KEY_CREATION_DATE, createdAt)
+    putString(KEY_CREATION_DATE, createdAt)
     putBoolean(KEY_EMAIL_VERIFIED, isEmailVerified)
     putString(KEY_PROFILE, profile)
     //putString(KEY_BOSS_VERIFICATION, bossVerified)
@@ -40,7 +40,7 @@ fun User.toBundle()= Bundle().apply {
     //putString(KEY_TEAM_ID, teamId)
     //putString(KEY_BOSS, isBoss)
     //putString(KEY_TEAM_INVITATION_STATE, teamInvitationState.toString())
-    putLong(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDaysPerYear)
+    putInt(KEY_HOLIDAY_DAYS_PER_YEAR, holidayDays)
     putBoolean(KEY_INTERNAL_EMPLOYEE, internalEmployee)
     putString(KEY_MESSAGING_TOKEN, messagingToken)
 }
@@ -51,7 +51,7 @@ fun Bundle.toUser()= User(
     id= getString(KEY_ID, ""),
     profileImage = getString(KEY_LOCAL_PROFILE_IMAGE, ""),
     remoteProfileImage = getString(KEY_REMOTE_PROFILE_IMAGE, ""),
-    createdAt = getLong(KEY_CREATION_DATE, 0L),
+    createdAt = getString(KEY_CREATION_DATE, ""),
     isEmailVerified = getBoolean(KEY_EMAIL_VERIFIED, false),
     profile = getString(KEY_PROFILE, ""),
     //bossVerified = getString(KEY_BOSS_VERIFICATION, ""),
@@ -59,7 +59,7 @@ fun Bundle.toUser()= User(
     //teamId = getString(KEY_TEAM_ID, ""),
     //isBoss = getString(KEY_BOSS, ""),
     //teamInvitationState = Reply.valueOf(getString(KEY_TEAM_INVITATION_STATE, Reply.NONE.toString())),
-    holidayDaysPerYear = getLong(KEY_HOLIDAY_DAYS_PER_YEAR, User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS),
+    holidayDays = getInt(KEY_HOLIDAY_DAYS_PER_YEAR, User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS),
     internalEmployee = getBoolean(KEY_INTERNAL_EMPLOYEE, false),
     messagingToken = getString(KEY_MESSAGING_TOKEN, "")
 
