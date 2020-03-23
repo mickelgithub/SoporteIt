@@ -72,10 +72,13 @@ fun View.bindVisible(visible: Boolean?) {
 
 @BindingAdapter("imgsrc")
 fun ImageView.bindImgSrc(imageUri: Uri?) {
-    Glide.with(this.context).load(imageUri ?: R.drawable.profile)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .skipMemoryCache(true)
-        .into(this)
+    imageUri?.let {
+        Glide.with(this.context).load(it)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(this)
+    }
+
 }
 
 @BindingAdapter("imgsrc")

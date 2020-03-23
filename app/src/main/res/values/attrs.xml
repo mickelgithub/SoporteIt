@@ -6,4 +6,11 @@
             <flag name="right" value="2" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="ProfileImage">
+        <attr name="bgColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="text" format="string" />
+        <attr name="imgUri" format="string" />
+        <attr name="placeholder" format="integer"/>
+    </declare-styleable>
 </resources>

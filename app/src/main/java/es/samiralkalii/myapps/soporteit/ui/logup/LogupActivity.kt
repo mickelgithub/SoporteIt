@@ -75,33 +75,7 @@ class LogupActivity : BaseActivity(),
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
-        bindingLogup.profileImage.apply {
-            //setImageBitmap(drawableToBitmap(ProfileDrawable("samir", Color.parseColor("#000000"), Color.parseColor("#FFFFFF"), 20f)))
-            setImageDrawable(ProfileDrawable("Jose", Color.parseColor("#FFFFFF"), Color.parseColor("#000000"), 20f))
-        }
-    }
-
-    fun drawableToBitmap(drawable: Drawable): Bitmap? {
-        if (drawable is BitmapDrawable) {
-            return drawable.bitmap
-        }
-
-        // We ask for the bounds if they have been set as they would be most
-        // correct, then we check we are  > 0
-        val width = if (!drawable.bounds.isEmpty) drawable.bounds
-            .width() else drawable.intrinsicWidth
-        val height = if (!drawable.bounds.isEmpty) drawable.bounds
-            .height() else drawable.intrinsicHeight
-
-        // Now we check we are > 0
-        val bitmap = Bitmap.createBitmap(
-            if (width <= 0) 1 else width, if (height <= 0) 1 else height,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
-        drawable.draw(canvas)
-        return bitmap
+        //bindingLogup.profileImage.setImageDrawable(ProfileDrawable("Jose", Color.parseColor("#FFFFFF"), Color.parseColor("#000000"), 20f))
     }
 
     override fun initStateObservation() {
@@ -152,7 +126,7 @@ class LogupActivity : BaseActivity(),
                     logger.debug("Login correcto, goto Home")
                     if (viewModel.imageProfile.value.toString().isNotBlank()) {
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
-                        profile_image.startAnimation(shake)
+                        //profile_image.startAnimation(shake)
                     }
                     //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
                     Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, MyDialog.DIALOG_DISMISS_DELAY)
