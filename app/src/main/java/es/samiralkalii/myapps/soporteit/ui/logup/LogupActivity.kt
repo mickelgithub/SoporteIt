@@ -4,6 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
@@ -18,10 +23,12 @@ import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseActivity
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileDrawable
 import kotlinx.android.synthetic.main.activity_logup.*
 import kotlinx.android.synthetic.main.scene_logup_form.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
+
 
 private const val DELAY_SHOW_DIALOG_ERROR= 300L
 
@@ -67,6 +74,34 @@ class LogupActivity : BaseActivity(),
         scene1.enter()
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
+
+        bindingLogup.profileImage.apply {
+            //setImageBitmap(drawableToBitmap(ProfileDrawable("samir", Color.parseColor("#000000"), Color.parseColor("#FFFFFF"), 20f)))
+            setImageDrawable(ProfileDrawable("Jose", Color.parseColor("#FFFFFF"), Color.parseColor("#000000"), 20f))
+        }
+    }
+
+    fun drawableToBitmap(drawable: Drawable): Bitmap? {
+        if (drawable is BitmapDrawable) {
+            return drawable.bitmap
+        }
+
+        // We ask for the bounds if they have been set as they would be most
+        // correct, then we check we are  > 0
+        val width = if (!drawable.bounds.isEmpty) drawable.bounds
+            .width() else drawable.intrinsicWidth
+        val height = if (!drawable.bounds.isEmpty) drawable.bounds
+            .height() else drawable.intrinsicHeight
+
+        // Now we check we are > 0
+        val bitmap = Bitmap.createBitmap(
+            if (width <= 0) 1 else width, if (height <= 0) 1 else height,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+        drawable.draw(canvas)
+        return bitmap
     }
 
     override fun initStateObservation() {
