@@ -7,6 +7,7 @@ data class User(
     val id: String= "",
     val profileImage: String= "",
     val remoteProfileImage: String= "",
+    val profileColor: Int= -1,
     val createdAt: String= "",
     val isEmailVerified: Boolean= false,
     val profile: String= "",

@@ -14,14 +14,12 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.soporteit.ui.util.getRandomColor
 import es.samiralkalii.myapps.usecase.authlogin.LoginUserCase
 import es.samiralkalii.myapps.usecase.authlogin.LogupUseCase
 import es.samiralkalii.myapps.usecase.common.GetAreasDepartmentsUseCase
 import es.samiralkalii.myapps.usecase.common.GetBossCategoriesUseCase
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -41,6 +39,9 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     val department= MutableLiveData<String>("")
     val isBoss= MutableLiveData<Boolean>()
     val bossCategory= MutableLiveData<String>("")
+    val _profileColor= MutableLiveData<Pair<Int, Int>>()
+    val profileColor: LiveData<Pair<Int, Int>>
+        get() = _profileColor
     val buttonLogupEnabled= MediatorLiveData<Boolean>().apply {
         value= false
         var nameCorrect= false
@@ -274,6 +275,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
         } else if (department.value.isNullOrBlank()) {
             _departmentError.value= R.string.department_incorrect
         } else {
+            _profileColor.value= getRandomColor()
             _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
@@ -308,7 +310,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
 
-
+                    delay(2000)
 
                     logupUseCase(user)
 

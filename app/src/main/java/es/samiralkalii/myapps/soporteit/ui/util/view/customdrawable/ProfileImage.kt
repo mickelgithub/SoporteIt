@@ -3,29 +3,30 @@ package es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
-import android.graphics.*
-import android.text.TextPaint
+import android.graphics.Color
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.Placeholder
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.widget.TextViewCompat
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.firebase.database.collection.LLRBNode
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.ui.util.bindImgSrc
+import org.slf4j.LoggerFactory
 
 
 class ProfileImage @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
 
-    val bgColor: Int
-    val textColor: Int
+    private val logger = LoggerFactory.getLogger(ProfileImage::class.java)
+
+    var bgColor: Int
+    var textColor: Int
     var imgUri: String
     var placeholder: Int= -1
     var text: String
@@ -54,59 +55,85 @@ class ProfileImage @JvmOverloads constructor(
 
     private fun setupUi() {
         if (text.isNotBlank()) {
-            setupTextView(text, bgColor, textColor)
+            setTextView(text, bgColor, textColor)
         } else {
-            setupImageView(imgUri, placeholder)
+            setImageView(imgUri)
         }
     }
 
     fun showDefaultImageProfile(textParam: String, bgColorParam: Int, textColorParam: Int) {
         if (!textParam.isNullOrBlank()) {
             text= textParam
-            setupTextView(text, bgColorParam, textColorParam)
+            setTextView(text, bgColorParam, textColorParam)
         }
     }
 
-    private fun setupTextView(text: String, bgColor: Int, textColor: Int) {
+    fun setTextView(textParam: String?, bgColorParam: Int, textColorParam: Int) {
+        if (!textParam.isNullOrBlank()) {
+            txtView.text= text
+            bgColor= bgColorParam
+            textColor= textColorParam
 
+            txtView.setBackgroundColor(bgColor)
+            txtView.setTextColor(textColor)
 
-        val cx = imgView.width/2
-        val cy = imgView.height/2
-        val initialRadius = 0
-        txtView.setBackgroundColor(ResourcesCompat.getColor(resources, bgColor, null))
-        txtView.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
-        txtView.text= text
-        val anim = ViewAnimationUtils.createCircularReveal(imgView, cx, cy, imgView.width.toFloat()/2, initialRadius.toFloat())
+            if (imgView.isVisible) {
+                animateRevealView(imgView) {
+                    imgView.isVisible= false
+                    txtView.isVisible= true
+                    fadeIn(txtView, {logger.debug("Ya hemos terminado el fade in")})
+                }
+            } else {
+                txtView.isVisible= true
+                fadeIn(txtView, {})
+            }
+        }
+    }
+
+    fun setImageView(uriParam: String?) {
+        if (!uriParam.isNullOrBlank()) {
+            Glide.with(this.context).load(Uri.parse(uriParam)).into(imgView)
+        } else {
+            imgView.setImageResource(placeholder)
+        }
+        if (txtView.isVisible) {
+            animateRevealView(txtView) {
+                txtView.isVisible= false
+                imgView.isVisible= true
+                fadeIn(imgView, {logger.debug("Ya hemos terminado el fade in")})
+            }
+        } else {
+            imgView.isVisible= true
+            fadeIn(imgView, {})
+        }
+    }
+
+    private fun animateRevealView(view: View, onFinishAnim: () -> Unit) {
+        val cx = view.width/2
+        val cy = view.height/2
+        val initialRadius = view.width/2
+        val endRadius= 0
+
+        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                imgView.visibility= View.GONE
-                txtView.visibility= View.VISIBLE
+                onFinishAnim()
             }
         })
         anim.start()
 
-        //txtView.visibility= View.VISIBLE
-        //imgView.visibility= View.GONE
-//        txtView.setBackgroundColor(ResourcesCompat.getColor(resources, bgColor, null))
-//        txtView.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
-//        txtView.setText(text)
     }
 
-    private fun setupImageView(uriParam: String, placeholderParam: Int) {
-        imgView.visibility= View.VISIBLE
-        txtView.visibility= View.GONE
-        if (uriParam.isNotBlank()) {
-            Glide.with(this.context).load(uriParam).into(imgView)
-        } else if (placeholder!= null) {
-            imgView.setImageResource(placeholderParam)
-        }
+    private fun fadeIn(view: View, onFinishAnim: () -> Unit) {
+        view.alpha= 0F
+        val anim= view.animate().setDuration(2000).alpha(1F)
+        anim.setListener(object: AnimatorListenerAdapter() {
+
+            override fun onAnimationEnd(animation: Animator?) {
+                onFinishAnim()
+            }
+        })
     }
-
-
-
-
-
-
 
 }

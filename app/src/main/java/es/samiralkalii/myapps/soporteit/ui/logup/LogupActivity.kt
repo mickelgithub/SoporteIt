@@ -4,11 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
@@ -23,9 +18,7 @@ import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseActivity
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
-import es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileDrawable
 import kotlinx.android.synthetic.main.activity_logup.*
-import kotlinx.android.synthetic.main.scene_logup_form.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -75,11 +68,12 @@ class LogupActivity : BaseActivity(),
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
-        bindingLogup.cardProfileView.run {
+        /*bindingLogup.cardProfileView.run {
             postDelayed({
-                showDefaultImageProfile("SAMIR", R.color.red_error, R.color.white)
+                val colors= getRandomColor()
+                showDefaultImageProfile("SAMIR", colors.first, colors.second)
             }, 5000)
-        }
+        }*/
     }
 
     override fun initStateObservation() {
@@ -120,6 +114,10 @@ class LogupActivity : BaseActivity(),
 
         viewModel.area.observe(this, Observer {
             viewModel.updateDepartmentsOfArea(it)
+        })
+
+        viewModel.profileColor.observe(this, Observer {
+            bindingLogup.cardProfileView.setTextView(viewModel.name.value, it.first, it.second)
         })
     }
 

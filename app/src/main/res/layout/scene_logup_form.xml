@@ -49,6 +49,8 @@
             </androidx.cardview.widget.CardView>-->
             <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
                 android:id="@+id/card_profile_view"
+                android:onClick="@{()-> activity.onImageProfileClick()}"
+                app:imageView="@{viewModel.imageProfile.toString()}"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="32dp"
