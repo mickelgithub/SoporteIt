@@ -75,7 +75,11 @@ class LogupActivity : BaseActivity(),
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
-        //bindingLogup.profileImage.setImageDrawable(ProfileDrawable("Jose", Color.parseColor("#FFFFFF"), Color.parseColor("#000000"), 20f))
+        bindingLogup.cardProfileView.run {
+            postDelayed({
+                showDefaultImageProfile("SAMIR", R.color.red_error, R.color.white)
+            }, 5000)
+        }
     }
 
     override fun initStateObservation() {

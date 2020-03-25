@@ -1,15 +1,23 @@
 package es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.*
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.Placeholder
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.TextViewCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.util.bindImgSrc
 
 
 class ProfileImage @JvmOverloads constructor(
@@ -18,55 +26,25 @@ class ProfileImage @JvmOverloads constructor(
 
     val bgColor: Int
     val textColor: Int
-
-    val imgUri: String
-    val placeholder: Int
+    var imgUri: String
+    var placeholder: Int= -1
+    var text: String
     val imgView: ImageView
-    //val txtView: TextView
-    val textPaint: TextPaint
-
-    var text: String= ""
-        set(value) {
-            if (field != value) {
-                field= value
-                if (value!= "") {
-                    if (imgView!= null) {
-                        imgView.visibility= View.GONE
-                    }
-                } else {
-                    if (imgView!= null) {
-                        imgView.visibility= View.VISIBLE
-                    }
-                }
-                invalidate()
-            }
-
-        }
+    val txtView: TextView
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.ProfileImage,
             0, 0)
-        bgColor = a.getInt(R.styleable.ProfileImage_bgColor, android.R.color.black)
-        textColor= a.getInt(R.styleable.ProfileImage_textColor, android.R.color.white)
-
+        bgColor = ResourcesCompat.getColor(resources, a.getInt(R.styleable.ProfileImage_bgColor, R.color.colorPrimary), null)
+        textColor= ResourcesCompat.getColor(resources, a.getInt(R.styleable.ProfileImage_textColor, R.color.white), null)
         imgUri= a.getString(R.styleable.ProfileImage_imgUri) ?: ""
         placeholder= a.getInt(R.styleable.ProfileImage_placeholder, R.drawable.profile)
-        text= a.getString(R.styleable.ProfileImage_text) ?: "Samir"
+        text= a.getString(R.styleable.ProfileImage_text) ?: ""
         a.recycle()
-
         View.inflate(context, R.layout.profile_image, this)
-        imgView= findViewById<ImageView>(R.id.profile_image)
-        //txtView= findViewById<TextView>(R.id.profile_text)
-
-        imgView.visibility= if (text.length== 0) View.VISIBLE else View.GONE
-
-
-
-
-        textPaint= TextPaint(Paint.ANTI_ALIAS_FLAG)
-
+        imgView= findViewById(R.id.profile_image)
+        txtView= findViewById(R.id.profile_text)
         setupUi()
-
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -75,45 +53,60 @@ class ProfileImage @JvmOverloads constructor(
     }
 
     private fun setupUi() {
-
-        //setBackgroundColor(bgColor)
-
-    }
-
-
-
-    override fun onDraw(canvas: Canvas?) {
-
-        super.onDraw(canvas)
-
-        if (text.length> 0) {
-            val headerFontSize = getFitTextWidthSize(width.toFloat(), text)
-            textPaint.textSize= headerFontSize
-            textPaint.color= Color.parseColor("#FFFFFF")
-            val textBound= Rect()
-            textPaint.getTextBounds(text, 0, text.length, textBound)
-            val offsetX= (width*5).toFloat()/100
-            val offsetY= (height/2).toFloat()+ textBound.height()/2
-
-            canvas?.drawColor(Color.parseColor("#000000"))
-            canvas?.drawText(text, offsetX, offsetY, textPaint)
-
-            /*val bmp=Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-            val miCanvas= Canvas(bmp);
-            miCanvas.drawColor(colorInt)*/
+        if (text.isNotBlank()) {
+            setupTextView(text, bgColor, textColor)
+        } else {
+            setupImageView(imgUri, placeholder)
         }
-
     }
 
-    /*fun setText(textParam: String) {
-        imgView.visibility= View.GONE
-        text= textParam
-
-    }*/
-
-    private fun getFitTextWidthSize(width: Float, text: String): Float {
-        val offset= (width*5)/100
-        val nowWidth = textPaint.measureText(text)
-        return ((width- offset*2) / nowWidth) * textPaint.textSize
+    fun showDefaultImageProfile(textParam: String, bgColorParam: Int, textColorParam: Int) {
+        if (!textParam.isNullOrBlank()) {
+            text= textParam
+            setupTextView(text, bgColorParam, textColorParam)
+        }
     }
+
+    private fun setupTextView(text: String, bgColor: Int, textColor: Int) {
+
+
+        val cx = imgView.width/2
+        val cy = imgView.height/2
+        val initialRadius = 0
+        txtView.setBackgroundColor(ResourcesCompat.getColor(resources, bgColor, null))
+        txtView.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
+        txtView.text= text
+        val anim = ViewAnimationUtils.createCircularReveal(imgView, cx, cy, imgView.width.toFloat()/2, initialRadius.toFloat())
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                imgView.visibility= View.GONE
+                txtView.visibility= View.VISIBLE
+            }
+        })
+        anim.start()
+
+        //txtView.visibility= View.VISIBLE
+        //imgView.visibility= View.GONE
+//        txtView.setBackgroundColor(ResourcesCompat.getColor(resources, bgColor, null))
+//        txtView.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
+//        txtView.setText(text)
+    }
+
+    private fun setupImageView(uriParam: String, placeholderParam: Int) {
+        imgView.visibility= View.VISIBLE
+        txtView.visibility= View.GONE
+        if (uriParam.isNotBlank()) {
+            Glide.with(this.context).load(uriParam).into(imgView)
+        } else if (placeholder!= null) {
+            imgView.setImageResource(placeholderParam)
+        }
+    }
+
+
+
+
+
+
+
 }
