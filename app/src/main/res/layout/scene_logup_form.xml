@@ -49,10 +49,8 @@
             </androidx.cardview.widget.CardView>-->
             <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
                 android:id="@+id/card_profile_view"
-                android:background="@color/black"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-
                 android:layout_marginTop="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
