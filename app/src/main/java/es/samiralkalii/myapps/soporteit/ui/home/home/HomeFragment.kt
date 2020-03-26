@@ -15,7 +15,6 @@ import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
-import es.samiralkalii.myapps.soporteit.ui.util.teamCreated
 import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -114,7 +113,8 @@ class HomeFragment: Fragment(),
         super.onCreateOptionsMenu(menu, inflater)
         if (viewModel.user.isBoss) {
             inflater.inflate(R.menu.menu_home_fragment, menu)
-            if (viewModel.user.teamCreated) {
+            //if (viewModel.user.teamCreated) {
+            if (true) {
                 menu.findItem(R.id.menu_item_create_team).setVisible(false)
             } else {
                 menu.findItem(R.id.menu_item_create_group).setVisible(false)

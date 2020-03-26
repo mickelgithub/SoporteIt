@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.net.Uri
+import android.os.Handler
 import androidx.lifecycle.*
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -275,8 +276,8 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
         } else if (department.value.isNullOrBlank()) {
             _departmentError.value= R.string.department_incorrect
         } else {
-            _profileColor.value= getRandomColor()
             _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
+            var profColor: Pair<Int, Int>?= if (_imageProfile.value== null) getRandomColor() else null
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
                 when (error) {
@@ -309,26 +310,37 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-
                     delay(2000)
-
-                    logupUseCase(user)
-
+                    logupUseCase(createUser(profColor))
                 }.await()
                 _progressVisible.value = MyDialog.DialogState.UpdateSuccess()
                 when (result) {
-                    /*is LogupUseCase.Result.LoggedUpOk -> {
-                        _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
+                    is LogupUseCase.Result.LoggedUpOk -> {
+                        if (profColor!= null) {
+                            _profileColor.value= profColor
+                            Handler().postDelayed({
+                                _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
+                            }, 5000)
+                        } else {
+                            _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
+                        }
                     }
                     is LogupUseCase.Result.LoggedUpAsManagerTeamOk -> {
-                        _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
-                    }*/
+                        if (profColor!= null) {
+                            _profileColor.value= profColor
+                            Handler().postDelayed({
+                                _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
+                            }, 2000)
+                        } else {
+                            _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
+                        }
+                    }
                 }
             }
         }
     }
 
-    fun createUser(): User {
+    fun createUser(profileColor: Pair<Int, Int>?): User {
         val isEmployeeBoss= isBoss.value ?: false
         val bossCategoryObj= if (isEmployeeBoss) bossCategories.getBossCategory(bossCategory.value!!) else null
         val areaObj= areasDepartments.getArea(area.value!!)
@@ -338,7 +350,9 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
             areaId = areaObj.id, department = departmentObj.name, departmentId = departmentObj.id,
             isBoss = isEmployeeBoss, bossCategory = bossCategoryObj?.name ?: "",
             bossCategoryId = bossCategoryObj?.id ?: "",
-            bossLevel = bossCategoryObj?.level ?: 0)
+            bossLevel = bossCategoryObj?.level ?: 0,
+            profileBackColor = profileColor?.first ?: -1,
+            profileTextColor = profileColor?.second ?: -1)
     }
 
     fun onLogupClick()= logupUser()

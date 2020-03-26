@@ -70,18 +70,16 @@ class ProfileImage @JvmOverloads constructor(
 
     fun setTextView(textParam: String?, bgColorParam: Int, textColorParam: Int) {
         if (!textParam.isNullOrBlank()) {
-            txtView.text= text
+            txtView.text= textParam
             bgColor= bgColorParam
             textColor= textColorParam
-
             txtView.setBackgroundColor(bgColor)
             txtView.setTextColor(textColor)
-
             if (imgView.isVisible) {
                 animateRevealView(imgView) {
                     imgView.isVisible= false
                     txtView.isVisible= true
-                    fadeIn(txtView, {logger.debug("Ya hemos terminado el fade in")})
+                    fadeIn(txtView, {})
                 }
             } else {
                 txtView.isVisible= true
@@ -127,7 +125,7 @@ class ProfileImage @JvmOverloads constructor(
 
     private fun fadeIn(view: View, onFinishAnim: () -> Unit) {
         view.alpha= 0F
-        val anim= view.animate().setDuration(2000).alpha(1F)
+        val anim= view.animate().setDuration(1500).alpha(1F)
         anim.setListener(object: AnimatorListenerAdapter() {
 
             override fun onAnimationEnd(animation: Animator?) {

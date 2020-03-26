@@ -68,12 +68,6 @@ class LogupActivity : BaseActivity(),
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
-        /*bindingLogup.cardProfileView.run {
-            postDelayed({
-                val colors= getRandomColor()
-                showDefaultImageProfile("SAMIR", colors.first, colors.second)
-            }, 5000)
-        }*/
     }
 
     override fun initStateObservation() {
@@ -109,15 +103,17 @@ class LogupActivity : BaseActivity(),
         viewModel.progressVisible.observe(this, Observer {
             Handler().postDelayed({
                 LoadingDialog.processDialog(it, supportFragmentManager)
-            }, DELAY_SHOW_DIALOG_ERROR)
+            }, 0)
         })
 
         viewModel.area.observe(this, Observer {
             viewModel.updateDepartmentsOfArea(it)
         })
-
         viewModel.profileColor.observe(this, Observer {
-            bindingLogup.cardProfileView.setTextView(viewModel.name.value, it.first, it.second)
+            bindingLogup.cardProfileView.postDelayed({
+                bindingLogup.cardProfileView.setTextView(getFirstName(viewModel.name.value), it.first, it.second)
+            }, 2000)
+
         })
     }
 

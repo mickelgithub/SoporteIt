@@ -1,8 +1,10 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
+import java.util.*
 
 
 const val KEY_EMAIL= "email"
@@ -65,5 +67,6 @@ fun Bundle.toUser()= User(
 
 )
 
-val User.teamCreated
-    get() = true//this.team.isNotBlank()
+fun getFirstName(fullName: String?)= StringTokenizer(fullName, " ").nextToken()
+
+

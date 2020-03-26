@@ -115,6 +115,7 @@ class LoadingDialog: MyDialog() {
     private fun updateSuccessAndHide(delay: Long) {
         binding.animationLoading.visibility= View.GONE
         binding.animationOk.visibility= View.VISIBLE
+        binding.animationOk.playAnimation()
         binding.message.visibility= View.GONE
         dismissDialog(delay)
     }

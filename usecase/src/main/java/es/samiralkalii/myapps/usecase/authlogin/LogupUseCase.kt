@@ -28,14 +28,14 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
     suspend operator fun invoke(user: User): Result {
         logger.debug("Vamos a registar el usuario ${user.email}")
 
-        if (user.isBoss) {
+        //if (user.isBoss) {
             //**user.bossVerified= PENDING
             //**user.holidayDaysPerYear= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
             //**user.internalEmployee= true
-        }
+        //}
 
         //we get user.id and user.creationDate
-        remoteUserAuthRepository.logupUser(user)
+        //**remoteUserAuthRepository.logupUser(user)
         //registration OK
         //we have to add the user profile image de local and remote storage
         /*if (profileImage.isNotBlank()) {
@@ -45,14 +45,14 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
             remoteUserStorageRepository.saveProfileImage(user, profileImageFile)
         }*/
         //we have to add the user to the database
-        remoteUserRepository.addUser(user)
+        //*remoteUserRepository.addUser(user)
         //**user.messagingToken= preferenceRepository.getMessagingToken()
-        remoteUserRepository.updateMessagingToken(user.messagingToken)
-        preferenceRepository.saveUser(user)
-        remoteUserAuthRepository.sendEmailVerification(user)
-        if (TEAM_MANAGER_PROFILE== user.profile) {
-            return Result.LoggedUpAsManagerTeamOk(user)
-        }
+//        remoteUserRepository.updateMessagingToken(user.messagingToken)
+//        preferenceRepository.saveUser(user)
+//        remoteUserAuthRepository.sendEmailVerification(user)
+//        if (TEAM_MANAGER_PROFILE== user.profile) {
+//            return Result.LoggedUpAsManagerTeamOk(user)
+//        }
         return Result.LoggedUpOk(user)
     }
 

@@ -107,7 +107,8 @@ class HomeActivity : AppCompatActivity() {
             SplashActivity.Companion.GOTO.HOME -> {
                 logger.debug("Mostramos el home...")
                 if (supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)== null) {
-                    if (viewModel.user.isBoss && !viewModel.user.teamCreated) {
+                    //if (viewModel.user.isBoss && !viewModel.user.teamCreated) {
+                    if (viewModel.user.isBoss) {
                         supportActionBar?.title =
                             resources.getString(R.string.team_no_created_title)
                     } else {
