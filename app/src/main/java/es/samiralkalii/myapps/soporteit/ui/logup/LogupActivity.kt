@@ -101,9 +101,7 @@ class LogupActivity : BaseActivity(),
         })
 
         viewModel.progressVisible.observe(this, Observer {
-            Handler().postDelayed({
-                LoadingDialog.processDialog(it, supportFragmentManager)
-            }, 0)
+            LoadingDialog.processDialog(it, supportFragmentManager)
         })
 
         viewModel.area.observe(this, Observer {
@@ -168,7 +166,7 @@ class LogupActivity : BaseActivity(),
                 }
                 is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")
-                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+                    viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(screenState.renderState.message))
                 }
             }
         }

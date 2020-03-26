@@ -26,14 +26,15 @@ class RemoteUserStorageDataSourceManager(val fstorage: FirebaseStorage): IRemote
         //user.remoteProfileImage= ""
     }
 
-    override suspend fun saveProfileImage(user: User, profileImage: File) {
+    override suspend fun saveProfileImage(userId: String, profileImage: File): String {
 
-        val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.name.fileExtension()}")
+        val mStorageRef = fstorage.getReference("${userId}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.name.fileExtension()}")
         val result= mStorageRef.putFile(Uri.fromFile(profileImage)).await()
         if (result.task.isComplete) {
-            val uri= mStorageRef.downloadUrl.await()
-            //user.remoteProfileImage = uri.toString()
+            val url= mStorageRef.downloadUrl.await()
+            return url.toString()
         }
+        return ""
     }
 
     override suspend fun getProfileImage(user: User): InputStream? {

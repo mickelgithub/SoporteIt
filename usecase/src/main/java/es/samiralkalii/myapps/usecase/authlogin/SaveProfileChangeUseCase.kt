@@ -24,9 +24,9 @@ class SaveProfileChangeUseCase(private val preferenceRepository: PreferenceRepos
         if (imageChanged) {
             if (user.profileImage.isBlank() && imageUri.isNotBlank()) {
                 //profileImage added
-                val imageAdded = fileSystemRepository.copyFileFromExternalToInternal(user, imageUri)
+                val imageAdded = fileSystemRepository.copyFileFromExternalToInternal(imageUri)
                 //**user.profileImage= imageAdded.absolutePath
-                remoteUserStorageRepository.saveProfileImage(user, imageAdded)
+                remoteUserStorageRepository.saveProfileImage(user.id, imageAdded)
                 remoteUserRepository.updateImageProfile(user)
                 preferenceRepository.updateImageProfile(user)
             } else if (user.profileImage.isNotBlank() && imageUri.isBlank()) {
@@ -39,11 +39,11 @@ class SaveProfileChangeUseCase(private val preferenceRepository: PreferenceRepos
                 preferenceRepository.updateImageProfile(user)
             } else {
                 //profileImage changed
-                val imageAdded = fileSystemRepository.copyFileFromExternalToInternal(user, imageUri)
+                val imageAdded = fileSystemRepository.copyFileFromExternalToInternal(imageUri)
                 val oldFileName = user.profileImage
                 //**user.profileImage= imageAdded.absolutePath
                 remoteUserStorageRepository.deleleProfileImage(user, oldFileName)
-                remoteUserStorageRepository.saveProfileImage(user, imageAdded)
+                remoteUserStorageRepository.saveProfileImage(user.id, imageAdded)
                 remoteUserRepository.updateImageProfile(user)
                 preferenceRepository.updateImageProfile(user)
             }

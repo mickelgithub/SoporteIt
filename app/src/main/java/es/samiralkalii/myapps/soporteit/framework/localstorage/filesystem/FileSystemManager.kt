@@ -23,7 +23,7 @@ class FileSystemManager(val context: Context): IFileSystemManager {
         }
     }
 
-    override suspend fun copyFileFromExternalToInternal(user: User, externalFile: String): File {
+    override suspend fun copyFileFromExternalToInternal(externalFile: String): File {
         val uri= Uri.parse(externalFile)
         val type= context.contentResolver.getType(uri)
         val inputStream= context.contentResolver.openInputStream(uri)
@@ -37,7 +37,6 @@ class FileSystemManager(val context: Context): IFileSystemManager {
             context.openFileOutput(internalFile.name, Context.MODE_PRIVATE).use {
                 it.write(input.readBytes())
             }
-            //user.profileImage= internalFile.absolutePath
         }
         return internalFile
     }

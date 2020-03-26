@@ -28,22 +28,28 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
     suspend operator fun invoke(user: User): Result {
         logger.debug("Vamos a registar el usuario ${user.email}")
 
-        //if (user.isBoss) {
-            //**user.bossVerified= PENDING
-            //**user.holidayDaysPerYear= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
-            //**user.internalEmployee= true
-        //}
+        var holidaysDay= -1
+        var internalEmployee= false
+        var profileImage= ""
+        var remoteProfileImage= ""
+
+
+        if (user.isBoss) {
+            holidaysDay= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
+            internalEmployee= true
+        }
 
         //we get user.id and user.creationDate
-        //**remoteUserAuthRepository.logupUser(user)
+        val (userId,createdAt)= remoteUserAuthRepository.logupUser(user.email, user.password)
         //registration OK
         //we have to add the user profile image de local and remote storage
-        /*if (profileImage.isNotBlank()) {
+        if (user.profileImage.isNotBlank()) {
             //we get user.localProfileImage
-            val profileImageFile = fileSystemRepository.copyFileFromExternalToInternal(user, profileImage)
+            val profileImageFile = fileSystemRepository.copyFileFromExternalToInternal(user.profileImage)
+            profileImage= profileImageFile.absolutePath
             //we get user.remoteProfileImage
-            remoteUserStorageRepository.saveProfileImage(user, profileImageFile)
-        }*/
+            remoteProfileImage= remoteUserStorageRepository.saveProfileImage(userId, profileImageFile)
+        }
         //we have to add the user to the database
         //*remoteUserRepository.addUser(user)
         //**user.messagingToken= preferenceRepository.getMessagingToken()
@@ -53,7 +59,12 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
 //        if (TEAM_MANAGER_PROFILE== user.profile) {
 //            return Result.LoggedUpAsManagerTeamOk(user)
 //        }
-        return Result.LoggedUpOk(user)
+        return Result.LoggedUpOk(updateUser(user, holidaysDay, internalEmployee, createdAt, profileImage, remoteProfileImage ))
     }
+
+    private fun updateUser(user: User, holidaysDay: Int, internalEmployee: Boolean,
+                           createdAt: String, profileImage: String, remoteProfileImage: String)= user.copy(holidayDays = holidaysDay,
+        internalEmployee = internalEmployee, createdAt = createdAt, profileImage = profileImage,
+    remoteProfileImage = remoteProfileImage)
 
 }

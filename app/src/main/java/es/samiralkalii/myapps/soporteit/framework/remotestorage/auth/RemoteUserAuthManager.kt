@@ -4,8 +4,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.ui.util.formatDate
+import es.samiralkalii.myapps.soporteit.ui.util.formatHour
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
+import java.util.*
 
 class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource {
 
@@ -32,6 +36,15 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
         return false
     }
 
+    override suspend fun logupUser(user: String, pass: String): Pair<String, String> {
+        val authResult = fbAuth.createUserWithEmailAndPassword(user, pass).await()
+        val createdAtMilis= authResult.user?.metadata?.creationTimestamp ?: 0L
+        val createdAt= formatDate(createdAtMilis)+ " "+ formatHour(createdAtMilis)
+        val userId= authResult.user?.uid ?: ""
+        return (userId to createdAt)
+
+    }
+
     override suspend fun signInUser(user: User, firstTime: Boolean) {
         val authResult= fbAuth.signInWithEmailAndPassword(user.email, user.password).await()
         if (authResult.user!= null) {
@@ -44,12 +57,6 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
                 //user.isEmailVerified= firebaseUser.isEmailVerified
             }
         }
-    }
-
-    override suspend fun logupUser(user: User) {
-        val authResult = fbAuth.createUserWithEmailAndPassword(user.email, user.password).await()
-        /*user.createdAt= authResult.user?.metadata?.creationTimestamp ?: 0L
-        user.id= authResult.user?.uid ?: ""*/
     }
 
 }

@@ -24,9 +24,6 @@ import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import java.io.File
 
-
-private const val CHOOSE_PROFILE= "Elige tu perfil"
-
 class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase, private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase,
 private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
 
@@ -153,8 +150,6 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     private val _bossCategories= MutableLiveData<List<String>>()
     val bossCategoriesObservable: LiveData<List<String>>
         get() = _bossCategories
-
-
 
     init {
 
@@ -296,7 +291,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                     }
                     is FirebaseAuthUserCollisionException -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision))))
-                        _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
+                        //_progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
                     }
                     is com.google.firebase.FirebaseApiNotAvailableException -> {
                         _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.firebase_api_no_available))))
@@ -320,7 +315,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                             _profileColor.value= profColor
                             Handler().postDelayed({
                                 _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
-                            }, 5000)
+                            }, 3000)
                         } else {
                             _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                         }
@@ -340,7 +335,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
         }
     }
 
-    fun createUser(profileColor: Pair<Int, Int>?): User {
+    fun createUser(profColor: Pair<Int, Int>?): User {
         val isEmployeeBoss= isBoss.value ?: false
         val bossCategoryObj= if (isEmployeeBoss) bossCategories.getBossCategory(bossCategory.value!!) else null
         val areaObj= areasDepartments.getArea(area.value!!)
@@ -351,8 +346,8 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
             isBoss = isEmployeeBoss, bossCategory = bossCategoryObj?.name ?: "",
             bossCategoryId = bossCategoryObj?.id ?: "",
             bossLevel = bossCategoryObj?.level ?: 0,
-            profileBackColor = profileColor?.first ?: -1,
-            profileTextColor = profileColor?.second ?: -1)
+            profileBackColor = profColor?.first ?: -1,
+            profileTextColor = profColor?.second ?: -1)
     }
 
     fun onLogupClick()= logupUser()
@@ -382,6 +377,10 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                 department.value= ""
             }
         }
+    }
+
+    fun updateDialogState(dialog: MyDialog.DialogState) {
+        _progressVisible.value= dialog
     }
 
     companion object {

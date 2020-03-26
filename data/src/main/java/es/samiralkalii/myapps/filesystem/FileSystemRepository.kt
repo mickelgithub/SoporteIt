@@ -6,8 +6,8 @@ import java.io.InputStream
 
 class FileSystemRepository(val fileSystem: IFileSystemManager) {
 
-    suspend fun copyFileFromExternalToInternal(user: User, externalFile: String)=
-        fileSystem.copyFileFromExternalToInternal(user, externalFile)
+    suspend fun copyFileFromExternalToInternal(externalFile: String)=
+        fileSystem.copyFileFromExternalToInternal(externalFile)
 
     suspend fun copyFileFromStreamToInternal(inputStream: InputStream, name: String)=
         fileSystem.copyFileFromStreamToInternal(inputStream, name)
@@ -21,7 +21,7 @@ class FileSystemRepository(val fileSystem: IFileSystemManager) {
 
 interface IFileSystemManager {
 
-    suspend fun copyFileFromExternalToInternal(user: User, externalFile: String): File
+    suspend fun copyFileFromExternalToInternal(externalFile: String): File
     suspend fun copyFileFromStreamToInternal(inputStream: InputStream, name: String): File
     suspend fun compare2Images(externalImage: String, internalImage: String): Boolean
     suspend fun deleteImageProfile(user: User): Unit
