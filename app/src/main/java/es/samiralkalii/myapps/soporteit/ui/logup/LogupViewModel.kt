@@ -79,7 +79,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
         }
         })
         addSource(department, { x -> x?.let {
-            departCorrect= it.isNotBlank()
+            departCorrect= ((it.isNullOrBlank() && isBoss?.value  )
             this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
                     areaCorrect && departCorrect
         }

@@ -1,6 +1,5 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
@@ -10,7 +9,6 @@ import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.ui.util.*
-import es.samiralkalii.myapps.usecase.messaging.PENDING
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 
@@ -52,8 +50,8 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun getAllUsersButBosesAndNoTeam(): List<User> {
-        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFICATION, "")
-            .whereEqualTo(KEY_EMAIL_VERIFIED, true)
+        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFIED, "")
+            .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
             .whereGreaterThanOrEqualTo(KEY_TEAM_ID, "")
             .whereLessThanOrEqualTo(KEY_TEAM_ID, "")
             .get(Source.SERVER).await()

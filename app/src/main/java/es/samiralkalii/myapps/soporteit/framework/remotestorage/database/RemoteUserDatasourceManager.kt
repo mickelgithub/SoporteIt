@@ -35,7 +35,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     }
 
     override suspend fun updateBossVerification(bossVerification: String, userId: String) {
-        fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_BOSS_VERIFICATION to bossVerification)).await()
+        fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_BOSS_VERIFIED to bossVerification)).await()
     }
 
     override suspend fun updateTeamCreated(team: Team) {
@@ -52,7 +52,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         holidayDays: Int,
         internal: Boolean
     ) {
-        fstore.collection(USERS_REF).document(userId).update(mapOf(KEY_HOLIDAY_DAYS_PER_YEAR to holidayDays,
+        fstore.collection(USERS_REF).document(userId).update(mapOf(KEY_HOLIDAY_DAYS to holidayDays,
             KEY_INTERNAL_EMPLOYEE to internal)).await()
     }
 
@@ -64,11 +64,11 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     }
 
     override suspend fun updateEmailVerified(user: User) {
-        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_EMAIL_VERIFIED to true)).await()
+        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_IS_EMAIL_VERIFIED to true)).await()
     }
 
     override suspend fun updateImageProfile(user: User) {
-        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_LOCAL_PROFILE_IMAGE to user.profileImage,
+        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_PROFILE_IMAGE to user.profileImage,
             KEY_REMOTE_PROFILE_IMAGE to user.remoteProfileImage)).await()
     }
 

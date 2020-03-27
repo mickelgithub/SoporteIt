@@ -8,9 +8,6 @@ import es.samiralkalii.myapps.filesystem.FileSystemRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
 import org.slf4j.LoggerFactory
 
-private const val TEAM_MANAGER_PROFILE= "Responsable de equipo";
-private const val PENDING= "P"
-
 class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepository,
                    private val remoteUserRepository: RemoteUserRepository,
                    private val remoteUserStorageRepository: RemoteUserStorageRepository,
@@ -33,7 +30,6 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         var profileImage= ""
         var remoteProfileImage= ""
 
-
         if (user.isBoss) {
             holidaysDay= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
             internalEmployee= true
@@ -51,20 +47,24 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
             remoteProfileImage= remoteUserStorageRepository.saveProfileImage(userId, profileImageFile)
         }
         //we have to add the user to the database
-        //*remoteUserRepository.addUser(user)
-        //**user.messagingToken= preferenceRepository.getMessagingToken()
+        val messagingToken= preferenceRepository.getMessagingToken()
+        var userUpdated= updateUser(user, userId, holidaysDay, internalEmployee,
+            createdAt, profileImage, remoteProfileImage, messagingToken)
+        remoteUserRepository.addUser(userUpdated)
+
 //        remoteUserRepository.updateMessagingToken(user.messagingToken)
-//        preferenceRepository.saveUser(user)
-//        remoteUserAuthRepository.sendEmailVerification(user)
-//        if (TEAM_MANAGER_PROFILE== user.profile) {
-//            return Result.LoggedUpAsManagerTeamOk(user)
-//        }
-        return Result.LoggedUpOk(updateUser(user, holidaysDay, internalEmployee, createdAt, profileImage, remoteProfileImage ))
+        preferenceRepository.saveUser(userUpdated)
+        //remoteUserAuthRepository.sendEmailVerification(user)
+        if (user.isBoss) {
+            return Result.LoggedUpAsManagerTeamOk(user)
+        }
+        return Result.LoggedUpOk(userUpdated)
     }
 
-    private fun updateUser(user: User, holidaysDay: Int, internalEmployee: Boolean,
-                           createdAt: String, profileImage: String, remoteProfileImage: String)= user.copy(holidayDays = holidaysDay,
+    private fun updateUser(user: User, id: String, holidaysDay: Int, internalEmployee: Boolean,
+                           createdAt: String, profileImage: String,
+                           remoteProfileImage: String, messagingToken: String)= user.copy(id= id, holidayDays = holidaysDay,
         internalEmployee = internalEmployee, createdAt = createdAt, profileImage = profileImage,
-    remoteProfileImage = remoteProfileImage)
+    remoteProfileImage = remoteProfileImage, messagingToken = messagingToken)
 
 }
