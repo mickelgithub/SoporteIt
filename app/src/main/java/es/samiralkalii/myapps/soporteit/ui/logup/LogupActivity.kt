@@ -155,13 +155,15 @@ class LogupActivity : BaseActivity(),
             when (screenState.renderState) {
                 is LogupState.LoggedupOk -> {
                     logger.debug("Registracion correcto, goto Home")
-                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
-                    Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, MyDialog.DIALOG_DISMISS_DELAY)
+                    disableInputsLogup()
+                    viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                    Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, MyDialog.DIALOG_DISMISS_DELAY*2)
 
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
-                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                    disableInputsLogup()
+                    viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
                     Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LogupState.ShowMessage -> {
@@ -171,6 +173,23 @@ class LogupActivity : BaseActivity(),
             }
         }
     }
+
+    private fun disableInputsLogup() {
+
+        bindingLogup.cardProfileView.isClickable= false
+        bindingLogup.nameInputLayout.isEnabled= false
+        bindingLogup.mailInputLayout.isEnabled= false
+        bindingLogup.passInputLayout.isEnabled= false
+        bindingLogup.passConfirmationInputLayout.isEnabled= false
+        bindingLogup.areasInputLayout.isEnabled= false
+        bindingLogup.departmentsInputLayout.isEnabled= false
+        bindingLogup.isBoss.isEnabled= false
+        bindingLogup.her.isEnabled= false
+        bindingLogup.logupButton.isEnabled= false
+        bindingLogup.bossCategoriesInputLayout.isEnabled= false
+
+    }
+
     //called by bindingLogup
     fun onImageProfileClick() {
         val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.imageProfile.value!= null)

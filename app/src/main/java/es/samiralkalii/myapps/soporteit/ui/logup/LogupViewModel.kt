@@ -49,7 +49,9 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     val areasEnabled: LiveData<Boolean>
         get() = _areasEnabled
 
-    private var dataLoaded= false
+    private var _dataLoaded= MutableLiveData<Boolean>(false)
+    val dataLoaded: LiveData<Boolean>
+        get() = _dataLoaded
 
     val buttonLogupEnabled= MediatorLiveData<Boolean>().apply {
         value= false
@@ -87,7 +89,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
             if (it.isNotBlank()) {
                 areaCorrect= true
             } else {
-                if (dataLoaded) {
+                if (dataLoaded.value!!) {
                     if (bossCategories.getBossCategory(bossCategory.value!!).level== 3) {
                         areaCorrect= true
                     } else {
@@ -278,7 +280,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                    bossCategory.value= it[0]
                }
            }
-            dataLoaded= true
+            _dataLoaded.value= true
             _showLoading.value= false
         }
     }
@@ -397,17 +399,16 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-                    delay(2000)
                     logupUseCase(createUser(profColor))
                 }.await()
-                _progressVisible.value = MyDialog.DialogState.UpdateSuccess()
+                //_progressVisible.value = MyDialog.DialogState.UpdateSuccess()
                 when (result) {
                     is LogupUseCase.Result.LoggedUpOk -> {
                         if (profColor!= null) {
                             _profileColor.value= profColor
                             Handler().postDelayed({
                                 _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
-                            }, 3000)
+                            }, 0L)
                         } else {
                             _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                         }
@@ -417,10 +418,13 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                             _profileColor.value= profColor
                             Handler().postDelayed({
                                 _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
-                            }, 2000)
+                            }, 0L)
                         } else {
                             _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
                         }
+                    }
+                    LogupUseCase.Result.LoggedUpBossDuplicate -> {
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.boss_already_exist))))
                     }
                 }
             }

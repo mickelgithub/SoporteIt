@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
@@ -61,6 +62,18 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.collection(USERS_REF).document(user.id).update(mapOf(KEY_TEAM_INVITATION_STATE to "",
             KEY_TEAM to "", KEY_TEAM_ID to "", KEY_BOSS to ""))
         logger.debug("${Thread.currentThread().name}++++++++++++++")
+    }
+
+    override suspend fun isBossAlreadyExist(
+        areaId: String,
+        departmentId: String,
+        bossLevel: Int
+    ): Boolean {
+
+        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_LEVEL, bossLevel).whereEqualTo(
+            KEY_DEPARTMENT_ID, departmentId).whereEqualTo(KEY_AREA_ID, areaId).get(Source.SERVER).await()
+        return !result.isEmpty
+
     }
 
     override suspend fun updateEmailVerified(user: User) {

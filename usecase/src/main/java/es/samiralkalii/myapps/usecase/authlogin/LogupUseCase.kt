@@ -19,12 +19,18 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
     sealed class Result() {
         class LoggedUpOk(val user: User): Result()
         class LoggedUpAsManagerTeamOk(val user: User): Result()
+        object LoggedUpBossDuplicate: Result()
 
     }
 
     suspend operator fun invoke(user: User): Result {
         logger.debug("Vamos a registar el usuario ${user.email}")
 
+        if (user.isBoss) {
+            if (remoteUserRepository.isBossAlreadyExist(user.areaId, user.departmentId, user.bossLevel)) {
+                return Result.LoggedUpBossDuplicate
+            }
+        }
         var holidaysDay= -1
         var internalEmployee= false
         var profileImage= ""

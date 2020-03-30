@@ -18,6 +18,7 @@ class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
     suspend fun updateHolidayDaysAndInternalState(userId: String, holidayDays: Int, internal: Boolean)= remoteUserDatasource.updateHolidayDaysAndInternalState(
         userId, holidayDays, internal)
     suspend fun denyInvitationToTeam(user: User)= remoteUserDatasource.denyInvitationToTeam(user)
+    suspend fun isBossAlreadyExist(areaId: String, departmentId: String, bossLevel: Int)= remoteUserDatasource.isBossAlreadyExist(areaId, departmentId, bossLevel)
 
 }
 
@@ -33,5 +34,6 @@ interface IRemoteUserDatasource {
     suspend fun updateTeamInvitationState(user: User, teamInvitationState: Reply)
     suspend fun updateHolidayDaysAndInternalState(userId: String, holidayDays: Int, internal: Boolean)
     suspend fun denyInvitationToTeam(user: User)
+    suspend fun isBossAlreadyExist(areaId: String, departmentId: String, bossLevel: Int): Boolean
 
 }

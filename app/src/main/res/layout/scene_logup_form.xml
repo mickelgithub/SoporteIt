@@ -48,6 +48,7 @@
                     android:scaleType="centerCrop" />
             </androidx.cardview.widget.CardView>-->
             <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
+                android:clickable="@{viewModel.dataLoaded}"
                 android:id="@+id/card_profile_view"
                 android:onClick="@{()-> activity.onImageProfileClick()}"
                 app:imageView="@{viewModel.imageProfile.toString()}"
@@ -271,7 +272,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/logup_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -294,7 +295,7 @@
                 android:textColor="#000000"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@+id/her"
-                app:layout_constraintTop_toBottomOf="@+id/button"
+                app:layout_constraintTop_toBottomOf="@+id/logup_button"
                 tools:text="@string/already_logged_up" />
             <TextView
                 android:id="@+id/her"
