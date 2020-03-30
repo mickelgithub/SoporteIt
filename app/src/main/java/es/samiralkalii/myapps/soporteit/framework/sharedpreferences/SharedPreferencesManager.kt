@@ -110,32 +110,41 @@ class SharedPreferencesManager(val context: Context): IPreferences {
     override suspend fun getUser(): User= context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).run {
         val email= getString(KEY_EMAIL, "") ?: ""
         val pass= getString(KEY_PASS, "") ?: ""
-
         if (email.isBlank() || pass.isBlank()) {
             return User.EMPTY
         } else {
-            val id= getString(KEY_ID, "") ?: ""
-            val name= getString(KEY_NAME, "") ?: ""
-            val imageProfilePath= getString(KEY_PROFILE_IMAGE, "") ?: ""
-            val imageProfileUrl= getString(KEY_REMOTE_PROFILE_IMAGE, "") ?: ""
-            val creationDate= getLong(KEY_CREATED_AT, 0L)
-            val emailValidated= getBoolean(KEY_IS_EMAIL_VERIFIED, false)
-            val profile= getString(KEY_PROFILE, "") ?: ""
-            val bossVerification= getBoolean(KEY_BOSS_VERIFIED, false) ?: false
-            val team= getString(KEY_TEAM, "") ?: ""
-            val teamId= getString(KEY_TEAM_ID, "") ?: ""
-            val teamInvitationState= Reply.valueOf(getString(KEY_TEAM_INVITATION_STATE, Reply.NONE.toString()) ?: Reply.NONE.toString())
-            val holidayDays= getLong(KEY_HOLIDAY_DAYS, 22L)
-            val internalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false)
-            val messaginToken= getString(KEY_MESSAGING_TOKEN, "") ?: ""
-            val boss= getBoolean(KEY_BOSS, false) ?: false
+            val id= getString(KEY_ID, "")
+            val name= getString(KEY_NAME, "")
+            val imageProfilePath= getString(KEY_PROFILE_IMAGE, "")
+            val imageProfileUrl= getString(KEY_REMOTE_PROFILE_IMAGE, "")
+            val profileBackColor= getInt(KEY_PROFILE_BACK_COLOR, -1)
+            val profileTextColor= getInt(KEY_PROFILE_TEXT_COLOR, -1)
+            val createdAt= getString(KEY_CREATED_AT, "")
+            val isEmailVerified= getBoolean(KEY_IS_EMAIL_VERIFIED, false)
+            val profile= getString(KEY_PROFILE, "")
+            val profileId= getString(KEY_PROFILE_ID, "")
+            val isBoss= getBoolean(KEY_BOSS, false)
+            val isBossVerified= getBoolean(KEY_BOSS_VERIFIED, false)
+            val bossCategory= getString(KEY_BOSS_CATEGORY, "")
+            val bossCategoryId= getString(KEY_BOSS_CATEGORY_ID, "")
+            val bossLevel= getInt(KEY_BOSS_LEVEL, 0)
+            val holidayDays= getInt(KEY_HOLIDAY_DAYS, -1)
+            val isInternalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false)
+            val messagingToken= getString(KEY_MESSAGING_TOKEN, "")
+            val area= getString(KEY_AREA, "")
+            val areaId= getString(KEY_AREA_ID, "")
+            val department= getString(KEY_DEPARTMENT, "")
+            val departmentId= getString(KEY_DEPARTMENT_ID, "")
 
-            /*return User(email, pass, name, profileImage = imageProfilePath,
-                id= id, remoteProfileImage = imageProfileUrl, createdAt = creationDate,
-                isEmailVerified = emailValidated, profile = profile, bossVerified = bossVerification,
-                holidayDaysPerYear = holidayDays, internalEmployee = internalEmployee,
-                messagingToken = messaginToken, isBoss = boss)*/
-            return User()
+            return User(email= email, password = pass, id= id, name = name, profileImage = imageProfilePath,
+                remoteProfileImage = imageProfileUrl, profileBackColor = profileBackColor,
+                profileTextColor = profileTextColor, createdAt = createdAt, isEmailVerified = isEmailVerified,
+                profile = profile, profileId = profileId, isBoss = isBoss, bossVerified = isBossVerified,
+                bossCategory = bossCategory, bossCategoryId = bossCategoryId, bossLevel = bossLevel,
+                holidayDays = holidayDays, internalEmployee = isInternalEmployee, messagingToken = messagingToken,
+                area = area, areaId = areaId, department = department, departmentId = departmentId
+
+            )
         }
     }
 }

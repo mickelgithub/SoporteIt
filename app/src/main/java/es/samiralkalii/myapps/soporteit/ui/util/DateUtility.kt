@@ -10,15 +10,18 @@ private const val HOUR_FORMAT= "HH:mm:ss"
 
 
 fun formatDate(date: Long): String {
-    val calendar= Calendar.getInstance()
-    calendar.timeInMillis= date
     val df= SimpleDateFormat(DATE_FORMAT)
-    return df.format(calendar.time)
+    df.setTimeZone(TimeZone.getTimeZone(getCurrentTimeZone()))
+    return df.format(date)
 }
 
 fun formatHour(date: Long): String {
-    val calendar= Calendar.getInstance()
-    calendar.timeInMillis= date
     val df= SimpleDateFormat(HOUR_FORMAT)
-    return df.format(calendar.time)
+    df.setTimeZone(TimeZone.getTimeZone(getCurrentTimeZone()))
+    return df.format(date)
+}
+
+private fun getCurrentTimeZone(): String {
+    val tz = Calendar.getInstance().timeZone
+    return tz.id
 }

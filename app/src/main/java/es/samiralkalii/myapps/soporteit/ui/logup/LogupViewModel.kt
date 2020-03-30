@@ -37,9 +37,20 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     val department= MutableLiveData<String>("")
     val isBoss= MutableLiveData<Boolean>()
     val bossCategory= MutableLiveData<String>("")
-    val _profileColor= MutableLiveData<Pair<Int, Int>>()
+    private val _profileColor= MutableLiveData<Pair<Int, Int>>()
     val profileColor: LiveData<Pair<Int, Int>>
         get() = _profileColor
+
+    private val _departmentsEnabled= MutableLiveData<Boolean>(true)
+    val departmentsEnabled: LiveData<Boolean>
+        get() = _departmentsEnabled
+
+    private val _areasEnabled= MutableLiveData<Boolean>(true)
+    val areasEnabled: LiveData<Boolean>
+        get() = _areasEnabled
+
+    private var dataLoaded= false
+
     val buttonLogupEnabled= MediatorLiveData<Boolean>().apply {
         value= false
         var nameCorrect= false
@@ -73,13 +84,93 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
         }
         })
         addSource(area, { x -> x?.let {
-            areaCorrect= it.isNotBlank()
+            if (it.isNotBlank()) {
+                areaCorrect= true
+            } else {
+                if (dataLoaded) {
+                    if (bossCategories.getBossCategory(bossCategory.value!!).level== 3) {
+                        areaCorrect= true
+                    } else {
+                        areaCorrect= false
+                    }
+                } else {
+                    areaCorrect= false
+                }
+            }
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+        }
+        })
+        addSource(bossCategory, { x -> x?.let {
+            logger.debug("bossCategory...")
+            if (it.isNotBlank()) {
+                if (bossCategories.getBossCategory(it).level>=2) {
+                    department.value= ""
+                    _departmentsEnabled.value= false
+                    if (bossCategories.getBossCategory(bossCategory.value!!).level== 3) {
+                        area.value= ""
+                        _areasEnabled.value= false
+                    } else {
+                        _areasEnabled.value= true
+                    }
+                } else {
+                    _departmentsEnabled.value= true
+                    _areasEnabled.value= true
+                }
+            }
+            val isBossLocal= isBoss?.value!= null && isBoss?.value== true
+            if (isBossLocal) {
+                if (bossCategories.getBossCategory(it).level>=2) {
+                    departCorrect= true
+                } else {
+                    departCorrect= !department.value.isNullOrBlank()
+                }
+            } else {
+                departCorrect= !department.value.isNullOrBlank()
+            }
+            this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
+                    areaCorrect && departCorrect
+        }
+        })
+        addSource(isBoss, { x -> x?.let {
+            logger.debug("isBoss...")
+            if (it) {
+                if (bossCategories.getBossCategory(bossCategory.value!!).level>=2) {
+                    department.value= ""
+                    _departmentsEnabled.value= false
+                    if (bossCategories.getBossCategory(bossCategory.value!!).level== 3) {
+                        area.value= ""
+                        _areasEnabled.value= false
+                    } else {
+                        _areasEnabled.value= true
+                    }
+                    departCorrect= true
+                } else {
+                    _departmentsEnabled.value= true
+                    _areasEnabled.value= true
+                    departCorrect= !department.value.isNullOrBlank()
+                }
+            } else {
+                _departmentsEnabled.value= true
+                _areasEnabled.value= true
+                departCorrect= !department.value.isNullOrBlank()
+            }
             this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
                     areaCorrect && departCorrect
         }
         })
         addSource(department, { x -> x?.let {
-            departCorrect= ((it.isNullOrBlank() && isBoss?.value  )
+            logger.debug("department...")
+            val isBossLocal= isBoss?.value!= null && isBoss?.value== true
+            if (isBossLocal) {
+                if (bossCategories.getBossCategory(bossCategory.value!!).level>=2) {
+                    departCorrect= true
+                } else {
+                    departCorrect= !it.isNullOrBlank()
+                }
+            } else {
+                departCorrect= !it.isNullOrBlank()
+            }
             this.value= nameCorrect && emailCorrect && passCorrect && passConfirmationCorrect &&
                     areaCorrect && departCorrect
         }
@@ -187,6 +278,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                    bossCategory.value= it[0]
                }
            }
+            dataLoaded= true
             _showLoading.value= false
         }
     }
@@ -266,9 +358,9 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
             _confirmationPasswordError.value = R.string.password_incorrect_logup_message_error
         } else if (passwordConfirmation.value!!.isNotBlank() && password.value!!.isNotBlank() && password.value!= passwordConfirmation.value) {
             _confirmationPasswordError.value = R.string.passwords_not_equals_logup_message_error
-        } else if (area.value.isNullOrBlank()) {
+        } else if (area.value.isNullOrBlank() && bossCategories.getBossCategory(bossCategory.value!!).level< 3 ) {
             _areaError.value = R.string.area_incorrect
-        } else if (department.value.isNullOrBlank()) {
+        } else if (department.value.isNullOrBlank() && bossCategories.getBossCategory(bossCategory.value!!).level< 2) {
             _departmentError.value= R.string.department_incorrect
         } else {
             _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
@@ -338,11 +430,12 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
     fun createUser(profColor: Pair<Int, Int>?): User {
         val isEmployeeBoss= isBoss.value ?: false
         val bossCategoryObj= if (isEmployeeBoss) bossCategories.getBossCategory(bossCategory.value!!) else null
-        val areaObj= areasDepartments.getArea(area.value!!)
-        val departmentObj= areasDepartments.getDepartment(area.value!!, department.value!!)
+        val areaObj= if (area.value!!.isNotBlank()) areasDepartments.getArea(area.value!!) else null
+        val departmentObj= if (area.value!!.isNotBlank() && department.value!!.isNotBlank())
+            areasDepartments.getDepartment(area.value!!, department.value!!) else null
         return User(name= name.value!!, email = email.value!!, password = password.value!!,
-            profileImage = _imageProfile.value?.toString() ?: "", area= areaObj.name,
-            areaId = areaObj.id, department = departmentObj.name, departmentId = departmentObj.id,
+            profileImage = _imageProfile.value?.toString() ?: "", area= areaObj?.name ?: "",
+            areaId = areaObj?.id ?: "", department = departmentObj?.name ?: "", departmentId = departmentObj?.id ?: "",
             isBoss = isEmployeeBoss, bossCategory = bossCategoryObj?.name ?: "",
             bossCategoryId = bossCategoryObj?.id ?: "",
             bossLevel = bossCategoryObj?.level ?: 0,

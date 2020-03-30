@@ -6,6 +6,8 @@ class BossCategories(val bossCategories: List<BossCategory>) {
 
     fun getBossCategory(name: String)= bossCategories.filter { it.name.equals(name, true) }.first()
 
+    fun isEmpty()= (bossCategories== null || bossCategories.isEmpty())
+
 }
 
 data class BossCategory(val id: String, val name: String, val level: Int)
