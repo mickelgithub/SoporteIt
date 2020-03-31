@@ -29,7 +29,7 @@ const val NOTIFS_SENT= "notifsSent"
 const val NOTIFS_RECEIVED= "notifsReceived"
 private const val IN_PROGRESS= "in_progress"
 private const val MEMBERS_FIELD= "members"
-const val REF_BOSS_DEPARTMENTS= "boss_departments"
+const val REF_MANAGERS= "managers"
 
 
 private const val AREAS_REF= "areas"
@@ -165,7 +165,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         departmentId: String,
         bossLevel: Int
     ): Boolean {
-        val result= fstore.collection(REF_BOSS_DEPARTMENTS)
+        val result= fstore.collection(REF_MANAGERS)
             .whereEqualTo(KEY_BOSS_LEVEL, bossLevel)
             .whereEqualTo(KEY_DEPARTMENT_ID, departmentId)
             .whereEqualTo(KEY_AREA_ID, areaId)

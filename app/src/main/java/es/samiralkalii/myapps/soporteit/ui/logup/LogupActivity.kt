@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.view.animation.AnimationUtils
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.transition.Scene
 import androidx.transition.Transition
@@ -110,7 +111,7 @@ class LogupActivity : BaseActivity(),
         viewModel.profileColor.observe(this, Observer {
             bindingLogup.cardProfileView.postDelayed({
                 bindingLogup.cardProfileView.setTextView(getFirstName(viewModel.name.value), it.first, it.second)
-            }, 2000)
+            }, MyDialog.DIALOG_DISMISS_DELAY+ 10)
 
         })
     }
@@ -157,18 +158,33 @@ class LogupActivity : BaseActivity(),
                     logger.debug("Registracion correcto, goto Home")
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                    if (viewModel.user.profileImage.isBlank()) {
+                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+                        bindingLogup.cardProfileView.startAnimation(shake)
+                    }
                     Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, MyDialog.DIALOG_DISMISS_DELAY*2)
-
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                    if (viewModel.user.profileImage.isBlank()) {
+                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+                        bindingLogup.cardProfileView.startAnimation(shake)
+                    }
                     Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LogupState.ShowMessage -> {
                     logger.debug("Hubo un error en la registracion, lo mostramos")
-                    viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(screenState.renderState.message))
+                    val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                        resources.getString(screenState.renderState.message)
+                    viewModel.updateDialogState(MyDialog.DialogState.ShowMessageDialog(messagedesc))
+                }
+                is LogupState.UpdateMessage -> {
+                    logger.debug("Hubo un error en la registracion, lo mostramos")
+                    val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                        resources.getString(screenState.renderState.message)
+                    viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(messagedesc))
                 }
             }
         }

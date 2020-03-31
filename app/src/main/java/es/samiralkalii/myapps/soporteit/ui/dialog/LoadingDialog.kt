@@ -28,6 +28,9 @@ class LoadingDialog: MyDialog() {
                     updateSuccessAndHide(fragmentManager, dialogState.delay)
                 }
                 is DialogState.UpdateMessage -> {
+                    updateMessage(fragmentManager, dialogState.message, dialogState.error)
+                }
+                is DialogState.UpdateMessageAndHide -> {
                     updateMessageAndHide(fragmentManager, dialogState.message, dialogState.delay, dialogState.error)
                 }
                 is DialogState.HideDialog -> {
@@ -78,6 +81,10 @@ class LoadingDialog: MyDialog() {
             var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
             loadingDialog?.updateMessageAndHide(message, delay, error)
         }
+        private fun updateMessage(fragmentManager: FragmentManager, message: String, error: Boolean) {
+            var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
+            loadingDialog?.updateMessage(message, error)
+        }
         private fun hideDialog(fragmentManager: FragmentManager, delay: Long) {
             var loadingDialog: LoadingDialog?= fragmentManager.findFragmentByTag(FRAGMENT_TAG) as LoadingDialog?
             loadingDialog?.dismissDialog(delay)
@@ -125,6 +132,16 @@ class LoadingDialog: MyDialog() {
             binding.message.setTextColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
         }
         dismissDialog(delay)
+    }
+    private fun updateMessage(message: String, error: Boolean) {
+        binding.animationLoading.visibility= View.GONE
+        binding.animationOk.visibility= View.GONE
+        binding.message.visibility= View.VISIBLE
+        binding.message.setText(message)
+        if (!error) {
+            binding.message.setTextColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
+        }
+        isCancelable= true
     }
     private fun dismissDialog(delay: Long) {
         if (delay> 0) {

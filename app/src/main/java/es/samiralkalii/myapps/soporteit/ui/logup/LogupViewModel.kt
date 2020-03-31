@@ -185,7 +185,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     private lateinit var areasDepartments: AreasDepartments
     private lateinit var bossCategories: BossCategories
 
-    private lateinit var user: User
+    lateinit var user: User
 
     private val _logupState= MutableLiveData<Event<ScreenState<LogupState>>>()
     val logupState: LiveData<Event<ScreenState<LogupState>>>
@@ -265,8 +265,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 }
             }
             _showLoading.value= false
-            //_progressVisible.value= MyDialog.DialogState.ShowMessageDialog(message)
-            _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(message, listOf()))))
+            _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(message))))
 
         }
         viewModelScope.launch(errorHandler) {
@@ -376,8 +375,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 logger.error(error.toString(), error)
                 when (error) {
                     is FirebaseNetworkException -> {
-                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
-                        //_progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.UpdateMessage(R.string.no_internet_connection))))
                     }
                     is FirebaseAuthInvalidCredentialsException -> {
                         if (error.toString().contains("email address is badly formatted")) {
@@ -389,24 +387,22 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                         }
                     }
                     is FirebaseAuthUserCollisionException -> {
-                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.user_collision))))
-                        //_progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.UpdateMessage(R.string.user_collision))))
                     }
                     is com.google.firebase.FirebaseApiNotAvailableException -> {
                         _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.firebase_api_no_available))))
                     }
                     else -> {
-                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
-                        //_progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.UpdateMessage(R.string.no_internet_connection))))
                     }
                 }
             }
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-                    logupUseCase(createUser(profColor))
+                    user= createUser(profColor)
+                    logupUseCase(user)
                 }.await()
-                //_progressVisible.value = MyDialog.DialogState.UpdateSuccess()
                 when (result) {
                     is LogupUseCase.Result.LoggedUpOk -> {
                         if (profColor!= null) {
@@ -425,12 +421,14 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                         }
                     }
                     LogupUseCase.Result.LoggedUpBossDuplicate -> {
-                        val messageId= when {
-                            user.departmentId.isNotBlank() && user.areaId.isNotBlank() -> R.string.boss_already_exist_department_manager
-                            user.departmentId.isBlank() && user.areaId.isNotBlank() -> R.string.boss_already_exist_area_manager
-                            else -> R.string.boss_already_exist_director
+
+                        if (user.departmentId.isNotBlank() && user.areaId.isNotBlank()) {
+                            _logupState.postValue(Event(ScreenState.Render(LogupState.UpdateMessage(R.string.boss_already_exist_department_manager, listOf(user.department, user.area)))))
+                        } else if (user.departmentId.isBlank() && user.areaId.isNotBlank()) {
+                            _logupState.postValue(Event(ScreenState.Render(LogupState.UpdateMessage(R.string.boss_already_exist_area_manager, listOf(user.area)))))
+                        } else {
+                            _logupState.postValue(Event(ScreenState.Render(LogupState.UpdateMessage(R.string.boss_already_exist_director))))
                         }
-                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(messageId))))
                     }
                 }
             }

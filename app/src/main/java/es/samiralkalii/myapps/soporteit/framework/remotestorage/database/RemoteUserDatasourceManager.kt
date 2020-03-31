@@ -3,7 +3,6 @@ package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
@@ -98,7 +97,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.runTransaction { _ ->
             fstore.collection(USERS_REF).document(user.id).set(user)
             if (user.isBoss) {
-                fstore.collection(REF_BOSS_DEPARTMENTS).add(mapOf<String, Object>(
+                fstore.collection(REF_MANAGERS).add(mapOf<String, Object>(
                     KEY_BOSS to user.id as Object, KEY_AREA_ID to user.areaId as Object,
                     KEY_DEPARTMENT_ID to user.departmentId as Object,
                     KEY_BOSS_LEVEL to user.bossLevel as Object

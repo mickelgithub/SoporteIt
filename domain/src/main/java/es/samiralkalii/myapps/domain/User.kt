@@ -1,5 +1,8 @@
 package es.samiralkalii.myapps.domain
 
+const val STATE_SUBSCRIBED= "S"
+const val STATE_UNSUBSCRIBED= "U"
+
 data class User(
     val email: String= "",
     val password: String= "",
@@ -24,7 +27,9 @@ data class User(
     val area: String= "",
     val areaId: String= "",
     val department: String= "",
-    val departmentId: String= ""
+    val departmentId: String= "",
+    val changedAt: String= "",
+    val state: String= STATE_SUBSCRIBED
                 ) {
 
     companion object {
