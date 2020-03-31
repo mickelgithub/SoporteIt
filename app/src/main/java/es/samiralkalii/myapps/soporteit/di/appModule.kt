@@ -6,7 +6,6 @@ import com.google.firebase.storage.FirebaseStorage
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserStorageDataSource
-import es.samiralkalii.myapps.data.common.IRemoteCommonDataDataSource
 import es.samiralkalii.myapps.data.notifications.IRemoteNotificationsDatasource
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
 import es.samiralkalii.myapps.filesystem.IFileSystemManager
@@ -15,7 +14,6 @@ import es.samiralkalii.myapps.preference.IPreferences
 import es.samiralkalii.myapps.soporteit.framework.localstorage.filesystem.FileSystemManager
 import es.samiralkalii.myapps.soporteit.framework.notification.NotificationManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.auth.RemoteUserAuthManager
-import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteCommonDataDatasourceManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteNotificationsDatasourceManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteTeamDatasourceManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteUserDatasourceManager
@@ -45,7 +43,6 @@ val appModule= module {
     factory<INotification> { NotificationManager(get()) }
     factory<IRemoteTeamManagementDatasource> { RemoteTeamDatasourceManager(get()) }
     factory<IRemoteNotificationsDatasource> { RemoteNotificationsDatasourceManager(get()) }
-    factory<IRemoteCommonDataDataSource> { RemoteCommonDataDatasourceManager(get()) }
 
 
 

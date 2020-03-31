@@ -1,8 +1,8 @@
 package es.samiralkalii.myapps.soporteit.di
 
 import es.samiralkalii.myapps.usecase.authlogin.*
-import es.samiralkalii.myapps.usecase.common.GetAreasDepartmentsUseCase
-import es.samiralkalii.myapps.usecase.common.GetBossCategoriesUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.GetAreasDepartmentsUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.GetBossCategoriesUseCase
 import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
 import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
@@ -18,7 +18,7 @@ import org.koin.dsl.module
 
 val useCaseModule= module {
     factory { CheckUserAuthUseCase(get(), get(), get()) }
-    factory { LogupUseCase(get(), get(), get(), get(), get()) }
+    factory { LogupUseCase(get(), get(), get(), get(), get(), get()) }
     factory { LoginUserCase(get(), get(), get(), get(), get()) }
     factory { Compare2ImageProfileUseCase(get()) }
     factory { SaveProfileChangeUseCase(get(), get(), get(), get()) }

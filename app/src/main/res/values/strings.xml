@@ -30,7 +30,9 @@
     <string name="department_incorrect">Hay que especificar el departamento</string>
     <string name="user_collision">Ya existe este usuario!!!</string>
     <string name="no_internet_connection">Error de conexion, comprueba el acceso a Internet</string>
-    <string name="boss_already_exist">Ya existe tal coordinador</string>
+    <string name="boss_already_exist_department_manager">Ya existe el coordinador de \'%1$s\' en el area \'%2$s\'</string>
+    <string name="boss_already_exist_area_manager">Ya existe el coordinador del area \'%1$s\'</string>
+    <string name="boss_already_exist_director">Ya existe el director de IT</string>
     <string name="not_controled_error">Error no controlado</string>
     <string name="team_already_exist">No se puede crear el equipo porque ya existe</string>
     <string name="already_logged_up">Si ya estas registrado, haz click</string>

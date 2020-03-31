@@ -1,6 +1,8 @@
 package es.samiralkalii.myapps.data.teammanagement
 
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.AreasDepartments
+import es.samiralkalii.myapps.domain.teammanagement.BossCategories
 import es.samiralkalii.myapps.domain.teammanagement.Team
 
 class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemoteTeamManagementDatasource) {
@@ -11,6 +13,11 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
     suspend fun inviteUserToTeam(sender: User, destination: User)= remoteTeamManagementDatasource.inviteUserToTeam(sender, destination)
     suspend fun addUserToTeam(user: User)= remoteTeamManagementDatasource.addUserToTeam(user)
 
+    suspend fun isBossAlreadyExist(areaId: String, departmentId: String, bossLevel: Int)= remoteTeamManagementDatasource.isBossAlreadyExist(areaId, departmentId, bossLevel)
+
+    suspend fun getAreasDepartments()= remoteTeamManagementDatasource.getAreasDepartments()
+    suspend fun getBossCategorties()= remoteTeamManagementDatasource.getBossCategorties()
+
 }
 
 interface IRemoteTeamManagementDatasource {
@@ -19,4 +26,10 @@ interface IRemoteTeamManagementDatasource {
     suspend fun isTeamAlreadyExists(team: Team): Boolean
     suspend fun inviteUserToTeam(sender: User, destination: User)
     suspend fun addUserToTeam(user: User)
+
+    suspend fun getAreasDepartments(): AreasDepartments
+    suspend fun getBossCategorties(): BossCategories
+    suspend fun isBossAlreadyExist(areaId: String, departmentId: String, bossLevel: Int): Boolean
+
+
 }

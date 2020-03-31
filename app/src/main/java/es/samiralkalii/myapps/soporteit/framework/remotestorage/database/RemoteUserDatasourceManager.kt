@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 
 
 const val USERS_REF= "users"
+private const val KEY_USER= ""
 
 class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: FirebaseAuth):
     IRemoteUserDatasource {
@@ -64,18 +65,6 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         logger.debug("${Thread.currentThread().name}++++++++++++++")
     }
 
-    override suspend fun isBossAlreadyExist(
-        areaId: String,
-        departmentId: String,
-        bossLevel: Int
-    ): Boolean {
-
-        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_LEVEL, bossLevel).whereEqualTo(
-            KEY_DEPARTMENT_ID, departmentId).whereEqualTo(KEY_AREA_ID, areaId).get(Source.SERVER).await()
-        return !result.isEmpty
-
-    }
-
     override suspend fun updateEmailVerified(user: User) {
         fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_IS_EMAIL_VERIFIED to true)).await()
     }
@@ -106,7 +95,16 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     }
 
     override suspend fun addUser(user: User) {
-        fstore.collection(USERS_REF).document(user.id).set(user).await()
+        fstore.runTransaction { _ ->
+            fstore.collection(USERS_REF).document(user.id).set(user)
+            if (user.isBoss) {
+                fstore.collection(REF_BOSS_DEPARTMENTS).add(mapOf<String, Object>(
+                    KEY_BOSS to user.id as Object, KEY_AREA_ID to user.areaId as Object,
+                    KEY_DEPARTMENT_ID to user.departmentId as Object,
+                    KEY_BOSS_LEVEL to user.bossLevel as Object
+                ))
+            }
+        }.await()
     }
 
 

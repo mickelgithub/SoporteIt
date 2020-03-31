@@ -1,7 +1,6 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
 import android.net.Uri
-import android.os.Handler
 import androidx.lifecycle.*
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -9,8 +8,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.User
-import es.samiralkalii.myapps.domain.common.AreasDepartments
-import es.samiralkalii.myapps.domain.common.BossCategories
+import es.samiralkalii.myapps.domain.teammanagement.AreasDepartments
+import es.samiralkalii.myapps.domain.teammanagement.BossCategories
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
@@ -18,14 +17,18 @@ import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.getRandomColor
 import es.samiralkalii.myapps.usecase.authlogin.LoginUserCase
 import es.samiralkalii.myapps.usecase.authlogin.LogupUseCase
-import es.samiralkalii.myapps.usecase.common.GetAreasDepartmentsUseCase
-import es.samiralkalii.myapps.usecase.common.GetBossCategoriesUseCase
-import kotlinx.coroutines.*
+import es.samiralkalii.myapps.usecase.teammanagement.GetAreasDepartmentsUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.GetBossCategoriesUseCase
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
 
 class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase, private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase,
-private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
+                     private val getBossCategoriesUseCase: GetBossCategoriesUseCase
+) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
 
@@ -262,7 +265,9 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                 }
             }
             _showLoading.value= false
-            _progressVisible.value= MyDialog.DialogState.ShowMessageDialog(message)
+            //_progressVisible.value= MyDialog.DialogState.ShowMessageDialog(message)
+            _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(message, listOf()))))
+
         }
         viewModelScope.launch(errorHandler) {
             val deferedAreaDepartment= async(Dispatchers.IO) {
@@ -372,7 +377,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                 when (error) {
                     is FirebaseNetworkException -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
-                        _progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
+                        //_progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
                     }
                     is FirebaseAuthInvalidCredentialsException -> {
                         if (error.toString().contains("email address is badly formatted")) {
@@ -392,7 +397,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                     }
                     else -> {
                         _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.no_internet_connection))))
-                        _progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
+                        //_progressVisible.postValue(MyDialog.DialogState.UpdateMessage(R.string.no_internet_connection))
                     }
                 }
             }
@@ -406,9 +411,7 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                     is LogupUseCase.Result.LoggedUpOk -> {
                         if (profColor!= null) {
                             _profileColor.value= profColor
-                            Handler().postDelayed({
-                                _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
-                            }, 0L)
+                            _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                         } else {
                             _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                         }
@@ -416,15 +419,18 @@ private val getBossCategoriesUseCase: GetBossCategoriesUseCase) : ViewModel() {
                     is LogupUseCase.Result.LoggedUpAsManagerTeamOk -> {
                         if (profColor!= null) {
                             _profileColor.value= profColor
-                            Handler().postDelayed({
-                                _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
-                            }, 0L)
+                            _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
                         } else {
                             _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
                         }
                     }
                     LogupUseCase.Result.LoggedUpBossDuplicate -> {
-                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(R.string.boss_already_exist))))
+                        val messageId= when {
+                            user.departmentId.isNotBlank() && user.areaId.isNotBlank() -> R.string.boss_already_exist_department_manager
+                            user.departmentId.isBlank() && user.areaId.isNotBlank() -> R.string.boss_already_exist_area_manager
+                            else -> R.string.boss_already_exist_director
+                        }
+                        _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(messageId))))
                     }
                 }
             }

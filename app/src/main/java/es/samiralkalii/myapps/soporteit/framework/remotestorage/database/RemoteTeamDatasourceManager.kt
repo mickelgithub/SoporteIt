@@ -7,7 +7,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.domain.notification.Reply
-import es.samiralkalii.myapps.domain.teammanagement.Team
+import es.samiralkalii.myapps.domain.teammanagement.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
@@ -29,6 +29,14 @@ const val NOTIFS_SENT= "notifsSent"
 const val NOTIFS_RECEIVED= "notifsReceived"
 private const val IN_PROGRESS= "in_progress"
 private const val MEMBERS_FIELD= "members"
+const val REF_BOSS_DEPARTMENTS= "boss_departments"
+
+
+private const val AREAS_REF= "areas"
+private const val KEY_NAME= "name"
+private const val KEY_CATEGORY_LEVEL= "level"
+private const val DEPARTMENTS_REF= "departments"
+private const val BOSS_CATEGORIES_REF= "bossCategories"
 
 
 
@@ -99,6 +107,71 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     override suspend fun addUserToTeam(user: User) {
         /*val refMembers= fstore.collection(TEAM_REF).document(user.teamId)
         refMembers.update(MEMBERS_FIELD, FieldValue.arrayUnion(user.id))*/
+    }
+
+    override suspend fun getAreasDepartments(): AreasDepartments {
+        val areasDepartments= mutableMapOf<Area, List<Department>>()
+        val areasResult= fstore.collection(AREAS_REF).get(Source.SERVER).await()
+        if (!areasResult.isEmpty) {
+            for (areaDocument in areasResult) {
+                val area= areaDocument.data.get(KEY_NAME) as String
+                val departments= mutableListOf<Department>()
+                val departmentsResult= fstore.collection(AREAS_REF).document(areaDocument.id).collection(DEPARTMENTS_REF).get(Source.SERVER).await()
+                if (!departmentsResult.isEmpty) {
+                    for (departmentDocument in departmentsResult) {
+                        val department= departmentDocument.data.get(KEY_NAME) as String
+                        departments.add(
+                            Department(
+                                departmentDocument.id,
+                                department
+                            )
+                        )
+                    }
+                    areasDepartments[Area(
+                        areaDocument.id,
+                        area
+                    )]= departments
+                }
+            }
+        }
+        return AreasDepartments(
+            areasDepartments
+        )
+    }
+
+    override suspend fun getBossCategorties(): BossCategories {
+        val bossCategories= mutableListOf<BossCategory>()
+        val categoriesResult= fstore.collection(BOSS_CATEGORIES_REF).get(Source.SERVER).await()
+        if (!categoriesResult.isEmpty) {
+            for (categoryDocument in categoriesResult) {
+                val categoryName = categoryDocument.data.get(KEY_NAME) as String
+                val categoryLevel = (categoryDocument.data.get(KEY_CATEGORY_LEVEL) as Long).toInt()
+                bossCategories.add(
+                    BossCategory(
+                        categoryDocument.id,
+                        categoryName,
+                        categoryLevel
+                    )
+                )
+            }
+        }
+        return BossCategories(
+            bossCategories
+        )
+    }
+
+    override suspend fun isBossAlreadyExist(
+        areaId: String,
+        departmentId: String,
+        bossLevel: Int
+    ): Boolean {
+        val result= fstore.collection(REF_BOSS_DEPARTMENTS)
+            .whereEqualTo(KEY_BOSS_LEVEL, bossLevel)
+            .whereEqualTo(KEY_DEPARTMENT_ID, departmentId)
+            .whereEqualTo(KEY_AREA_ID, areaId)
+            .get(Source.SERVER).await()
+        return !result.isEmpty
+
     }
 
 }

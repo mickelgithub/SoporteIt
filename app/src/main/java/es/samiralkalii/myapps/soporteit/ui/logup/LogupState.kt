@@ -4,7 +4,7 @@ import es.samiralkalii.myapps.domain.User
 
 sealed class LogupState {
 
-    class ShowMessage(val message: Int): LogupState()
+    class ShowMessage(val message: Int, messageParams: List<Object>): LogupState()
     class LoggedupOk(val user: User): LogupState()
     class LoggedupAsManagerTeamOk(val user: User): LogupState()
 }

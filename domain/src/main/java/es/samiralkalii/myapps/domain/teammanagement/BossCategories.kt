@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.domain.common
+package es.samiralkalii.myapps.domain.teammanagement
 
 class BossCategories(val bossCategories: List<BossCategory>) {
 

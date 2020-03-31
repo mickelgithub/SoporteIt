@@ -12,10 +12,10 @@ open class MyDialog(): BottomSheetDialogFragment() {
     }
 
     sealed class DialogState {
-        class ShowProgressDialog(val message: Int= -1): DialogState()
+        class ShowProgressDialog(val message: String= ""): DialogState()
         class UpdateSuccess(val delay: Long= DIALOG_DISMISS_DELAY): DialogState()
-        class UpdateMessage(val message: Int, val error: Boolean= true, val delay: Long= DIALOG_DISMISS_DELAY): DialogState()
+        class UpdateMessage(val message: String, val error: Boolean= true, val delay: Long= DIALOG_DISMISS_DELAY): DialogState()
         class HideDialog(val delay: Long= DIALOG_DISMISS_DELAY): DialogState()
-        class ShowMessageDialog(val message: Int, val error: Boolean= true): DialogState()
+        class ShowMessageDialog(val message: String, val error: Boolean= true): DialogState()
     }
 }

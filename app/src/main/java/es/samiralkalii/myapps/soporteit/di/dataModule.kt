@@ -3,7 +3,6 @@ package es.samiralkalii.myapps.soporteit.di
 import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.data.authlogin.RemoteUserStorageRepository
-import es.samiralkalii.myapps.data.common.RemoteCommonDataRepository
 import es.samiralkalii.myapps.data.notifications.RemoteNotificationsRepository
 import es.samiralkalii.myapps.data.teammanagement.RemoteTeamManagementRepository
 import es.samiralkalii.myapps.filesystem.FileSystemRepository
@@ -21,5 +20,4 @@ val dataModule= module {
     factory { NotificationRepository(get()) }
     factory { RemoteTeamManagementRepository(get()) }
     factory { RemoteNotificationsRepository(get()) }
-    factory { RemoteCommonDataRepository(get()) }
 }

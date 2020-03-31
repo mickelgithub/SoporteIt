@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.usecase.authlogin
 import es.samiralkalii.myapps.data.authlogin.RemoteUserAuthRepository
 import es.samiralkalii.myapps.data.authlogin.RemoteUserRepository
 import es.samiralkalii.myapps.data.authlogin.RemoteUserStorageRepository
+import es.samiralkalii.myapps.data.teammanagement.RemoteTeamManagementRepository
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.filesystem.FileSystemRepository
 import es.samiralkalii.myapps.preference.PreferenceRepository
@@ -12,7 +13,8 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
                    private val remoteUserRepository: RemoteUserRepository,
                    private val remoteUserStorageRepository: RemoteUserStorageRepository,
                    private val fileSystemRepository: FileSystemRepository,
-                   private val preferenceRepository: PreferenceRepository) {
+                   private val preferenceRepository: PreferenceRepository,
+                   private val remoteTeamManagementRepository: RemoteTeamManagementRepository) {
 
     private val logger = LoggerFactory.getLogger(LogupUseCase::class.java)
 
@@ -27,7 +29,7 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         logger.debug("Vamos a registar el usuario ${user.email}")
 
         if (user.isBoss) {
-            if (remoteUserRepository.isBossAlreadyExist(user.areaId, user.departmentId, user.bossLevel)) {
+            if (remoteTeamManagementRepository.isBossAlreadyExist(user.areaId, user.departmentId, user.bossLevel)) {
                 return Result.LoggedUpBossDuplicate
             }
         }

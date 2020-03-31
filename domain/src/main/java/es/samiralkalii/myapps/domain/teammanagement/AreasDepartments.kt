@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.domain.common
+package es.samiralkalii.myapps.domain.teammanagement
 
 class AreasDepartments(val areasDepartments: Map<Area, List<Department>>) {
 
