@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseUser
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserAuthDataSource
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.ui.util.formatDate
-import es.samiralkalii.myapps.soporteit.ui.util.formatHour
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -39,7 +38,7 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
     override suspend fun logupUser(user: String, pass: String): Pair<String, String> {
         val authResult = fbAuth.createUserWithEmailAndPassword(user, pass).await()
         val createdAtMilis= authResult.user?.metadata?.creationTimestamp ?: 0L
-        val createdAt= formatDate(createdAtMilis)+ " "+ formatHour(createdAtMilis)
+        val createdAt= formatDate(createdAtMilis)
         val userId= authResult.user?.uid ?: ""
         return (userId to createdAt)
 

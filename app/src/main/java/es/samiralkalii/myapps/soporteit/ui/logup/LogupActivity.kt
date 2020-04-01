@@ -169,7 +169,7 @@ class LogupActivity : BaseActivity(),
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
                     if (viewModel.user.profileImage.isBlank()) {
-                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake)
                         bindingLogup.cardProfileView.startAnimation(shake)
                     }
                     Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
