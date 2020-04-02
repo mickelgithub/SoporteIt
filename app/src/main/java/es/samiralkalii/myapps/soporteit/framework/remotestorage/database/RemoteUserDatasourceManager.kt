@@ -35,9 +35,9 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_PROFILE to profile)).await()
     }
 
-    override suspend fun updateBossVerification(bossVerification: String, userId: String) {
+    /*override suspend fun updateBossVerification(bossVerification: String, userId: String) {
         fstore.collection(USERS_REF).document(userId).update(mapOf( KEY_BOSS_VERIFIED to bossVerification)).await()
-    }
+    }*/
 
     override suspend fun updateTeamCreated(team: Team) {
         fstore.collection(USERS_REF).document(team.boss).update(
@@ -62,6 +62,25 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.collection(USERS_REF).document(user.id).update(mapOf(KEY_TEAM_INVITATION_STATE to "",
             KEY_TEAM to "", KEY_TEAM_ID to "", KEY_BOSS to ""))
         logger.debug("${Thread.currentThread().name}++++++++++++++")
+    }
+
+    override suspend fun updateBossVerifiedAt(user: String): String {
+        var dateEnLocalTimeZone= ""
+        val result= fstore.collection(USERS_REF).document(user).get().await()
+        if (result!= null && result.data!= null) {
+            val data = result.data!!
+            val bossVerifiedAt = (data[KEY_BOSS_VERIFIED_AT] as String?) ?: ""
+            if (bossVerifiedAt.isNotBlank()) {
+                dateEnLocalTimeZone = formatDate(bossVerifiedAt.toLong())
+                fstore.collection(USERS_REF).document(user)
+                    .update(mapOf(KEY_BOSS_VERIFIED_AT to dateEnLocalTimeZone))
+            }
+        }
+        return dateEnLocalTimeZone
+    }
+
+    override suspend fun signOut() {
+        fbAuth.signOut()
     }
 
     override suspend fun updateEmailVerified(user: User) {

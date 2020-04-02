@@ -80,6 +80,11 @@ class SplashActivity : BaseActivity() {
             return intent
         }
 
+        fun getIntentForHome(context: Context): Intent {
+            val intent = Intent(context, SplashActivity::class.java).putExtra(GOTO_KEY, GOTO_NOTIFICATIONS)
+            return intent
+        }
+
         fun getIntentToNotificationsScreen(context: Context): Intent {
             val intent = Intent(context, SplashActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

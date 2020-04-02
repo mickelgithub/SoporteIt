@@ -58,7 +58,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun getAllUsersButBosesAndNoTeam(): List<User> {
-        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_VERIFIED, "")
+        val result= fstore.collection(USERS_REF).whereEqualTo(KEY_BOSS_LEVEL, 0)
             .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
             .whereGreaterThanOrEqualTo(KEY_TEAM_ID, "")
             .whereLessThanOrEqualTo(KEY_TEAM_ID, "")

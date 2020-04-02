@@ -21,9 +21,10 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateBossVerification(bossVerification: String) {
+    override suspend fun updateBossVerification(bossVerificatedAt: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
-            putString(KEY_BOSS_VERIFIED, bossVerification)
+            putString(KEY_BOSS_VERIFIED_AT, bossVerificatedAt)
+            putString(KEY_BOSS_CONFIRMATION, YES)
         }
     }
 
@@ -55,6 +56,17 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_TEAM_ID, "")
             putString(KEY_BOSS, "")
             //putString(KEY_TEAM_INVITATION_STATE, user.teamInvitationState.toString())
+        }
+    }
+
+    override suspend fun deleteUserData() {
+        var tokenMessaging= ""
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).run {
+            tokenMessaging = getString(KEY_MESSAGING_TOKEN, "") ?: ""
+        }
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+            clear()
+            putString(KEY_MESSAGING_TOKEN, tokenMessaging)
         }
     }
 
@@ -94,6 +106,8 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_PROFILE_ID, user.profileId)
             putString(KEY_BOSS_CATEGORY, user.bossCategory)
             putString(KEY_BOSS_CATEGORY_ID, user.bossCategoryId)
+            putString(KEY_BOSS_CONFIRMATION, user.bossConfirmation)
+            putString(KEY_BOSS_VERIFIED_AT, user.bossVerifiedAt)
             putInt(KEY_BOSS_LEVEL, user.bossLevel)
             putBoolean(KEY_IS_BOSS, user.isBoss)
             putInt(KEY_HOLIDAY_DAYS, user.holidayDays)
@@ -125,7 +139,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val profile= getString(KEY_PROFILE, "")
             val profileId= getString(KEY_PROFILE_ID, "")
             val isBoss= getBoolean(KEY_BOSS, false)
-            val isBossVerified= getBoolean(KEY_BOSS_VERIFIED, false)
+            val bossConfirmation= getString(KEY_BOSS_CONFIRMATION, "")
             val bossCategory= getString(KEY_BOSS_CATEGORY, "")
             val bossCategoryId= getString(KEY_BOSS_CATEGORY_ID, "")
             val bossLevel= getInt(KEY_BOSS_LEVEL, 0)
@@ -146,7 +160,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
                 bossCategoryId = bossCategoryId, bossLevel = bossLevel, holidayDays = holidayDays,
                 internalEmployee = isInternalEmployee, messagingToken = messagingToken,
                 area = area, areaId = areaId, department = department, departmentId = departmentId,
-                state = state, stateChangedAt = stateChangedAt
+                state = state, stateChangedAt = stateChangedAt, bossConfirmation = bossConfirmation
             )
         }
     }
