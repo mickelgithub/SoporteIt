@@ -33,6 +33,8 @@ const val KEY_TEAM_INVITATION_STATE= "teamInvitationState"
 const val KEY_BOSS= "boss"
 const val KEY_PROFILE_BACK_COLOR= "profileBackColor"
 const val KEY_PROFILE_TEXT_COLOR= "profileTextColor"
+const val KEY_STATE= "state"
+const val KEY_STATE_CHANGED_AT= "stateChangedAt"
 
 const val KEY_TEAM_NAME_INSENSITIVE= "nameInsensitive"
 
@@ -77,5 +79,8 @@ fun Bundle.toUser()= User(
 )
 
 fun getFirstName(fullName: String?)= StringTokenizer(fullName, " ").nextToken()
+
+val User.bossVerified: Boolean
+    get() = (this.bossConfirmation== "Y" || this.bossConfirmation== "S")
 
 

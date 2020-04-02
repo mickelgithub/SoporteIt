@@ -21,7 +21,6 @@ data class User(
     val bossLevel: Int= 0,
     val bossConfirmation: String= "",
     val isBoss: Boolean= false,
-    val bossVerified: Boolean= false,
     val bossVerifiedAt: String= "",
     val messagingToken: String= "",
     val holidayDays: Int= DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS,
@@ -30,9 +29,8 @@ data class User(
     val areaId: String= "",
     val department: String= "",
     val departmentId: String= "",
-    val changedAt: String= "",
-    val state: String= STATE_SUBSCRIBED
-                ) {
+    val stateChangedAt: String= "",
+    val state: String= STATE_SUBSCRIBED) {
 
     companion object {
         val EMPTY= User()

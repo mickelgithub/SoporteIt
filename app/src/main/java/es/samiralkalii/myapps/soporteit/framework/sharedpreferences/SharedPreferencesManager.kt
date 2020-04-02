@@ -96,7 +96,6 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_BOSS_CATEGORY_ID, user.bossCategoryId)
             putInt(KEY_BOSS_LEVEL, user.bossLevel)
             putBoolean(KEY_IS_BOSS, user.isBoss)
-            putBoolean(KEY_BOSS_VERIFIED, user.bossVerified)
             putInt(KEY_HOLIDAY_DAYS, user.holidayDays)
             putBoolean(KEY_INTERNAL_EMPLOYEE, user.internalEmployee)
             putString(KEY_MESSAGING_TOKEN, user.messagingToken)
@@ -104,6 +103,8 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_AREA_ID, user.areaId)
             putString(KEY_DEPARTMENT, user.department)
             putString(KEY_DEPARTMENT_ID, user.departmentId)
+            putString(KEY_STATE, user.state)
+            putString(KEY_STATE_CHANGED_AT, user.stateChangedAt)
         }
     }
 
@@ -135,15 +136,17 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val areaId= getString(KEY_AREA_ID, "")
             val department= getString(KEY_DEPARTMENT, "")
             val departmentId= getString(KEY_DEPARTMENT_ID, "")
+            val state= getString(KEY_STATE, "")
+            val stateChangedAt= getString(KEY_STATE_CHANGED_AT, "")
 
             return User(email= email, password = pass, id= id, name = name, profileImage = imageProfilePath,
                 remoteProfileImage = imageProfileUrl, profileBackColor = profileBackColor,
                 profileTextColor = profileTextColor, createdAt = createdAt, isEmailVerified = isEmailVerified,
-                profile = profile, profileId = profileId, isBoss = isBoss, bossVerified = isBossVerified,
-                bossCategory = bossCategory, bossCategoryId = bossCategoryId, bossLevel = bossLevel,
-                holidayDays = holidayDays, internalEmployee = isInternalEmployee, messagingToken = messagingToken,
-                area = area, areaId = areaId, department = department, departmentId = departmentId
-
+                profile = profile, profileId = profileId, isBoss = isBoss, bossCategory = bossCategory,
+                bossCategoryId = bossCategoryId, bossLevel = bossLevel, holidayDays = holidayDays,
+                internalEmployee = isInternalEmployee, messagingToken = messagingToken,
+                area = area, areaId = areaId, department = department, departmentId = departmentId,
+                state = state, stateChangedAt = stateChangedAt
             )
         }
     }

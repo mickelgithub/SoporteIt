@@ -73,6 +73,6 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
                            createdAt: String, profileImage: String,
                            remoteProfileImage: String, messagingToken: String)= user.copy(id= id, holidayDays = holidaysDay,
         internalEmployee = internalEmployee, createdAt = createdAt, profileImage = profileImage,
-    remoteProfileImage = remoteProfileImage, messagingToken = messagingToken, changedAt = createdAt)
+    remoteProfileImage = remoteProfileImage, messagingToken = messagingToken, stateChangedAt = createdAt)
 
 }

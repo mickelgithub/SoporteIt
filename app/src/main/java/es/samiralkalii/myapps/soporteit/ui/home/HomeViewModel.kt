@@ -9,6 +9,7 @@ import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
+import es.samiralkalii.myapps.soporteit.ui.util.bossVerified
 import org.slf4j.LoggerFactory
 
 
