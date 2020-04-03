@@ -74,6 +74,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
                 dateEnLocalTimeZone = formatDate(bossVerifiedAt.toLong())
                 fstore.collection(USERS_REF).document(user)
                     .update(mapOf(KEY_BOSS_VERIFIED_AT to dateEnLocalTimeZone))
+
             }
         }
         return dateEnLocalTimeZone
