@@ -33,15 +33,8 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
                 return Result.LoggedUpBossDuplicate
             }
         }
-        var holidaysDay= -1
-        var internalEmployee= false
         var profileImage= ""
         var remoteProfileImage= ""
-
-        if (user.isBoss) {
-            holidaysDay= User.DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS
-            internalEmployee= true
-        }
 
         //we get user.id and user.creationDate
         val (userId,createdAt)= remoteUserAuthRepository.logupUser(user.email, user.password)
@@ -56,8 +49,8 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         }
         //we have to add the user to the database
         val messagingToken= preferenceRepository.getMessagingToken()
-        var userUpdated= updateUser(user, userId, holidaysDay, internalEmployee,
-            createdAt, profileImage, remoteProfileImage, messagingToken)
+        var userUpdated= updateUser(user, userId, createdAt,
+            profileImage, remoteProfileImage, messagingToken)
         remoteUserRepository.addUser(userUpdated)
 
 //        remoteUserRepository.updateMessagingToken(user.messagingToken)
@@ -69,10 +62,9 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
         return Result.LoggedUpOk(userUpdated)
     }
 
-    private fun updateUser(user: User, id: String, holidaysDay: Int, internalEmployee: Boolean,
-                           createdAt: String, profileImage: String,
-                           remoteProfileImage: String, messagingToken: String)= user.copy(id= id, holidayDays = holidaysDay,
-        internalEmployee = internalEmployee, createdAt = createdAt, profileImage = profileImage,
-    remoteProfileImage = remoteProfileImage, messagingToken = messagingToken, stateChangedAt = createdAt)
+    private fun updateUser(user: User, id: String, createdAt: String, profileImage: String,
+                           remoteProfileImage: String, messagingToken: String)= user.copy(id= id,
+        createdAt = createdAt, profileImage = profileImage, remoteProfileImage = remoteProfileImage,
+        messagingToken = messagingToken, stateChangedAt = createdAt)
 
 }

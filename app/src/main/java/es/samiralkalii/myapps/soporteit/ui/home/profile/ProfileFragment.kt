@@ -19,7 +19,6 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
-import es.samiralkalii.myapps.soporteit.ui.home.isProfilePendingToInput
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -223,13 +222,13 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
     }
 
     fun onImageBossVerificationClick() {
-        if (viewModel.user.isBoss) {
+        /*if (viewModel.user.isBoss) {
             //LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verified, messageColor= R.color.colorPrimary)
-        } /*else if (viewModel.user.isVerificationPending()) {
+        } else if (viewModel.user.isVerificationPending()) {
             LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
-        }*/ else if (viewModel.user.isProfilePendingToInput(activity!!)) {
+        } else if (viewModel.user.isProfilePendingToInput(activity!!)) {
             //LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.profile_is_needed)
-        }
+        }*/
     }
 
     override fun deleteImageProfile() {

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.view.animation.AnimationUtils
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.transition.Scene
 import androidx.transition.Transition
@@ -18,13 +17,13 @@ import es.samiralkalii.myapps.soporteit.databinding.SceneLoginFormBinding
 import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseActivity
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
+import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.android.synthetic.main.activity_logup.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
 
-private const val DELAY_SHOW_DIALOG_ERROR= 300L
 
 class LogupActivity : BaseActivity(),
     PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
@@ -148,7 +147,7 @@ class LogupActivity : BaseActivity(),
 
     private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
         showDialog(AlertDialog.newInstanceForMessage(getString(R.string.boss_verification_title), getString(R.string.boss_verification_msg),
-            getString(R.string.agree), { startHomeActivity(logupState.user.toBundle())}))
+            getString(R.string.agree), { HomeActivity.startActivity(viewModel.user.isEmailVerified, context = this)}))
     }
 
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
@@ -158,7 +157,9 @@ class LogupActivity : BaseActivity(),
                     logger.debug("Registracion correcto, goto Home")
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                    Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, MyDialog.DIALOG_DISMISS_DELAY*2)
+                    Handler().postDelayed({
+                        HomeActivity.startActivity(viewModel.user.isEmailVerified, context = this)
+                    }, MyDialog.DIALOG_DISMISS_DELAY*2)
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")

@@ -28,11 +28,11 @@ fun Context.startLogupActivity()= Intent(this, LogupActivity::class.java).also {
 }
 
 fun Context.startHomeActivity(bundle: Bundle, goto: Int= -1)= Intent(this, HomeActivity::class.java).also {
-    val superBundle= bundle
+    val args= bundle
     if (goto> 0) {
-        superBundle.putInt(SplashActivity.GOTO_KEY, goto)
+        args.putInt(SplashActivity.GOTO_KEY, goto)
     }
-    it.putExtras(superBundle)
+    it.putExtras(args)
     it.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(it)
 }

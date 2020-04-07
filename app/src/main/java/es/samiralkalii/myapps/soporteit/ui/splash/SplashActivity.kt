@@ -2,11 +2,10 @@ package es.samiralkalii.myapps.soporteit.ui.splash
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.ui.BaseActivity
+import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -60,7 +59,7 @@ class SplashActivity : BaseActivity() {
 
     private fun startHomeActivityyy(user: User) {
         val gotoExtra= intent.getIntExtra(GOTO_KEY, -1)
-        startHomeActivity(user.toBundle(), gotoExtra)
+        HomeActivity.startActivity(user.isEmailVerified, gotoExtra, this)
     }
 
     companion object {
@@ -93,7 +92,7 @@ class SplashActivity : BaseActivity() {
         }
 
         enum class GOTO {
-            PROFILE, PROFILE_PROFILE_NEEDED, HOME, NOTIFICATIONS
+            PROFILE, HOME, NOTIFICATIONS
         }
     }
 }

@@ -30,6 +30,7 @@ const val NOTIFS_RECEIVED= "notifsReceived"
 private const val IN_PROGRESS= "in_progress"
 private const val MEMBERS_FIELD= "members"
 const val REF_MANAGERS= "managers"
+const val REF_HOLIDAYS= "holidays"
 
 
 private const val AREAS_REF= "areas"
@@ -37,6 +38,7 @@ private const val KEY_NAME= "name"
 private const val KEY_CATEGORY_LEVEL= "level"
 private const val DEPARTMENTS_REF= "departments"
 private const val BOSS_CATEGORIES_REF= "bossCategories"
+private const val HOLIDAY_DAYS_REF= "holidayDays"
 
 
 
@@ -172,6 +174,15 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             .get(Source.SERVER).await()
         return !result.isEmpty
 
+    }
+
+    override suspend fun getHolidayDays(): Holidays {
+        val holidaysResult= fstore.collection(REF_HOLIDAYS).get(Source.SERVER).await()
+        if (!holidaysResult.isEmpty) {
+            val holidayDoc= holidaysResult.documents[0]
+            return Holidays((holidayDoc.data?.get(HOLIDAY_DAYS_REF) as Long).toInt())
+        }
+        return Holidays(-1)
     }
 
 }

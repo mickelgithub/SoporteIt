@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.AreasDepartments
 import es.samiralkalii.myapps.domain.teammanagement.BossCategories
+import es.samiralkalii.myapps.domain.teammanagement.Holidays
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
@@ -19,6 +20,7 @@ import es.samiralkalii.myapps.usecase.authlogin.LoginUserCase
 import es.samiralkalii.myapps.usecase.authlogin.LogupUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetAreasDepartmentsUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetBossCategoriesUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.GetHolidayDaysUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -26,8 +28,10 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
 
-class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase, private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase,
-                     private val getBossCategoriesUseCase: GetBossCategoriesUseCase
+class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase,
+                     private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase,
+                     private val getBossCategoriesUseCase: GetBossCategoriesUseCase,
+                     private val getHolidayDaysUseCase: GetHolidayDaysUseCase
 ) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
@@ -184,6 +188,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
     private lateinit var areasDepartments: AreasDepartments
     private lateinit var bossCategories: BossCategories
+    private lateinit var holidays: Holidays
 
     lateinit var user: User
 
@@ -275,8 +280,12 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             val deferedBossCategories= async(Dispatchers.IO) {
                 getBossCategoriesUseCase()
             }
+            val deferedHolidays= async(Dispatchers.IO) {
+                getHolidayDaysUseCase()
+            }
             areasDepartments= deferedAreaDepartment.await()
             bossCategories= deferedBossCategories.await()
+            holidays= deferedHolidays.await()
             _areas.value= areasDepartments.areasDepartments.keys.map { it.name }.toList()
            bossCategories.getBossCategoriesName().let {
                _bossCategories.value= it
@@ -441,10 +450,15 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         val areaObj= if (area.value!!.isNotBlank()) areasDepartments.getArea(area.value!!) else null
         val departmentObj= if (area.value!!.isNotBlank() && department.value!!.isNotBlank())
             areasDepartments.getDepartment(area.value!!, department.value!!) else null
+
+        val holidaysDay= if (isEmployeeBoss) holidays.holidayDays else User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS
+        val internalEmployee= if (isEmployeeBoss) true else false
+
         return User(name= name.value!!, email = email.value!!, password = password.value!!,
             profileImage = _imageProfile.value?.toString() ?: "", area= areaObj?.name ?: "",
             areaId = areaObj?.id ?: "", department = departmentObj?.name ?: "", departmentId = departmentObj?.id ?: "",
             isBoss = isEmployeeBoss, bossCategory = bossCategoryObj?.name ?: "",
+            holidayDays = holidaysDay, internalEmployee = internalEmployee,
             bossCategoryId = bossCategoryObj?.id ?: "",
             bossLevel = bossCategoryObj?.level ?: 0,
             profileBackColor = profColor?.first ?: -1,

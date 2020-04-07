@@ -1,8 +1,6 @@
 package es.samiralkalii.myapps.soporteit.di
 
 import es.samiralkalii.myapps.usecase.authlogin.*
-import es.samiralkalii.myapps.usecase.teammanagement.GetAreasDepartmentsUseCase
-import es.samiralkalii.myapps.usecase.teammanagement.GetBossCategoriesUseCase
 import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
 import es.samiralkalii.myapps.usecase.messaging.NotifyMessagingUseCase
 import es.samiralkalii.myapps.usecase.messaging.RegisterMessagingTokenUseCase
@@ -10,9 +8,7 @@ import es.samiralkalii.myapps.usecase.notification.DeleteNotificationUseCase
 import es.samiralkalii.myapps.usecase.notification.GetNotificationsUseCase
 import es.samiralkalii.myapps.usecase.notification.ReplyNotificationUseCase
 import es.samiralkalii.myapps.usecase.notification.UpdateNotificationStateUseCase
-import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
-import es.samiralkalii.myapps.usecase.teammanagement.GetAllUsersButBosesAndNoTeamUseCase
-import es.samiralkalii.myapps.usecase.teammanagement.InviteUserUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.*
 import org.koin.dsl.module
 
 
@@ -34,4 +30,6 @@ val useCaseModule= module {
     factory { ReplyNotificationUseCase(get()) }
     factory { GetAreasDepartmentsUseCase(get()) }
     factory { GetBossCategoriesUseCase(get()) }
+    factory { GetHolidayDaysUseCase(get()) }
+
 }

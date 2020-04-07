@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.data.teammanagement
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.AreasDepartments
 import es.samiralkalii.myapps.domain.teammanagement.BossCategories
+import es.samiralkalii.myapps.domain.teammanagement.Holidays
 import es.samiralkalii.myapps.domain.teammanagement.Team
 
 class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemoteTeamManagementDatasource) {
@@ -17,6 +18,8 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
 
     suspend fun getAreasDepartments()= remoteTeamManagementDatasource.getAreasDepartments()
     suspend fun getBossCategorties()= remoteTeamManagementDatasource.getBossCategorties()
+    suspend fun getHolidayDays()= remoteTeamManagementDatasource.getHolidayDays()
+
 
 }
 
@@ -30,6 +33,7 @@ interface IRemoteTeamManagementDatasource {
     suspend fun getAreasDepartments(): AreasDepartments
     suspend fun getBossCategorties(): BossCategories
     suspend fun isBossAlreadyExist(areaId: String, departmentId: String, bossLevel: Int): Boolean
+    suspend fun getHolidayDays(): Holidays
 
 
 }
