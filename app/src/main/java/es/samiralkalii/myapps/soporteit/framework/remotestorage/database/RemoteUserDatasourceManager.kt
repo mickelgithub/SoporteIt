@@ -84,8 +84,8 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fbAuth.signOut()
     }
 
-    override suspend fun updateEmailVerified(user: User) {
-        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_IS_EMAIL_VERIFIED to true)).await()
+    override suspend fun updateEmailVerified(user: String) {
+        fstore.collection(USERS_REF).document(user).update(mapOf( KEY_IS_EMAIL_VERIFIED to true)).await()
     }
 
     override suspend fun updateImageProfile(user: User) {

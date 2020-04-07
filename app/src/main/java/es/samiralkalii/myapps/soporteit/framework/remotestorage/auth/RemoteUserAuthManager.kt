@@ -19,20 +19,18 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
         logger.debug("Hemos enviado el correo de verificacion a "+ user.email)
     }
 
-    override suspend fun checkUserLoggedIn(user: User): Boolean {
+    override suspend fun checkUserLoggedIn(isEmailAlreadyVerified: Boolean): Pair<Boolean, Boolean> {
         if (fbAuth.currentUser!= null) {
             val currentUser= fbAuth.currentUser as FirebaseUser
-            if (user!= User.EMPTY) {
-                if (!user.isEmailVerified) {
-                    currentUser.reload().await()
-                    if (currentUser.isEmailVerified) {
-                        //user.isEmailVerified= true
-                    }
+            if (!isEmailAlreadyVerified) {
+                currentUser.reload().await()
+                if (currentUser.isEmailVerified) {
+                    return (true to true)
                 }
             }
-            return true
+            return (true to false)
         }
-        return false
+        return (false to false)
     }
 
     override suspend fun logupUser(user: String, pass: String): Pair<String, String> {
@@ -44,18 +42,17 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
 
     }
 
-    override suspend fun signInUser(user: User, firstTime: Boolean) {
-        val authResult= fbAuth.signInWithEmailAndPassword(user.email, user.password).await()
+    override suspend fun signInUser(user: String, pass: String, firstTime: Boolean): Boolean {
+        val authResult= fbAuth.signInWithEmailAndPassword(user, pass).await()
         if (authResult.user!= null) {
             val firebaseUser = authResult.user as FirebaseUser
             if (firstTime) {
                 /*user.id = firebaseUser.uid
                 user.createdAt = firebaseUser.metadata?.creationTimestamp ?: 0L*/
             }
-            if (!user.isEmailVerified) {
-                //user.isEmailVerified= firebaseUser.isEmailVerified
-            }
+            return firebaseUser.isEmailVerified
         }
+        return false
     }
 
 }

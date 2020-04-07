@@ -62,7 +62,7 @@ class LogupUseCase(private val remoteUserAuthRepository: RemoteUserAuthRepositor
 
 //        remoteUserRepository.updateMessagingToken(user.messagingToken)
         preferenceRepository.saveUser(userUpdated)
-        //remoteUserAuthRepository.sendEmailVerification(user)
+        remoteUserAuthRepository.sendEmailVerification(user)
         if (user.isBoss) {
             return Result.LoggedUpAsManagerTeamOk(user)
         }

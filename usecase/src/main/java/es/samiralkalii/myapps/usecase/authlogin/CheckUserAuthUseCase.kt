@@ -19,21 +19,20 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
         class Error(val message: String): Result()
     }
 
-    private suspend fun updateEmailVerified(user: User) {
+    private suspend fun updateEmailVerified(user: String) {
         preferenceRepository.updateEmailVerified()
         remoteUserRepository.updateEmailVerified(user)
     }
 
     suspend operator fun invoke(): Result {
         val user = preferenceRepository.getUser()
-        val emailVerified= user.isEmailVerified
-        val loggedIn= remoteUserAuthRepository.checkUserLoggedIn(user)
+        val (loggedIn, isEmailVerified)= remoteUserAuthRepository.checkUserLoggedIn(user.isEmailVerified)
         if (loggedIn) {
             logger.debug("active session...")
-            if (!emailVerified && user.isEmailVerified) {
+            if (!user.isEmailVerified && isEmailVerified) {
                 //we have to update this informacion en preferences
                 //and update it in firebase database
-                updateEmailVerified(user)
+                updateEmailVerified(user.id)
             }
             return Result.Logged(user)
         } else {
@@ -43,11 +42,11 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
                  //user already registered but he has a expired token
                 //we have to login
                 logger.debug("expired session, login taking data from preferences...")
-                remoteUserAuthRepository.signInUser(user, false)
-                if (!emailVerified && user.isEmailVerified) {
+                val isEmailVerified= remoteUserAuthRepository.signInUser(user.email, user.password, false)
+                if (isEmailVerified && !user.isEmailVerified) {
                     //we have to update this informacion en preferences
                     //and update it in firebase database
-                    updateEmailVerified(user)
+                    updateEmailVerified(user.id)
                 }
                 return Result.Relogged(user)
             } else {

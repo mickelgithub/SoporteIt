@@ -158,20 +158,12 @@ class LogupActivity : BaseActivity(),
                     logger.debug("Registracion correcto, goto Home")
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                    /*if (viewModel.user.profileImage.isBlank()) {
-                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
-                        bindingLogup.cardProfileView.startAnimation(shake)
-                    }*/
                     Handler().postDelayed({startHomeActivity(screenState.renderState.user.toBundle())}, MyDialog.DIALOG_DISMISS_DELAY*2)
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                    /*if (viewModel.user.profileImage.isBlank()) {
-                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake)
-                        bindingLogup.cardProfileView.startAnimation(shake)
-                    }*/
                     Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
                 }
                 is LogupState.ShowMessage -> {

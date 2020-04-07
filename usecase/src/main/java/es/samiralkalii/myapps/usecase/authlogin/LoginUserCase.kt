@@ -23,7 +23,7 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
     suspend operator fun invoke(user: User): Result {
         logger.debug("Vamos a login el usuario ${user.email}")
         //we get user.id and user.creationDate
-        remoteUserAuthRepository.signInUser(user, true)
+        remoteUserAuthRepository.signInUser(user.email, user.password, true)
         //login correcto
         //we get user.name, user.localProfileImage and user.remoteProfileImage
         val isEmailVerified= user.isEmailVerified
@@ -43,7 +43,7 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
         }
         preferenceRepository.saveUser(user)
         if (updateDatabase) {
-            remoteUserRepository.updateEmailVerified(user)
+            remoteUserRepository.updateEmailVerified(user.id)
         }
         //**user.messagingToken= preferenceRepository.getMessagingToken()
         remoteUserRepository.updateMessagingToken(user.messagingToken)
