@@ -53,7 +53,7 @@ class HomeActivity : BaseActivity() {
 
         if (!isEmailVerified) {
             bottomNav.visibility= View.GONE
-            finishMeInAwhile(5000L)
+            finishMeInAwhile(7000L)
         } else {
             //bottomNav.menu.getItem(0).isCheckable= false
             bottomNav.setOnNavigationItemSelectedListener { menuItem ->

@@ -9,21 +9,20 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
-import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
+import es.samiralkalii.myapps.soporteit.ui.BaseFragment
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
-import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
-import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.soporteit.ui.util.IMAGE_MIMETYPE
+import es.samiralkalii.myapps.soporteit.ui.util.PERMISSION_REQUEST_CODE
+import es.samiralkalii.myapps.soporteit.ui.util.PICK_IMAGE
+import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
-class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
+class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
 
     companion object {
         fun newInstance(bundle: Bundle) = ProfileFragment().apply { arguments= bundle }
@@ -32,20 +31,28 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
     private val logger= LoggerFactory.getLogger(ProfileFragment::class.java)
 
     private val viewModel: ProfileViewModel by viewModel()
-    private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(activity!!)[HomeViewModel::class.java]
-    }
 
-    private lateinit var user: User
+    //private lateinit var user: User
 
     private lateinit var binding: FragmentProfileBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        logger.debug("OnCreate")
-        user= (arguments as Bundle).toUser()
-        viewModel.publishUser(user)
+    override fun initLoading(args: Bundle?) {
+        super.initLoading(args)
+        viewModel.init()
         setHasOptionsMenu(true)
+    }
+
+    override fun initUI(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        logger.debug("OnCreateView")
+        binding= FragmentProfileBinding.inflate(inflater, container, false)
+        binding.viewModel= viewModel
+        binding.lifecycleOwner= viewLifecycleOwner
+        binding.fragment= this
+        binding.executePendingBindings()
+        return binding.root
+    }
+
+    override fun initStateObservation() {
 
         viewModel.showSaveMenu.observe(this, Observer {
             activity!!.invalidateOptionsMenu()
@@ -60,34 +67,35 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
 
         })
 
-        viewModel.profileChanged.observe(this, Observer {
+        /*viewModel.profileChanged.observe(this, Observer {
             it.getContentIfNotHandled().let { update ->
                 if (update!= null && update) {
                     binding.invalidateAll()
-                    homeViewModel.updateProfile(user)
+                    //homeViewModel.updateProfile(user)
                 }
             }
-        })
+        })*/
 
         viewModel.progressVisible.observe(this, Observer {
             when (it) {
-               /* MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(activity!!.supportFragmentManager)
-                MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)*/
+                /* MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(activity!!.supportFragmentManager)
+                 MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
+                 is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)*/
             }
         })
-
     }
 
     private fun processStateProfileImageChanged(screenState: ScreenState.Render<ProfileChangeState>) {
         when (screenState.renderState) {
             ProfileChangeState.changeOk -> {
-                homeViewModel.updateProfileImage(user)
+                //homeViewModel.updateProfileImage(user)
                 //homeViewModel.updateBossVerification(user.bossVerified)
-                //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
+                viewModel.updateProgressVisible(MyDialog.DialogState.UpdateSuccess())
             }
             is ProfileChangeState.ShowMessage -> {
-                //viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+                val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                    resources.getString(screenState.renderState.message)
+                viewModel.updateProgressVisible(MyDialog.DialogState.UpdateMessage(messagedesc))
             }
         }
     }
@@ -115,26 +123,6 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        logger.debug("OnCreateView")
-        binding= FragmentProfileBinding.inflate(inflater, container, false)
-        binding.viewModel= viewModel
-        binding.lifecycleOwner= viewLifecycleOwner
-        binding.fragment= this
-        binding.executePendingBindings()
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        logger.debug("OnViewCreated")
-
     }
 
     //called by binding from the xml layout
@@ -197,7 +185,6 @@ class ProfileFragment: Fragment(), PickUpProfilePhotoBottonSheetDialog.PickProfi
     private fun pickImage(data: Intent?) {
         //data.getData return the content URI for the selected Image
         val selectedImage = data?.data
-
         if (selectedImage!= null) {
             viewModel.updateImageProfile(selectedImage)
         }

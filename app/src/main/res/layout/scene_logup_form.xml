@@ -23,30 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".ui.logup.LogupActivity">
-
-            <!--<androidx.cardview.widget.CardView
-                android:id="@+id/card_profile_view"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="#ffffff"
-
-                app:cardCornerRadius="50dp"
-                android:layout_marginTop="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/profile_image"
-                    android:onClick="@{()-> activity.onImageProfileClick()}"
-                    app:imgsrc="@{viewModel.imageProfile}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:scaleType="centerCrop" />
-            </androidx.cardview.widget.CardView>-->
             <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
                 android:clickable="@{viewModel.dataLoaded}"
                 android:id="@+id/card_profile_view"
@@ -58,9 +34,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-            </es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <com.google.android.material.textfield.TextInputLayout

@@ -11,8 +11,10 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.soporteit.ui.util.getFirstName
 import es.samiralkalii.myapps.usecase.authlogin.Compare2ImageProfileUseCase
 import es.samiralkalii.myapps.usecase.authlogin.SaveProfileChangeUseCase
+import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -21,14 +23,27 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImageProfileUseCase,
-                       private val saveProfileChangeUseCase: SaveProfileChangeUseCase
+                       private val saveProfileChangeUseCase: SaveProfileChangeUseCase,
+                       private val getUserUseCase: GetUserUseCase
 ): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(ProfileViewModel::class.java)
 
     private val _imageProfile= MutableLiveData<Uri?>()
     val imageProfile: LiveData<Uri?>
-        get()= _imageProfile
+                get()= _imageProfile
+
+    private val _bgColorProfile= MutableLiveData<Int?>()
+    val bgColorProfile: LiveData<Int?>
+        get()= _bgColorProfile
+
+    private val _txtColorProfile= MutableLiveData<Int?>()
+    val txtColorProfile: LiveData<Int?>
+        get()= _txtColorProfile
+
+    private val _nameProfile= MutableLiveData<String?>()
+    val nameProfile: LiveData<String?>
+        get()= _nameProfile
 
     private val _showSaveMenu= MutableLiveData<Boolean>(false)
     val showSaveMenu: LiveData<Boolean>
@@ -42,22 +57,29 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     val profileChangeState: LiveData<Event<ScreenState<ProfileChangeState>>>
         get()= _profileChangeState
 
-    private val _profileChanged= MutableLiveData<Event<Boolean>>()
-    val profileChanged: LiveData<Event<Boolean>>
-        get() = _profileChanged
 
-    lateinit var user: User
+    private val _user= MutableLiveData<User?>(User.EMPTY)
+    val user: LiveData<User?>
+        get()= _user
 
     private var imageChanged: Boolean= false
     private var currentProfile= ""
 
-    fun publishUser(userParam: User) {
-        user= userParam
-        logger.debug(user.profileImage+ "desde profileViewModelllll")
-        if (user.profileImage.isNotBlank()) {
-            _imageProfile.value= Uri.fromFile(File(user.profileImage))
+    fun init() {
+        viewModelScope.launch {
+            _user.value = async(Dispatchers.IO) {
+                getUserUseCase()
+            }.await()
+            val localProfileImage= _user.value?.profileImage ?: ""
+            if (localProfileImage.isNotBlank()) {
+                _imageProfile.value= Uri.fromFile(File(localProfileImage))
+            } else {
+                _bgColorProfile.value= user.value?.profileBackColor
+                _txtColorProfile.value= user.value?.profileTextColor
+                _nameProfile.value= getFirstName(_user.value?.name)
+            }
+            currentProfile= _user.value?.profile ?: ""
         }
-        currentProfile= user.profile
     }
 
     fun updateShowSaveMenu() {
@@ -67,13 +89,14 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
     fun updateImageProfile(imgUri: Uri?) {
         _imageProfile.value= imgUri
-        if (user.profileImage.isBlank() && imgUri!= null) {
+        val localProfileImage= _user.value?.profileImage ?: ""
+        if (localProfileImage.isBlank() && imgUri!= null) {
             imageChanged= true
             _showSaveMenu.value= true
-        } else if (!user.profileImage.isBlank() && imgUri== null) {
+        } else if (localProfileImage.isNotBlank() && imgUri== null) {
             imageChanged= true
             _showSaveMenu.value = true
-        } else if (user.profileImage.isBlank() && imgUri== null) {
+        } else if (localProfileImage.isBlank() && imgUri== null) {
             imageChanged= false
             _showSaveMenu.value= false
         } else {
@@ -81,7 +104,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
                 val equals = async(Dispatchers.IO) {
                     compare2ImageProfileUseCase(
                         imgUri.toString(),
-                        user.profileImage
+                        _user.value?.profileImage ?: ""
                     )
                 }.await()
                 imageChanged= !equals
@@ -92,7 +115,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
     fun onSaveClick(chooseYourProfileResource: String) {
 
-        //_progressVisible.value= MyDialog.DialogState.ShowLoading
+        _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             when (error) {
@@ -100,20 +123,20 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
                     _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
                 }
                 else -> {
-                    _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
+                    _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.not_controled_error))))
                 }
             }
         }
 
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
-                saveProfileChangeUseCase(user, _imageProfile.value?.toString() ?: "", imageChanged, chooseYourProfileResource)
+                saveProfileChangeUseCase(_user.value!!, _imageProfile.value?.toString() ?: "", imageChanged, chooseYourProfileResource)
             }.await()
             _showSaveMenu.value= false
             _profileChangeState.value= Event(ScreenState.Render(ProfileChangeState.changeOk))
-            if (currentProfile!= user.profile) {
+            /*if (currentProfile!= user.profile) {
                 _profileChanged.value= Event(true)
-            }
+            }*/
             //_progressVisible.value = LoadingDialog.DialogState.ShowSuccess
         }
     }

@@ -3,7 +3,6 @@ package es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.google.firebase.database.collection.LLRBNode
 import es.samiralkalii.myapps.soporteit.R
 import org.slf4j.LoggerFactory
 
@@ -76,6 +74,24 @@ class ProfileImage @JvmOverloads constructor(
             txtView.setBackgroundColor(bgColor)
             txtView.setTextColor(textColor)
             if (imgView.isVisible) {
+                animateRevealView(imgView) {
+                    imgView.isVisible= false
+                    txtView.isVisible= true
+                    fadeIn(txtView, {})
+                }
+            } else {
+                txtView.isVisible= true
+                fadeIn(txtView, {})
+            }
+        }
+    }
+
+    fun setTextView(textParam: String?) {
+        if (!textParam.isNullOrBlank()) {
+            txtView.text= textParam
+            txtView.setBackgroundColor(bgColor)
+            txtView.setTextColor(textColor)
+            if (imgView.isVisible && imgView.isAttachedToWindow) {
                 animateRevealView(imgView) {
                     imgView.isVisible= false
                     txtView.isVisible= true

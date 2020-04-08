@@ -23,21 +23,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image"
+        <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
+            android:clickable="true"
+            android:id="@+id/costum_profile_image"
+            android:onClick="@{()-> fragment.onImageProfileClick()}"
+            app:imageView="@{viewModel.imageProfile.toString()}"
+            app:bgColor="@{viewModel.bgColorProfile}"
+            app:textColor="@{viewModel.txtColorProfile}"
+            app:textView="@{viewModel.nameProfile}"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
-            android:src="@drawable/profile"
-            app:imgsrc="@{viewModel.imageProfile}"
-            android:onClick="@{()-> fragment.onImageProfileClick()}"
-            app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <ImageView
             android:id="@+id/imageView2"
@@ -98,7 +98,7 @@
             android:text="@string/work_address"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+            app:layout_constraintTop_toBottomOf="@+id/costum_profile_image" />
 
         <ImageView
             android:id="@+id/imageView"

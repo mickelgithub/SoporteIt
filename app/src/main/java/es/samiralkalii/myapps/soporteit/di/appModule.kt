@@ -49,7 +49,7 @@ val appModule= module {
     viewModel { SplashViewModel(get(), get()) }
     viewModel { LogupViewModel(get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel()}
-    viewModel { ProfileViewModel(get(), get()) }
+    viewModel { ProfileViewModel(get(), get(), get()) }
     viewModel { HomeFragmentViewModel(get()) }
     viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get(), get()) }
     viewModel { HomeNotificationsFragmentViewModel(get(), get(), get(), get()) }

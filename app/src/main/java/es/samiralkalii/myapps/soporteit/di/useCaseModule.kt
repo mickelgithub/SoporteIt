@@ -9,6 +9,7 @@ import es.samiralkalii.myapps.usecase.notification.GetNotificationsUseCase
 import es.samiralkalii.myapps.usecase.notification.ReplyNotificationUseCase
 import es.samiralkalii.myapps.usecase.notification.UpdateNotificationStateUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.*
+import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
 import org.koin.dsl.module
 
 
@@ -31,5 +32,6 @@ val useCaseModule= module {
     factory { GetAreasDepartmentsUseCase(get()) }
     factory { GetBossCategoriesUseCase(get()) }
     factory { GetHolidayDaysUseCase(get()) }
+    factory { GetUserUseCase(get()) }
 
 }
