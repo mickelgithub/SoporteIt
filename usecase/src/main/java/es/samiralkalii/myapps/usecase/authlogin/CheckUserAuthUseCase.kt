@@ -21,7 +21,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
 
     private suspend fun updateEmailVerified(user: String) {
         preferenceRepository.updateEmailVerified()
-        remoteUserRepository.updateEmailVerified(user)
+        remoteUserRepository.updateEmailVerifiedOrProfileImage(user)
     }
 
     suspend operator fun invoke(): Result {
@@ -43,7 +43,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
                  //user already registered but he has a expired token
                 //we have to login
                 logger.debug("expired session, login taking data from preferences...")
-                val isEmailVerified= remoteUserAuthRepository.signInUser(user.email, user.password, false)
+                val (isEmailVerified, _)= remoteUserAuthRepository.signInUser(user.email, user.password, false)
                 if (isEmailVerified && !user.isEmailVerified) {
                     //we have to update this informacion en preferences
                     //and update it in firebase database

@@ -315,47 +315,51 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     private fun loginUser() {
 
         clearErrorsLogin()
-
-        _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
-        val errorHandler = CoroutineExceptionHandler { _, error ->
-            logger.error(error.toString(), error)
-            when (error) {
-                is FirebaseNetworkException -> {
+        if (email.value!!.isBlank() || !email.value!!.contains("@")) {
+            _emailError.value = R.string.email_incorrect_message_error
+        } else if (password.value!!.isBlank()) {
+            _passwordError.value = R.string.password_incorrect_logup_message_error
+        } else {
+            _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
+            val errorHandler = CoroutineExceptionHandler { _, error ->
+                logger.error(error.toString(), error)
+                when (error) {
+                    is FirebaseNetworkException -> {
+                        _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.no_internet_connection))))
+                    }
+                    is FirebaseAuthInvalidCredentialsException -> {
+                        if (error.toString().contains("email address is badly formatted")) {
+                            _emailError.postValue(R.string.email_incorrect_message_error)
+                        } else if (error.toString().contains("The password is invalid")) {
+                            _passwordError.postValue(R.string.password_incorrect_login_message_error)
+                        }
+                        _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
+                    }
+                    is FirebaseAuthInvalidUserException -> {
+                        if (error.toString().contains("There is no user record corresponding to this identifier")) {
+                            _emailError.postValue(R.string.user_not_exist_message_error)
+                        }
+                        _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
+                    }
+                    is com.google.firebase.FirebaseApiNotAvailableException -> {
+                        _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.firebase_api_no_available))))
+                    } else -> {
                     _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.no_internet_connection))))
                 }
-                is FirebaseAuthInvalidCredentialsException -> {
-                    if (error.toString().contains("email address is badly formatted")) {
-                        _emailError.postValue(R.string.email_incorrect_message_error)
-                    } else if (error.toString().contains("The password is invalid")) {
-                        _passwordError.postValue(R.string.password_incorrect_login_message_error)
-                    }
-                    _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
-                }
-                is FirebaseAuthInvalidUserException -> {
-                    if (error.toString().contains("There is no user record corresponding to this identifier")) {
-                        _emailError.postValue(R.string.user_not_exist_message_error)
-                    }
-                    _progressVisible.postValue(MyDialog.DialogState.HideDialog(0L))
-                }
-                is com.google.firebase.FirebaseApiNotAvailableException -> {
-                    _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.firebase_api_no_available))))
-                } else -> {
-                    _loginState.postValue(Event(ScreenState.Render(LoginState.ShowMessage(R.string.no_internet_connection))))
                 }
             }
-        }
-
-        viewModelScope.launch(errorHandler) {
-            val result= async(Dispatchers.IO) {
-                val resultLoginIn= loginUserCase(user)
-                if (!user.profileImage.isBlank()) {
-                    _imageProfile.postValue(Uri.fromFile(File(user.profileImage)))
-                }
-                resultLoginIn
-            }.await()
-            when (result) {
-                is LoginUserCase.Result.LoginOk -> {
-                    _loginState.value = Event(ScreenState.Render(LoginState.LoginOk(result.user)))
+            viewModelScope.launch(errorHandler) {
+                val result= async(Dispatchers.IO) {
+                    val resultLoginIn= loginUserCase(email.value!!, password.value!!)
+                    if (!user.profileImage.isBlank()) {
+                        _imageProfile.postValue(Uri.fromFile(File(user.profileImage)))
+                    }
+                    resultLoginIn
+                }.await()
+                when (result) {
+                    is LoginUserCase.Result.LoginOk -> {
+                        _loginState.value = Event(ScreenState.Render(LoginState.LoginOk(result.user)))
+                    }
                 }
             }
         }
@@ -409,7 +413,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
             viewModelScope.launch(errorHandler) {
                 val result= async(Dispatchers.IO) {
-                    user= createUser(profColor)
+                    user= createUserForLogup(profColor)
                     logupUseCase(user)
                 }.await()
                 when (result) {
@@ -444,7 +448,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         }
     }
 
-    fun createUser(profColor: Pair<Int, Int>?): User {
+    fun createUserForLogup(profColor: Pair<Int, Int>?): User {
         val isEmployeeBoss= isBoss.value ?: false
         val bossCategoryObj= if (isEmployeeBoss) bossCategories.getBossCategory(bossCategory.value!!) else null
         val areaObj= if (area.value!!.isNotBlank()) areasDepartments.getArea(area.value!!) else null

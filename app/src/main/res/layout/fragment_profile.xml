@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -13,8 +12,6 @@
             name="fragment"
             type="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment" />
     </data>
-
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -31,7 +28,6 @@
             app:bgColor="@{viewModel.user.profileBackColor}"
             app:textColor="@{viewModel.user.profileTextColor}"
             app:textView="@{viewModel.user.firstName}"
-            app:placeholder="@drawable/profile"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
@@ -40,40 +36,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3"
-            app:srcCompat="@drawable/email_icon" />
-
         <TextView
-            android:id="@+id/email_text_view"
-            android:layout_width="0dp"
+            android:id="@+id/adress_text_view"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/backgroud_rounded"
-            android:text="@{viewModel.user.email}"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+            android:layout_marginTop="24dp"
+            android:text="@string/work_address"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/imageView2" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/costum_profile_image" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/ubication_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/adress_text_view"
+            app:layout_constraintEnd_toStartOf="@+id/adress_text_view"
+            app:layout_constraintTop_toTopOf="@+id/adress_text_view"
+            app:srcCompat="@drawable/place" />
+
+        <ImageView
+            android:id="@+id/name_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="41dp"
             android:tint="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/adress_text_view"
             app:srcCompat="@drawable/identity" />
 
         <TextView
@@ -85,112 +78,47 @@
             android:background="@drawable/backgroud_rounded"
             android:text="@{viewModel.user.name}"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/name_image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3" />
-
-        <TextView
-            android:textSize="16sp"
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/work_address"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/costum_profile_image" />
+            app:layout_constraintStart_toEndOf="@+id/name_image"
+            app:layout_constraintTop_toTopOf="@+id/name_image" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/email_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:tint="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            app:layout_constraintTop_toBottomOf="@+id/name_image"
+            app:srcCompat="@drawable/email_icon" />
+
+        <TextView
+            android:id="@+id/email_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/backgroud_rounded"
+            android:text="@{viewModel.user.email}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/email_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/email_image"
+            app:layout_constraintTop_toTopOf="@+id/email_image" />
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email_image"
             app:srcCompat="@drawable/profession" />
 
-        <!--<FrameLayout
-            android:id="@+id/frameLayoutProfileSpinner"
-            android:layout_width="0dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_spinner_profile_fragment"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:visible='@{viewModel.user.bossVerified.equals("N")}'>-->
-        <FrameLayout
-            android:id="@+id/frameLayoutProfileSpinner"
-            android:layout_width="0dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_spinner_profile_fragment"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView">
-
-            <!--<Spinner
-                android:id="@+id/profil_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                app:option="@{viewModel.user.bossVerified}"
-                app:value="@={viewModel.user.profile}"
-                app:viewmodel="@{viewModel}"
-                />-->
-
-
-
-        </FrameLayout>
-
-        <!--<ImageView
-            android:id="@+id/boss_verification_state_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/frameLayoutProfileSpinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/frameLayoutProfileSpinner"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:onClick="@{()-> fragment.onImageBossVerificationClick()}"
-            app:srcCompat="@{viewModel.user.bossVerified}" />-->
-
-        <ImageView
-            android:id="@+id/boss_verification_state_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/frameLayoutProfileSpinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/frameLayoutProfileSpinner"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:onClick="@{()-> fragment.onImageBossVerificationClick()}" />
-
-        <!--<TextView
-            android:id="@+id/profile_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/backgroud_rounded"
-            android:text="@{viewModel.user.profile}"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:visible='@{!viewModel.user.bossVerified.equals("N")}' />-->
-
         <TextView
             android:id="@+id/profile_text"
             android:layout_width="0dp"
@@ -198,23 +126,80 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/backgroud_rounded"
-            android:text="@{viewModel.user.profile}"
+            android:text="@{viewModel.user.bossLevel&gt;=1 ? viewModel.user.bossCategory : viewModel.user.profile}"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_image"
             app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintStart_toEndOf="@+id/profile_image"
+            app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
         <ImageView
-            android:id="@+id/imageView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:src="@{viewModel.isBossAndVerified ? @drawable/ok_icon : @drawable/ko}"
+            android:id="@+id/boss_verification_state_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            app:visible="@{viewModel.isBossAndVerified || viewModel.isBossAndNotVerifiedYet()}"
+            android:onClick="@{()-> fragment.onImageBossVerificationClick()}"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/profile_text" />
+
+        <ImageView
+            android:id="@+id/area_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            app:visible="@{viewModel.user.bossLevel&lt;=2}"
             android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/textView5"
-            app:layout_constraintEnd_toStartOf="@+id/textView5"
-            app:layout_constraintTop_toTopOf="@+id/textView5"
-            app:srcCompat="@drawable/place" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image"
+            app:srcCompat="@drawable/ic_area" />
+
+        <TextView
+            android:id="@+id/area_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/backgroud_rounded"
+            android:text="@{viewModel.user.area}"
+            app:visible="@{viewModel.user.bossLevel&lt;=2}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/area_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/area_image"
+            app:layout_constraintTop_toTopOf="@+id/area_image" />
+
+        <ImageView
+            android:id="@+id/department_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:tint="@color/colorPrimary"
+            app:visible="@{viewModel.user.bossLevel&lt;=1}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/area_image"
+            app:srcCompat="@drawable/ic_group" />
+
+        <TextView
+            android:id="@+id/department_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/backgroud_rounded"
+            app:visible="@{viewModel.user.bossLevel&lt;=1}"
+            android:text="@{viewModel.user.department}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/department_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/department_image"
+            app:layout_constraintTop_toTopOf="@+id/department_image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

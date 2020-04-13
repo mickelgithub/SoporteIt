@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
+import es.samiralkalii.myapps.domain.STATE_SUBSCRIBED
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team
@@ -84,7 +85,9 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fbAuth.signOut()
     }
 
-    override suspend fun updateEmailVerified(user: String) {
+    override suspend fun updateEmailVerifiedOrProfileImage(user: String, emailVerified: Boolean?, profileImage: String?) {
+        if (emailVerified!= null && emailVerified && !profileImage.isNullOrBlank())
+            werwer
         fstore.collection(USERS_REF).document(user).update(mapOf( KEY_IS_EMAIL_VERIFIED to true)).await()
     }
 
@@ -93,25 +96,45 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             KEY_REMOTE_PROFILE_IMAGE to remoteProfileImage)).await()
     }
 
-    override suspend fun getUserInfo(user: User) {
+    override suspend fun getUserInfo(user: String): User {
 
-        val result= fstore.collection(USERS_REF).document(user.id).get().await()
+        val result= fstore.collection(USERS_REF).document(user).get().await()
         if (result!= null && result.data!= null) {
             val data= result.data!!
-            /*user.name= (data[KEY_NAME] as String?) ?: ""
-            user.profileImage= (data[KEY_LOCAL_PROFILE_IMAGE] as String?) ?: ""
-            user.remoteProfileImage= (data[KEY_REMOTE_PROFILE_IMAGE] as String?) ?: ""
-            user.isEmailVerified= ((data[KEY_EMAIL_VERIFIED] as Boolean?) ?: false)
-            user.profile= (data[KEY_PROFILE] as String?) ?: ""
-            user.bossVerified= (data[KEY_BOSS_VERIFICATION] as String?) ?: ""
-            user.team= (data[KEY_TEAM] as String?) ?: ""
-            user.teamId= (data[KEY_TEAM_ID] as String?) ?: ""
-            user.teamInvitationState= Reply.valueOf(data[KEY_TEAM_INVITATION_STATE] as String)
-            user.holidayDaysPerYear= (data[KEY_HOLIDAY_DAYS_PER_YEAR] as Long?) ?: 22L
-            user.internalEmployee= (data[KEY_INTERNAL_EMPLOYEE] as Boolean?) ?: false
-            user.isBoss= (data[KEY_BOSS] as String?) ?: ""*/
+            return createUser(user, data)
         }
+        return User.EMPTY
     }
+
+    private fun createUser(user: String, data: Map<String, Any>)= User(
+        id = user,
+        email = data[KEY_EMAIL] as String? ?: "",
+        password = data[KEY_PASS] as String? ?: "",
+        name= data[KEY_NAME] as String? ?: "",
+        profileImage = data[KEY_PROFILE_IMAGE] as String? ?: "",
+        remoteProfileImage = data[KEY_REMOTE_PROFILE_IMAGE] as String? ?: "",
+        profileBackColor = data[KEY_PROFILE_BACK_COLOR] as Int? ?: Integer.MIN_VALUE,
+        profileTextColor= data[KEY_PROFILE_TEXT_COLOR] as Int? ?: Integer.MIN_VALUE,
+        createdAt = data[KEY_CREATED_AT] as String? ?: "",
+        isEmailVerified= data[KEY_IS_EMAIL_VERIFIED] as Boolean? ?: false,
+        profile = data[KEY_PROFILE] as String? ?: "",
+        profileId = data[KEY_PROFILE_ID] as String? ?: "",
+        bossCategory = data[KEY_BOSS_CATEGORY] as String? ?: "",
+        bossCategoryId = data[KEY_BOSS_CATEGORY_ID] as String? ?: "",
+        bossLevel = data[KEY_BOSS_LEVEL] as Int? ?: 0,
+        bossConfirmation = data[KEY_BOSS_CONFIRMATION] as String? ?: "",
+        isBoss = data[KEY_BOSS] as Boolean? ?: false,
+        bossVerifiedAt = data[KEY_BOSS_VERIFIED_AT] as String? ?: "",
+        holidayDays = data[KEY_HOLIDAY_DAYS] as Int? ?: User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS,
+        internalEmployee = data[KEY_INTERNAL_EMPLOYEE] as Boolean? ?: false,
+        area= data[KEY_AREA] as String? ?: "",
+        areaId = data[KEY_AREA_ID] as String? ?: "",
+        department = data[KEY_DEPARTMENT] as String? ?: "",
+        departmentId = data[KEY_DEPARTMENT_ID] as String? ?: "",
+        stateChangedAt = data[KEY_STATE_CHANGED_AT] as String? ?: "",
+        state = data[KEY_STATE] as String? ?: STATE_SUBSCRIBED
+
+    )
 
     override suspend fun addUser(user: User) {
         fstore.runTransaction { _ ->

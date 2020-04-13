@@ -37,6 +37,7 @@ data class User(
     val firstName: String
         get() = if (name.isNullOrBlank()) "" else StringTokenizer(name, " ").nextToken()
 
+
     companion object {
         val EMPTY= User()
         val DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS= 22

@@ -36,8 +36,8 @@ class RemoteUserStorageDataSourceManager(val fstorage: FirebaseStorage): IRemote
         return ""
     }
 
-    override suspend fun getProfileImage(user: User): InputStream? {
-        val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${user.profileImage.fileExtension()}")
+    override suspend fun getProfileImage(user: String, profileImage: String): InputStream? {
+        val mStorageRef = fstorage.getReference("${user}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.fileExtension()}")
         val streamResult= mStorageRef.stream.await()
         return streamResult.stream
     }

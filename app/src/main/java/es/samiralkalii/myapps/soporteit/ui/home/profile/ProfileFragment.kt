@@ -207,13 +207,13 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     }
 
     fun onImageBossVerificationClick() {
-        /*if (viewModel.user.isBoss) {
-            //LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verified, messageColor= R.color.colorPrimary)
-        } else if (viewModel.user.isVerificationPending()) {
-            LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.verification_pending)
-        } else if (viewModel.user.isProfilePendingToInput(activity!!)) {
-            //LoadingDialog.showMessageDialogForAwhile(activity!!.supportFragmentManager, R.string.profile_is_needed)
-        }*/
+        viewModel.user.value?.let {
+            if (it.isBoss && (it.bossConfirmation== "Y" || it.bossConfirmation== "S")) {
+                viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(R.string.verified), error = false))
+            } else {
+                viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(R.string.verification_pending)))
+            }
+        }
     }
 
     override fun deleteImageProfile() {

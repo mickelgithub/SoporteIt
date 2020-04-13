@@ -15,7 +15,7 @@ class RemoteUserAuthRepository(val remoteUserAuthDataSource: IRemoteUserAuthData
 interface IRemoteUserAuthDataSource {
     suspend fun logupUser(user: String, pass: String): Pair<String, String>
     //return if the user has emailVerified when login
-    suspend fun signInUser(user: String, pass: String, firstTime: Boolean): Boolean
+    suspend fun signInUser(user: String, pass: String, firstTime: Boolean): Pair<Boolean, String>
     //this method return (logedIn, emailVerified) pair
     suspend fun checkUserLoggedIn(isEmailAlreadyVerified: Boolean): Pair<Boolean, Boolean>
     suspend fun sendEmailVerification(user: User)

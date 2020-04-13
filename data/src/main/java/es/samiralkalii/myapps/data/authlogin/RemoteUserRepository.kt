@@ -7,8 +7,8 @@ import es.samiralkalii.myapps.domain.teammanagement.Team
 class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
 
     suspend fun addUser(user: User) = remoteUserDatasource.addUser(user)
-    suspend fun getUserInfo(user: User) = remoteUserDatasource.getUserInfo(user)
-    suspend fun updateEmailVerified(user: String) = remoteUserDatasource.updateEmailVerified(user)
+    suspend fun getUserInfo(user: String) = remoteUserDatasource.getUserInfo(user)
+    suspend fun updateEmailVerifiedOrProfileImage(user: String, emailVerified: Boolean?, profileImage: String?= null) = remoteUserDatasource.updateEmailVerifiedOrProfileImage(user, emailVerified, profileImage)
     suspend fun updateProfileImage(user: String, profileImage: String, remoteProfileImage: String) = remoteUserDatasource.updateprofileImage(user, profileImage, remoteProfileImage)
     suspend fun updateMessagingToken(token: String) = remoteUserDatasource.updateMessagingToken(token)
     suspend fun updateProfile(profile: String, userId: String)= remoteUserDatasource.updateProfile(profile, userId)
@@ -24,8 +24,8 @@ class RemoteUserRepository(val remoteUserDatasource: IRemoteUserDatasource) {
 
 interface IRemoteUserDatasource {
     suspend fun addUser(user: User)
-    suspend fun getUserInfo(user: User)
-    suspend fun updateEmailVerified(user: String)
+    suspend fun getUserInfo(user: String): User
+    suspend fun updateEmailVerifiedOrProfileImage(user: String, emailVerified: Boolean?, profileImage: String?= null)
     suspend fun updateprofileImage(user: String, profileImage: String, remoteProfileImage: String)
     suspend fun updateMessagingToken(token: String)
     suspend fun updateProfile(profile: String, userId: String)

@@ -20,30 +20,40 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
         class LoginOk(val user: User): Result()
     }
 
-    suspend operator fun invoke(user: User): Result {
-        logger.debug("Vamos a login el usuario ${user.email}")
+    suspend operator fun invoke(userEmail: String, pass: String): Result {
+        logger.debug("Vamos a login el usuario ${userEmail}")
+        var updateEmailVerified= false
+        var updateProfileImage= false
         //we get user.id and user.creationDate
-        remoteUserAuthRepository.signInUser(user.email, user.password, true)
+        val (isEmailVerified, id)= remoteUserAuthRepository.signInUser(userEmail, pass, true)
         //login correcto
         //we get user.name, user.localProfileImage and user.remoteProfileImage
-        val isEmailVerified= user.isEmailVerified
-        remoteUserRepository.getUserInfo(user)
-        if (user.remoteProfileImage.isNotBlank()) {
-            val imageInputStream= remoteUserStorageRepository.getProfileImage(user)
+        var userObj= remoteUserRepository.getUserInfo(id)
+        if (userObj.remoteProfileImage.isNotBlank()) {
+            val imageInputStream= remoteUserStorageRepository.getProfileImage(id, userObj.profileImage)
             imageInputStream?.use {
-                val imageFile= fileSystemRepository.copyFileFromStreamToInternal(it, user.profileImage)
-                //**user.profileImage= imageFile.absolutePath
+                val imageFile= fileSystemRepository.copyFileFromStreamToInternal(it, userObj.profileImage)
+                if (userObj.profileImage!= imageFile.absolutePath) {
+                    userObj= userObj.copy(profileImage = imageFile.absolutePath)
+                    updateProfileImage= true
+                }
+
             }
         }
         //if the mail is verified and is not updated en firebase databaase, we have to do it
-        var updateDatabase= false
-        if (isEmailVerified && !user.isEmailVerified) {
-            //**user.isEmailVerified= isEmailVerified
-            updateDatabase= true
+
+        if (isEmailVerified && !userObj.isEmailVerified) {
+            updateEmailVerified= true
+            userObj= userObj.copy(isEmailVerified = updateEmailVerified)
         }
-        preferenceRepository.saveUser(user)
-        if (updateDatabase) {
-            remoteUserRepository.updateEmailVerified(user.id)
+
+        preferenceRepository.saveUser(userObj)
+        if (updateEmailVerified && updateProfileImage) {
+            remoteUserRepository.updateEmailVerifiedOrProfileImage(id, userObj.profileImage)
+        } else if (updateEmailVerified) {
+            remoteUserRepository.updateEmailVerifiedOrProfileImage(id)
+        } else if (updateProfileImage) {
+            remoteUserRepository.updateEmailVerifiedOrProfileImage(id)
         }
         //**user.messagingToken= preferenceRepository.getMessagingToken()
         remoteUserRepository.updateMessagingToken(user.messagingToken)

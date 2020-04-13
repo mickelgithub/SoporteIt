@@ -42,17 +42,18 @@ class RemoteUserAuthManager(val fbAuth: FirebaseAuth): IRemoteUserAuthDataSource
 
     }
 
-    override suspend fun signInUser(user: String, pass: String, firstTime: Boolean): Boolean {
+    override suspend fun signInUser(user: String, pass: String, firstTime: Boolean): Pair<Boolean, String> {
         val authResult= fbAuth.signInWithEmailAndPassword(user, pass).await()
+        var id= ""
         if (authResult.user!= null) {
             val firebaseUser = authResult.user as FirebaseUser
             if (firstTime) {
-                /*user.id = firebaseUser.uid
-                user.createdAt = firebaseUser.metadata?.creationTimestamp ?: 0L*/
+                id = firebaseUser.uid
+                //user.createdAt = firebaseUser.metadata?.creationTimestamp ?: 0L*/
             }
-            return firebaseUser.isEmailVerified
+            return firebaseUser.isEmailVerified to id
         }
-        return false
+        return false to ""
     }
 
 }

@@ -69,6 +69,7 @@ fun AutoCompleteTextView.bindData(data: List<String>?) {
 @BindingAdapter("visible")
 fun View.bindVisible(visible: Boolean?) {
     visibility= if (visible== true) View.VISIBLE else View.GONE
+
 }
 
 @BindingAdapter("imgsrc")
@@ -180,7 +181,7 @@ fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?, viewmo
     }
 }
 
-@BindingAdapter("app:srcCompat")
+/*@BindingAdapter("app:srcCompat")
 fun ImageView.bindBossVerification(bossVerification: String) {
     if (bossVerification== "P" || bossVerification== "N") {
         setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.warning))
@@ -189,7 +190,7 @@ fun ImageView.bindBossVerification(bossVerification: String) {
     } else {
         visibility= View.GONE
     }
-}
+}*/
 
 @BindingAdapter("android:text")
 fun TextView.bindTextToNotificationType(notifType: NotifType) {

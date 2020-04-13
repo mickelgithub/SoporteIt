@@ -44,6 +44,14 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     val profileChangeState: LiveData<Event<ScreenState<ProfileChangeState>>>
         get()= _profileChangeState
 
+    private val _isBossAndVerified= MutableLiveData<Boolean>()
+    val isBossAndVerified: LiveData<Boolean>
+    get() = _isBossAndVerified
+
+    private val _isBossAndNotVerifiedYet= MutableLiveData<Boolean>()
+    val isBossAndNotVerifiedYet: LiveData<Boolean>
+        get() = _isBossAndNotVerifiedYet
+
 
     private val _user= MutableLiveData<User?>(User.EMPTY)
     val user: LiveData<User?>
@@ -56,7 +64,12 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
             _user.value = async(Dispatchers.IO) {
                 getUserUseCase()
             }.await()
-            _profileImage.value= if (!_user.value?.profileImage.isNullOrBlank()) Uri.parse(_user.value?.profileImage) else null
+            _user.value?.let {
+                _profileImage.value= if (!it.profileImage.isNullOrBlank()) Uri.parse(it.profileImage) else null
+                _isBossAndVerified.value= it.isBoss && (it.bossConfirmation== "Y" || it.bossConfirmation== "N")
+                _isBossAndNotVerifiedYet.value= it.isBoss && it.bossConfirmation== ""
+                logger.debug("lo que sea...")
+            }
         }
     }
 
@@ -121,4 +134,6 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     fun updateProgressVisible(progressVisible: MyDialog.DialogState) {
         _progressVisible.value= progressVisible
     }
+
+
 }
