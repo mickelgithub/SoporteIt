@@ -31,6 +31,7 @@
             app:bgColor="@{viewModel.user.profileBackColor}"
             app:textColor="@{viewModel.user.profileTextColor}"
             app:textView="@{viewModel.user.firstName}"
+            app:placeholder="@drawable/profile"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"

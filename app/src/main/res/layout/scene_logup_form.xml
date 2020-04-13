@@ -28,6 +28,7 @@
                 android:id="@+id/card_profile_view"
                 android:onClick="@{()-> activity.onImageProfileClick()}"
                 app:imageView="@{viewModel.imageProfile.toString()}"
+                app:textView='@{""}'
                 app:placeholder="@drawable/profile"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

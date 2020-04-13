@@ -24,6 +24,7 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
 import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
+import es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
 import org.slf4j.LoggerFactory
 
 @BindingAdapter("app:valueAttrChanged")
@@ -244,6 +245,11 @@ fun View.bindOnLongClick(item: NotificationViewModelTemplate) {
         }
         true
     }
+}
+
+@BindingAdapter(value=arrayOf("imageView", "textView"), requireAll = true)
+fun ProfileImage.setImageAndText(imageView: String?, textView: String?) {
+    this.setImageAndText(imageView, textView)
 }
 
 

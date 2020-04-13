@@ -45,7 +45,7 @@ class ProfileImage @JvmOverloads constructor(
         View.inflate(context, R.layout.profile_image, this)
         imgView= findViewById(R.id.profile_image)
         txtView= findViewById(R.id.profile_text)
-        setupUi()
+        //setupUi()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -58,13 +58,6 @@ class ProfileImage @JvmOverloads constructor(
             setTextView(text, bgColor, textColor)
         } else {
             setImageView(imgUri)
-        }
-    }
-
-    fun showDefaultImageProfile(textParam: String, bgColorParam: Int, textColorParam: Int) {
-        if (!textParam.isNullOrBlank()) {
-            text= textParam
-            setTextView(text, bgColorParam, textColorParam)
         }
     }
 
@@ -91,26 +84,11 @@ class ProfileImage @JvmOverloads constructor(
 
     fun setTextView(textParam: String?) {
         text= textParam ?: ""
-        if (imgUri.isNullOrBlank()) {
-            if (!textParam.isNullOrBlank()) {
-                txtView.text= textParam
-                txtView.setBackgroundColor(bgColor)
-                txtView.setTextColor(textColor)
-                if (imgView.isVisible && imgView.isAttachedToWindow) {
-                    animateRevealView(imgView) {
-                        imgView.isVisible= false
-                        txtView.isVisible= true
-                        fadeIn(txtView, {})
-                    }
-                } else {
-                    txtView.isVisible= true
-                    fadeIn(txtView, {})
-                }
-            }
-        }
+
     }
 
-    fun setImageView(uriParam: String?) {
+    fun setImageAndText(uriParam: String?, textParam: String?) {
+        //logger.debug("NOs ha llegado una peti con los datos ${uriParam} : ${text}")
         if (!uriParam.isNullOrBlank()) {
             if (!imgUri.isNullOrBlank() && imgUri!= uriParam) {
                 fadeOut(imgView) {
@@ -128,7 +106,74 @@ class ProfileImage @JvmOverloads constructor(
                         Glide.with(this.context).load(uriParam)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true).into(imgView)
-                        animateRevealView(imgView, {})
+                        animateRevealViewInverse(imgView, {})
+                    }
+                } else {
+                    fadeOut(imgView) {
+                        imgView.alpha= 1F
+                        Glide.with(this.context).load(uriParam)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imgView)
+                        animateRevealViewInverse(imgView, {})
+                    }
+                }
+            }
+        } else if (!textParam.isNullOrBlank()) {
+            setTextViewInternal(textParam)
+        } else if (placeholder!= null) {
+            fadeOut(imgView) {
+                imgView.alpha= 1F
+                Glide.with(this.context).load(placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).into(imgView)
+                animateRevealViewInverse(imgView, {})
+            }
+        }
+        imgUri= uriParam ?: ""
+        text= textParam ?: ""
+    }
+
+    private fun setTextViewInternal(textParam: String?) {
+
+        txtView.text= textParam
+        txtView.setBackgroundColor(bgColor)
+        txtView.setTextColor(textColor)
+        if (imgView.isVisible && imgView.isAttachedToWindow) {
+            animateRevealView(imgView) {
+                imgView.isVisible= false
+                txtView.isVisible= true
+                fadeIn(txtView, {})
+            }
+        } else {
+            txtView.isVisible= true
+            txtView.postDelayed({
+                animateRevealViewInverse(imgView) {}
+            }, 10)
+            //fadeIn(txtView, {})
+
+        }
+    }
+
+    fun setImageView(uriParam: String?) {
+
+        if (!uriParam.isNullOrBlank()) {
+            if (!imgUri.isNullOrBlank() && imgUri!= uriParam) {
+                fadeOut(imgView) {
+                    imgView.alpha= 1F
+                    Glide.with(this.context).load(uriParam)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true).into(imgView)
+                    animateRevealViewInverse(imgView, {})
+                }
+            } else if (imgUri.isNullOrBlank()) {
+                if (!text.isNullOrBlank() && txtView.isVisible && txtView.isAttachedToWindow) {
+                    fadeOut(txtView) {
+                        txtView.isVisible= false
+                        imgView.isVisible= true
+                        Glide.with(this.context).load(uriParam)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imgView)
+                        animateRevealViewInverse(imgView, {})
                     }
                 } else {
                     fadeOut(imgView) {
@@ -141,7 +186,8 @@ class ProfileImage @JvmOverloads constructor(
                 }
             }
         } else if (!text.isNullOrBlank()) {
-            setTextView(text)
+            imgUri= uriParam ?: ""
+            setTextViewInternal(text)
         } else if (placeholder!= null) {
             fadeOut(imgView) {
                 imgView.alpha= 1F
@@ -151,6 +197,7 @@ class ProfileImage @JvmOverloads constructor(
                 animateRevealViewInverse(imgView, {})
             }
         }
+        imgUri= uriParam ?: ""
         /*if (showImage && txtView.isVisible && txtView.isAttachedToWindow) {
             animateRevealView(txtView) {
                 txtView.isVisible= false
@@ -164,7 +211,7 @@ class ProfileImage @JvmOverloads constructor(
                 //fadeIn(imgView, {logger.debug("Ya hemos terminado el fade in")})
             }
         }*/
-        imgUri= uriParam ?: ""
+        //imgUri= uriParam ?: ""
     }
 
     private fun animateRevealView(view: View, onFinishAnim: () -> Unit) {

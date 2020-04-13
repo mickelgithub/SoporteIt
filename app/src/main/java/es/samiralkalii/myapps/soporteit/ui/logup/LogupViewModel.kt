@@ -379,7 +379,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             _departmentError.value= R.string.department_incorrect
         } else {
             _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
-            var profColor: Pair<Int, Int>?= if (_imageProfile.value== null) getRandomColor() else null
+            val profColor= getRandomColor()
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
                 when (error) {
@@ -414,7 +414,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 }.await()
                 when (result) {
                     is LogupUseCase.Result.LoggedUpOk -> {
-                        if (profColor!= null) {
+                        if (_imageProfile.value== null) {
                             _profileColor.value= profColor
                             _logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
                         } else {
@@ -422,7 +422,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                         }
                     }
                     is LogupUseCase.Result.LoggedUpAsManagerTeamOk -> {
-                        if (profColor!= null) {
+                        if (_imageProfile.value== null) {
                             _profileColor.value= profColor
                             _logupState.value = Event(ScreenState.Render(LogupState.LoggedupAsManagerTeamOk(result.user)))
                         } else {
