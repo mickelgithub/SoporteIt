@@ -15,7 +15,7 @@ class FileSystemRepository(val fileSystem: IFileSystemManager) {
     suspend fun compare2Images(externalImage: String, internalImage: String)=
         fileSystem.compare2Images(externalImage, internalImage)
 
-    suspend fun deleteImageProfile(user: User)= fileSystem.deleteImageProfile(user)
+    suspend fun deleteImageProfile(profileImage: String)= fileSystem.deleteImageProfile(profileImage)
 
 }
 
@@ -24,7 +24,7 @@ interface IFileSystemManager {
     suspend fun copyFileFromExternalToInternal(externalFile: String): File
     suspend fun copyFileFromStreamToInternal(inputStream: InputStream, name: String): File
     suspend fun compare2Images(externalImage: String, internalImage: String): Boolean
-    suspend fun deleteImageProfile(user: User): Unit
+    suspend fun deleteImageProfile(profileImage: String): Unit
 
 }
 

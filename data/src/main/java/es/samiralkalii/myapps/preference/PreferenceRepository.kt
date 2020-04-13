@@ -9,7 +9,7 @@ class PreferenceRepository(val preferences: IPreferences) {
     suspend fun getUser()= preferences.getUser()
     suspend fun saveUser(user: User)= preferences.saveUser(user)
     suspend fun updateEmailVerified()= preferences.updateEmailVerified()
-    suspend fun updateImageProfile(user: User)= preferences.updateImageProfile(user)
+    suspend fun updateProfileImage(profileImage: String, remoteProfileImage: String)= preferences.updateProfileImage(profileImage, remoteProfileImage)
     suspend fun updateMessagingToken(token: String)= preferences.updateMessagingToken(token)
     suspend fun getMessagingToken()= preferences.getMessagingToken()
     suspend fun updateProfile(profile: String)= preferences.updateProfile(profile)
@@ -25,7 +25,7 @@ interface IPreferences {
     suspend fun getUser(): User
     suspend fun saveUser(user: User)
     suspend fun updateEmailVerified()
-    suspend fun updateImageProfile(user: User)
+    suspend fun updateProfileImage(profileImage: String, remoteProfileImage: String)
     suspend fun updateMessagingToken(token: String)
     suspend fun getMessagingToken(): String
     suspend fun updateProfile(profile: String)

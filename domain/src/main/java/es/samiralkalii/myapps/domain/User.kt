@@ -1,5 +1,7 @@
 package es.samiralkalii.myapps.domain
 
+import java.util.*
+
 const val STATE_SUBSCRIBED= "S"
 const val STATE_UNSUBSCRIBED= "U"
 
@@ -31,6 +33,9 @@ data class User(
     val departmentId: String= "",
     val stateChangedAt: String= "",
     val state: String= STATE_SUBSCRIBED) {
+
+    val firstName: String
+        get() = if (name.isNullOrBlank()) "" else StringTokenizer(name, " ").nextToken()
 
     companion object {
         val EMPTY= User()

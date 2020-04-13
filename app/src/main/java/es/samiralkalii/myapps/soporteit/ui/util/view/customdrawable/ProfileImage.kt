@@ -3,7 +3,7 @@ package es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -13,6 +13,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestListener
 import es.samiralkalii.myapps.soporteit.R
 import org.slf4j.LoggerFactory
 
@@ -26,7 +28,7 @@ class ProfileImage @JvmOverloads constructor(
     var bgColor: Int
     var textColor: Int
     var imgUri: String
-    var placeholder: Int= -1
+    var placeholder: Drawable?
     var text: String
     val imgView: ImageView
     val txtView: TextView
@@ -37,7 +39,7 @@ class ProfileImage @JvmOverloads constructor(
         bgColor = ResourcesCompat.getColor(resources, a.getInt(R.styleable.ProfileImage_bgColor, R.color.colorPrimary), null)
         textColor= ResourcesCompat.getColor(resources, a.getInt(R.styleable.ProfileImage_textColor, R.color.white), null)
         imgUri= a.getString(R.styleable.ProfileImage_imgUri) ?: ""
-        placeholder= a.getInt(R.styleable.ProfileImage_placeholder, R.drawable.profile)
+        placeholder= a.getDrawable(R.styleable.ProfileImage_placeholder)
         text= a.getString(R.styleable.ProfileImage_text) ?: ""
         a.recycle()
         View.inflate(context, R.layout.profile_image, this)
@@ -67,6 +69,7 @@ class ProfileImage @JvmOverloads constructor(
     }
 
     fun setTextView(textParam: String?, bgColorParam: Int, textColorParam: Int) {
+        text= textParam ?: ""
         if (!textParam.isNullOrBlank()) {
             txtView.text= textParam
             bgColor= bgColorParam
@@ -87,39 +90,81 @@ class ProfileImage @JvmOverloads constructor(
     }
 
     fun setTextView(textParam: String?) {
-        if (!textParam.isNullOrBlank()) {
-            txtView.text= textParam
-            txtView.setBackgroundColor(bgColor)
-            txtView.setTextColor(textColor)
-            if (imgView.isVisible && imgView.isAttachedToWindow) {
-                animateRevealView(imgView) {
-                    imgView.isVisible= false
+        text= textParam ?: ""
+        if (imgUri.isNullOrBlank()) {
+            if (!textParam.isNullOrBlank()) {
+                txtView.text= textParam
+                txtView.setBackgroundColor(bgColor)
+                txtView.setTextColor(textColor)
+                if (imgView.isVisible && imgView.isAttachedToWindow) {
+                    animateRevealView(imgView) {
+                        imgView.isVisible= false
+                        txtView.isVisible= true
+                        fadeIn(txtView, {})
+                    }
+                } else {
                     txtView.isVisible= true
                     fadeIn(txtView, {})
                 }
-            } else {
-                txtView.isVisible= true
-                fadeIn(txtView, {})
             }
         }
     }
 
     fun setImageView(uriParam: String?) {
         if (!uriParam.isNullOrBlank()) {
-            Glide.with(this.context).load(Uri.parse(uriParam)).into(imgView)
-        } else {
-            imgView.setImageResource(placeholder)
+            if (!imgUri.isNullOrBlank() && imgUri!= uriParam) {
+                fadeOut(imgView) {
+                    imgView.alpha= 1F
+                    Glide.with(this.context).load(uriParam)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true).into(imgView)
+                    animateRevealViewInverse(imgView, {})
+                }
+            } else if (imgUri.isNullOrBlank()) {
+                if (!text.isNullOrBlank() && txtView.isVisible && txtView.isAttachedToWindow) {
+                    fadeOut(txtView) {
+                        txtView.isVisible= false
+                        imgView.isVisible= true
+                        Glide.with(this.context).load(uriParam)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imgView)
+                        animateRevealView(imgView, {})
+                    }
+                } else {
+                    fadeOut(imgView) {
+                        imgView.alpha= 1F
+                        Glide.with(this.context).load(uriParam)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imgView)
+                        animateRevealViewInverse(imgView, {})
+                    }
+                }
+            }
+        } else if (!text.isNullOrBlank()) {
+            setTextView(text)
+        } else if (placeholder!= null) {
+            fadeOut(imgView) {
+                imgView.alpha= 1F
+                Glide.with(this.context).load(placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).into(imgView)
+                animateRevealViewInverse(imgView, {})
+            }
         }
-        if (txtView.isVisible) {
+        /*if (showImage && txtView.isVisible && txtView.isAttachedToWindow) {
             animateRevealView(txtView) {
                 txtView.isVisible= false
                 imgView.isVisible= true
                 fadeIn(imgView, {logger.debug("Ya hemos terminado el fade in")})
             }
-        } else {
-            imgView.isVisible= true
-            fadeIn(imgView, {})
-        }
+        } else if (showImage && uriParam!= null && uriParam.isNotBlank() && !imgUri.isNullOrBlank() && uriParam!= imgUri) {
+            animateRevealView(imgView) {
+                //txtView.isVisible= false
+                //imgView.isVisible= true
+                //fadeIn(imgView, {logger.debug("Ya hemos terminado el fade in")})
+            }
+        }*/
+        imgUri= uriParam ?: ""
     }
 
     private fun animateRevealView(view: View, onFinishAnim: () -> Unit) {
@@ -139,11 +184,37 @@ class ProfileImage @JvmOverloads constructor(
 
     }
 
+    private fun animateRevealViewInverse(view: View, onFinishAnim: () -> Unit) {
+        val cx = view.width/2
+        val cy = view.height/2
+        val initialRadius = 0
+        val endRadius= view.width/2
+
+        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                onFinishAnim()
+            }
+        })
+        anim.start()
+
+    }
+
     private fun fadeIn(view: View, onFinishAnim: () -> Unit) {
         view.alpha= 0F
         val anim= view.animate().setDuration(1500).alpha(1F)
         anim.setListener(object: AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                onFinishAnim()
+            }
+        })
+    }
 
+    private fun fadeOut(view: View, onFinishAnim: () -> Unit) {
+        view.alpha= 1F
+        val anim= view.animate().setDuration(300).alpha(0F)
+        anim.setListener(object: AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 onFinishAnim()
             }

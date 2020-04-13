@@ -77,10 +77,10 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateImageProfile(user: User) {
+    override suspend fun updateProfileImage(profileImage: String, remoteProfileImage: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
-            putString(KEY_PROFILE_IMAGE, user.profileImage)
-            putString(KEY_REMOTE_PROFILE_IMAGE, user.remoteProfileImage)
+            putString(KEY_PROFILE_IMAGE, profileImage)
+            putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
         }
     }
 

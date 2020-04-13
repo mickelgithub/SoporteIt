@@ -85,3 +85,5 @@ val User.bossVerified: Boolean
     get() = (this.bossConfirmation== "Y" || this.bossConfirmation== "S")
 
 
+
+

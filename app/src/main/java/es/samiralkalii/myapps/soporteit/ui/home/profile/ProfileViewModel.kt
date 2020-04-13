@@ -6,44 +6,31 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.storage.StorageException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
-import es.samiralkalii.myapps.soporteit.ui.util.getFirstName
 import es.samiralkalii.myapps.usecase.authlogin.Compare2ImageProfileUseCase
-import es.samiralkalii.myapps.usecase.authlogin.SaveProfileChangeUseCase
+import es.samiralkalii.myapps.usecase.authlogin.UpdateProfileImageUseCase
 import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.io.File
 
 class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImageProfileUseCase,
-                       private val saveProfileChangeUseCase: SaveProfileChangeUseCase,
+                       private val updateProfileImageUseCase: UpdateProfileImageUseCase,
                        private val getUserUseCase: GetUserUseCase
 ): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(ProfileViewModel::class.java)
 
-    private val _imageProfile= MutableLiveData<Uri?>()
-    val imageProfile: LiveData<Uri?>
-                get()= _imageProfile
-
-    private val _bgColorProfile= MutableLiveData<Int?>()
-    val bgColorProfile: LiveData<Int?>
-        get()= _bgColorProfile
-
-    private val _txtColorProfile= MutableLiveData<Int?>()
-    val txtColorProfile: LiveData<Int?>
-        get()= _txtColorProfile
-
-    private val _nameProfile= MutableLiveData<String?>()
-    val nameProfile: LiveData<String?>
-        get()= _nameProfile
+    private val _profileImage= MutableLiveData<Uri?>()
+    val profileImage: LiveData<Uri?>
+                get()= _profileImage
 
     private val _showSaveMenu= MutableLiveData<Boolean>(false)
     val showSaveMenu: LiveData<Boolean>
@@ -63,22 +50,13 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
         get()= _user
 
     private var imageChanged: Boolean= false
-    private var currentProfile= ""
 
     fun init() {
         viewModelScope.launch {
             _user.value = async(Dispatchers.IO) {
                 getUserUseCase()
             }.await()
-            val localProfileImage= _user.value?.profileImage ?: ""
-            if (localProfileImage.isNotBlank()) {
-                _imageProfile.value= Uri.fromFile(File(localProfileImage))
-            } else {
-                _bgColorProfile.value= user.value?.profileBackColor
-                _txtColorProfile.value= user.value?.profileTextColor
-                _nameProfile.value= getFirstName(_user.value?.name)
-            }
-            currentProfile= _user.value?.profile ?: ""
+            _profileImage.value= if (!_user.value?.profileImage.isNullOrBlank()) Uri.parse(_user.value?.profileImage) else null
         }
     }
 
@@ -88,7 +66,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
 
 
     fun updateImageProfile(imgUri: Uri?) {
-        _imageProfile.value= imgUri
+        _profileImage.value= imgUri
         val localProfileImage= _user.value?.profileImage ?: ""
         if (localProfileImage.isBlank() && imgUri!= null) {
             imageChanged= true
@@ -113,8 +91,7 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
         }
     }
 
-    fun onSaveClick(chooseYourProfileResource: String) {
-
+    fun onSaveClick() {
         _progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
@@ -122,22 +99,22 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
                 is FirebaseNetworkException -> {
                     _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
                 }
+                is StorageException -> {
+                    _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.no_internet_connection))))
+                }
                 else -> {
                     _profileChangeState.postValue(Event(ScreenState.Render(ProfileChangeState.ShowMessage(R.string.not_controled_error))))
                 }
             }
         }
-
         viewModelScope.launch(errorHandler) {
-            async(Dispatchers.IO) {
-                saveProfileChangeUseCase(_user.value!!, _imageProfile.value?.toString() ?: "", imageChanged, chooseYourProfileResource)
+            _user.value= async(Dispatchers.IO) {
+                updateProfileImageUseCase(_user.value?.id!!, _user.value?.profileImage!!, _profileImage.value?.toString() ?: "")
+                getUserUseCase()
             }.await()
+            _profileImage.value= if (!_user.value?.profileImage.isNullOrBlank()) Uri.parse(_user.value?.profileImage) else null
             _showSaveMenu.value= false
             _profileChangeState.value= Event(ScreenState.Render(ProfileChangeState.changeOk))
-            /*if (currentProfile!= user.profile) {
-                _profileChanged.value= Event(true)
-            }*/
-            //_progressVisible.value = LoadingDialog.DialogState.ShowSuccess
         }
     }
 

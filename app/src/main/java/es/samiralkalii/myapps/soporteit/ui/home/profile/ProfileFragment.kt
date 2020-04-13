@@ -9,10 +9,12 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
+import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.util.IMAGE_MIMETYPE
@@ -77,11 +79,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         })*/
 
         viewModel.progressVisible.observe(this, Observer {
-            when (it) {
-                /* MyDialog.DialogState.ShowLoading -> LoadingDialog.showLoading(activity!!.supportFragmentManager)
-                 MyDialog.DialogState.ShowSuccess -> LoadingDialog.dismissMe(null)
-                 is MyDialog.DialogState.ShowMessage -> LoadingDialog.dismissMe(it.message)*/
-            }
+            LoadingDialog.processDialog(it, activity!!.supportFragmentManager)
         })
     }
 
@@ -117,7 +115,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
                 //we have tu update user object
                 //we have to save the file en local storage
                 //we have ti save the file en remote storage
-                viewModel.onSaveClick(resources.getString(R.string.choose_profile))
+                viewModel.onSaveClick()
                 return true
             }
         }
@@ -127,7 +125,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
 
     //called by binding from the xml layout
     fun onImageProfileClick() {
-        val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.imageProfile.value!= null, ProfileFragment::class.java.simpleName)
+        val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.profileImage.value!= null, ProfileFragment::class.java.simpleName)
         pickUpProfilePhotoBottonSheetDialog.show(activity!!.supportFragmentManager, PickUpProfilePhotoBottonSheetDialog::class.java.simpleName)
     }
 

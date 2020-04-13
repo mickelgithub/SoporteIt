@@ -33,7 +33,11 @@ val appModule= module {
 
     single { FirebaseAuth.getInstance() }
     single { FirebaseFirestore.getInstance() }
-    single { FirebaseStorage.getInstance() }
+    single {
+        val instance= FirebaseStorage.getInstance()
+        instance.maxOperationRetryTimeMillis= 10000L
+        instance.maxUploadRetryTimeMillis= 10000L
+        instance }
 
     factory<IRemoteUserAuthDataSource> { RemoteUserAuthManager(get()) }
     factory<IRemoteUserDatasource> { RemoteUserDatasourceManager(get(), get()) }

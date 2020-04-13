@@ -20,15 +20,14 @@ class RemoteUserStorageDataSourceManager(val fstorage: FirebaseStorage): IRemote
 
     val logger= LoggerFactory.getLogger(RemoteUserStorageDataSourceManager::class.java)
 
-    override suspend fun deleleProfileImage(user: User, fileName: String) {
-        val mStorageRef = fstorage.getReference("${user.id}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${fileName.fileExtension()}")
+    override suspend fun deleleProfileImage(user: String, fileName: String) {
+        val mStorageRef = fstorage.getReference("${user}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${fileName.fileExtension()}")
         mStorageRef.delete().await()
-        //user.remoteProfileImage= ""
     }
 
-    override suspend fun saveProfileImage(userId: String, profileImage: File): String {
+    override suspend fun saveProfileImage(user: String, profileImage: File): String {
 
-        val mStorageRef = fstorage.getReference("${userId}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.name.fileExtension()}")
+        val mStorageRef = fstorage.getReference("${user}${File.separator}${PROFILE_BASE_DIR}${File.separator}${PROFILE_IMAGE_NAME}.${profileImage.name.fileExtension()}")
         val result= mStorageRef.putFile(Uri.fromFile(profileImage)).await()
         if (result.task.isComplete) {
             val url= mStorageRef.downloadUrl.await()

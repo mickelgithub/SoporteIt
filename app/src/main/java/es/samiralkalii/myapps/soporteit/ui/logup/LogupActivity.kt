@@ -1,11 +1,18 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Handler
+import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
+import androidx.core.view.doOnNextLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.transition.Scene
 import androidx.transition.Transition
@@ -53,7 +60,13 @@ class LogupActivity : BaseActivity(),
     override fun initUI() {
         hideSystemUI()
 
+
+
         binding= ActivityLogupBinding.inflate(layoutInflater)
+
+
+
+
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
         setContentView(binding.root)
@@ -63,7 +76,12 @@ class LogupActivity : BaseActivity(),
         bindingLogup.lifecycleOwner= this
         bindingLogup.activity= this
 
+        bindingLogup.cardProfileView.doOnNextLayout { v ->
+            v.postDelayed({animateRevealViewInverse(v) {}}, 1)
+        }
+
         scene1= Scene(container, bindingLogup.root)
+
         scene1.enter()
 
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
@@ -271,6 +289,40 @@ class LogupActivity : BaseActivity(),
 
     override fun deleteImageProfile() {
         viewModel.updateImageProfile(null)
+    }
+
+    private fun animateRevealViewInverse(view: View, onFinishAnim: () -> Unit) {
+        val cx = view.width/2
+        val cy = view.height/2
+        val initialRadius = 0
+        val endRadius= view.width/2
+
+        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                onFinishAnim()
+            }
+        })
+        anim.start()
+
+    }
+
+    private fun animateRevealView(view: View, onFinishAnim: () -> Unit) {
+        val cx = view.width/2
+        val cy = view.height/2
+        val initialRadius = view.width/2
+        val endRadius= 0
+
+        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                onFinishAnim()
+            }
+        })
+        anim.start()
+
     }
 
 }

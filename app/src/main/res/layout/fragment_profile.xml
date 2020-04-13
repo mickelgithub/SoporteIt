@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout
+<layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -27,10 +27,10 @@
             android:clickable="true"
             android:id="@+id/costum_profile_image"
             android:onClick="@{()-> fragment.onImageProfileClick()}"
-            app:imageView="@{viewModel.imageProfile.toString()}"
-            app:bgColor="@{viewModel.bgColorProfile}"
-            app:textColor="@{viewModel.txtColorProfile}"
-            app:textView="@{viewModel.nameProfile}"
+            app:imageView="@{viewModel.profileImage.toString()}"
+            app:bgColor="@{viewModel.user.profileBackColor}"
+            app:textColor="@{viewModel.user.profileTextColor}"
+            app:textView="@{viewModel.user.firstName}"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
@@ -203,6 +203,17 @@
             app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/textView5"
+            app:layout_constraintEnd_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="@+id/textView5"
+            app:srcCompat="@drawable/place" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

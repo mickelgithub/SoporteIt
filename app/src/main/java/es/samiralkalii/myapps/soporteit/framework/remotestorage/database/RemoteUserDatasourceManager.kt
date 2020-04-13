@@ -88,9 +88,9 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.collection(USERS_REF).document(user).update(mapOf( KEY_IS_EMAIL_VERIFIED to true)).await()
     }
 
-    override suspend fun updateImageProfile(user: User) {
-        fstore.collection(USERS_REF).document(user.id).update(mapOf( KEY_PROFILE_IMAGE to user.profileImage,
-            KEY_REMOTE_PROFILE_IMAGE to user.remoteProfileImage)).await()
+    override suspend fun updateprofileImage(user: String, profileImage: String, remoteProfileImage: String) {
+        fstore.collection(USERS_REF).document(user).update(mapOf( KEY_PROFILE_IMAGE to profileImage,
+            KEY_REMOTE_PROFILE_IMAGE to remoteProfileImage)).await()
     }
 
     override suspend fun getUserInfo(user: User) {
