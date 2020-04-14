@@ -91,7 +91,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             KEY_PROFILE_IMAGE to profileImage)).await()
         } else if (emailVerified!= null && emailVerified) {
             fstore.collection(USERS_REF).document(user).update(mapOf( KEY_IS_EMAIL_VERIFIED to emailVerified)).await()
-        } else if (profileImage!= null) {
+        } else if (!profileImage.isNullOrBlank()) {
             fstore.collection(USERS_REF).document(user).update(mapOf(KEY_PROFILE_IMAGE to profileImage)).await()
         }
     }

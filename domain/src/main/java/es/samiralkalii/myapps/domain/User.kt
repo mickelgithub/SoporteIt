@@ -32,6 +32,8 @@ data class User(
     val department: String= "",
     val departmentId: String= "",
     val stateChangedAt: String= "",
+    val membershipConfirmation: String= "",
+    val membershipConfirmedAt: String= "",
     val state: String= STATE_SUBSCRIBED) {
 
     val firstName: String

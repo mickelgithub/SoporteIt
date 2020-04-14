@@ -9,7 +9,6 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.net.toFile
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
@@ -206,10 +205,20 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         }
     }
 
-    fun onImageBossVerificationClick() {
+    fun onImageConfirmationClick() {
         viewModel.user.value?.let {
-            if (it.isBoss && (it.bossConfirmation== "Y" || it.bossConfirmation== "S")) {
-                viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(R.string.verified), error = false))
+            if (viewModel.showVerified.value!! && it.isBoss) {
+                viewModel.updateProgressVisible(
+                    MyDialog.DialogState.ShowMessageDialog(resources.getString(
+                            R.string.verified
+                        ), error = false)
+                )
+            } else if (viewModel.showVerified.value!! && !it.isBoss) {
+                viewModel.updateProgressVisible(
+                    MyDialog.DialogState.ShowMessageDialog(resources.getString(
+                        R.string.verified
+                    ), error = false)
+                )
             } else {
                 viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(R.string.verification_pending)))
             }

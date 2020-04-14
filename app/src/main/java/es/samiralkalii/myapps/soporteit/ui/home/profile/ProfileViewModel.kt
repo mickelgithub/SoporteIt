@@ -44,13 +44,13 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
     val profileChangeState: LiveData<Event<ScreenState<ProfileChangeState>>>
         get()= _profileChangeState
 
-    private val _isBossAndVerified= MutableLiveData<Boolean>()
-    val isBossAndVerified: LiveData<Boolean>
-    get() = _isBossAndVerified
+    private val _showVerified= MutableLiveData<Boolean>()
+    val showVerified: LiveData<Boolean>
+    get() = _showVerified
 
-    private val _isBossAndNotVerifiedYet= MutableLiveData<Boolean>()
-    val isBossAndNotVerifiedYet: LiveData<Boolean>
-        get() = _isBossAndNotVerifiedYet
+    private val _showNotVerifiedYet= MutableLiveData<Boolean>()
+    val showNotVerifiedYet: LiveData<Boolean>
+        get() = _showNotVerifiedYet
 
 
     private val _user= MutableLiveData<User?>(User.EMPTY)
@@ -66,8 +66,10 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
             }.await()
             _user.value?.let {
                 _profileImage.value= if (!it.profileImage.isNullOrBlank()) Uri.parse(it.profileImage) else null
-                _isBossAndVerified.value= it.isBoss && (it.bossConfirmation== "Y" || it.bossConfirmation== "N")
-                _isBossAndNotVerifiedYet.value= it.isBoss && it.bossConfirmation== ""
+                _showVerified.value= (it.isBoss && it.bossConfirmation== "Y") ||
+                        (!it.isBoss && it.membershipConfirmation== "Y")
+                _showNotVerifiedYet.value= (it.isBoss && it.bossConfirmation== "") ||
+                        (!it.isBoss && it.membershipConfirmation== "")
                 logger.debug("lo que sea...")
             }
         }

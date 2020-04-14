@@ -41,17 +41,16 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
             }
         }
         //if the mail is verified and is not updated en firebase databaase, we have to do it
-
         if (isEmailVerified && !userObj.isEmailVerified) {
             updateEmailVerified= true
             userObj= userObj.copy(isEmailVerified = updateEmailVerified)
         }
         userObj= userObj.copy(messagingToken = preferenceRepository.getMessagingToken())
-        preferenceRepository.saveUser(userObj)
         if (updateEmailVerified || updateProfileImage) {
             remoteUserRepository.updateEmailVerifiedOrProfileImage(userId, userObj.isEmailVerified, userObj.profileImage)
         }
         remoteUserRepository.updateMessagingToken(userObj.messagingToken)
+        preferenceRepository.saveUser(userObj)
         return Result.LoginOk(userObj)
     }
 

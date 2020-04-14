@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Handler
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -25,6 +26,7 @@ import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseActivity
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
 import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
+import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel.Companion.TO_LOG_UP
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.android.synthetic.main.activity_logup.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -121,10 +123,14 @@ class LogupActivity : BaseActivity(),
             viewModel.updateDepartmentsOfArea(it)
         })
         viewModel.profileColor.observe(this, Observer {
-            bindingLogup.cardProfileView.postDelayed({
-                bindingLogup.cardProfileView.setTextView(getFirstName(viewModel.name.value), it.first, it.second)
-            }, MyDialog.DIALOG_DISMISS_DELAY+ 10)
-
+            logger.debug("algo....")
+            if (viewModel.loginOrLogUp.value== TO_LOG_UP) {
+                bindingLogup.cardProfileView.postDelayed({
+                    bindingLogup.cardProfileView.setTextView(getFirstName(viewModel.name.value), it.first, it.second)
+                }, MyDialog.DIALOG_DISMISS_DELAY+ 10)
+            } else {
+                bindingLogin.cardProfileView.setTextView(viewModel.user.value!!.firstName, it.first, it.second)
+            }
         })
     }
 
@@ -133,12 +139,16 @@ class LogupActivity : BaseActivity(),
             when (screenState.renderState) {
                 is LoginState.LoginOk -> {
                     logger.debug("Login correcto, goto Home")
-                    if (viewModel.imageProfile.value.toString().isNotBlank()) {
-                        val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+                    disableInputsLogin()
+                    if (!screenState.renderState.user.profileImage.isNullOrBlank()) {
+                        //val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         //profile_image.startAnimation(shake)
+                        Handler().postDelayed({viewModel.updateImageProfile(Uri.parse(screenState.renderState.user.profileImage))}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
+                    } else {
+                        Handler().postDelayed({viewModel.updateProfileColor(screenState.renderState.user.profileBackColor to screenState.renderState.user.profileTextColor)}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
                     }
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                    Handler().postDelayed(Runnable { HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this) }, MyDialog.DIALOG_DISMISS_DELAY)
+                    Handler().postDelayed(Runnable { HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this) }, MyDialog.DIALOG_DISMISS_DELAY*2)
                 }
                 is LoginState.UpdateMessage -> {
                     logger.debug("Hubo un error en acceso, lo mostramos")
@@ -172,6 +182,9 @@ class LogupActivity : BaseActivity(),
                     logger.debug("Registracion correcto, goto Home")
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                    if (screenState.renderState.user.profileImage.isNullOrBlank()) {
+                        viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
+                    }
                     Handler().postDelayed({
                         HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this)
                     }, MyDialog.DIALOG_DISMISS_DELAY*2)
@@ -179,6 +192,9 @@ class LogupActivity : BaseActivity(),
                 is LogupState.LoggedupAsManagerTeamOk -> {
                     logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
                     disableInputsLogup()
+                    if (screenState.renderState.user.profileImage.isNullOrBlank()) {
+                        viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
+                    }
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
                     Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
                 }
@@ -212,6 +228,12 @@ class LogupActivity : BaseActivity(),
         bindingLogup.logupButton.isEnabled= false
         bindingLogup.bossCategoriesInputLayout.isEnabled= false
 
+    }
+
+    private fun disableInputsLogin() {
+        bindingLogin.mailInputLayout.isEnabled= false
+        bindingLogin.passInputLayout.isEnabled= false
+        bindingLogin.loginButton.isEnabled= false
     }
 
     //called by bindingLogup
