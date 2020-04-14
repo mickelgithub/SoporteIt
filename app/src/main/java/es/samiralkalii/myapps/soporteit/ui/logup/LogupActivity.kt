@@ -60,12 +60,7 @@ class LogupActivity : BaseActivity(),
     override fun initUI() {
         hideSystemUI()
 
-
-
         binding= ActivityLogupBinding.inflate(layoutInflater)
-
-
-
 
         binding.viewModel= viewModel
         binding.lifecycleOwner= this
@@ -142,12 +137,14 @@ class LogupActivity : BaseActivity(),
                         val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                         //profile_image.startAnimation(shake)
                     }
-                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowSuccess)
-                    Handler().postDelayed(Runnable { startHomeActivity(screenState.renderState.user.toBundle()) }, MyDialog.DIALOG_DISMISS_DELAY)
+                    viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                    Handler().postDelayed(Runnable { HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this) }, MyDialog.DIALOG_DISMISS_DELAY)
                 }
-                is LoginState.ShowMessage -> {
+                is LoginState.UpdateMessage -> {
                     logger.debug("Hubo un error en acceso, lo mostramos")
-                    //viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessage(screenState.renderState.message))
+                    val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                        resources.getString(screenState.renderState.message)
+                    viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(messagedesc))
                 }
             }
         }
@@ -165,7 +162,7 @@ class LogupActivity : BaseActivity(),
 
     private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
         showDialog(AlertDialog.newInstanceForMessage(getString(R.string.boss_verification_title), getString(R.string.boss_verification_msg),
-            getString(R.string.agree), { HomeActivity.startActivity(viewModel.user.isEmailVerified, context = this)}))
+            getString(R.string.agree), { HomeActivity.startActivity(logupState.user.isEmailVerified, context = this)}))
     }
 
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
@@ -176,7 +173,7 @@ class LogupActivity : BaseActivity(),
                     disableInputsLogup()
                     viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
                     Handler().postDelayed({
-                        HomeActivity.startActivity(viewModel.user.isEmailVerified, context = this)
+                        HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this)
                     }, MyDialog.DIALOG_DISMISS_DELAY*2)
                 }
                 is LogupState.LoggedupAsManagerTeamOk -> {

@@ -24,18 +24,19 @@
             android:layout_height="match_parent"
             tools:context=".ui.logup.LogupActivity">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/costum_profile_image"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_marginTop="32dp"
-                android:src="@drawable/profile"
-                app:imgsrc="@{viewModel.imageProfile}"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp"
+            <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
                 android:clickable="false"
+                android:id="@+id/costum_profile_image"
+                app:imageView="@{viewModel.imageProfile.toString()}"
+                app:bgColor="@{viewModel.user.profileBackColor}"
+                app:textColor="@{viewModel.user.profileTextColor}"
+                app:textView="@{viewModel.user.firstName}"
+                app:placeholder="@drawable/profile"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -124,6 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:onClick="@{()-> viewModel.onLogInClick()}"
+                android:enabled="@{viewModel.buttonLoginEnabled}"
                 android:text="@string/logIn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

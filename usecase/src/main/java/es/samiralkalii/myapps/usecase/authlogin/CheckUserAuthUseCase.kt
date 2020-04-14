@@ -21,7 +21,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
 
     private suspend fun updateEmailVerified(user: String) {
         preferenceRepository.updateEmailVerified()
-        remoteUserRepository.updateEmailVerifiedOrProfileImage(user)
+        remoteUserRepository.updateEmailVerifiedOrProfileImage(user, emailVerified = true)
     }
 
     suspend operator fun invoke(): Result {

@@ -25,12 +25,12 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
         var updateEmailVerified= false
         var updateProfileImage= false
         //we get user.id and user.creationDate
-        val (isEmailVerified, id)= remoteUserAuthRepository.signInUser(userEmail, pass, true)
+        val (isEmailVerified, userId)= remoteUserAuthRepository.signInUser(userEmail, pass, true)
         //login correcto
         //we get user.name, user.localProfileImage and user.remoteProfileImage
-        var userObj= remoteUserRepository.getUserInfo(id)
+        var userObj= remoteUserRepository.getUserInfo(userId)
         if (userObj.remoteProfileImage.isNotBlank()) {
-            val imageInputStream= remoteUserStorageRepository.getProfileImage(id, userObj.profileImage)
+            val imageInputStream= remoteUserStorageRepository.getProfileImage(userId, userObj.profileImage)
             imageInputStream?.use {
                 val imageFile= fileSystemRepository.copyFileFromStreamToInternal(it, userObj.profileImage)
                 if (userObj.profileImage!= imageFile.absolutePath) {
@@ -46,18 +46,13 @@ class LoginUserCase(private val remoteUserAuthRepository: RemoteUserAuthReposito
             updateEmailVerified= true
             userObj= userObj.copy(isEmailVerified = updateEmailVerified)
         }
-
+        userObj= userObj.copy(messagingToken = preferenceRepository.getMessagingToken())
         preferenceRepository.saveUser(userObj)
-        if (updateEmailVerified && updateProfileImage) {
-            remoteUserRepository.updateEmailVerifiedOrProfileImage(id, userObj.profileImage)
-        } else if (updateEmailVerified) {
-            remoteUserRepository.updateEmailVerifiedOrProfileImage(id)
-        } else if (updateProfileImage) {
-            remoteUserRepository.updateEmailVerifiedOrProfileImage(id)
+        if (updateEmailVerified || updateProfileImage) {
+            remoteUserRepository.updateEmailVerifiedOrProfileImage(userId, userObj.isEmailVerified, userObj.profileImage)
         }
-        //**user.messagingToken= preferenceRepository.getMessagingToken()
-        remoteUserRepository.updateMessagingToken(user.messagingToken)
-        return Result.LoginOk(user)
+        remoteUserRepository.updateMessagingToken(userObj.messagingToken)
+        return Result.LoginOk(userObj)
     }
 
 }

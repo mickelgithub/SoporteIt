@@ -86,9 +86,14 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
     }
 
     override suspend fun updateEmailVerifiedOrProfileImage(user: String, emailVerified: Boolean?, profileImage: String?) {
-        if (emailVerified!= null && emailVerified && !profileImage.isNullOrBlank())
-            werwer
-        fstore.collection(USERS_REF).document(user).update(mapOf( KEY_IS_EMAIL_VERIFIED to true)).await()
+        if (emailVerified!= null && emailVerified && !profileImage.isNullOrBlank()) {
+            fstore.collection(USERS_REF).document(user).update(mapOf( KEY_IS_EMAIL_VERIFIED to emailVerified,
+            KEY_PROFILE_IMAGE to profileImage)).await()
+        } else if (emailVerified!= null && emailVerified) {
+            fstore.collection(USERS_REF).document(user).update(mapOf( KEY_IS_EMAIL_VERIFIED to emailVerified)).await()
+        } else if (profileImage!= null) {
+            fstore.collection(USERS_REF).document(user).update(mapOf(KEY_PROFILE_IMAGE to profileImage)).await()
+        }
     }
 
     override suspend fun updateprofileImage(user: String, profileImage: String, remoteProfileImage: String) {
@@ -113,19 +118,19 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         name= data[KEY_NAME] as String? ?: "",
         profileImage = data[KEY_PROFILE_IMAGE] as String? ?: "",
         remoteProfileImage = data[KEY_REMOTE_PROFILE_IMAGE] as String? ?: "",
-        profileBackColor = data[KEY_PROFILE_BACK_COLOR] as Int? ?: Integer.MIN_VALUE,
-        profileTextColor= data[KEY_PROFILE_TEXT_COLOR] as Int? ?: Integer.MIN_VALUE,
+        profileBackColor = (data[KEY_PROFILE_BACK_COLOR] as Long? ?: Integer.MIN_VALUE.toLong()).toInt(),
+        profileTextColor= (data[KEY_PROFILE_TEXT_COLOR] as Long? ?: Integer.MIN_VALUE.toLong()).toInt(),
         createdAt = data[KEY_CREATED_AT] as String? ?: "",
         isEmailVerified= data[KEY_IS_EMAIL_VERIFIED] as Boolean? ?: false,
         profile = data[KEY_PROFILE] as String? ?: "",
         profileId = data[KEY_PROFILE_ID] as String? ?: "",
         bossCategory = data[KEY_BOSS_CATEGORY] as String? ?: "",
         bossCategoryId = data[KEY_BOSS_CATEGORY_ID] as String? ?: "",
-        bossLevel = data[KEY_BOSS_LEVEL] as Int? ?: 0,
+        bossLevel = (data[KEY_BOSS_LEVEL] as Long? ?: 0L).toInt(),
         bossConfirmation = data[KEY_BOSS_CONFIRMATION] as String? ?: "",
         isBoss = data[KEY_BOSS] as Boolean? ?: false,
         bossVerifiedAt = data[KEY_BOSS_VERIFIED_AT] as String? ?: "",
-        holidayDays = data[KEY_HOLIDAY_DAYS] as Int? ?: User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS,
+        holidayDays = (data[KEY_HOLIDAY_DAYS] as Long? ?: User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS.toLong()).toInt(),
         internalEmployee = data[KEY_INTERNAL_EMPLOYEE] as Boolean? ?: false,
         area= data[KEY_AREA] as String? ?: "",
         areaId = data[KEY_AREA_ID] as String? ?: "",
