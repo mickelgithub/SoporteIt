@@ -137,7 +137,9 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         department = data[KEY_DEPARTMENT] as String? ?: "",
         departmentId = data[KEY_DEPARTMENT_ID] as String? ?: "",
         stateChangedAt = data[KEY_STATE_CHANGED_AT] as String? ?: "",
-        state = data[KEY_STATE] as String? ?: STATE_SUBSCRIBED
+        state = data[KEY_STATE] as String? ?: STATE_SUBSCRIBED,
+        membershipConfirmation = data[KEY_MEMBERSHIP_CONFIRMATION] as String? ?: "",
+        membershipConfirmedAt = data[KEY_MEMBERSHIP_CONFIRMED_AT] as String? ?: ""
 
     )
 

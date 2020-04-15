@@ -126,7 +126,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/backgroud_rounded"
-            android:text="@{viewModel.user.bossLevel&gt;=1 ? viewModel.user.bossCategory : viewModel.user.profile}"
+            android:text='@{viewModel.user.bossLevel&gt;=1 ? viewModel.user.bossCategory : (viewModel.user.profile=="" ? @string/profile_not_confirmed_yet : viewModel.user.profile)}'
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/profile_image"
             app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"

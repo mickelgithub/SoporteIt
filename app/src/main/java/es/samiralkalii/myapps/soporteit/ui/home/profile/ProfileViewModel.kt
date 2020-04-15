@@ -70,7 +70,6 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
                         (!it.isBoss && it.membershipConfirmation== "Y")
                 _showNotVerifiedYet.value= (it.isBoss && it.bossConfirmation== "") ||
                         (!it.isBoss && it.membershipConfirmation== "")
-                logger.debug("lo que sea...")
             }
         }
     }

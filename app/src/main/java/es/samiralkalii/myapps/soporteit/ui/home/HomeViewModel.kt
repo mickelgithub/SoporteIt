@@ -3,14 +3,19 @@ package es.samiralkalii.myapps.soporteit.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
+import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 
-class HomeViewModel() : ViewModel() {
+class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeViewModel::class.java)
 
@@ -24,24 +29,39 @@ class HomeViewModel() : ViewModel() {
 
     private var gotoExtra: Int= -1
 
+    private lateinit var user: User
+
     fun init(gotoParam: Int, isEmailVerified: Boolean) {
         logger.debug("init.........................")
         gotoExtra= gotoParam
         _emailValidated.value= isEmailVerified
-        when {
-            /*(gotoExtra== SplashActivity.GOTO_PROFILE && !user.bossVerified) -> {
-                _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
-            }*/
-            (gotoExtra== SplashActivity.GOTO_PROFILE) -> {
-                _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+        if (isEmailVerified) {
+            when {
+                /*(gotoExtra== SplashActivity.GOTO_PROFILE && !user.bossVerified) -> {
+                    _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
+                }*/
+                gotoExtra == SplashActivity.GOTO_PROFILE -> {
+                    _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+                }
+                gotoExtra == SplashActivity.GOTO_NOTIFICATIONS -> {
+                    _goto.value = Event(SplashActivity.Companion.GOTO.NOTIFICATIONS)
+                }
+                else -> {
+                    viewModelScope.launch {
+                        user = async(Dispatchers.IO) {
+                            getUserUseCase()
+                        }.await()
+                        if (user.membershipConfirmation== "Y") {
+                            _goto.value = Event(SplashActivity.Companion.GOTO.HOME)
+                        } else {
+                            _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+                        }
+                    }
+                }
             }
-            (gotoExtra== SplashActivity.GOTO_NOTIFICATIONS) -> {
-                _goto.value = Event(SplashActivity.Companion.GOTO.NOTIFICATIONS)
-            }
-            else -> {
-                _goto.value= Event(SplashActivity.Companion.GOTO.HOME)
-            }
+
         }
+
         /*if (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") {
 
         } else if (gotoExtra== SplashActivity.GOTO_PROFILE) {

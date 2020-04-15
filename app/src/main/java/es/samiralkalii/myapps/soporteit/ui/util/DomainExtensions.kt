@@ -36,6 +36,8 @@ const val KEY_PROFILE_TEXT_COLOR= "profileTextColor"
 const val KEY_STATE= "state"
 const val KEY_STATE_CHANGED_AT= "stateChangedAt"
 const val KEY_BOSS_CONFIRMATION= "bossConfirmation"
+const val KEY_MEMBERSHIP_CONFIRMATION= "membershipConfirmation"
+const val KEY_MEMBERSHIP_CONFIRMED_AT= "membershipConfirmedAt"
 
 const val KEY_TEAM_NAME_INSENSITIVE= "nameInsensitive"
 

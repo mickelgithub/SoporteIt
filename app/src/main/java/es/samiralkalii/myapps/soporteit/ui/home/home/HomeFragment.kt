@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
+import es.samiralkalii.myapps.soporteit.ui.BaseFragment
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
@@ -20,7 +21,7 @@ import es.samiralkalii.myapps.soporteit.ui.util.toUser
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
-class HomeFragment: Fragment(),
+class HomeFragment: BaseFragment(),
     CreateTeamDialog.OnCreateTeamListener, InviteMemberDialog.OnInviteMemberListener {
 
     companion object {
@@ -36,6 +37,18 @@ class HomeFragment: Fragment(),
 
     private lateinit var user: User
     private lateinit var binding: FragmentHomeBinding
+
+    override fun initUI(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+    }
+
+    override fun initStateObservation() {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

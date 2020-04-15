@@ -42,7 +42,8 @@
     <string name="user_not_exist">El usuario no existe</string>
     <string name="no_account">Si no tienes cuenta, registrate</string>
     <string name="her">Aqui</string>
-    <string name="instructions_to_validate_your_email">Te queda un ultimo paso para utilizar esta aplicación, revisa tu correo y siga las instrucciones.</string>
+    <string name="instructions_to_validate_your_email">Es necesario validar tu email, revisa tu correo y siga las instrucciones.</string>
+    <string name="app_title_need_mail_validation">Es necesario validar tu email</string>
     <string name="profile">Perfil</string>
     <string name="team_created_title">Equipo: %1$s</string>
     <string name="team_no_created_title">Equipo: Pendiente de crear</string>
@@ -86,8 +87,11 @@
     <string name="invite">Invitar</string>
     <string name="create_group">Crear grupo</string>
     <string name="add">Añadir</string>
-    <string name="verified">Verificado</string>
-    <string name="verification_pending">Verificacíon pendiente!!!</string>
+    <string name="verified">Verificado perfil responsable de equipo &#9996;</string>
+    <string name="verification_pending">Verificacíon pendiente&#129306;</string>
+    <string name="membership_confirmed">El responsable de equipo te ha confirmado &#9996;</string>
+    <string name="membership_not_confirmed_yet">No confirmado todavia&#129306;</string>
+    <string name="profile_not_confirmed_yet">Perfil sin confirmar</string>
     <string name="create_new_team">Dar de alta el equipo</string>
     <string name="invite_new_member">Invitar a un miembro</string>
     <string name="done">Terminar</string>

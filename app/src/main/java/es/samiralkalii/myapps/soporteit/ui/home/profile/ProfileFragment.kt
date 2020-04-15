@@ -214,13 +214,16 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
                         ), error = false)
                 )
             } else if (viewModel.showVerified.value!! && !it.isBoss) {
-                viewModel.updateProgressVisible(
-                    MyDialog.DialogState.ShowMessageDialog(resources.getString(
-                        R.string.verified
+                viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(
+                        R.string.membership_confirmed
                     ), error = false)
                 )
-            } else {
+            } else if (viewModel.showNotVerifiedYet.value!! && it.isBoss){
                 viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(R.string.verification_pending)))
+            } else if (viewModel.showNotVerifiedYet.value!! && !it.isBoss) {
+                viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(
+                    R.string.membership_not_confirmed_yet))
+                )
             }
         }
     }

@@ -119,6 +119,8 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             putString(KEY_DEPARTMENT_ID, user.departmentId)
             putString(KEY_STATE, user.state)
             putString(KEY_STATE_CHANGED_AT, user.stateChangedAt)
+            putString(KEY_MEMBERSHIP_CONFIRMATION, user.membershipConfirmation)
+            putString(KEY_MEMBERSHIP_CONFIRMED_AT, user.membershipConfirmedAt)
         }
     }
 
@@ -152,6 +154,8 @@ class SharedPreferencesManager(val context: Context): IPreferences {
             val departmentId= getString(KEY_DEPARTMENT_ID, "")
             val state= getString(KEY_STATE, "")
             val stateChangedAt= getString(KEY_STATE_CHANGED_AT, "")
+            val membershipConfirmation= getString(KEY_MEMBERSHIP_CONFIRMATION, "")
+            val membershipConfirmedAt= getString(KEY_MEMBERSHIP_CONFIRMED_AT, "")
 
             return User(email= email, password = pass, id= id, name = name, profileImage = imageProfilePath,
                 remoteProfileImage = imageProfileUrl, profileBackColor = profileBackColor,
@@ -160,7 +164,8 @@ class SharedPreferencesManager(val context: Context): IPreferences {
                 bossCategoryId = bossCategoryId, bossLevel = bossLevel, holidayDays = holidayDays,
                 internalEmployee = isInternalEmployee, messagingToken = messagingToken,
                 area = area, areaId = areaId, department = department, departmentId = departmentId,
-                state = state, stateChangedAt = stateChangedAt, bossConfirmation = bossConfirmation
+                state = state, stateChangedAt = stateChangedAt, bossConfirmation = bossConfirmation,
+                membershipConfirmation = membershipConfirmation, membershipConfirmedAt = membershipConfirmedAt
             )
         }
     }

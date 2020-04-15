@@ -49,10 +49,9 @@ class HomeActivity : BaseActivity() {
         binding.executePendingBindings()
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title= getString(R.string.app_name)
+        supportActionBar?.title= getString(R.string.app_title_need_mail_validation)
 
         if (!isEmailVerified) {
-            bottomNav.visibility= View.GONE
             finishMeInAwhile(7000L)
         } else {
             //bottomNav.menu.getItem(0).isCheckable= false
