@@ -25,96 +25,23 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMod
     lateinit var user: User
 
 
-    //create team
-    private val _dialogCreateTeamState= MutableLiveData<MyDialog.DialogState>()
-    val dialogCreateTeamState: LiveData<MyDialog.DialogState>
-        get() = _dialogCreateTeamState
+    private val _progressVisible= MutableLiveData<MyDialog.DialogState>()
+    val progressVisible: LiveData<MyDialog.DialogState>
+        get()= _progressVisible
 
-    fun updateDialogCreateState(state: MyDialog.DialogState) {
-        _dialogCreateTeamState.value= state
+    fun updateDialogState(dialog: MyDialog.DialogState) {
+        _progressVisible.value= dialog
     }
 
-    private val _teamAddedOk= MutableLiveData<Event<ScreenState<HomeFragmentChangeState>>>()
-    val teamAddedOk: LiveData<Event<ScreenState<HomeFragmentChangeState>>>
-        get() = _teamAddedOk
+    private val _
 
 
     //end create team
 
-    fun publishUser(userParam: User) {
-        user= userParam
+    fun init() {
     }
 
-    fun onTeamCreateClick(teamName: String) {
 
-        logger.debug("On team create clicked")
-
-        //_dialogCreateTeamState.value= MyDialog.DialogState.ShowLoading
-        val errorHandler = CoroutineExceptionHandler { _, error ->
-            logger.error(error.toString(), error)
-            when (error) {
-                is FirebaseNetworkException -> {
-                    _teamAddedOk.postValue(Event(ScreenState.Render(HomeFragmentChangeState.ShowMessage(R.string.no_internet_connection))))
-                }
-                else -> {
-                    _teamAddedOk.postValue(Event(ScreenState.Render(HomeFragmentChangeState.ShowMessage(R.string.no_internet_connection))))
-                }
-            }
-        }
-        viewModelScope.launch(errorHandler) {
-            val result= async(Dispatchers.IO) {
-                addTeamUseCase(Team(name= teamName, nameInsensitive = teamName.toUpperCase(), boss = user.id))
-            }.await()
-            if (result.isNotBlank()) {
-                /*user.team= teamName
-                user.teamId= result*/
-                _teamAddedOk.value= Event(ScreenState.Render(HomeFragmentChangeState.teamAddedOk))
-            } else {
-                _teamAddedOk.postValue(Event(ScreenState.Render(HomeFragmentChangeState.ShowMessage(R.string.team_already_exist))))
-            }
-        }
-
-    }
-
-    /*fun loadAllUsers() {
-        val errorHandler = CoroutineExceptionHandler { _, error ->
-            logger.error(error.toString(), error)
-            when (error) {
-                is FirebaseNetworkException -> {
-                    /*_teamAddedOk.postValue(
-                        Event(
-                            ScreenState.Render(
-                                TeamManagementChangeState.ShowMessage(
-                                    R.string.no_internet_connection)))
-                    )*/
-                }
-                else -> {
-                    /*_teamAddedOk.postValue(
-                        Event(
-                            ScreenState.Render(
-                                TeamManagementChangeState.ShowMessage(
-                                    R.string.no_internet_connection)))
-                    )*/
-                }
-            }
-        }
-
-        viewModelScope.launch(errorHandler) {
-            val result= async(Dispatchers.IO) {
-                getAllUsersButBosesUseCase()
-            }.await()
-            _allUsers.value= Event(result)
-        }
-    }*/
-
-    /*fun onInviteClick() {
-        logger.debug("On invite clicked")
-        //loadAllUsers()
-    }*/
-
-    fun onGroupCreateClick() {
-        logger.debug("On group create clicked")
-    }
 
 
 

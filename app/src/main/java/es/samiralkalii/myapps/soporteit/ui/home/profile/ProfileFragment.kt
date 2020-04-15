@@ -40,7 +40,6 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     override fun initLoading(args: Bundle?) {
         super.initLoading(args)
         viewModel.init()
-        setHasOptionsMenu(true)
     }
 
     override fun initUI(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -50,6 +49,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
         binding.executePendingBindings()
+        setHasOptionsMenu(true)
         return binding.root
     }
 
