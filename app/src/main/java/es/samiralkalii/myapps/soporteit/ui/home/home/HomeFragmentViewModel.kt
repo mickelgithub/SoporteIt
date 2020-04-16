@@ -9,6 +9,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Team
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
@@ -33,12 +34,15 @@ class HomeFragmentViewModel(private val addTeamUseCase: AddTeamUseCase): ViewMod
         _progressVisible.value= dialog
     }
 
-    private val _
+    private val _items= MutableLiveData<List<MemberUserViewModelTemplate>?>()
+    val items: LiveData<List<MemberUserViewModelTemplate>?>
+        get() = _items
 
 
     //end create team
 
     fun init() {
+
     }
 
 

@@ -1,10 +1,10 @@
 package es.samiralkalii.myapps.domain.teammanagement
 
-import java.util.*
+import es.samiralkalii.myapps.domain.User
 
 data class Group(
     var id: String,
     var name: String,
-    var creationDate: Long= Calendar.getInstance().time.time,
-    var members: List<String>?= emptyList()
+    var creationDate: String= "",
+    var members: List<User?> = emptyList()
 )

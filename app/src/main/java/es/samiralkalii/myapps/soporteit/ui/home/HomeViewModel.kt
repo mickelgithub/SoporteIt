@@ -37,9 +37,9 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
         _emailValidated.value= isEmailVerified
         if (isEmailVerified) {
             when {
-                /*(gotoExtra== SplashActivity.GOTO_PROFILE && !user.bossVerified) -> {
-                    _goto.value= Event(SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED)
-                }*/
+                //gotoExtra nos viene desde SplashActivity cuando se realiza alguna
+                //accion sobre las notificaciones, por ejemplo pulsar en la notificacion,
+                //sino, tendria el valor por defecto -1
                 gotoExtra == SplashActivity.GOTO_PROFILE -> {
                     _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
                 }
