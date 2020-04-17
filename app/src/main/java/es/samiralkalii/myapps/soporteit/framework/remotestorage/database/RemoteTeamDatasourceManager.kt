@@ -190,8 +190,8 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
             .whereEqualTo(KEY_AREA_ID, user.areaId)
             .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
-            .whereLessThan(KEY_ID, user.id)
-            .whereGreaterThan(KEY_ID, user.id)
+            //whereLessThan(KEY_ID, user.id)
+            //whereGreaterThan(KEY_ID, user.id)
         if (!user.isBoss) {
             membersQuery.whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, "Y")
         }

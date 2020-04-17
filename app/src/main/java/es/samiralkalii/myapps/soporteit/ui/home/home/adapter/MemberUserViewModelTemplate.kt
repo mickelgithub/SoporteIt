@@ -43,7 +43,7 @@ sealed class MemberUserViewModelTemplate {
 
         private val _profileTextColor= MutableLiveData<Int?>()
         val profileTextColor: LiveData<Int?>
-            get() = profileTextColor
+            get() = _profileTextColor
 
         private val _showConfirmImage= MutableLiveData<Boolean?>()
         val showConfirmImage: LiveData<Boolean?>
@@ -55,9 +55,10 @@ sealed class MemberUserViewModelTemplate {
 
         fun init() {
             _email.value= user.email
-            _profileImage.value= user.profileImage
+            _profileImage.value= user.remoteProfileImage
             _profileBackColor.value= user.profileBackColor
             _profileTextColor.value= user.profileTextColor
+            _firstName.value= user.firstName
             _showConfirmImage.value= !user.isBoss && user.membershipConfirmation== ""
         }
 

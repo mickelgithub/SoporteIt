@@ -48,6 +48,7 @@ class HomeFragment: BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        logger.debug("initUI........")
         binding= FragmentHomeBinding.inflate(inflater, container, false)
         binding.viewModel= viewModel
         binding.lifecycleOwner= viewLifecycleOwner
@@ -63,7 +64,7 @@ class HomeFragment: BaseFragment() {
         binding.groupsRecycleView.setHasFixedSize(true)
         binding.groupsRecycleView.adapter =
             MemberUserAdapter(mutableListOf<MemberUserViewModelTemplate>(), viewModel)
-        binding.groupsRecycleView.addItemDecoration(
+        /*binding.groupsRecycleView.addItemDecoration(
             DividerItemDecoration(
                 activity!!,
                 LinearLayout.VERTICAL
@@ -76,7 +77,7 @@ class HomeFragment: BaseFragment() {
                         )
                     )
                 )
-            })
+            })*/
 
         viewModel.getGroupsActionState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { screenState ->
@@ -159,4 +160,20 @@ class HomeFragment: BaseFragment() {
         }
     }*/
 
+
+
+    override fun onResume() {
+        super.onResume()
+        logger.debug("onResume...............")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        logger.debug("onStart.................")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        logger.debug("onDestroyView...............")
+    }
 }
