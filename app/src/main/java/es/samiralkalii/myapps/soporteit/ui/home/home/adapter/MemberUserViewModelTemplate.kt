@@ -23,7 +23,7 @@ sealed class MemberUserViewModelTemplate {
 
     }
 
-    class MemberUserViewModel(val user: User, private val homeFragmentViewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
+    class MemberUserViewModel(val user: User): MemberUserViewModelTemplate() {
 
         private val _email= MutableLiveData<String?>()
         val email: LiveData<String?>
@@ -66,4 +66,6 @@ sealed class MemberUserViewModelTemplate {
     }
 
     object MemberUserViewModelLoading: MemberUserViewModelTemplate()
+
+    object MemberUserViewModelEmpty: MemberUserViewModelTemplate()
 }

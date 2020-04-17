@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.R
@@ -50,6 +51,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         binding.fragment= this
         binding.executePendingBindings()
         setHasOptionsMenu(true)
+        (activity!! as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.profile)
         return binding.root
     }
 

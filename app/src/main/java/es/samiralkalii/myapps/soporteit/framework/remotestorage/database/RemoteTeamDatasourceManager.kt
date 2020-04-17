@@ -190,12 +190,14 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
             .whereEqualTo(KEY_AREA_ID, user.areaId)
             .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
+            .whereLessThan(KEY_ID, user.id)
+            .whereGreaterThan(KEY_ID, user.id)
         if (!user.isBoss) {
             membersQuery.whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, "Y")
         }
         val membersQueryresult= membersQuery.get(Source.SERVER).await()
-        if (membersQueryresult!= null && !membersQueryresult.isEmpty) {
-            val groupAll= membersQueryresult.documents.map { it.toObject(User::class.java) }?.let { Group(id = "TODOS", name = "Todos", members = it) }
+        if (!membersQueryresult.isEmpty) {
+            val groupAll= membersQueryresult.documents.map { it.toObject(User::class.java) }.filter { it!= null && it.id!= user.id }.let { Group(id = "TODOS", name = "Todos", members = it as List<User>) }
             return GroupList(listOf(groupAll))
         }
         return GroupList(listOf())

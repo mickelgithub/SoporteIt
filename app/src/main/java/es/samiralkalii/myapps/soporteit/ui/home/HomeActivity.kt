@@ -101,7 +101,7 @@ class HomeActivity : BaseActivity() {
             SplashActivity.Companion.GOTO.PROFILE -> {
                 logger.debug("Mostramos el perfil...")
                 if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
-                    supportActionBar?.title= resources.getString(R.string.profile)
+                    //supportActionBar?.title= resources.getString(R.string.profile)
                     supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(Bundle()), ProfileFragment::class.java.simpleName).commit()
                 }
                 /*if (goto== SplashActivity.Companion.GOTO.PROFILE_PROFILE_NEEDED) {
@@ -111,23 +111,9 @@ class HomeActivity : BaseActivity() {
             SplashActivity.Companion.GOTO.HOME -> {
                 logger.debug("Mostramos el home...")
                 if (supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)== null) {
-                    //if (viewModel.user.isBoss && !viewModel.user.teamCreated) {
-                    /*if (viewModel.user.isBoss) {
-                        supportActionBar?.title =
-                            resources.getString(R.string.team_no_created_title)
-                    } else {
-                        if (viewModel.user.isBoss) {*/
-                            //supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
-                        } else {
-                            /*if (viewModel.user.teamInvitationState== Reply.OK) {
-                                supportActionBar?.title= resources.getString(R.string.team_created_title, viewModel.user.team)
-                            } else {
-                                supportActionBar?.title= resources.getString(R.string.team_created_title, "")
-                            }*/
-                        /*}
-                    }*/
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeFragment.newInstance(Bundle()), HomeFragment::class.java.simpleName).commit()
                 }
+                //supportFragmentManager.beginTransaction().replace(R.id.container, HomeFragment.newInstance(Bundle()), HomeFragment::class.java.simpleName).commit()
             }
             SplashActivity.Companion.GOTO.NOTIFICATIONS -> {
                 logger.debug("Mostramos notificaciones...")

@@ -5,15 +5,19 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.databinding.EmptyItemViewBindingImpl
 import es.samiralkalii.myapps.soporteit.databinding.HeaderGroupMembersItemBinding
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.MemberUserItemBinding
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import org.slf4j.LoggerFactory
 
 class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, val homeFragmentViewModel: HomeFragmentViewModel): RecyclerView.Adapter<MemberUserAdapter.MemberUserViewHolder>() {
 
     private val logger= LoggerFactory.getLogger(MemberUserAdapter::class.java)
+
+
 
 
     class MemberUserViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
@@ -50,6 +54,13 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
                 false
             )
         )
+        R.layout.empty_item_view -> MemberUserViewHolder(
+            EmptyItemViewBindingImpl.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
         else -> MemberUserViewHolder(
             LoadingItemViewBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -75,5 +86,16 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
         is MemberUserViewModelTemplate.GroupMemberUserViewModel -> R.layout.header_group_members_item
         is MemberUserViewModelTemplate.MemberUserViewModel -> R.layout.member_user_item
         MemberUserViewModelTemplate.MemberUserViewModelLoading -> R.layout.loading_item_view
+        MemberUserViewModelTemplate.MemberUserViewModelEmpty -> R.layout.empty_item_view
     }
+
+    fun setData(data: List<MemberUserViewModelTemplate>?) {
+        if (data!= null) {
+            members.clear()
+            members.addAll(data)
+            notifyDataSetChanged()
+        }
+    }
+
+
 }

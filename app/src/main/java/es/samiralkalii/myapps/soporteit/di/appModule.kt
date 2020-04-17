@@ -54,7 +54,7 @@ val appModule= module {
     viewModel { LogupViewModel(get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel(get())}
     viewModel { ProfileViewModel(get(), get(), get()) }
-    viewModel { HomeFragmentViewModel(get()) }
+    viewModel { HomeFragmentViewModel(get(), get()) }
     viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get(), get()) }
     viewModel { HomeNotificationsFragmentViewModel(get(), get(), get(), get()) }
 }

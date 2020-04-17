@@ -45,6 +45,7 @@
     <string name="instructions_to_validate_your_email">Es necesario validar tu email, revisa tu correo y siga las instrucciones.</string>
     <string name="app_title_need_mail_validation">Es necesario validar tu email</string>
     <string name="profile">Perfil</string>
+    <string name="my_team">Mi equipo</string>
     <string name="team_created_title">Equipo: %1$s</string>
     <string name="team_no_created_title">Equipo: Pendiente de crear</string>
     <string name="accept">Aceptar</string>

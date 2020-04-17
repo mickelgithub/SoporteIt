@@ -135,27 +135,25 @@ class LogupActivity : BaseActivity(),
     }
 
     private fun processStateLogin(screenState: ScreenState.Render<LoginState>) {
-        screenState.let {
-            when (screenState.renderState) {
-                is LoginState.LoginOk -> {
-                    logger.debug("Login correcto, goto Home")
-                    disableInputsLogin()
-                    if (!screenState.renderState.user.profileImage.isNullOrBlank()) {
-                        //val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
-                        //profile_image.startAnimation(shake)
-                        Handler().postDelayed({viewModel.updateImageProfile(Uri.parse(screenState.renderState.user.profileImage))}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
-                    } else {
-                        Handler().postDelayed({viewModel.updateProfileColor(screenState.renderState.user.profileBackColor to screenState.renderState.user.profileTextColor)}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
-                    }
-                    viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                    Handler().postDelayed(Runnable { HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this) }, MyDialog.DIALOG_DISMISS_DELAY*2)
+        when (screenState.renderState) {
+            is LoginState.LoginOk -> {
+                logger.debug("Login correcto, goto Home")
+                disableInputsLogin()
+                if (!screenState.renderState.user.profileImage.isNullOrBlank()) {
+                    //val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+                    //profile_image.startAnimation(shake)
+                    Handler().postDelayed({viewModel.updateImageProfile(Uri.parse(screenState.renderState.user.profileImage))}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
+                } else {
+                    Handler().postDelayed({viewModel.updateProfileColor(screenState.renderState.user.profileBackColor to screenState.renderState.user.profileTextColor)}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
                 }
-                is LoginState.UpdateMessage -> {
-                    logger.debug("Hubo un error en acceso, lo mostramos")
-                    val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
-                        resources.getString(screenState.renderState.message)
-                    viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(messagedesc))
-                }
+                viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                Handler().postDelayed(Runnable { HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this) }, MyDialog.DIALOG_DISMISS_DELAY*2)
+            }
+            is LoginState.UpdateMessage -> {
+                logger.debug("Hubo un error en acceso, lo mostramos")
+                val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                    resources.getString(screenState.renderState.message)
+                viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(messagedesc))
             }
         }
     }
@@ -176,40 +174,38 @@ class LogupActivity : BaseActivity(),
     }
 
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
-        screenState.let {
-            when (screenState.renderState) {
-                is LogupState.LoggedupOk -> {
-                    logger.debug("Registracion correcto, goto Home")
-                    disableInputsLogup()
-                    viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                    if (screenState.renderState.user.profileImage.isNullOrBlank()) {
-                        viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
-                    }
-                    Handler().postDelayed({
-                        HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this)
-                    }, MyDialog.DIALOG_DISMISS_DELAY*2)
+        when (screenState.renderState) {
+            is LogupState.LoggedupOk -> {
+                logger.debug("Registracion correcto, goto Home")
+                disableInputsLogup()
+                viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                if (screenState.renderState.user.profileImage.isNullOrBlank()) {
+                    viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
                 }
-                is LogupState.LoggedupAsManagerTeamOk -> {
-                    logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
-                    disableInputsLogup()
-                    if (screenState.renderState.user.profileImage.isNullOrBlank()) {
-                        viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
-                    }
-                    viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                    Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
+                Handler().postDelayed({
+                    HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this)
+                }, MyDialog.DIALOG_DISMISS_DELAY*2)
+            }
+            is LogupState.LoggedupAsManagerTeamOk -> {
+                logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
+                disableInputsLogup()
+                if (screenState.renderState.user.profileImage.isNullOrBlank()) {
+                    viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
                 }
-                is LogupState.ShowMessage -> {
-                    logger.debug("Hubo un error en la registracion, lo mostramos")
-                    val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
-                        resources.getString(screenState.renderState.message)
-                    viewModel.updateDialogState(MyDialog.DialogState.ShowMessageDialog(messagedesc))
-                }
-                is LogupState.UpdateMessage -> {
-                    logger.debug("Hubo un error en la registracion, lo mostramos")
-                    val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
-                        resources.getString(screenState.renderState.message)
-                    viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(messagedesc))
-                }
+                viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
+                Handler().postDelayed({showTeamVerificationMessage(screenState.renderState)}, MyDialog.DIALOG_DISMISS_DELAY)
+            }
+            is LogupState.ShowMessage -> {
+                logger.debug("Hubo un error en la registracion, lo mostramos")
+                val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                    resources.getString(screenState.renderState.message)
+                viewModel.updateDialogState(MyDialog.DialogState.ShowMessageDialog(messagedesc))
+            }
+            is LogupState.UpdateMessage -> {
+                logger.debug("Hubo un error en la registracion, lo mostramos")
+                val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                    resources.getString(screenState.renderState.message)
+                viewModel.updateDialogState(MyDialog.DialogState.UpdateMessage(messagedesc))
             }
         }
     }

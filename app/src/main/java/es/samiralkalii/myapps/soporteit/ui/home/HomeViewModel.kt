@@ -51,7 +51,7 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
                         user = async(Dispatchers.IO) {
                             getUserUseCase()
                         }.await()
-                        if (user.membershipConfirmation== "Y") {
+                        if ((!user.isBoss && user.membershipConfirmation== "Y") || (user.isBoss && user.bossConfirmation== "Y")) {
                             _goto.value = Event(SplashActivity.Companion.GOTO.HOME)
                         } else {
                             _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)

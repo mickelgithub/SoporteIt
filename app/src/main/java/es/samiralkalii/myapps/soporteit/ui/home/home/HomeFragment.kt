@@ -14,6 +14,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
+import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
@@ -53,34 +54,12 @@ class HomeFragment: BaseFragment() {
         binding.fragment= this
         binding.executePendingBindings()
         setHasOptionsMenu(true)
+        (activity!! as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.my_team)
         return binding.root
     }
 
     override fun initStateObservation() {
-        viewModel.init()
 
-        //create Tream
-        viewModel.progressVisible.observe(this, Observer {
-            when (it) {
-                /*MyDialog.DialogState.ShowDialog    -> CreateTeamDialog.showDialog(activity!!.supportFragmentManager)
-                MyDialog.DialogState.ShowLoading   -> CreateTeamDialog.showLoading()
-                MyDialog.DialogState.ShowSuccess   -> CreateTeamDialog.showSuccess()
-                is MyDialog.DialogState.ShowMessage -> CreateTeamDialog.showMessage(it.message)*/
-            }
-        })
-
-
-        /*viewModel.teamAddedOk.observe(this, Observer {
-            it.getContentIfNotHandled().let { screenState ->
-                if (screenState is ScreenState.Render) {
-                    //processTeamAdded(screenState)
-                }
-            }
-        })*/
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.groupsRecycleView.setHasFixedSize(true)
         binding.groupsRecycleView.adapter =
             MemberUserAdapter(mutableListOf<MemberUserViewModelTemplate>(), viewModel)
@@ -98,6 +77,43 @@ class HomeFragment: BaseFragment() {
                     )
                 )
             })
+
+        viewModel.getGroupsActionState.observe(this, Observer {
+            it.getContentIfNotHandled()?.let { screenState ->
+                if (screenState is ScreenState.Render) {
+                    processGroupActionState(screenState)
+                }
+            }
+        })
+
+        viewModel.progressVisible.observe(this, Observer {
+            LoadingDialog.processDialog(it, activity!!.supportFragmentManager)
+        })
+
+
+        viewModel.items.observe(this, Observer {
+            (binding.groupsRecycleView.adapter as MemberUserAdapter).setData(it)
+        })
+    }
+
+    private fun processGroupActionState(screenState: ScreenState.Render<HomeFragmentStates.GetGroupsState>) {
+        when (screenState.renderState) {
+            is HomeFragmentStates.GetGroupsState.GetGroupsStateOk -> {
+                viewModel.updateItems(screenState.renderState.members)
+            }
+            is HomeFragmentStates.GetGroupsState.ShowMessage -> {
+                val messagedesc= if (screenState.renderState.messageParams.isNotEmpty()) resources.getString(screenState.renderState.message, *screenState.renderState.messageParams.toTypedArray()) else
+                    resources.getString(screenState.renderState.message)
+                viewModel.updateItems(listOf())
+                viewModel.updateDialogState(MyDialog.DialogState.ShowMessageDialog(messagedesc))
+            }
+
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 
 

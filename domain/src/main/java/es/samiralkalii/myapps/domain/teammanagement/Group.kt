@@ -6,5 +6,5 @@ data class Group(
     var id: String,
     var name: String,
     var creationDate: String= "",
-    var members: List<User?> = emptyList()
+    var members: List<User> = emptyList()
 )
