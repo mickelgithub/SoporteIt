@@ -18,6 +18,7 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
     suspend fun getHolidayDays()= remoteTeamManagementDatasource.getHolidayDays()
 
     suspend fun getMyGroups(user: User)= remoteTeamManagementDatasource.getMyGroups(user)
+    suspend fun confirmMember(user: String)= remoteTeamManagementDatasource.confirmMember(user)
 
 
 }
@@ -34,6 +35,7 @@ interface IRemoteTeamManagementDatasource {
     suspend fun isBossAlreadyExist(areaId: String, departmentId: String, bossLevel: Int): Boolean
     suspend fun getHolidayDays(): Holidays
     suspend fun getMyGroups(user: User): GroupList
+    suspend fun confirmMember(user: String)
 
 
 }

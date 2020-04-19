@@ -92,6 +92,13 @@ fun ImageView.bindImgSrcfromUrlStr(imageUri: String?) {
         .into(this)
 }
 
+@BindingAdapter("resdraw")
+fun ImageView.bindResourceDrawable(imageRes: Int?) {
+    if (imageRes!= null) {
+        setImageDrawable(context.getDrawable(imageRes))
+    }
+}
+
 @BindingAdapter("imgsrcwithcash")
 fun ImageView.bindImgSrcfromUrlStrwithCach(imageUri: String?) {
     Glide.with(this.context).load(if (imageUri.isNullOrBlank()) R.drawable.profile else imageUri)

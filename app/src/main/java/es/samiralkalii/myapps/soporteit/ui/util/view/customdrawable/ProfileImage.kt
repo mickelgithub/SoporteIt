@@ -32,6 +32,7 @@ class ProfileImage @JvmOverloads constructor(
     var text: String
     val imgView: ImageView
     val txtView: TextView
+    val animation: Boolean
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.ProfileImage,
@@ -41,6 +42,7 @@ class ProfileImage @JvmOverloads constructor(
         imgUri= a.getString(R.styleable.ProfileImage_imgUri) ?: ""
         placeholder= a.getDrawable(R.styleable.ProfileImage_placeholder)
         text= a.getString(R.styleable.ProfileImage_text) ?: ""
+        animation= a.getBoolean(R.styleable.ProfileImage_animation, true)
         a.recycle()
         View.inflate(context, R.layout.profile_image, this)
         imgView= findViewById(R.id.profile_image)
@@ -70,14 +72,21 @@ class ProfileImage @JvmOverloads constructor(
             txtView.setBackgroundColor(bgColor)
             txtView.setTextColor(textColor)
             if (imgView.isVisible) {
-                animateRevealView(imgView) {
+                if (animation) {
+                    animateRevealView(imgView) {
+                        imgView.isVisible= false
+                        txtView.isVisible= true
+                        fadeIn(txtView, {})
+                    }
+                } else {
                     imgView.isVisible= false
                     txtView.isVisible= true
-                    fadeIn(txtView, {})
                 }
             } else {
                 txtView.isVisible= true
-                fadeIn(txtView, {})
+                if (animation) {
+                    fadeIn(txtView, {})
+                }
             }
         }
     }
@@ -91,24 +100,7 @@ class ProfileImage @JvmOverloads constructor(
         //logger.debug("NOs ha llegado una peti con los datos ${uriParam} : ${text}")
         if (!uriParam.isNullOrBlank()) {
             if (!imgUri.isNullOrBlank() && imgUri!= uriParam) {
-                fadeOut(imgView) {
-                    imgView.alpha= 1F
-                    Glide.with(this.context).load(uriParam)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true).into(imgView)
-                    animateRevealViewInverse(imgView, {})
-                }
-            } else if (imgUri.isNullOrBlank()) {
-                if (!text.isNullOrBlank() && txtView.isVisible && txtView.isAttachedToWindow) {
-                    fadeOut(txtView) {
-                        txtView.isVisible= false
-                        imgView.isVisible= true
-                        Glide.with(this.context).load(uriParam)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true).into(imgView)
-                        animateRevealViewInverse(imgView, {})
-                    }
-                } else {
+                if (animation) {
                     fadeOut(imgView) {
                         imgView.alpha= 1F
                         Glide.with(this.context).load(uriParam)
@@ -116,17 +108,60 @@ class ProfileImage @JvmOverloads constructor(
                             .skipMemoryCache(true).into(imgView)
                         animateRevealViewInverse(imgView, {})
                     }
+                } else {
+                    Glide.with(this.context).load(uriParam)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true).into(imgView)
+                }
+            } else if (imgUri.isNullOrBlank()) {
+                if (!text.isNullOrBlank() && txtView.isVisible && txtView.isAttachedToWindow) {
+                    if (animation) {
+                        fadeOut(txtView) {
+                            txtView.isVisible= false
+                            imgView.isVisible= true
+                            Glide.with(this.context).load(uriParam)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true).into(imgView)
+                            animateRevealViewInverse(imgView, {})
+                        }
+                    } else {
+                        txtView.isVisible= false
+                        imgView.isVisible= true
+                        Glide.with(this.context).load(uriParam)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imgView)
+                    }
+                } else {
+                    if (animation) {
+                        fadeOut(imgView) {
+                            imgView.alpha= 1F
+                            Glide.with(this.context).load(uriParam)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true).into(imgView)
+                            animateRevealViewInverse(imgView, {})
+                        }
+                    } else {
+                        Glide.with(this.context).load(uriParam)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imgView)
+                    }
                 }
             }
         } else if (!textParam.isNullOrBlank()) {
             setTextViewInternal(textParam)
         } else if (placeholder!= null) {
-            fadeOut(imgView) {
-                imgView.alpha= 1F
+            if (animation) {
+                fadeOut(imgView) {
+                    imgView.alpha= 1F
+                    Glide.with(this.context).load(placeholder)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true).into(imgView)
+                    animateRevealViewInverse(imgView, {})
+                }
+            } else {
                 Glide.with(this.context).load(placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true).into(imgView)
-                animateRevealViewInverse(imgView, {})
             }
         }
         imgUri= uriParam ?: ""

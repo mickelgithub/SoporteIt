@@ -1,33 +1,22 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
-import android.widget.LinearLayout
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
-import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
 import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
-import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
-import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.CreateTeamDialog
-import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
-import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationCategory
-import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationAdapter
-import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
-import es.samiralkalii.myapps.soporteit.ui.util.toBundle
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
+
 
 class HomeFragment: BaseFragment() {
 
@@ -60,10 +49,17 @@ class HomeFragment: BaseFragment() {
     }
 
     override fun initStateObservation() {
+        binding.groupsRecycleView.apply {
+            setHasFixedSize(true)
+            adapter =
+                MemberUserAdapter(mutableListOf<MemberUserViewModelTemplate>(), viewModel)
+        }
 
-        binding.groupsRecycleView.setHasFixedSize(true)
-        binding.groupsRecycleView.adapter =
-            MemberUserAdapter(mutableListOf<MemberUserViewModelTemplate>(), viewModel)
+
+        /*val resId = R.anim.layout_animation_fall_down
+        val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, resId)
+        binding.groupsRecycleView.setLayoutAnimation(animation)*/
+
         /*binding.groupsRecycleView.addItemDecoration(
             DividerItemDecoration(
                 activity!!,

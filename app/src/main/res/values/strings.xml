@@ -88,10 +88,10 @@
     <string name="invite">Invitar</string>
     <string name="create_group">Crear grupo</string>
     <string name="add">Añadir</string>
-    <string name="verified">Verificado perfil responsable de equipo &#9996;</string>
-    <string name="verification_pending">Verificacíon pendiente&#129306;</string>
+    <string name="verified">Verificado perfil \'responsable de equipo\'  &#9996;</string>
+    <string name="verification_pending">Verificacíon pendiente  &#129306;</string>
     <string name="membership_confirmed">El responsable de equipo te ha confirmado &#9996;</string>
-    <string name="membership_not_confirmed_yet">No confirmado todavia&#129306;</string>
+    <string name="membership_not_confirmed_yet">No confirmado todavia  &#129306;</string>
     <string name="profile_not_confirmed_yet">Perfil sin confirmar</string>
     <string name="create_new_team">Dar de alta el equipo</string>
     <string name="invite_new_member">Invitar a un miembro</string>

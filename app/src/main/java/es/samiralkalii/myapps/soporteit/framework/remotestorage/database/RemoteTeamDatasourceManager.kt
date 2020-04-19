@@ -11,6 +11,8 @@ import es.samiralkalii.myapps.domain.teammanagement.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val TEAM_DOCUMENT_REF= "team"
@@ -201,6 +203,11 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             return GroupList(listOf(groupAll))
         }
         return GroupList(listOf())
+    }
+
+    override suspend fun confirmMember(user: String) {
+        fstore.collection(USERS_REF).document(user).update(
+            mapOf( KEY_MEMBERSHIP_CONFIRMATION to true, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()
     }
 
 }

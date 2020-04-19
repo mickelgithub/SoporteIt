@@ -11,6 +11,7 @@
         <attr name="textColor" format="color" />
         <attr name="text" format="string" />
         <attr name="imgUri" format="string" />
+        <attr name="animation" format="boolean" />
         <attr name="placeholder" format="reference"/>
     </declare-styleable>
 </resources>

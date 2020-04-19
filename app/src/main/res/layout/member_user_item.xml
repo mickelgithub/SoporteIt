@@ -12,9 +12,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:cardCornerRadius="12dp">
+        app:cardCornerRadius="0dp"
+        android:layout_marginBottom="2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,6 +25,7 @@
                 app:bgColor="@{item.profileBackColor}"
                 app:textColor="@{item.profileTextColor}"
                 app:textView="@{item.firstName}"
+                app:animation="false"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
@@ -40,19 +40,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@{item.email}"
+                android:text='@{item.email.substring(0, item.email.indexOf("@"))}'
                 app:layout_constraintStart_toEndOf="@+id/profileImage"
                 app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
             <ImageView
-                android:id="@+id/confirm_view"
+                android:id="@+id/member_state_image"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ko" />
+                app:visible="@{item.memberStateImage!= null}"
+                app:resdraw="@{item.memberStateImage}"
+                android:onClick="@{()-> item.onMemberStateImageClick(item.user.id)}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

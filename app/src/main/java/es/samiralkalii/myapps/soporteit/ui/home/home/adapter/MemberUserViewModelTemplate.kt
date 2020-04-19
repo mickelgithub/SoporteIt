@@ -3,7 +3,9 @@ package es.samiralkalii.myapps.soporteit.ui.home.home.adapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
+import org.slf4j.LoggerFactory
 
 sealed class MemberUserViewModelTemplate {
 
@@ -23,7 +25,9 @@ sealed class MemberUserViewModelTemplate {
 
     }
 
-    class MemberUserViewModel(val user: User): MemberUserViewModelTemplate() {
+    class MemberUserViewModel(val user: User, homeFragmentViewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
+
+        private val logger= LoggerFactory.getLogger(MemberUserViewModel::class.java)
 
         private val _email= MutableLiveData<String?>()
         val email: LiveData<String?>
@@ -45,9 +49,9 @@ sealed class MemberUserViewModelTemplate {
         val profileTextColor: LiveData<Int?>
             get() = _profileTextColor
 
-        private val _showConfirmImage= MutableLiveData<Boolean?>()
-        val showConfirmImage: LiveData<Boolean?>
-            get() = _showConfirmImage
+        private val _memberStateImage= MutableLiveData<Int?>()
+        val memberStateImage: LiveData<Int?>
+            get() = _memberStateImage
 
         init {
             init()
@@ -59,8 +63,23 @@ sealed class MemberUserViewModelTemplate {
             _profileBackColor.value= user.profileBackColor
             _profileTextColor.value= user.profileTextColor
             _firstName.value= user.firstName
-            _showConfirmImage.value= !user.isBoss && user.membershipConfirmation== ""
+            _memberStateImage.value= when {
+                !user.isBoss && user.membershipConfirmation== "" -> R.drawable.ko
+                else -> null
+            }
         }
+
+        fun onMemberStateImageClick(user: String) {
+            when {
+                _memberStateImage.value== R.drawable.ko -> {
+                    //Se trata del boss confirmando un miembro
+                    logger.debug("Vamos a confirmar el miembro ")
+
+                }
+            }
+        }
+
+
 
 
 

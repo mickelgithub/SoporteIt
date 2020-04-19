@@ -23,7 +23,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase, private val getUserUseCase: GetUserUseCase): ViewModel() {
+class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
+                            private val getUserUseCase: GetUserUseCase): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeFragmentViewModel::class.java)
 
@@ -83,12 +84,15 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase, priv
                 result= groupList.groups.map {
                     val items= mutableListOf<MemberUserViewModelTemplate>()
                     items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name))
-                    items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem) })
+                    items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, this@HomeFragmentViewModel) })
                     items
                 }.flatMap({it})
             }
             _getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
         }
+    }
+
+    fun confirmMember(user: String) {
 
     }
 
