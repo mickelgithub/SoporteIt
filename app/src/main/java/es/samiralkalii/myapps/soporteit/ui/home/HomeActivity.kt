@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
@@ -35,6 +36,7 @@ class HomeActivity : BaseActivity() {
     private val viewModel: HomeViewModel by viewModel()
     private lateinit var binding: ActivityHomeBinding
     private var isEmailVerified: Boolean by Delegates.notNull<Boolean>()
+
 
     override fun initUI() {
 

@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
 import es.samiralkalii.myapps.domain.User
@@ -188,14 +189,18 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun getMyGroups(user: User): GroupList {
-        val membersQuery= fstore.collection(USERS_REF)
-            .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
-            .whereEqualTo(KEY_AREA_ID, user.areaId)
-            .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
-            //whereLessThan(KEY_ID, user.id)
-            //whereGreaterThan(KEY_ID, user.id)
-        if (!user.isBoss) {
-            membersQuery.whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, "Y")
+        var membersQuery: Query? = null
+        if (user.isBoss) {
+            membersQuery= fstore.collection(USERS_REF)
+                .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
+                .whereEqualTo(KEY_AREA_ID, user.areaId)
+                .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
+        } else {
+            membersQuery= fstore.collection(USERS_REF)
+                .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
+                .whereEqualTo(KEY_AREA_ID, user.areaId)
+                .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
+                .whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, SI)
         }
         val membersQueryresult= membersQuery.get(Source.SERVER).await()
         if (!membersQueryresult.isEmpty) {

@@ -11,6 +11,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
+import es.samiralkalii.myapps.soporteit.ui.util.SI
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.Compare2ImageProfileUseCase
 import es.samiralkalii.myapps.usecase.authlogin.UpdateProfileImageUseCase
@@ -66,8 +67,8 @@ class ProfileViewModel(private val compare2ImageProfileUseCase: Compare2ImagePro
             }.await()
             _user.value?.let {
                 _profileImage.value= if (!it.profileImage.isNullOrBlank()) Uri.parse(it.profileImage) else null
-                _showVerified.value= (it.isBoss && it.bossConfirmation== "Y") ||
-                        (!it.isBoss && it.membershipConfirmation== "Y")
+                _showVerified.value= (it.isBoss && it.bossConfirmation== SI) ||
+                        (!it.isBoss && it.membershipConfirmation== SI)
                 _showNotVerifiedYet.value= (it.isBoss && it.bossConfirmation== "") ||
                         (!it.isBoss && it.membershipConfirmation== "")
             }

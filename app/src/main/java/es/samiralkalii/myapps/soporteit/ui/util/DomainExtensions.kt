@@ -84,7 +84,7 @@ fun Bundle.toUser()= User(
 fun getFirstName(fullName: String?)= StringTokenizer(fullName, " ").nextToken()
 
 val User.bossVerified: Boolean
-    get() = (this.bossConfirmation== "Y" || this.bossConfirmation== "S")
+    get() = (this.bossConfirmation== SI)
 
 
 

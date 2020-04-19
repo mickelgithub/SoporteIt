@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
@@ -258,6 +259,12 @@ fun View.bindOnLongClick(item: NotificationViewModelTemplate) {
 @BindingAdapter(value=arrayOf("imageView", "textView"), requireAll = true)
 fun ProfileImage.setImageAndText(imageView: String?, textView: String?) {
     this.setImageAndText(imageView, textView)
+}
+
+@BindingAdapter("app:enabled")
+fun com.google.android.material.bottomnavigation.BottomNavigationView.setEnabled(enabled: Boolean?) {
+    if (enabled!= null)
+        menu.forEach { it.isEnabled= enabled }
 }
 
 

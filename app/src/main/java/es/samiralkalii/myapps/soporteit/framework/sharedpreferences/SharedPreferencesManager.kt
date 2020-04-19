@@ -24,7 +24,7 @@ class SharedPreferencesManager(val context: Context): IPreferences {
     override suspend fun updateBossVerification(bossVerificatedAt: String) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_BOSS_VERIFIED_AT, bossVerificatedAt)
-            putString(KEY_BOSS_CONFIRMATION, YES)
+            putString(KEY_BOSS_CONFIRMATION, SI)
         }
     }
 

@@ -8,6 +8,7 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import es.samiralkalii.myapps.soporteit.ui.util.Event
+import es.samiralkalii.myapps.soporteit.ui.util.SI
 import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -26,6 +27,10 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
     private val _goto= MutableLiveData<Event<SplashActivity.Companion.GOTO>>()
     val goto: LiveData<Event<SplashActivity.Companion.GOTO>>
     get() = _goto
+
+    private val _bottomNavEnabled= MutableLiveData<Boolean>(true)
+    val bottomNavEnabled: LiveData<Boolean>
+        get()= _bottomNavEnabled
 
     private var gotoExtra: Int= -1
 
@@ -51,10 +56,11 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
                         user = async(Dispatchers.IO) {
                             getUserUseCase()
                         }.await()
-                        if ((!user.isBoss && user.membershipConfirmation== "Y") || (user.isBoss && user.bossConfirmation== "Y")) {
+                        if ((!user.isBoss && user.membershipConfirmation== SI) || (user.isBoss && user.bossConfirmation== SI)) {
                             _goto.value = Event(SplashActivity.Companion.GOTO.HOME)
                         } else {
                             _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+                            //disableBottomNav()
                         }
                     }
                 }
@@ -107,6 +113,14 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
             user.team= ""
             user.teamId= ""*/
         }
+    }
+
+    fun disableBottomNav() {
+        _bottomNavEnabled.value= false
+    }
+
+    fun enableBottomNav() {
+        _bottomNavEnabled.value= true
     }
 
 }
