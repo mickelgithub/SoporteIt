@@ -60,7 +60,7 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
                             _goto.value = Event(SplashActivity.Companion.GOTO.HOME)
                         } else {
                             _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
-                            //disableBottomNav()
+                            disableBottomNav()
                         }
                     }
                 }

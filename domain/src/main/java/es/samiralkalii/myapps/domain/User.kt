@@ -43,7 +43,7 @@ data class User(
     companion object {
         val EMPTY= User()
         val DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS= 22
-        val DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS= 26
+        //val DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS= 26
     }
 }
 

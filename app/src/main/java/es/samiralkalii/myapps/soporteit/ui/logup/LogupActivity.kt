@@ -158,16 +158,6 @@ class LogupActivity : BaseActivity(),
         }
     }
 
-    private fun showDialog(dialog: AlertDialog) {
-        val ft = supportFragmentManager.beginTransaction()
-        val prev =   supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
-        if (prev != null) {
-            ft.remove(prev)
-        }
-        ft.addToBackStack(null)
-        dialog.show(ft, FRAGMENT_TAG)
-    }
-
     private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
         showDialog(AlertDialog.newInstanceForMessage(getString(R.string.boss_verification_title), getString(R.string.boss_verification_msg),
             getString(R.string.agree), { HomeActivity.startActivity(logupState.user.isEmailVerified, context = this)}))

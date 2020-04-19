@@ -190,29 +190,31 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
 
     override suspend fun getMyGroups(user: User): GroupList {
         var membersQuery: Query? = null
-        if (user.isBoss) {
+        if (user.isBoss && user.membershipConfirmation== SI) {
             membersQuery= fstore.collection(USERS_REF)
                 .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
                 .whereEqualTo(KEY_AREA_ID, user.areaId)
                 .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
-        } else {
+        } else if (!user.isBoss && user.membershipConfirmation== SI){
             membersQuery= fstore.collection(USERS_REF)
                 .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
                 .whereEqualTo(KEY_AREA_ID, user.areaId)
                 .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
                 .whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, SI)
         }
-        val membersQueryresult= membersQuery.get(Source.SERVER).await()
-        if (!membersQueryresult.isEmpty) {
-            val groupAll= membersQueryresult.documents.map { it.toObject(User::class.java) }.filter { it!= null && it.id!= user.id }.let { Group(id = "TODOS", name = "Todos", members = it as List<User>) }
-            return GroupList(listOf(groupAll))
+        membersQuery?.let {
+            val membersQueryresult= it.get(Source.SERVER).await()
+            if (!membersQueryresult.isEmpty) {
+                val groupAll= membersQueryresult.documents.map { it.toObject(User::class.java) }.filter { it!= null && it.id!= user.id }.let { Group(id = "TODOS", name = "Todos", members = it as List<User>) }
+                return GroupList(listOf(groupAll))
+            }
         }
         return GroupList(listOf())
     }
 
-    override suspend fun confirmMember(user: String) {
+    override suspend fun confirmDenyMember(user: String, isConfirmed: Boolean) {
         fstore.collection(USERS_REF).document(user).update(
-            mapOf( KEY_MEMBERSHIP_CONFIRMATION to true, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()
+            mapOf( KEY_MEMBERSHIP_CONFIRMATION to (if (isConfirmed) SI else NO), KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()
     }
 
 }

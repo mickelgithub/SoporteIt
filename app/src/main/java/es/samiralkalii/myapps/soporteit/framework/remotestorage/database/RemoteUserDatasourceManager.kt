@@ -74,7 +74,9 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
             if (bossVerifiedAt.isNotBlank()) {
                 dateEnLocalTimeZone = formatDate(bossVerifiedAt.toLong())
                 fstore.collection(USERS_REF).document(user)
-                    .update(mapOf(KEY_BOSS_VERIFIED_AT to dateEnLocalTimeZone))
+                    .update(mapOf(KEY_BOSS_VERIFIED_AT to dateEnLocalTimeZone,
+                    KEY_MEMBERSHIP_CONFIRMATION to SI,
+                    KEY_MEMBERSHIP_CONFIRMED_AT to dateEnLocalTimeZone))
 
             }
         }

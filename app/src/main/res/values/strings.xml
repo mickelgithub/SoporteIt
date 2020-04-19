@@ -80,8 +80,12 @@
     <string name="choose_profile">Elige tu perfil</string>
     <string name="work_address">Tres Cantos, Madrid</string>
     <string name="boss_verification_title">Verificacion Perfil</string>
+    <string name="member_verification_title">Confirmation miembro</string>
     <string name="boss_verification_msg">Recibiras una notificacion una vez verificado tu perfil de \'responsable de equipo\'</string>
+    <string name="member_verification_title_msg">Confirma o rechaza este miembro \'%1$s\'</string>
     <string name="agree">De acuerdo</string>
+    <string name="confirm">Confirmar</string>
+    <string name="deny">Rechazar</string>
     <string name="profile_is_needed">Es importante que informes tu perfil</string>
     <string name="advertisement">Aviso</string>
     <string name="create_team">Crear equipo</string>

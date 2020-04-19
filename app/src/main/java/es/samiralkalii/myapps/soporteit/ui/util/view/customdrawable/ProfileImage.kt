@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestListener
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
+import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealViewInverse
 import org.slf4j.LoggerFactory
 
 
@@ -73,7 +75,7 @@ class ProfileImage @JvmOverloads constructor(
             txtView.setTextColor(textColor)
             if (imgView.isVisible) {
                 if (animation) {
-                    animateRevealView(imgView) {
+                    imgView.animateRevealView {
                         imgView.isVisible= false
                         txtView.isVisible= true
                         fadeIn(txtView, {})
@@ -106,7 +108,7 @@ class ProfileImage @JvmOverloads constructor(
                         Glide.with(this.context).load(uriParam)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true).into(imgView)
-                        animateRevealViewInverse(imgView, {})
+                        imgView.animateRevealViewInverse{}
                     }
                 } else {
                     Glide.with(this.context).load(uriParam)
@@ -122,7 +124,7 @@ class ProfileImage @JvmOverloads constructor(
                             Glide.with(this.context).load(uriParam)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true).into(imgView)
-                            animateRevealViewInverse(imgView, {})
+                            imgView.animateRevealViewInverse{}
                         }
                     } else {
                         txtView.isVisible= false
@@ -138,7 +140,7 @@ class ProfileImage @JvmOverloads constructor(
                             Glide.with(this.context).load(uriParam)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true).into(imgView)
-                            animateRevealViewInverse(imgView, {})
+                            imgView.animateRevealViewInverse{}
                         }
                     } else {
                         Glide.with(this.context).load(uriParam)
@@ -156,7 +158,7 @@ class ProfileImage @JvmOverloads constructor(
                     Glide.with(this.context).load(placeholder)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true).into(imgView)
-                    animateRevealViewInverse(imgView, {})
+                    imgView.animateRevealViewInverse{}
                 }
             } else {
                 Glide.with(this.context).load(placeholder)
@@ -174,7 +176,7 @@ class ProfileImage @JvmOverloads constructor(
         txtView.setBackgroundColor(bgColor)
         txtView.setTextColor(textColor)
         if (imgView.isVisible && imgView.isAttachedToWindow) {
-            animateRevealView(imgView) {
+            imgView.animateRevealView{
                 imgView.isVisible= false
                 txtView.isVisible= true
                 fadeIn(txtView, {})
@@ -182,7 +184,7 @@ class ProfileImage @JvmOverloads constructor(
         } else {
             txtView.isVisible= true
             txtView.postDelayed({
-                animateRevealViewInverse(imgView) {}
+                imgView.animateRevealViewInverse {}
             }, 10)
             //fadeIn(txtView, {})
 
@@ -198,7 +200,7 @@ class ProfileImage @JvmOverloads constructor(
                     Glide.with(this.context).load(uriParam)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true).into(imgView)
-                    animateRevealViewInverse(imgView, {})
+                    imgView.animateRevealViewInverse{}
                 }
             } else if (imgUri.isNullOrBlank()) {
                 if (!text.isNullOrBlank() && txtView.isVisible && txtView.isAttachedToWindow) {
@@ -208,7 +210,7 @@ class ProfileImage @JvmOverloads constructor(
                         Glide.with(this.context).load(uriParam)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true).into(imgView)
-                        animateRevealViewInverse(imgView, {})
+                        imgView.animateRevealViewInverse{}
                     }
                 } else {
                     fadeOut(imgView) {
@@ -216,7 +218,7 @@ class ProfileImage @JvmOverloads constructor(
                         Glide.with(this.context).load(uriParam)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true).into(imgView)
-                        animateRevealViewInverse(imgView, {})
+                        imgView.animateRevealViewInverse{}
                     }
                 }
             }
@@ -229,7 +231,7 @@ class ProfileImage @JvmOverloads constructor(
                 Glide.with(this.context).load(placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true).into(imgView)
-                animateRevealViewInverse(imgView, {})
+                imgView.animateRevealViewInverse{}
             }
         }
         imgUri= uriParam ?: ""
@@ -247,40 +249,6 @@ class ProfileImage @JvmOverloads constructor(
             }
         }*/
         //imgUri= uriParam ?: ""
-    }
-
-    private fun animateRevealView(view: View, onFinishAnim: () -> Unit) {
-        val cx = view.width/2
-        val cy = view.height/2
-        val initialRadius = view.width/2
-        val endRadius= 0
-
-        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
-        anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                onFinishAnim()
-            }
-        })
-        anim.start()
-
-    }
-
-    private fun animateRevealViewInverse(view: View, onFinishAnim: () -> Unit) {
-        val cx = view.width/2
-        val cy = view.height/2
-        val initialRadius = 0
-        val endRadius= view.width/2
-
-        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
-        anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                onFinishAnim()
-            }
-        })
-        anim.start()
-
     }
 
     private fun fadeIn(view: View, onFinishAnim: () -> Unit) {

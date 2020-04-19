@@ -2,15 +2,15 @@ package es.samiralkalii.myapps.soporteit.ui.home.home
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
+import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState

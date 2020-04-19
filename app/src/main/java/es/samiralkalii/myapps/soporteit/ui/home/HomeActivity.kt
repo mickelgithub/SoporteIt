@@ -127,7 +127,7 @@ class HomeActivity : BaseActivity() {
         }
     }
 
-    private fun showMessageDialog(@StringRes message: Int, @StringRes title: Int ) {
+    /*private fun showMessageDialog(@StringRes message: Int, @StringRes title: Int ) {
         val alertDialog= AlertDialog.newInstanceForMessage(getString(title), getString(message), getString(R.string.agree), { })
         val ft = supportFragmentManager.beginTransaction()
         val prev =   supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
@@ -136,7 +136,7 @@ class HomeActivity : BaseActivity() {
         }
         ft.addToBackStack(null)
         alertDialog.show(ft, FRAGMENT_TAG)
-    }
+    }*/
 
     private fun finishMeInAwhile(delay: Long) {
         if (!isEmailVerified) {

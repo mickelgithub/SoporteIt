@@ -15,6 +15,7 @@ import es.samiralkalii.myapps.soporteit.ui.logup.LogupState
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.AddTeamUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.ConfirmDenyMemberUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetGroupsUseCase
 import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -24,7 +25,9 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
-                            private val getUserUseCase: GetUserUseCase): ViewModel() {
+                            private val getUserUseCase: GetUserUseCase,
+                            private val confirmDenyMemberUseCase: ConfirmDenyMemberUseCase
+): ViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeFragmentViewModel::class.java)
 
@@ -92,13 +95,6 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         }
     }
 
-    fun confirmMember(user: String) {
-
-    }
-
-
-
-
-
+    suspend fun confirmDenyMember(user: String, isConfirmed: Boolean)= confirmDenyMemberUseCase(user, isConfirmed)
 
 }

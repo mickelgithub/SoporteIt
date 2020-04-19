@@ -33,7 +33,7 @@ val useCaseModule= module {
     factory { GetBossCategoriesUseCase(get()) }
     factory { GetHolidayDaysUseCase(get()) }
     factory { GetUserUseCase(get()) }
-    factory { GetGroupsUseCase(get()
-    ) }
+    factory { GetGroupsUseCase(get()) }
+    factory { ConfirmDenyMemberUseCase(get()) }
 
 }

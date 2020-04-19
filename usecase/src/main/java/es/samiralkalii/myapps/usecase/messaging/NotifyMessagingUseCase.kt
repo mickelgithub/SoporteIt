@@ -43,10 +43,8 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                     preferenceRepository.updateBossVerification(bossVerifiedAt)
                 } else {
                     //Is not Boss
-                    //remoteUserRepository.updateProfile("", userId)
                     remoteUserRepository.signOut()
                     preferenceRepository.deleteUserData()
-                    //preferenceRepository.updateBossVerification(BOSS_VERIFICATION_KO)
                 }
                 notificationRepository.showNotificationBossUpdated(result== RESULT_OK_VALUE)
             }

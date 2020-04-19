@@ -30,7 +30,7 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
             when (binding) {
                 is MemberUserItemBinding -> {
                     binding.item= memberUserViewModel as MemberUserViewModelTemplate.MemberUserViewModel
-                    //memberUserViewModel.viewHolder= this
+                    memberUserViewModel.viewHolder= this
                     memberUserViewModel.init()
                     binding.executePendingBindings()
                 }

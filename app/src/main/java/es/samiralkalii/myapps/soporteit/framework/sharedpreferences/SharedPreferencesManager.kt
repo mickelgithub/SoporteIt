@@ -25,6 +25,8 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_BOSS_VERIFIED_AT, bossVerificatedAt)
             putString(KEY_BOSS_CONFIRMATION, SI)
+            putString(KEY_MEMBERSHIP_CONFIRMATION, SI)
+            putString(KEY_MEMBERSHIP_CONFIRMED_AT, bossVerificatedAt)
         }
     }
 

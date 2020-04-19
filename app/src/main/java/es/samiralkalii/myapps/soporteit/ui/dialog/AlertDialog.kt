@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import es.samiralkalii.myapps.soporteit.R
@@ -24,7 +25,7 @@ enum class DIALOG_TYPE: Parcelable {
 const val DIALOG_TYPE_KEY= "dialog_type_key"
 const val DIALOG_TITLE_KEY= "dialog_title_key"
 const val DIALOG_MESSAGE_KEY= "dialog_message_key"
-const val FRAGMENT_TAG= "dialog"
+const val FRAGMENT_TAG= "dialog_interaction"
 
 class AlertDialog: DialogFragment() {
 
@@ -33,10 +34,17 @@ class AlertDialog: DialogFragment() {
     private lateinit var onValueInput: (String) -> Unit
     private var onPositiveButtonClick: (() -> Unit)?= null
     private var positiveButtonText: String?= null
+    private var onNegativeButtonClick: (() -> Unit)?= null
+    private var negativeButtonText: String?= null
+
 
     companion object {
 
-        fun newInstanceForMessage(title: String, message: String, positiveButtonText: String?, onPositiveButtonClick: (() -> Unit)?)= AlertDialog().apply {
+        fun newInstanceForMessage(title: String, message: String,
+                                  positiveButtonText: String?,
+                                  onPositiveButtonClick: (() -> Unit)?,
+                                  negativeButtonText: String?= null,
+                                  onNegativeButtonClick:(() -> Unit)?= null)= AlertDialog().apply {
             arguments= Bundle().apply {
                 putParcelable(DIALOG_TYPE_KEY, DIALOG_TYPE.MESSAGE)
                 putString(DIALOG_TITLE_KEY, title)
@@ -44,6 +52,8 @@ class AlertDialog: DialogFragment() {
             }
             this@apply.onPositiveButtonClick= onPositiveButtonClick
             this@apply.positiveButtonText= positiveButtonText
+            this@apply.onNegativeButtonClick= onNegativeButtonClick
+            this@apply.negativeButtonText= negativeButtonText
         }
 
         fun newInstanceForInput(title: String, onValue:(inputText: String) -> Unit)= AlertDialog().apply {
@@ -104,7 +114,27 @@ class AlertDialog: DialogFragment() {
                 dismiss()
             }
         }
+        negativeButtonText?.let {
+            builder.setNegativeButton(it) {
+                    _, _ ->
+                onNegativeButtonClick?.let {
+                    it()
+                    dismiss()
+                }
+            }
+        }
         return builder.create()
 
     }
+
+}
+
+fun AppCompatActivity.showDialog(dialog: es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog) {
+    val ft = supportFragmentManager.beginTransaction()
+    val prev =   supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
+    if (prev != null) {
+        ft.remove(prev)
+    }
+    ft.addToBackStack(null)
+    dialog.show(ft, FRAGMENT_TAG)
 }
