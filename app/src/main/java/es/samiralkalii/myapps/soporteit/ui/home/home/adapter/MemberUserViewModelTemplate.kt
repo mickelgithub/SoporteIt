@@ -41,7 +41,7 @@ sealed class MemberUserViewModelTemplate {
 
     }
 
-    class MemberUserViewModel(val user: User, val homeFragmentViewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
+    class MemberUserViewModel(val user: User, val homeFragmentViewModel: HomeFragmentViewModel, val memberUserAdapter: MemberUserAdapter): MemberUserViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(MemberUserViewModel::class.java)
 
@@ -108,7 +108,8 @@ sealed class MemberUserViewModelTemplate {
                 viewHolder.itemView.context.getString(R.string.deny),
                 {
                     logger.debug("Rechazamos EL USUARIO ${user.email}......................")
-                    confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, true)
+                    confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, false)
+
 
                 }))
         }
@@ -134,6 +135,7 @@ sealed class MemberUserViewModelTemplate {
                 }.await()
                 homeFragmentViewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
                 view.animateRevealView({view.visibility= View.GONE})
+                memberUserAdapter.members.removeAt(memberUserAdapter.members.get(this@MemberUserViewModel))
             }
         }
 
