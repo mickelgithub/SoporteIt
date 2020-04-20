@@ -41,11 +41,12 @@ sealed class MemberUserViewModelTemplate {
 
     }
 
-    class MemberUserViewModel(val user: User, val homeFragmentViewModel: HomeFragmentViewModel, val memberUserAdapter: MemberUserAdapter): MemberUserViewModelTemplate() {
+    class MemberUserViewModel(val user: User, val homeFragmentViewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(MemberUserViewModel::class.java)
 
         lateinit var viewHolder: MemberUserAdapter.MemberUserViewHolder
+        lateinit var memberUserAdapter: MemberUserAdapter
 
         private val _email= MutableLiveData<String?>()
         val email: LiveData<String?>
@@ -134,8 +135,17 @@ sealed class MemberUserViewModelTemplate {
                     homeFragmentViewModel.confirmDenyMember(user.id, isConfirmed)
                 }.await()
                 homeFragmentViewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                view.animateRevealView({view.visibility= View.GONE})
-                memberUserAdapter.members.removeAt(memberUserAdapter.members.get(this@MemberUserViewModel))
+                if (!isConfirmed) {
+                    viewHolder.itemView.postDelayed({
+                        view.animateRevealView({view.visibility= View.GONE})
+                        memberUserAdapter.members.removeAt(viewHolder.adapterPosition)
+                        memberUserAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+                    }, 2000)
+                } else {
+                    viewHolder.itemView.postDelayed({
+                        view.animateRevealView({view.visibility= View.GONE})
+                    }, 2000)
+                }
             }
         }
 

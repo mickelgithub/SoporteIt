@@ -82,7 +82,7 @@
     <string name="boss_verification_title">Verificacion Perfil</string>
     <string name="member_verification_title">Confirmation miembro</string>
     <string name="boss_verification_msg">Recibiras una notificacion una vez verificado tu perfil de \'responsable de equipo\'</string>
-    <string name="member_verification_title_msg">Confirma o rechaza este miembro \'%1$s\'</string>
+    <string name="member_verification_title_msg">Confirmar o rechazar este miembro \'%1$s\'</string>
     <string name="agree">De acuerdo</string>
     <string name="confirm">Confirmar</string>
     <string name="deny">Rechazar</string>

@@ -26,11 +26,12 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
 
     class MemberUserViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(memberUserViewModel: MemberUserViewModelTemplate) {
+        fun bind(memberUserViewModel: MemberUserViewModelTemplate, memberUserAdapter: MemberUserAdapter?) {
             when (binding) {
                 is MemberUserItemBinding -> {
                     binding.item= memberUserViewModel as MemberUserViewModelTemplate.MemberUserViewModel
                     memberUserViewModel.viewHolder= this
+                    memberUserViewModel.memberUserAdapter= memberUserAdapter!!
                     memberUserViewModel.init()
                     binding.executePendingBindings()
                 }
@@ -78,9 +79,9 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
 
     override fun onBindViewHolder(holder: MemberUserViewHolder, position: Int) {
         if (holder.itemViewType== R.layout.header_group_members_item) {
-            holder.bind(members[position] as MemberUserViewModelTemplate.GroupMemberUserViewModel)
+            holder.bind(members[position] as MemberUserViewModelTemplate.GroupMemberUserViewModel, null)
         } else if (holder.itemViewType== R.layout.member_user_item) {
-            holder.bind(members[position] as MemberUserViewModelTemplate.MemberUserViewModel)
+            holder.bind(members[position] as MemberUserViewModelTemplate.MemberUserViewModel, this)
         } else {
             holder.itemView.isClickable= false
         }
