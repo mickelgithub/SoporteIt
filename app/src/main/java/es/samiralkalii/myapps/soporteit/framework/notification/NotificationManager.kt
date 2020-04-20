@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.bumptech.glide.Glide
+import es.samiralkalii.myapps.domain.teammanagement.Department
 import es.samiralkalii.myapps.notification.INotification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
@@ -97,6 +98,27 @@ class NotificationManager(val context: Context): INotification {
         with(NotificationManagerCompat.from(context)) {
             //cancel(NOTIF_ID)
             cancelAll()
+        }
+    }
+
+    override fun showNotificationMemberConfirmation(isBoss: Boolean, department: String) {
+        val intent= if (isBoss) SplashActivity.getIntentToProfileScreen(context) else
+            SplashActivity.getIntentForHome(context)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+        with(NotificationManagerCompat.from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            val title= context.resources.getString(R.string.member_verification_title)
+            val body= if (isBoss) context.resources.getString(R.string.notif_body_member_confirmation_ok, department)
+            else context.resources.getString(R.string.notif_body_member_confirmation_ko, department)
+            notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(body))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true).build())
         }
     }
 

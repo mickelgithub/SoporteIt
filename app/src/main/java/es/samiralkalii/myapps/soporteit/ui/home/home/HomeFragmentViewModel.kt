@@ -82,14 +82,17 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
                 user= getUserUseCase()
                 getGroupsUseCase(user)
             }.await()
-            var result= listOf<MemberUserViewModelTemplate>(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
+            var result= mutableListOf<MemberUserViewModelTemplate>(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
             if (!groupList.isEmpty) {
                 result= groupList.groups.map {
                     val items= mutableListOf<MemberUserViewModelTemplate>()
                     items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name))
                     items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, this@HomeFragmentViewModel) })
                     items
-                }.flatMap({it})
+                }.flatMap({it}).toMutableList()
+                if (groupList.groups.size== 1 && groupList.groups[0].members.isEmpty()) {
+                    result.add(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
+                }
             }
             _getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
         }

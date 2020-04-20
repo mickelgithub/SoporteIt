@@ -36,5 +36,4 @@ interface IRemoteUserDatasource {
     suspend fun updateBossVerifiedAt(user: String): String
     suspend fun signOut()
 
-
 }

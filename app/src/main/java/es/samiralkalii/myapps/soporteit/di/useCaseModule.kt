@@ -20,7 +20,7 @@ val useCaseModule= module {
     factory { Compare2ImageProfileUseCase(get()) }
     factory { UpdateProfileImageUseCase(get(), get(), get(), get()) }
     factory { RegisterMessagingTokenUseCase(get(), get()) }
-    factory { NotifyMessagingUseCase(get(), get(), get(), get()) }
+    factory { NotifyMessagingUseCase(get(), get(), get(), get(), get(), get()) }
     factory { AddTeamUseCase(get(), get(), get()) }
     factory { GetAllUsersButBosesAndNoTeamUseCase(get()) }
     factory { InviteUserUseCase(get(), get()) }

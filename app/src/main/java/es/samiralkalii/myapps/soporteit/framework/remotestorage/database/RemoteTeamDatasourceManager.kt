@@ -217,4 +217,13 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             mapOf( KEY_MEMBERSHIP_CONFIRMATION to (if (isConfirmed) SI else NO), KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()
     }
 
+    override suspend fun getMemberConfirmationAt(user: String): String {
+        val result= fstore.collection(USERS_REF).document(user).get().await()
+        if (result!= null && result.data!= null) {
+            val data= result.data!!
+            return data[KEY_MEMBERSHIP_CONFIRMED_AT] as String
+        }
+        return ""
+    }
+
 }

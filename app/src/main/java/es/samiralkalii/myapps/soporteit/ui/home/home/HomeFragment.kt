@@ -7,10 +7,8 @@ import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
-import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
-import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
@@ -78,7 +76,7 @@ class HomeFragment: BaseFragment() {
         viewModel.getGroupsActionState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { screenState ->
                 if (screenState is ScreenState.Render) {
-                    processGroupActionState(screenState)
+                    processGetGroupActionState(screenState)
                 }
             }
         })
@@ -93,7 +91,7 @@ class HomeFragment: BaseFragment() {
         })
     }
 
-    private fun processGroupActionState(screenState: ScreenState.Render<HomeFragmentStates.GetGroupsState>) {
+    private fun processGetGroupActionState(screenState: ScreenState.Render<HomeFragmentStates.GetGroupsState>) {
         when (screenState.renderState) {
             is HomeFragmentStates.GetGroupsState.GetGroupsStateOk -> {
                 viewModel.updateItems(screenState.renderState.members)

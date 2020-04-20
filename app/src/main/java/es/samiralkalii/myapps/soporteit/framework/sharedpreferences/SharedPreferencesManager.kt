@@ -72,25 +72,27 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
+    override suspend fun updateMemberConfirmedAt(confirmedAt: String)= context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+        putString(KEY_MEMBERSHIP_CONFIRMATION, SI)
+        putString(KEY_MEMBERSHIP_CONFIRMED_AT, confirmedAt)
+    }
 
-    override suspend fun updateMessagingToken(token: String) {
+
+    override suspend fun updateMessagingToken(token: String)=
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_MESSAGING_TOKEN, token)
         }
-    }
 
-    override suspend fun updateProfileImage(profileImage: String, remoteProfileImage: String) {
+    override suspend fun updateProfileImage(profileImage: String, remoteProfileImage: String)=
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putString(KEY_PROFILE_IMAGE, profileImage)
             putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
         }
-    }
 
-    override suspend fun updateEmailVerified() {
+    override suspend fun updateEmailVerified()=
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
             putBoolean(KEY_IS_EMAIL_VERIFIED, true)
         }
-    }
 
     override suspend fun saveUser(user: User) {
         context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
