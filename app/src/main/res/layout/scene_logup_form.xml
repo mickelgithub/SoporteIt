@@ -177,7 +177,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
-                    android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_area }"
+                    android:hint="@{viewModel.showLoading ? @string/wait_for_data : @string/choose_area }"
                     android:nextFocusDown="@+id/departments_dropdown"
                     app:data="@{viewModel.areas}" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -221,7 +221,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
-                    android:hint="@{viewModel.showLoading== true ? @string/wait_for_data : @string/choose_department }"
+                    android:hint="@{viewModel.showLoading ? @string/wait_for_data : @string/choose_department }"
                     app:data="@{viewModel.departments}" />
             </com.google.android.material.textfield.TextInputLayout>
 

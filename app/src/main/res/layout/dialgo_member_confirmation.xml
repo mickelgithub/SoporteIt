@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog.ConfirmMemberDialogViewModel" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
+            android:id="@+id/profileImage2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/email_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{viewModel.email}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileImage2" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profiles_input_layout"
+            style="@style/AppTheme.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            app:error="@{viewModel.profileError}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email_text_view"
+            app:shapeAppearance="@style/rounded_text_field"
+            app:startIconDrawable="@drawable/ic_category">
+
+            <AutoCompleteTextView
+                android:id="@+id/profiles_dropdown"
+                style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                value="@={viewModel.profile}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:hint="@{viewModel.showLoading ? @string/wait_for_data : @string/choose_profile }"
+                android:nextFocusDown="@+id/departments_dropdown"
+                app:data="@{viewModel.profiles}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading_profiles"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="@+id/profiles_input_layout"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/profiles_input_layout"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:visible="@{viewModel.showLoading}"
+            app:lottie_rawRes="@raw/loader" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/holiday_days_input_layout"
+            style="@style/AppTheme.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            app:error="@{viewModel.holidayDaysError}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profiles_input_layout"
+            app:shapeAppearance="@style/rounded_text_field"
+            app:startIconDrawable="@drawable/holidays">
+
+            <AutoCompleteTextView
+                android:id="@+id/holiday_days__dropdown"
+                style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
+                value="@={viewModel.holidayDays}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:hint="@string/holiday_days_per_year"
+                android:nextFocusDown="@+id/departments_dropdown"
+                app:data="@String" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Switch
+            android:id="@+id/internal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/internal"
+            android:textColor="@{true ? @android:color/black : @android:color/darker_gray}"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:checked="@{false}"
+            android:onClick="@{}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/holiday_days_input_layout"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -79,7 +79,6 @@
     <string name="java_profil">Perfil Java</string>
     <string name="cobol_profil">Perfil Cobol</string>
     <string name="csf_profil">Perfil Csf</string>
-    <string name="choose_profile">Elige tu perfil</string>
     <string name="work_address">Tres Cantos, Madrid</string>
     <string name="boss_verification_title">Verificacion Perfil</string>
     <string name="member_verification_title">Confirmation miembro</string>
@@ -106,6 +105,7 @@
     <string name="external">Externo</string>
     <string name="choose_area">Eligir el Area</string>
     <string name="choose_department">Eligir el Departamento</string>
+    <string name="choose_profile">Eligir el Perfil</string>
 
 
     <string-array name="profile_array">
@@ -121,6 +121,20 @@
         <item>@string/cobol_profil</item>
         <item>@string/csf_profil</item>
         <item>@string/choose_profile</item>
+    </string-array>
+
+    <string-array name="holiday_days">
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
     </string-array>
 
 </resources>
