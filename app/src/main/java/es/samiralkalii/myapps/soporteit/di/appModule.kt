@@ -21,6 +21,7 @@ import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.RemoteUs
 import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.SharedPreferencesManager
 import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
@@ -57,4 +58,5 @@ val appModule= module {
     viewModel { HomeFragmentViewModel(get(), get(), get()) }
     viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get(), get()) }
     viewModel { HomeNotificationsFragmentViewModel(get(), get(), get(), get()) }
+    viewModel { ConfirmMemberDialog.ConfirmMemberDialogViewModel() }
 }

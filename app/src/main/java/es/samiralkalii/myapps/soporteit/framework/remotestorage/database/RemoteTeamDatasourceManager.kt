@@ -226,4 +226,27 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         return ""
     }
 
+    override suspend fun getProfiles(area: String): Profiles {
+        val profiles= mutableListOf<Profile>()
+        fstore.collection(AREAS_REF)
+            .whereEqualTo(KEY_NAME, area)
+        val categoriesResult= fstore.collection(AREAS_REF).document(area)get(Source.SERVER).await()
+        if (!categoriesResult.isEmpty) {
+            for (categoryDocument in categoriesResult) {
+                val categoryName = categoryDocument.data.get(KEY_NAME) as String
+                val categoryLevel = (categoryDocument.data.get(KEY_CATEGORY_LEVEL) as Long).toInt()
+                bossCategories.add(
+                    BossCategory(
+                        categoryDocument.id,
+                        categoryName,
+                        categoryLevel
+                    )
+                )
+            }
+        }
+        return BossCategories(
+            bossCategories
+        )
+    }
+
 }

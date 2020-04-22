@@ -3,7 +3,6 @@ package es.samiralkalii.myapps.soporteit.ui.home.home.dialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater

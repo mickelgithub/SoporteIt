@@ -1,5 +1,6 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.adapter
 
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -14,8 +15,8 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentStates
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
-import es.samiralkalii.myapps.soporteit.ui.util.Event
-import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog
+import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -98,13 +99,15 @@ sealed class MemberUserViewModelTemplate {
             }
         }
 
-        fun showConfirmationDialog() {
+        private fun showConfirmationDialog() {
             (viewHolder.itemView.context as AppCompatActivity).showDialog(AlertDialog.newInstanceForMessage(viewHolder.itemView.context.getString(R.string.member_verification_title),
                 viewHolder.itemView.context.getString(R.string.member_verification_title_msg, user.email.substring(0, user.email.indexOf("@"))),
                 viewHolder.itemView.context.getString(R.string.confirm),
                 {
                     logger.debug("CONFIRMAMOS EL USUARIO ${user.email}......................")
-                    confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, true)
+                    //confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, true)
+                    showInviteMemberDialog(user.id, user.email, user.remoteProfileImage,
+                        user.firstName, user.profileTextColor, user.profileBackColor)
                 },
                 viewHolder.itemView.context.getString(R.string.deny),
                 {
@@ -115,7 +118,7 @@ sealed class MemberUserViewModelTemplate {
                 }))
         }
 
-        fun confirmDenyMember(view: View, isConfirmed: Boolean) {
+        private fun confirmDenyMember(view: View, isConfirmed: Boolean) {
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
                 var message = R.string.not_controled_error
@@ -146,6 +149,23 @@ sealed class MemberUserViewModelTemplate {
                         view.animateRevealView({view.visibility= View.GONE})
                     }, 2000)
                 }
+            }
+        }
+
+        private fun showInviteMemberDialog(user: String, email: String, remoteProfileImage: String,
+                                           name: String, profileTextColor: Int, profileBackColor: Int) {
+            var confirmMemberDialog: ConfirmMemberDialog?= (viewHolder.itemView.context as AppCompatActivity).supportFragmentManager.findFragmentByTag(ConfirmMemberDialog::class.java.simpleName) as ConfirmMemberDialog?
+            if (confirmMemberDialog== null) {
+                val bundle= Bundle().apply {
+                    putString(KEY_ID, user)
+                    putString(KEY_EMAIL, email)
+                    putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
+                    putString(KEY_NAME, name)
+                    putInt(KEY_PROFILE_TEXT_COLOR, profileTextColor)
+                    putInt(KEY_PROFILE_BACK_COLOR, profileBackColor)
+                }
+                confirmMemberDialog= ConfirmMemberDialog.newInstance(bundle)
+                confirmMemberDialog.show((viewHolder.itemView.context as AppCompatActivity).supportFragmentManager, ConfirmMemberDialog::class.java.simpleName)
             }
         }
 

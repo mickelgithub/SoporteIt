@@ -19,7 +19,7 @@
 
     <item
         android:id="@+id/menu_item_holidays"
-        android:icon="@drawable/holidays"
+        android:icon="@drawable/ic_viajero_con_maleta"
         android:title="@string/holidays" />
 
 
