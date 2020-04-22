@@ -39,7 +39,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         get()= _progressVisible
 
     fun updateDialogState(dialog: MyDialog.DialogState) {
-        _progressVisible.value= dialog
+        _progressVisible.postValue(dialog)
     }
 
     private val _items= MutableLiveData<List<MemberUserViewModelTemplate>?>()
@@ -49,11 +49,6 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
     private val _getGroupsActionState= MutableLiveData<Event<ScreenState<HomeFragmentStates.GetGroupsState>>>()
     val getGroupsActionState: LiveData<Event<ScreenState<HomeFragmentStates.GetGroupsState>>>
         get() = _getGroupsActionState
-
-
-    //end create team
-
-
 
     fun updateItems(items: List<MemberUserViewModelTemplate>) {
         _items.value= items
@@ -70,7 +65,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             logger.error(error.toString(), error)
             var message= R.string.not_controled_error
             if (error is FirebaseFirestoreException) {
-                if (error.code== FirebaseFirestoreException.Code.UNAVAILABLE) {
+                if (error.code.ordinal== FirebaseFirestoreException.Code.UNAVAILABLE.ordinal) {
                     message= R.string.no_internet_connection
                 }
             }

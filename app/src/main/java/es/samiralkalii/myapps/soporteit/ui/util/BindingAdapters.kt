@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -245,6 +246,14 @@ fun me.markosullivan.swiperevealactionbuttons.SwipeRevealLayout.bindLockDrag(loc
 fun View.bindBackgroundColor(color: Int) {
     setBackgroundColor(ContextCompat.getColor(context, color))
 }
+
+@BindingAdapter("textres")
+fun TextView.bindText(@StringRes text: Int?) {
+    if (text!= null) {
+        setText(resources.getString(text))
+    }
+}
+
 
 @BindingAdapter("app:onLongClick")
 fun View.bindOnLongClick(item: NotificationViewModelTemplate) {

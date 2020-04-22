@@ -154,6 +154,15 @@ class HomeFragment: BaseFragment() {
         }
     }*/
 
+    fun updateModelUserConfirmed(user: String) {
+        val adapter= binding.groupsRecycleView.adapter as MemberUserAdapter
+        val memberUserViewModel= adapter.members.filter {
+            it is MemberUserViewModelTemplate.MemberUserViewModel && it.user.id== user
+        }.first() as MemberUserViewModelTemplate.MemberUserViewModel
+        memberUserViewModel.updateModelUserConfirmed()
+
+    }
+
 
 
     override fun onResume() {

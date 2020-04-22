@@ -137,11 +137,11 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             logger.error(error.toString(), error)
             var message= R.string.not_controled_error
             if (error is FirebaseFirestoreException) {
-                if (error.code== FirebaseFirestoreException.Code.UNAVAILABLE) {
+                if (error.code.ordinal== FirebaseFirestoreException.Code.UNAVAILABLE.ordinal) {
                     message= R.string.no_internet_connection
                 }
             }
-            _showLoading.value= false
+            _showLoading.postValue(false)
             _logupState.postValue(Event(ScreenState.Render(LogupState.ShowMessage(message))))
 
         }

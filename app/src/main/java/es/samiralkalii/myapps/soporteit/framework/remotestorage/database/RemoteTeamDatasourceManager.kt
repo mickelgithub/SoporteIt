@@ -42,6 +42,7 @@ private const val KEY_CATEGORY_LEVEL= "level"
 private const val DEPARTMENTS_REF= "departments"
 private const val BOSS_CATEGORIES_REF= "bossCategories"
 private const val HOLIDAY_DAYS_REF= "holidayDays"
+private const val PROFILES_REF= "profiles"
 
 
 
@@ -212,9 +213,18 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         return GroupList(listOf())
     }
 
-    override suspend fun confirmDenyMember(user: String, isConfirmed: Boolean) {
-        fstore.collection(USERS_REF).document(user).update(
-            mapOf( KEY_MEMBERSHIP_CONFIRMATION to (if (isConfirmed) SI else NO), KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()
+    override suspend fun confirmDenyMember(user: String, isConfirmed: Boolean, profile: String,
+                                           profileId: String, holidayDays: Int, internal: Boolean) {
+        if (!isConfirmed) {
+            fstore.collection(USERS_REF).document(user).update(
+                mapOf( KEY_MEMBERSHIP_CONFIRMATION to NO, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()
+        } else {
+            fstore.collection(USERS_REF).document(user).update(
+                mapOf( KEY_MEMBERSHIP_CONFIRMATION to SI, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time),
+                KEY_PROFILE to profile, KEY_PROFILE_ID to profileId, KEY_INTERNAL_EMPLOYEE to internal,
+                KEY_HOLIDAY_DAYS to holidayDays.toLong())).await()
+        }
+
     }
 
     override suspend fun getMemberConfirmationAt(user: String): String {
@@ -227,26 +237,13 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun getProfiles(area: String): Profiles {
-        val profiles= mutableListOf<Profile>()
-        fstore.collection(AREAS_REF)
-            .whereEqualTo(KEY_NAME, area)
-        val categoriesResult= fstore.collection(AREAS_REF).document(area)get(Source.SERVER).await()
-        if (!categoriesResult.isEmpty) {
-            for (categoryDocument in categoriesResult) {
-                val categoryName = categoryDocument.data.get(KEY_NAME) as String
-                val categoryLevel = (categoryDocument.data.get(KEY_CATEGORY_LEVEL) as Long).toInt()
-                bossCategories.add(
-                    BossCategory(
-                        categoryDocument.id,
-                        categoryName,
-                        categoryLevel
-                    )
-                )
-            }
+        //val profiles= mutableListOf<Profile>()
+        val profilesDocs= fstore.collection(AREAS_REF).document(area).collection(PROFILES_REF).get(Source.SERVER).await()
+        if (!profilesDocs.isEmpty()) {
+            return Profiles(profilesDocs.documents.map { it.id to it.toObject(Profile::class.java)!!}.map { Profile(it.first, it.second.name, it.second.level) })
         }
-        return BossCategories(
-            bossCategories
-        )
+        return Profiles(listOf())
+
     }
 
 }

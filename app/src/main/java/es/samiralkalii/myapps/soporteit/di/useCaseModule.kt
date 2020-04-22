@@ -35,5 +35,6 @@ val useCaseModule= module {
     factory { GetUserUseCase(get()) }
     factory { GetGroupsUseCase(get()) }
     factory { ConfirmDenyMemberUseCase(get()) }
+    factory { GetProfilesUseCase(get()) }
 
 }

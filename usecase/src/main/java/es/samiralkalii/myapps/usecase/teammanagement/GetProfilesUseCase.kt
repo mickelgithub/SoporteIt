@@ -4,5 +4,5 @@ import es.samiralkalii.myapps.data.teammanagement.RemoteTeamManagementRepository
 
 class GetProfilesUseCase(private val remoteTeamManagementRepository: RemoteTeamManagementRepository) {
 
-    suspend operator fun invoke()= remoteTeamManagementRepository.getProfiles()
+    suspend operator fun invoke(area: String)= remoteTeamManagementRepository.getProfiles(area)
 }

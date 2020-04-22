@@ -107,7 +107,7 @@ sealed class MemberUserViewModelTemplate {
                     logger.debug("CONFIRMAMOS EL USUARIO ${user.email}......................")
                     //confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, true)
                     showInviteMemberDialog(user.id, user.email, user.remoteProfileImage,
-                        user.firstName, user.profileTextColor, user.profileBackColor)
+                        user.firstName, user.profileTextColor, user.profileBackColor, user.areaId)
                 },
                 viewHolder.itemView.context.getString(R.string.deny),
                 {
@@ -123,7 +123,7 @@ sealed class MemberUserViewModelTemplate {
                 logger.error(error.toString(), error)
                 var message = R.string.not_controled_error
                 if (error is FirebaseFirestoreException) {
-                    if (error.code == FirebaseFirestoreException.Code.UNAVAILABLE) {
+                    if (error.code.ordinal == FirebaseFirestoreException.Code.UNAVAILABLE.ordinal) {
                         message = R.string.no_internet_connection
                     }
                 } else {
@@ -153,7 +153,7 @@ sealed class MemberUserViewModelTemplate {
         }
 
         private fun showInviteMemberDialog(user: String, email: String, remoteProfileImage: String,
-                                           name: String, profileTextColor: Int, profileBackColor: Int) {
+                                           name: String, profileTextColor: Int, profileBackColor: Int, area: String) {
             var confirmMemberDialog: ConfirmMemberDialog?= (viewHolder.itemView.context as AppCompatActivity).supportFragmentManager.findFragmentByTag(ConfirmMemberDialog::class.java.simpleName) as ConfirmMemberDialog?
             if (confirmMemberDialog== null) {
                 val bundle= Bundle().apply {
@@ -163,17 +163,21 @@ sealed class MemberUserViewModelTemplate {
                     putString(KEY_NAME, name)
                     putInt(KEY_PROFILE_TEXT_COLOR, profileTextColor)
                     putInt(KEY_PROFILE_BACK_COLOR, profileBackColor)
+                    putString(KEY_AREA_ID, area)
                 }
                 confirmMemberDialog= ConfirmMemberDialog.newInstance(bundle)
                 confirmMemberDialog.show((viewHolder.itemView.context as AppCompatActivity).supportFragmentManager, ConfirmMemberDialog::class.java.simpleName)
             }
         }
 
-
-
-
-
-
+        fun updateModelUserConfirmed() {
+            user.membershipConfirmation= "S"
+            (viewHolder.binding as MemberUserItemBinding).memberStateImage.let {
+                it.postDelayed({
+                    it.animateRevealView({it.visibility= View.GONE})
+                }, 500)
+            }
+        }
 
     }
 
