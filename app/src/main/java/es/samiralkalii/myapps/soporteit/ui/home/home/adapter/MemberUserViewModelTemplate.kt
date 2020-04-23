@@ -169,16 +169,6 @@ sealed class MemberUserViewModelTemplate {
                 confirmMemberDialog.show((viewHolder.itemView.context as AppCompatActivity).supportFragmentManager, ConfirmMemberDialog::class.java.simpleName)
             }
         }
-
-        fun updateModelUserConfirmed() {
-            user.membershipConfirmation= "S"
-            (viewHolder.binding as MemberUserItemBinding).memberStateImage.let {
-                it.postDelayed({
-                    it.animateRevealView({it.visibility= View.GONE})
-                }, 500)
-            }
-        }
-
     }
 
     object MemberUserViewModelLoading: MemberUserViewModelTemplate()

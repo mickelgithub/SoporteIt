@@ -42,8 +42,8 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         _progressVisible.postValue(dialog)
     }
 
-    private val _items= MutableLiveData<List<MemberUserViewModelTemplate>?>()
-    val items: LiveData<List<MemberUserViewModelTemplate>?>
+    private val _items= MutableLiveData<MutableList<MemberUserViewModelTemplate>?>()
+    val items: LiveData<MutableList<MemberUserViewModelTemplate>?>
         get() = _items
 
     private val _getGroupsActionState= MutableLiveData<Event<ScreenState<HomeFragmentStates.GetGroupsState>>>()
@@ -51,7 +51,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         get() = _getGroupsActionState
 
     fun updateItems(items: List<MemberUserViewModelTemplate>) {
-        _items.value= items
+        _items.value= items.toMutableList()
     }
 
     init {
@@ -60,7 +60,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
 
     fun init() {
         //_progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
-        _items.value= listOf(MemberUserViewModelTemplate.MemberUserViewModelLoading)
+        _items.value= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelLoading)
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             var message= R.string.not_controled_error
@@ -94,5 +94,11 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
     }
 
     suspend fun confirmDenyMember(user: String, isConfirmed: Boolean)= confirmDenyMemberUseCase(user, isConfirmed)
+
+    fun updateItem(position: Int, memberUserViewModel: MemberUserViewModelTemplate) {
+        _items.value?.let {
+            it[position]= memberUserViewModel
+        }
+    }
 
 }
