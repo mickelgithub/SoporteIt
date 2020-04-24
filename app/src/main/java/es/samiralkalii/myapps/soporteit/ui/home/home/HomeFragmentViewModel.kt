@@ -101,4 +101,8 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         }
     }
 
+    fun removeItem(position: Int) {
+        _items.value?.removeAt(position)
+    }
+
 }

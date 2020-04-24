@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
@@ -224,7 +225,6 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
                 KEY_PROFILE to profile, KEY_PROFILE_ID to profileId, KEY_INTERNAL_EMPLOYEE to internal,
                 KEY_HOLIDAY_DAYS to holidayDays.toLong())).await()
         }
-
     }
 
     override suspend fun getMemberConfirmationAt(user: String): String {

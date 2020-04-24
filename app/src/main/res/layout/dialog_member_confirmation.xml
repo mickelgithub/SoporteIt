@@ -15,17 +15,17 @@
 
         <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
             android:id="@+id/profileImage2"
-            app:imageView="@{viewModel.profileImage}"
-            app:bgColor="@{viewModel.profileBackColor}"
-            app:textColor="@{viewModel.profileTextColor}"
-            app:textView="@{viewModel.firstName}"
-            android:clickable="false"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="16dp"
+            android:clickable="false"
+            app:bgColor="@{viewModel.profileBackColor}"
+            app:imageView="@{viewModel.profileImage}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:textColor="@{viewModel.profileTextColor}"
+            app:textView="@{viewModel.firstName}" />
 
         <TextView
             android:id="@+id/email_text_view"
@@ -45,8 +45,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
-            app:error="@{viewModel.profileError}"
             android:enabled="@{viewModel.formEnabled}"
+            app:error="@{viewModel.profileError}"
             app:layout_constraintEnd_toStartOf="@+id/loading_profiles"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email_text_view"
@@ -91,8 +91,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            app:error="@{viewModel.holidayDaysError}"
             android:enabled="@{viewModel.formEnabled}"
+            app:error="@{viewModel.holidayDaysError}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profiles_input_layout"
@@ -133,44 +133,58 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/confirm"
-            app:visible="@{!viewModel.confirmActionError}"
             android:enabled="@{viewModel.buttonConfirmEnabled}"
-            android:onClick="@{() -> viewModel.onConfirmButtonClick()}"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:onClick="@{() -> viewModel.onConfirmButtonClick(true)}"
+            android:text="@string/confirm"
+            app:layout_constraintEnd_toStartOf="@+id/view"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/internal" />
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/deny_button"
+            app:layout_constraintTop_toBottomOf="@+id/internal"
+            app:visible="@{!viewModel.confirmActionError}" />
+
+        <Button
+            android:id="@+id/deny_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:onClick="@{() -> viewModel.onConfirmButtonClick(false)}"
+            android:text="@string/deny"
+            app:layout_constraintEnd_toStartOf="@+id/confirm_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/internal"
+            app:visible="@{!viewModel.confirmActionError}" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textSize="16sp"
             android:textColor="@color/red_error"
+            android:textSize="16sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/internal"
             app:textres="@{viewModel.confirmActionErrorMsg}"
-            app:visible="@{viewModel.confirmActionError}"
+            app:visible="@{viewModel.confirmActionError}" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/internal" />
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/confirm_button"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/confirm_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

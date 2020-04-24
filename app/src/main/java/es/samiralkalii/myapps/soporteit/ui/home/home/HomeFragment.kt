@@ -157,7 +157,7 @@ class HomeFragment: BaseFragment() {
         }
     }*/
 
-    fun updateModelUserConfirmed(user: String) {
+    fun updateModelUserConfirmed(user: String, isConfirmed: Boolean) {
         val adapter= binding.groupsRecycleView.adapter as MemberUserAdapter
         val memberUserViewModel= adapter.members.filter {
             it is MemberUserViewModelTemplate.MemberUserViewModel && it.user.id== user
@@ -165,11 +165,18 @@ class HomeFragment: BaseFragment() {
         (memberUserViewModel.viewHolder.binding as MemberUserItemBinding).memberStateImage.let {
             it.postDelayed({
                 it.animateRevealView({it.visibility= View.GONE})
-                val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel)
-                val position= adapter.members.indexOf(memberUserViewModel)
-                viewModel.updateItem(position, newItem)
-                adapter.members[position]= newItem
-                adapter.notifyItemChanged(position)
+                if (isConfirmed) {
+                    val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel)
+                    val position= adapter.members.indexOf(memberUserViewModel)
+                    viewModel.updateItem(position, newItem)
+                    adapter.members[position]= newItem
+                    adapter.notifyItemChanged(position)
+                } else {
+                    val position= adapter.members.indexOf(memberUserViewModel)
+                    viewModel.removeItem(position)
+                    adapter.members.removeAt(position)
+                    adapter.notifyItemRemoved(position)
+                }
             }, 400)
         }
     }

@@ -100,7 +100,13 @@ sealed class MemberUserViewModelTemplate {
         }
 
         private fun showConfirmationDialog() {
-            (viewHolder.itemView.context as AppCompatActivity).showDialog(AlertDialog.newInstanceForMessage(viewHolder.itemView.context.getString(R.string.member_verification_title),
+
+            logger.debug("CONFIRMAMOS EL USUARIO ${user.email}......................")
+            //confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, true)
+            showInviteMemberDialog(user.id, user.email, user.remoteProfileImage,
+                user.firstName, user.profileTextColor, user.profileBackColor, user.areaId)
+
+            /*(viewHolder.itemView.context as AppCompatActivity).showDialog(AlertDialog.newInstanceForMessage(viewHolder.itemView.context.getString(R.string.member_verification_title),
                 viewHolder.itemView.context.getString(R.string.member_verification_title_msg, user.email.substring(0, user.email.indexOf("@"))),
                 viewHolder.itemView.context.getString(R.string.confirm),
                 {
@@ -115,7 +121,7 @@ sealed class MemberUserViewModelTemplate {
                     confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, false)
 
 
-                }))
+                }))*/
         }
 
         private fun confirmDenyMember(view: View, isConfirmed: Boolean) {

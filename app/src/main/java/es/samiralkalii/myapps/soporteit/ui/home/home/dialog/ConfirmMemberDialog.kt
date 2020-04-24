@@ -83,7 +83,7 @@ class ConfirmMemberDialog: MyDialog() {
                 if (it) {
                     val homeFragment= activity!!.supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName) as HomeFragment
                     if (homeFragment!= null) {
-                        homeFragment.updateModelUserConfirmed(user)
+                        homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser)
                     }
                     dismiss()
                 }
@@ -187,6 +187,8 @@ class ConfirmMemberDialog: MyDialog() {
         val dialogCancelable: LiveData<Boolean>
             get() = _dialogCancelable
 
+        var confirmUser= true
+
         fun init() {
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
@@ -263,7 +265,7 @@ class ConfirmMemberDialog: MyDialog() {
             }
         }
 
-        fun onConfirmButtonClick() {
+        fun onConfirmButtonClick(isConfirm: Boolean) {
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
                 var message= R.string.not_controled_error
@@ -281,11 +283,19 @@ class ConfirmMemberDialog: MyDialog() {
             _formEnabled.value= false
             _dialogCancelable.value= false
             viewModelScope.launch(errorHandler) {
-                val profileId= profilesData.getProfileId(profile.value!!)
                 async(Dispatchers.IO) {
-                    confirmDenyMemberUseCase(user, true, profile.value!!, profileId,
-                        holidayDaysValue.value!!.toInt(), _internal.value!!)
+                    if (isConfirm) {
+                        val profileId= profilesData.getProfileId(profile.value!!)
+                        confirmDenyMemberUseCase(user, isConfirm, profile.value!!, profileId,
+                            holidayDaysValue.value!!.toInt(), _internal.value!!)
+                    } else {
+                        confirmDenyMemberUseCase(user, isConfirm, "", "",
+                            0, false)
+                    }
                 }.await()
+                if (!isConfirm) {
+                    confirmUser= false
+                }
                 _showLoading.value= false
                 _dismissDialog.value= true
             }
