@@ -47,7 +47,6 @@ class ConfirmMemberDialog: MyDialog() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCancelable = true
 
         val bundle= Bundle().apply {
             val user = arguments!!.getString(KEY_ID, "")
@@ -89,6 +88,9 @@ class ConfirmMemberDialog: MyDialog() {
                     dismiss()
                 }
             }
+        })
+        viewModel.dialogCancelable.observe(viewLifecycleOwner, Observer{
+            isCancelable= it
         })
     }
 
@@ -181,6 +183,10 @@ class ConfirmMemberDialog: MyDialog() {
         val dismissDialog: LiveData<Boolean>
             get() = _dismissDialog
 
+        private val _dialogCancelable= MutableLiveData(true)
+        val dialogCancelable: LiveData<Boolean>
+            get() = _dialogCancelable
+
         fun init() {
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
@@ -193,7 +199,9 @@ class ConfirmMemberDialog: MyDialog() {
                 _confirmActionError.postValue( true)
                 _confirmActionErrorMsg.postValue(message)
                 _showLoading.postValue(false)
+                _dialogCancelable.postValue(true)
             }
+            _dialogCancelable.value= false
             viewModelScope.launch(errorHandler) {
                 profilesData= async(Dispatchers.IO) {
                     getProfilesUseCase(area)
@@ -201,6 +209,7 @@ class ConfirmMemberDialog: MyDialog() {
                 _profiles.value= profilesData.profiles.map { it.name }
                 _showLoading.value= false
                 _formEnabled.value= true
+                _dialogCancelable.value= true
             }
         }
 
@@ -208,16 +217,23 @@ class ConfirmMemberDialog: MyDialog() {
             value= false
             var profileCorrect= false
             var holidayDaysCorrect= false
+            var formEnabledValue= false
             addSource(profile, { x -> x?.let {
                 profileCorrect= it.isNotBlank()
-                value= profileCorrect && holidayDaysCorrect && formEnabled.value!!
+                value= profileCorrect && holidayDaysCorrect && formEnabledValue
             }
             })
             addSource(holidayDaysValue, { x -> x?.let {
                 holidayDaysCorrect= it.isNotBlank()
-                value= profileCorrect && holidayDaysCorrect && formEnabled.value!!
+                value= profileCorrect && holidayDaysCorrect && formEnabledValue
             }
             })
+            addSource(formEnabled, { x -> x?.let {
+                formEnabledValue= it
+                value= profileCorrect && holidayDaysCorrect && formEnabledValue
+            }
+            })
+
         }
 
         val buttonConfirmEnabled= getMediatorLiveDataForConfirmButtonEnabledState()
@@ -259,9 +275,11 @@ class ConfirmMemberDialog: MyDialog() {
                 _confirmActionError.postValue( true)
                 _confirmActionErrorMsg.postValue(message)
                 _showLoading.postValue(false)
+                _dialogCancelable.postValue(true)
             }
             _showLoading.value= true
             _formEnabled.value= false
+            _dialogCancelable.value= false
             viewModelScope.launch(errorHandler) {
                 val profileId= profilesData.getProfileId(profile.value!!)
                 async(Dispatchers.IO) {

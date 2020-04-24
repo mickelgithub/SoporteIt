@@ -33,7 +33,7 @@ import org.koin.dsl.module
 val appModule= module {
 
     single { FirebaseAuth.getInstance() }
-    single { FirebaseFirestore.getInstance() }
+    single { FirebaseFirestore.getInstance()}
     single {
         val instance= FirebaseStorage.getInstance()
         instance.maxOperationRetryTimeMillis= 10000L
