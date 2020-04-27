@@ -11,6 +11,7 @@ import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -216,6 +217,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
 
     override suspend fun confirmDenyMember(user: String, isConfirmed: Boolean, profile: String,
                                            profileId: String, holidayDays: Int, internal: Boolean) {
+        delay(5000)
         if (!isConfirmed) {
             fstore.collection(USERS_REF).document(user).update(
                 mapOf( KEY_MEMBERSHIP_CONFIRMATION to NO, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()

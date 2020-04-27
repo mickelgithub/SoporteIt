@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog.ConfirmMemberDialogViewModel" />
+        <variable
+            name="confirmMemberDialog"
+            type="es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -134,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:enabled="@{viewModel.buttonConfirmEnabled}"
-            android:onClick="@{() -> viewModel.onConfirmButtonClick(true)}"
+            android:onClick="@{() -> confirmMemberDialog.onConfirmButtonClick(true)}"
             android:text="@string/confirm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -148,8 +151,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:onClick="@{() -> viewModel.onConfirmButtonClick(false)}"
+            android:onClick="@{() -> confirmMemberDialog.onConfirmButtonClick(false)}"
             android:text="@string/deny"
+            android:enabled="@{viewModel.formEnabled}"
             app:layout_constraintEnd_toStartOf="@+id/confirm_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"

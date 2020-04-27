@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.teammanagement.Profiles
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogMemberConfirmationBinding
+import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.usecase.teammanagement.ConfirmDenyMemberUseCase
@@ -72,6 +75,7 @@ class ConfirmMemberDialog: MyDialog() {
         binding= DialogMemberConfirmationBinding.inflate(inflater, container, false)
         binding.lifecycleOwner= viewLifecycleOwner
         binding.viewModel= viewModel
+        binding.confirmMemberDialog= this
         binding.executePendingBindings()
         return binding.root
     }
@@ -92,6 +96,22 @@ class ConfirmMemberDialog: MyDialog() {
         viewModel.dialogCancelable.observe(viewLifecycleOwner, Observer{
             isCancelable= it
         })
+    }
+
+    fun onConfirmButtonClick(isConfirm: Boolean) {
+        if (!isConfirm) {
+              val confirmDialog= AlertDialog.newInstanceForMessage(
+                  resources.getString(R.string.confirm_operacion),
+                  resources.getString(R.string.confirm_deny_member_message),
+                  resources.getString(R.string.confirm),
+                  {viewModel.onConfirmButtonClick(isConfirm)},
+                  resources.getString(R.string.cancel),
+                  {}
+              )
+            (activity!! as AppCompatActivity).showDialog(confirmDialog)
+        } else {
+            viewModel.onConfirmButtonClick(isConfirm)
+        }
     }
 
     override fun onStop() {
@@ -266,6 +286,10 @@ class ConfirmMemberDialog: MyDialog() {
         }
 
         fun onConfirmButtonClick(isConfirm: Boolean) {
+            if (!isConfirm) {
+                //we show a dialog to conmfirm
+
+            }
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
                 var message= R.string.not_controled_error
