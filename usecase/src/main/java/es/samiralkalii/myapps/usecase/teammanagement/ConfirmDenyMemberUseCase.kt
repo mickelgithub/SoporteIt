@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.usecase.teammanagement
 
 import es.samiralkalii.myapps.data.teammanagement.RemoteTeamManagementRepository
+import es.samiralkalii.myapps.preference.PreferenceRepository
 
 class ConfirmDenyMemberUseCase(val remoteTeamManagementRepository: RemoteTeamManagementRepository) {
 
@@ -10,6 +11,8 @@ class ConfirmDenyMemberUseCase(val remoteTeamManagementRepository: RemoteTeamMan
         profile: String= "",
         profileId: String= "",
         holidayDays: Int= 22,
-        internal: Boolean= false)= remoteTeamManagementRepository.confirmDenyMember(user,
-        isConfirmed, profile, profileId, holidayDays, internal)
+        internal: Boolean= false) {
+        remoteTeamManagementRepository.confirmDenyMember(user,
+            isConfirmed, profile, profileId, holidayDays, internal)
+    }
 }

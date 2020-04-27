@@ -72,9 +72,14 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         }
     }
 
-    override suspend fun updateMemberConfirmedAt(confirmedAt: String)= context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
+    override suspend fun updateMemberConfirmed(confirmationData: Map<String, Any?>)=
+        context.getSharedPreferences(context.resources.getString(R.string.preference_file), Context.MODE_PRIVATE).edit {
         putString(KEY_MEMBERSHIP_CONFIRMATION, SI)
-        putString(KEY_MEMBERSHIP_CONFIRMED_AT, confirmedAt)
+        putString(KEY_MEMBERSHIP_CONFIRMED_AT, confirmationData[KEY_MEMBERSHIP_CONFIRMED_AT] as String)
+        putString(KEY_PROFILE, confirmationData[KEY_PROFILE] as String)
+        putString(KEY_PROFILE_ID, confirmationData[KEY_PROFILE_ID] as String)
+        putInt(KEY_HOLIDAY_DAYS, confirmationData[KEY_HOLIDAY_DAYS] as Int)
+        putBoolean(KEY_INTERNAL_EMPLOYEE, confirmationData[KEY_INTERNAL_EMPLOYEE] as Boolean)
     }
 
 

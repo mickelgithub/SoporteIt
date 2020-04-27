@@ -71,8 +71,8 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
         val user = preferenceRepository.getUser()
         if (result == RESULT_OK_VALUE) {
             //Is member
-            val memberConfirmedAt = remoteTeamManagementRepository.getMemberConfirmationAt(userId)
-            preferenceRepository.updateMemberConfirmedAt(memberConfirmedAt)
+            val memberConfirmationData = remoteTeamManagementRepository.getMemberConfirmationData(userId)
+            preferenceRepository.updateMemberConfirmed(memberConfirmationData)
         } else {
             //Is not
             remoteUserRepository.signOut()

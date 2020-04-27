@@ -102,8 +102,7 @@ class NotificationManager(val context: Context): INotification {
     }
 
     override fun showNotificationMemberConfirmation(isBoss: Boolean, department: String) {
-        val intent= if (isBoss) SplashActivity.getIntentToProfileScreen(context) else
-            SplashActivity.getIntentForHome(context)
+        val intent= SplashActivity.getIntentToProfileScreen(context)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         with(NotificationManagerCompat.from(context)) {

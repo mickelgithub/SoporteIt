@@ -227,13 +227,18 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         }
     }
 
-    override suspend fun getMemberConfirmationAt(user: String): String {
+    override suspend fun getMemberConfirmationData(user: String): Map<String, Any?> {
+        val confirmationData= mutableMapOf<String, Any?>()
         val result= fstore.collection(USERS_REF).document(user).get().await()
         if (result!= null && result.data!= null) {
             val data= result.data!!
-            return data[KEY_MEMBERSHIP_CONFIRMED_AT] as String
+            confirmationData[KEY_MEMBERSHIP_CONFIRMED_AT]= data[KEY_MEMBERSHIP_CONFIRMED_AT]
+            confirmationData[KEY_PROFILE]= data[KEY_PROFILE]
+            confirmationData[KEY_PROFILE_ID]= data[KEY_PROFILE_ID]
+            confirmationData[KEY_INTERNAL_EMPLOYEE]= data[KEY_INTERNAL_EMPLOYEE]
+            confirmationData[KEY_HOLIDAY_DAYS]= (data[KEY_HOLIDAY_DAYS] as Long).toInt()
         }
-        return ""
+        return confirmationData
     }
 
     override suspend fun getProfiles(area: String): Profiles {
