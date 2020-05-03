@@ -1,6 +1,7 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
 import android.os.Bundle
+import es.samiralkalii.myapps.domain.STATE_SUBSCRIBED
 import es.samiralkalii.myapps.domain.User
 import java.util.*
 
@@ -79,6 +80,37 @@ fun Bundle.toUser()= User(
     internalEmployee = getBoolean(KEY_INTERNAL_EMPLOYEE, false),
     messagingToken = getString(KEY_MESSAGING_TOKEN, "")
 
+)
+
+fun Map<String, Any>.toUser()= User(
+    id = this[KEY_ID] as String? ?: "",
+    email = this[KEY_EMAIL] as String? ?: "",
+    password = this[KEY_PASS] as String? ?: "",
+    name= this[KEY_NAME] as String? ?: "",
+    profileImage = this[KEY_PROFILE_IMAGE] as String? ?: "",
+    remoteProfileImage = this[KEY_REMOTE_PROFILE_IMAGE] as String? ?: "",
+    profileBackColor = (this[KEY_PROFILE_BACK_COLOR] as Long? ?: Integer.MIN_VALUE.toLong()).toInt(),
+    profileTextColor= (this[KEY_PROFILE_TEXT_COLOR] as Long? ?: Integer.MIN_VALUE.toLong()).toInt(),
+    createdAt = this[KEY_CREATED_AT] as String? ?: "",
+    isEmailVerified= this[KEY_IS_EMAIL_VERIFIED] as Boolean? ?: false,
+    profile = this[KEY_PROFILE] as String? ?: "",
+    profileId = this[KEY_PROFILE_ID] as String? ?: "",
+    bossCategory = this[KEY_BOSS_CATEGORY] as String? ?: "",
+    bossCategoryId = this[KEY_BOSS_CATEGORY_ID] as String? ?: "",
+    bossLevel = (this[KEY_BOSS_LEVEL] as Long? ?: 0L).toInt(),
+    bossConfirmation = this[KEY_BOSS_CONFIRMATION] as String? ?: "",
+    isBoss = this[KEY_BOSS] as Boolean? ?: false,
+    bossVerifiedAt = this[KEY_BOSS_VERIFIED_AT] as String? ?: "",
+    holidayDays = (this[KEY_HOLIDAY_DAYS] as Long? ?: User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS.toLong()).toInt(),
+    internalEmployee = this[KEY_INTERNAL_EMPLOYEE] as Boolean? ?: false,
+    area= this[KEY_AREA] as String? ?: "",
+    areaId = this[KEY_AREA_ID] as String? ?: "",
+    department = this[KEY_DEPARTMENT] as String? ?: "",
+    departmentId = this[KEY_DEPARTMENT_ID] as String? ?: "",
+    stateChangedAt = this[KEY_STATE_CHANGED_AT] as String? ?: "",
+    state = this[KEY_STATE] as String? ?: STATE_SUBSCRIBED,
+    membershipConfirmation = this[KEY_MEMBERSHIP_CONFIRMATION] as String? ?: "",
+    membershipConfirmedAt = this[KEY_MEMBERSHIP_CONFIRMED_AT] as String? ?: ""
 )
 
 fun getFirstName(fullName: String?)= StringTokenizer(fullName, " ").nextToken()

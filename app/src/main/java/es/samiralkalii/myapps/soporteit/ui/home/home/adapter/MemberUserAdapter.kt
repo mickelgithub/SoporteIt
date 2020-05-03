@@ -33,13 +33,13 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
                     memberUserViewModel.viewHolder= this
                     memberUserViewModel.memberUserAdapter= memberUserAdapter!!
                     memberUserViewModel.init()
-                    binding.executePendingBindings()
+                    binding.invalidateAll() //executePendingBindings()
                 }
                 is HeaderGroupMembersItemBinding -> {
                     binding.item= memberUserViewModel as MemberUserViewModelTemplate.GroupMemberUserViewModel
                     //memberUserViewModel.viewHolder= this
                     memberUserViewModel.init()
-                    binding.executePendingBindings()
+                    binding.invalidateAll() //executePendingBindings()
                 }
                 else -> Unit
             }

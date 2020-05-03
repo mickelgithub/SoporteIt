@@ -17,6 +17,7 @@ const val MESSAGE_ID_KEY= "messageId"
 const val RESULT_KEY= "result"
 const val MESSAGE_BODY_KEY= "body"
 const val MESSAGE_TO_KEY= "to"
+const val MESSAGE_EXTRA_DATA_1= "extra_data_1"
 
 const val PENDING= "P"
 
@@ -28,6 +29,7 @@ const val BOSS_VERIFICATION_KO= "N"
 const val MESSAGE_ID_BOSS_VERIFICATION= "boss_verification"
 const val MESSAGE_ID_INVITATION_TO_BE_PART_OF_TEAM= "invitation_to_be_part_of_team"
 const val MESSAGE_ID_MEMBER_CONFIRMATION= "member_confirmation"
+const val MESSAGE_ID_NEW_MEMBER= "new_member"
 
 class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                              val preferenceRepository: PreferenceRepository,
@@ -38,7 +40,7 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
 
     private val logger = LoggerFactory.getLogger(NotifyMessagingUseCase::class.java)
 
-    suspend operator fun invoke(messageId: String, result:String, to: String, body: String) {
+    suspend operator fun invoke(messageId: String, result:String, to: String, body: String, extraData: MutableMap<String, String>) {
 
         val userId= to
         when (messageId) {
@@ -57,12 +59,16 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 }
                 //remoteUserRepository.getUserInfo(remoteUser)
                 preferenceRepository.updateHolidayDaysAndInternalState(remoteUser.holidayDays, remoteUser.internalEmployee)
-                notificationRepository.showNotificationInvitationToTeam(notification.senderName, notification.senderEmail, notification.team,
-                    notification.senderProfileImage, notifId)
+                //notificationRepository.showNotificationInvitationToTeam(notification.senderName, notification.senderEmail, notification.team,
+                    //notification.senderProfileImage, notifId)
             }
             MESSAGE_ID_MEMBER_CONFIRMATION -> {
                 logger.debug("member verification notification...")
                 processMemberConfirmation(result, userId)
+            }
+            MESSAGE_ID_NEW_MEMBER -> {
+                logger.debug("Se ha verificado el mail de un miembro, es decir un nuevo miembro que hay que confirmar")
+                processNewMemberNotification(result, userId, extraData)
             }
         }
     }
@@ -98,6 +104,16 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
             fileSystemRepository.deleteImageProfile(user.profileImage)
         }
         notificationRepository.showNotificationBossUpdated(result == RESULT_OK_VALUE)
+    }
+
+    private suspend fun processNewMemberNotification(
+        result: String,
+        userId: String,
+        extraData: MutableMap<String, String>
+    ) {
+        //user email to print in notification text
+        val memberMail= extraData[MESSAGE_EXTRA_DATA_1]!!
+        notificationRepository.showNotificationNewMember(userId, memberMail)
     }
 
 

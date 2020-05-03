@@ -45,6 +45,7 @@ private const val DEPARTMENTS_REF= "departments"
 private const val BOSS_CATEGORIES_REF= "bossCategories"
 private const val HOLIDAY_DAYS_REF= "holidayDays"
 private const val PROFILES_REF= "profiles"
+private const val GROUPS_REF= "groups"
 
 
 
@@ -152,8 +153,8 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         val categoriesResult= fstore.collection(BOSS_CATEGORIES_REF).get(Source.SERVER).await()
         if (!categoriesResult.isEmpty) {
             for (categoryDocument in categoriesResult) {
-                val categoryName = categoryDocument.data.get(KEY_NAME) as String
-                val categoryLevel = (categoryDocument.data.get(KEY_CATEGORY_LEVEL) as Long).toInt()
+                val categoryName = categoryDocument.data[KEY_NAME] as String
+                val categoryLevel = (categoryDocument.data[KEY_CATEGORY_LEVEL] as Long).toInt()
                 bossCategories.add(
                     BossCategory(
                         categoryDocument.id,
@@ -193,7 +194,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
 
     override suspend fun getMyGroups(user: User): GroupList {
         var membersQuery: Query? = null
-        if (user.isBoss && user.membershipConfirmation== SI) {
+        if (user.isBoss && user.bossConfirmation== SI) {
             membersQuery= fstore.collection(USERS_REF)
                 .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
                 .whereEqualTo(KEY_AREA_ID, user.areaId)
@@ -208,16 +209,39 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         membersQuery?.let {
             val membersQueryresult= it.get(Source.SERVER).await()
             if (!membersQueryresult.isEmpty) {
-                val groupAll= membersQueryresult.documents.map { it.toObject(User::class.java) }.filter { it!= null && it.id!= user.id }.let { Group(id = "TODOS", name = "Todos", members = it as List<User>) }
-                return GroupList(listOf(groupAll))
+                //Until now we have all members that belongs to user.department && user.area
+                val groupAll= membersQueryresult.documents.map { it.data!!.toUser() }.filter { it!= null && it.id!= user.id }.let { Group(id = "TODOS", name = "Todos", members = it as List<User>, area = user.areaId, department = user.departmentId) }
+                var otherGroups= getTheGroupsIbelongTo(user, groupAll.members).filter { it.members!= null && !it.members.isEmpty() }
+                return GroupList(listOf(groupAll, *otherGroups.toTypedArray()))
             }
         }
         return GroupList(listOf())
     }
 
+    suspend private fun getTheGroupsIbelongTo(user: User, users: List<User>): List<Group> {
+        val groups= fstore.collection(GROUPS_REF)
+            .whereEqualTo(KEY_AREA_ID, user.areaId)
+            .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
+            .whereArrayContains(MEMBERS_FIELD, user.id).get(Source.SERVER).await()
+        if (!groups.isEmpty) {
+            val groups= groups.documents.map { doc ->
+                with(doc) {
+                    val groupName= data!![KEY_GROUP_NAME] as String
+                    val id= data!![KEY_GROUP_ID] as String
+                    val members= data!![KEY_GROUP_MEMBERS] as List<String>
+                    val groupUsers= members.filter { it!= null && it!= user.id }.map { it ->
+                        users.find { user-> user.id== it }
+                    }.filter { it!= null }
+                    Group(id, groupName, members = groupUsers as List<User>, area = user.areaId, department = user.departmentId)
+                }
+            }
+            return groups
+        }
+        return listOf()
+    }
+
     override suspend fun confirmDenyMember(user: String, isConfirmed: Boolean, profile: String,
                                            profileId: String, holidayDays: Int, internal: Boolean) {
-        delay(5000)
         if (!isConfirmed) {
             fstore.collection(USERS_REF).document(user).update(
                 mapOf( KEY_MEMBERSHIP_CONFIRMATION to NO, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()

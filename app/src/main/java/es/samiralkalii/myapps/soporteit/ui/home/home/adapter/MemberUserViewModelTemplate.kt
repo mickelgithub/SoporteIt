@@ -1,27 +1,14 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.adapter
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.databinding.MemberUserItemBinding
-import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
-import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
-import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
-import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentStates
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.util.*
-import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 sealed class MemberUserViewModelTemplate {
@@ -73,6 +60,10 @@ sealed class MemberUserViewModelTemplate {
         val memberStateImage: LiveData<Int?>
             get() = _memberStateImage
 
+        private val _isBoss= MutableLiveData<Boolean?>()
+        val isBoss: LiveData<Boolean?>
+            get() = _isBoss
+
         init {
             init()
         }
@@ -87,6 +78,7 @@ sealed class MemberUserViewModelTemplate {
                 !user.isBoss && user.membershipConfirmation== "" -> R.drawable.ko
                 else -> null
             }
+            _isBoss.value= user.isBoss
         }
 
         fun onMemberStateImageClick() {
@@ -103,7 +95,7 @@ sealed class MemberUserViewModelTemplate {
 
             logger.debug("CONFIRMAMOS EL USUARIO ${user.email}......................")
             //confirmDenyMember((viewHolder.binding as MemberUserItemBinding).memberStateImage, true)
-            showInviteMemberDialog(user.id, user.email, user.remoteProfileImage,
+            showConfirmMemberDialog(user.id, user.email, user.remoteProfileImage,
                 user.firstName, user.profileTextColor, user.profileBackColor, user.areaId)
 
             /*(viewHolder.itemView.context as AppCompatActivity).showDialog(AlertDialog.newInstanceForMessage(viewHolder.itemView.context.getString(R.string.member_verification_title),
@@ -124,7 +116,7 @@ sealed class MemberUserViewModelTemplate {
                 }))*/
         }
 
-        private fun confirmDenyMember(view: View, isConfirmed: Boolean) {
+        /*private fun confirmDenyMember(view: View, isConfirmed: Boolean) {
             val errorHandler = CoroutineExceptionHandler { _, error ->
                 logger.error(error.toString(), error)
                 var message = R.string.not_controled_error
@@ -156,10 +148,10 @@ sealed class MemberUserViewModelTemplate {
                     }, 2000)
                 }
             }
-        }
+        }*/
 
-        private fun showInviteMemberDialog(user: String, email: String, remoteProfileImage: String,
-                                           name: String, profileTextColor: Int, profileBackColor: Int, area: String) {
+        private fun showConfirmMemberDialog(user: String, email: String, remoteProfileImage: String,
+                                            name: String, profileTextColor: Int, profileBackColor: Int, area: String) {
             var confirmMemberDialog: ConfirmMemberDialog?= (viewHolder.itemView.context as AppCompatActivity).supportFragmentManager.findFragmentByTag(ConfirmMemberDialog::class.java.simpleName) as ConfirmMemberDialog?
             if (confirmMemberDialog== null) {
                 val bundle= Bundle().apply {

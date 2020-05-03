@@ -8,9 +8,7 @@ import android.os.Build
 import android.text.Html
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.RemoteInput
 import com.bumptech.glide.Glide
-import es.samiralkalii.myapps.domain.teammanagement.Department
 import es.samiralkalii.myapps.notification.INotification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
@@ -32,7 +30,9 @@ fun createNotificationChannel(context: Context) {
     }
 }
 
-const val NOTIF_ID= 101
+const val NOTIF_BOSS_CONFIRMATION_ID= 101
+const val NOTIF_MEMBER_CONFIRMATION_ID= 102
+const val NOTIF_NEW_MEMBER_ID= 103
 const val KEY_TEXT_REPLY = "key_text_reply"
 
 class NotificationManager(val context: Context): INotification {
@@ -43,14 +43,14 @@ class NotificationManager(val context: Context): INotification {
 
         val intent= if (isBoss) SplashActivity.getIntentToProfileScreen(context) else
             SplashActivity.getIntentForHome(context)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
             val title= context.resources.getString(R.string.notif_title_boss_verification)
             val body= if (isBoss) context.resources.getString(R.string.notif_body_boss_verification_ok)
                 else context.resources.getString(R.string.notif_body_boss_verification_ko)
-            notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+            notify(NOTIF_BOSS_CONFIRMATION_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle()
@@ -61,7 +61,7 @@ class NotificationManager(val context: Context): INotification {
         }
     }
 
-    override fun showNotificationInvitationToTeam(bossName: String, bossMail: String, team: String, largeIconUrl: String, notificationId: String) {
+    /*override fun showNotificationInvitationToTeam(bossName: String, bossMail: String, team: String, largeIconUrl: String, notificationId: String) {
 
         val intent= SplashActivity.getIntentToNotificationsScreen(context)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
@@ -92,7 +92,7 @@ class NotificationManager(val context: Context): INotification {
             }
             notify(NOTIF_ID, builder.build())
         }
-    }
+    } */
 
     override fun cancelNotification() {
         with(NotificationManagerCompat.from(context)) {
@@ -103,19 +103,38 @@ class NotificationManager(val context: Context): INotification {
 
     override fun showNotificationMemberConfirmation(isBoss: Boolean, department: String) {
         val intent= SplashActivity.getIntentToProfileScreen(context)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
             val title= context.resources.getString(R.string.member_verification_title)
             val body= if (isBoss) context.resources.getString(R.string.notif_body_member_confirmation_ok, department)
             else context.resources.getString(R.string.notif_body_member_confirmation_ko, department)
-            notify(NOTIF_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+            notify(NOTIF_MEMBER_CONFIRMATION_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle()
                     .bigText(body))
                 .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true).build())
+        }
+    }
+
+    override fun showNotificationNewMember(user: String, userEmail: String) {
+        val intent= SplashActivity.getIntentForHome(context)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        with(NotificationManagerCompat.from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            val title= context.resources.getString(R.string.new_member_title)
+            val body= context.resources.getString(R.string.notif_body_new_member, userEmail.substring(0, userEmail.indexOf("@")))
+            notify(NOTIF_NEW_MEMBER_ID, NotificationCompat.Builder(context, context.getString(R.string.general_notif_channel_id))
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(body))
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true).build())
         }

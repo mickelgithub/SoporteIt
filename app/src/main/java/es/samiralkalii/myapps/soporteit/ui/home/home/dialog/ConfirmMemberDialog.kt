@@ -17,6 +17,7 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.usecase.teammanagement.ConfirmDenyMemberUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.GetHolidayDaysUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetProfilesUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
+import kotlin.properties.Delegates
 
 class ConfirmMemberDialog: MyDialog() {
 
@@ -60,6 +62,7 @@ class ConfirmMemberDialog: MyDialog() {
             val profileTextColor = arguments!!.getInt(KEY_PROFILE_TEXT_COLOR, -1)
             val profileBackColor = arguments!!.getInt(KEY_PROFILE_BACK_COLOR, -1)
             val area= arguments!!.getString(KEY_AREA_ID, "")
+            val internal= arguments!!.getBoolean(KEY_INTERNAL_EMPLOYEE, false)
             viewModel.publishUser(user, email, remoteProfileImage,
                 name, profileTextColor, profileBackColor, area)
             logger.debug("onCreate...")
@@ -87,7 +90,7 @@ class ConfirmMemberDialog: MyDialog() {
                 if (it) {
                     val homeFragment= activity!!.supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName) as HomeFragment
                     if (homeFragment!= null) {
-                        homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser)
+                        homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
                     }
                     dismiss()
                 }
@@ -129,11 +132,14 @@ class ConfirmMemberDialog: MyDialog() {
         logger.debug("OnDestroy...")
     }
 
-    class ConfirmMemberDialogViewModel(private val getProfilesUseCase: GetProfilesUseCase,
-    private val confirmDenyMemberUseCase: ConfirmDenyMemberUseCase): ViewModel() {
+    class ConfirmMemberDialogViewModel(
+        private val getProfilesUseCase: GetProfilesUseCase,
+        private val confirmDenyMemberUseCase: ConfirmDenyMemberUseCase,
+        private val getHolidayDaysUseCase: GetHolidayDaysUseCase): ViewModel() {
 
         private val logger = LoggerFactory.getLogger(ConfirmMemberDialogViewModel::class.java)
 
+        private var internalHolidayDays: Int by Delegates.notNull()
         private lateinit var user: String
         private lateinit var area: String
         private val holidaysData= listOf("20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30")
@@ -225,9 +231,14 @@ class ConfirmMemberDialog: MyDialog() {
             }
             _dialogCancelable.value= false
             viewModelScope.launch(errorHandler) {
-                profilesData= async(Dispatchers.IO) {
+                val profilesDataDeferred= async(Dispatchers.IO) {
                     getProfilesUseCase(area)
-                }.await()
+                }//.await()
+                val internalHolidaysDeferred= async(Dispatchers.IO) {
+                    getHolidayDaysUseCase()
+                }
+                profilesData= profilesDataDeferred.await()
+                internalHolidayDays= internalHolidaysDeferred.await().holidayDays
                 _profiles.value= profilesData.profiles.map { it.name }
                 _showLoading.value= false
                 _formEnabled.value= true
@@ -261,7 +272,8 @@ class ConfirmMemberDialog: MyDialog() {
         val buttonConfirmEnabled= getMediatorLiveDataForConfirmButtonEnabledState()
 
         fun publishUser(user: String, email: String, remoteProfileImage: String,
-                        name: String, profileTextColor: Int, profileBackColor: Int, area: String) {
+                        name: String, profileTextColor: Int, profileBackColor: Int,
+                        area: String) {
             this.user= user
             _email.value= email.substring(0, email.indexOf("@"))
             _profileImage.value= remoteProfileImage
@@ -278,7 +290,7 @@ class ConfirmMemberDialog: MyDialog() {
             _internal.value= !oldValue
             _internal.value?.let {
                 if (it) {
-                    holidayDaysValue.value= "26"
+                    holidayDaysValue.value= internalHolidayDays.toString()
                 } else {
                     _holidayDays.value= holidaysData
                 }

@@ -80,7 +80,7 @@ class SplashActivity : BaseActivity() {
         }
 
         fun getIntentForHome(context: Context): Intent {
-            val intent = Intent(context, SplashActivity::class.java).putExtra(GOTO_KEY, GOTO_NOTIFICATIONS)
+            val intent = Intent(context, SplashActivity::class.java)
             return intent
         }
 

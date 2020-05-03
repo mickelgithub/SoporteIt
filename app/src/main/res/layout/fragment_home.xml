@@ -14,15 +14,16 @@
             type="es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment" />
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/groupsRecycleView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
-
-
-
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groupsRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </layout>

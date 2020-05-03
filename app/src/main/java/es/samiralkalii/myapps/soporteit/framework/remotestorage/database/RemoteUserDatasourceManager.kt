@@ -108,12 +108,12 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         val result= fstore.collection(USERS_REF).document(user).get().await()
         if (result!= null && result.data!= null) {
             val data= result.data!!
-            return createUser(user, data)
+            return data.toUser()
         }
         return User.EMPTY
     }
 
-    private fun createUser(user: String, data: Map<String, Any>)= User(
+    /*private fun createUser(user: String, data: Map<String, Any>)= User(
         id = user,
         email = data[KEY_EMAIL] as String? ?: "",
         password = data[KEY_PASS] as String? ?: "",
@@ -143,7 +143,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         membershipConfirmation = data[KEY_MEMBERSHIP_CONFIRMATION] as String? ?: "",
         membershipConfirmedAt = data[KEY_MEMBERSHIP_CONFIRMED_AT] as String? ?: ""
 
-    )
+    )*/
 
     override suspend fun addUser(user: User) {
         fstore.runTransaction { _ ->

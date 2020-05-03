@@ -31,8 +31,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
 
     private val logger = LoggerFactory.getLogger(HomeFragmentViewModel::class.java)
 
-    lateinit var user: User
-
+    private lateinit var user: User
 
     private val _progressVisible= MutableLiveData<MyDialog.DialogState>()
     val progressVisible: LiveData<MyDialog.DialogState>
@@ -46,6 +45,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
     val items: LiveData<MutableList<MemberUserViewModelTemplate>?>
         get() = _items
 
+
     private val _getGroupsActionState= MutableLiveData<Event<ScreenState<HomeFragmentStates.GetGroupsState>>>()
     val getGroupsActionState: LiveData<Event<ScreenState<HomeFragmentStates.GetGroupsState>>>
         get() = _getGroupsActionState
@@ -54,13 +54,18 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         _items.value= items.toMutableList()
     }
 
+    private val _refreshingState= MutableLiveData<Event<Boolean>?>()
+    val refreshingState: LiveData<Event<Boolean>?>
+    get() = _refreshingState
+
     init {
         init()
     }
 
-    fun init() {
-        //_progressVisible.value= MyDialog.DialogState.ShowProgressDialog()
-        _items.value= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelLoading)
+    fun init(refresh: Boolean= false) {
+        if (!refresh) {
+            _items.value= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelLoading)
+        }
         val errorHandler = CoroutineExceptionHandler { _, error ->
             logger.error(error.toString(), error)
             var message= R.string.not_controled_error
@@ -70,6 +75,9 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
                 }
             }
             _getGroupsActionState.postValue(Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.ShowMessage(message))))
+            if (refresh) {
+                _refreshingState.postValue(Event(true))
+            }
         }
         viewModelScope.launch(errorHandler) {
 
@@ -90,6 +98,9 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
                 }
             }
             _getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
+            if (refresh) {
+                _refreshingState.value= Event(true)
+            }
         }
     }
 

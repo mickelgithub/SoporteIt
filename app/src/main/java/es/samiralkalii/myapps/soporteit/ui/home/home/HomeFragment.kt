@@ -15,6 +15,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
+import es.samiralkalii.myapps.soporteit.ui.util.convertDpToPixels
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -50,6 +51,13 @@ class HomeFragment: BaseFragment() {
     }
 
     override fun initStateObservation() {
+
+        binding.swipeContainer.setOnRefreshListener {
+            viewModel.init(true)
+        }
+
+        binding.swipeContainer.setDistanceToTriggerSync(activity!!.convertDpToPixels(250F).toInt())
+
         binding.groupsRecycleView.apply {
             setHasFixedSize(true)
             adapter =
@@ -91,6 +99,16 @@ class HomeFragment: BaseFragment() {
 
         viewModel.items.observe(this, Observer {
             (binding.groupsRecycleView.adapter as MemberUserAdapter).setData(it)
+        })
+
+        viewModel.refreshingState.observe(this, Observer {
+            it?.let {
+                it.getContentIfNotHandled()?.let {
+                    if (it) {
+                        binding.swipeContainer.isRefreshing= false
+                    }
+                }
+            }
         })
     }
 
@@ -157,7 +175,7 @@ class HomeFragment: BaseFragment() {
         }
     }*/
 
-    fun updateModelUserConfirmed(user: String, isConfirmed: Boolean) {
+    fun updateModelUserConfirmed(user: String, isConfirmed: Boolean, internal: Boolean) {
         val adapter= binding.groupsRecycleView.adapter as MemberUserAdapter
         val memberUserViewModel= adapter.members.filter {
             it is MemberUserViewModelTemplate.MemberUserViewModel && it.user.id== user
@@ -171,6 +189,9 @@ class HomeFragment: BaseFragment() {
                     viewModel.updateItem(position, newItem)
                     adapter.members[position]= newItem
                     adapter.notifyItemChanged(position)
+                    if (internal) {
+                        it.postDelayed({viewModel.init()}, 1000)
+                    }
                 } else {
                     val position= adapter.members.indexOf(memberUserViewModel)
                     viewModel.removeItem(position)

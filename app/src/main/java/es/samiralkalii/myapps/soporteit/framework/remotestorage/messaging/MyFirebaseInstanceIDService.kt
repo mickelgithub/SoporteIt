@@ -53,7 +53,7 @@ class MyFirebaseInstanceIDService() : CoroutineScope, FirebaseMessagingService()
                 val body= this[MESSAGE_BODY_KEY] ?: ""
                 logger.debug("the message received is $messageId -> $result")
                 withContext(Dispatchers.IO) {
-                    notifyMessagingUseCase(messageId, result, to, body)
+                    notifyMessagingUseCase(messageId, result, to, body, remoteMsg.data)
                 }
             }
         }
