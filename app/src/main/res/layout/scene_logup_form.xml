@@ -8,8 +8,11 @@
         <import type="es.samiralkalii.myapps.soporteit.R" />
         <import type="android.view.View" />
         <variable
-            name="viewModel"
-            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel" />
+            name="uiModel"
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelUiModel" />
+        <variable
+            name="interactor"
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelInteractor" />
         <variable
             name="activity"
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupActivity" />
@@ -24,10 +27,10 @@
             android:layout_height="wrap_content"
             tools:context=".ui.logup.LogupActivity">
             <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
-                android:clickable="@{viewModel.dataLoaded}"
+                android:clickable="@{uiModel.dataLoaded}"
                 android:id="@+id/card_profile_view"
                 android:onClick="@{()-> activity.onImageProfileClick()}"
-                app:imageView="@{viewModel.imageProfile.toString()}"
+                app:imageView="@{uiModel.imageProfile.toString()}"
                 app:textView='@{""}'
                 app:placeholder="@drawable/profile"
                 android:layout_width="100dp"
@@ -47,8 +50,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
-                app:error="@{viewModel.nameError}"
-                android:enabled="@{viewModel.dataLoaded}"
+                app:error="@{uiModel.nameError}"
+                android:enabled="@{uiModel.dataLoaded}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_profile_view"
@@ -60,7 +63,7 @@
                     android:hint="@string/name"
                     android:inputType="textPersonName"
                     android:nextFocusDown="@+id/email"
-                    android:text="@={viewModel.name}" />
+                    android:text="@={uiModel.name}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -71,8 +74,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:error="@{viewModel.emailError}"
-                android:enabled="@{viewModel.dataLoaded}"
+                app:error="@{uiModel.emailError}"
+                android:enabled="@{uiModel.dataLoaded}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
@@ -85,7 +88,7 @@
                     android:hint="@string/mail"
                     android:inputType="textEmailAddress"
                     android:nextFocusDown="@+id/password"
-                    android:text="@={viewModel.email}" />
+                    android:text="@={uiModel.email}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -96,8 +99,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:error="@{viewModel.passwordError}"
-                android:enabled="@{viewModel.dataLoaded}"
+                app:error="@{uiModel.passwordError}"
+                android:enabled="@{uiModel.dataLoaded}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mail_input_layout"
@@ -110,7 +113,7 @@
                     android:hint="@string/password"
                     android:inputType="textPassword"
                     android:nextFocusDown="@+id/password_confirmation"
-                    android:text="@={viewModel.password}" />
+                    android:text="@={uiModel.password}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -120,9 +123,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:enabled="@{viewModel.dataLoaded}"
+                android:enabled="@{uiModel.dataLoaded}"
                 android:layout_marginEnd="8dp"
-                app:error="@{viewModel.confirmationPasswordError}"
+                app:error="@{uiModel.confirmationPasswordError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pass_input_layout"
@@ -135,7 +138,7 @@
                     android:hint="@string/retype_password"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:text="@={viewModel.passwordConfirmation}" />
+                    android:text="@={uiModel.passwordConfirmation}" />
             </com.google.android.material.textfield.TextInputLayout>
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/loading_areas"
@@ -151,7 +154,7 @@
                 app:layout_constraintTop_toTopOf="@+id/areas_input_layout"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
-                app:visible="@{viewModel.showLoading}"
+                app:visible="@{uiModel.showLoading}"
                 app:lottie_rawRes="@raw/loader" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -162,8 +165,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:error="@{viewModel.areaError}"
-                android:enabled="@{viewModel.areasEnabled &amp;&amp; viewModel.dataLoaded}"
+                app:error="@{uiModel.areaError}"
+                android:enabled="@{uiModel.areasEnabled &amp;&amp; uiModel.dataLoaded}"
                 app:layout_constraintEnd_toStartOf="@+id/loading_areas"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pass_confirmation_input_layout"
@@ -173,13 +176,13 @@
                 <AutoCompleteTextView
                     android:id="@+id/areas_dropdown"
                     style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
-                    value="@={viewModel.area}"
+                    value="@={uiModel.area}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
-                    android:hint="@{viewModel.showLoading ? @string/wait_for_data : @string/choose_area }"
+                    android:hint="@{uiModel.showLoading ? @string/wait_for_data : @string/choose_area }"
                     android:nextFocusDown="@+id/departments_dropdown"
-                    app:data="@{viewModel.areas}" />
+                    app:data="@{uiModel.areas}" />
             </com.google.android.material.textfield.TextInputLayout>
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/loading_depts"
@@ -195,7 +198,7 @@
                 app:layout_constraintTop_toTopOf="@+id/departments_input_layout"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
-                app:visible="@{viewModel.showLoading}"
+                app:visible="@{uiModel.showLoading}"
                 app:lottie_rawRes="@raw/loader" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -206,8 +209,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:enabled="@{viewModel.departmentsEnabled &amp;&amp; viewModel.dataLoaded}"
-                app:error="@{viewModel.departmentError}"
+                android:enabled="@{uiModel.departmentsEnabled &amp;&amp; uiModel.dataLoaded}"
+                app:error="@{uiModel.departmentError}"
                 app:layout_constraintEnd_toStartOf="@+id/loading_depts"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/areas_input_layout"
@@ -217,12 +220,12 @@
                 <AutoCompleteTextView
                     android:id="@+id/departments_dropdown"
                     style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
-                    value="@={viewModel.department}"
+                    value="@={uiModel.department}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
-                    android:hint="@{viewModel.showLoading ? @string/wait_for_data : @string/choose_department }"
-                    app:data="@{viewModel.departments}" />
+                    android:hint="@{uiModel.showLoading ? @string/wait_for_data : @string/choose_department }"
+                    app:data="@{uiModel.departments}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -232,7 +235,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="8dp"
-                android:visibility="@{viewModel.isBoss() ? View.VISIBLE : View.GONE}"
+                android:visibility="@{uiModel.isBoss() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBaseline_toBaselineOf="@+id/is_boss"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/is_boss"
@@ -242,11 +245,11 @@
                 <AutoCompleteTextView
                     android:id="@+id/boss_categories_dropdown"
                     style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
-                    value="@={viewModel.bossCategory}"
+                    value="@={uiModel.bossCategory}"
                     android:textSize="14dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:data="@{viewModel.bossCategoriesObservable}"
+                    app:data="@{uiModel.bossCategoriesObservable}"
                     android:editable="false"
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -256,11 +259,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:onClick="@{()-> viewModel.onLogupClick()}"
+                android:onClick="@{()-> interactor.onLogupClick()}"
                 android:text="@string/register"
                 android:textAllCaps="false"
                 android:textSize="16sp"
-                android:enabled="@{viewModel.buttonLogupEnabled}"
+                android:enabled="@{uiModel.buttonLogupEnabled}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/is_boss" />
@@ -285,13 +288,13 @@
                 android:layout_marginEnd="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:onClick="@{()-> viewModel.onAlreadyLoggedUpClick()}"
+                android:onClick="@{()-> interactor.onAlreadyLoggedUpClick()}"
                 android:text="@string/her"
                 android:padding="6dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold|italic"
-                android:enabled="@{viewModel.dataLoaded}"
+                android:enabled="@{uiModel.dataLoaded}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBaseline_toBaselineOf="@id/already_loggedup"
                 tools:text="@string/her"
@@ -303,10 +306,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
-                android:checked="@={viewModel.isBoss()}"
+                android:checked="@={uiModel.isBoss()}"
                 android:text="@string/is_boss"
                 android:textSize="12dp"
-                android:enabled="@{viewModel.dataLoaded}"
+                android:enabled="@{uiModel.dataLoaded}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/departments_input_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>

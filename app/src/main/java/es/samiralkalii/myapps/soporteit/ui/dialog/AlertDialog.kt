@@ -67,16 +67,16 @@ class AlertDialog: DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val args= arguments!!
+        val args= requireArguments()
 
-        val dialogType= args.getParcelable(DIALOG_TYPE_KEY) as DIALOG_TYPE
+        val dialogType= args.getParcelable<DIALOG_TYPE>(DIALOG_TYPE_KEY)
         val title= args.getString(DIALOG_TITLE_KEY) ?: ""
 
         when (dialogType) {
             DIALOG_TYPE.MESSAGE -> {
                 return getAlertDialog(activity as Context, title, args.getString(DIALOG_MESSAGE_KEY), null)
             }
-            DIALOG_TYPE.TEXT_INPUT -> {
+            else -> {
                 val input = EditText(activity)
                 val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,

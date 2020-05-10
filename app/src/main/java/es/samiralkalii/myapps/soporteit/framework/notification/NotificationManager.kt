@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import es.samiralkalii.myapps.notification.INotification
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import org.slf4j.LoggerFactory
 
@@ -41,8 +42,8 @@ class NotificationManager(val context: Context): INotification {
 
     override fun showNotificationBossUpdated(isBoss: Boolean) {
 
-        val intent= if (isBoss) SplashActivity.getIntentToProfileScreen(context) else
-            SplashActivity.getIntentForHome(context)
+        val intent= if (isBoss) HomeActivity.getIntentToProfileScreen(context) else
+            HomeActivity.getIntentForHome(context)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         with(NotificationManagerCompat.from(context)) {
@@ -102,7 +103,7 @@ class NotificationManager(val context: Context): INotification {
     }
 
     override fun showNotificationMemberConfirmation(isBoss: Boolean, department: String) {
-        val intent= SplashActivity.getIntentToProfileScreen(context)
+        val intent= HomeActivity.getIntentToProfileScreen(context)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         with(NotificationManagerCompat.from(context)) {
@@ -122,7 +123,7 @@ class NotificationManager(val context: Context): INotification {
     }
 
     override fun showNotificationNewMember(user: String, userEmail: String) {
-        val intent= SplashActivity.getIntentForHome(context)
+        val intent= HomeActivity.getIntentForHome(context)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         with(NotificationManagerCompat.from(context)) {

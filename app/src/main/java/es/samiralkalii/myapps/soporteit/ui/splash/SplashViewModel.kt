@@ -1,5 +1,6 @@
 package es.samiralkalii.myapps.soporteit.ui.splash
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,30 +8,34 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.BaseViewModel
+import es.samiralkalii.myapps.soporteit.ui.UiModel
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.CheckUserAuthUseCase
-import es.samiralkalii.myapps.usecase.messaging.HandleTeamInvitationUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, private val handleTeamInvitationUseCase: HandleTeamInvitationUseCase) : ViewModel() {
+class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase) : BaseViewModel() {
 
     private val logger= LoggerFactory.getLogger(SplashViewModel::class.java)
 
-    lateinit var user: User
+    override val uiModel= null
 
     private val _splashState= MutableLiveData<ScreenState<SplashState>>()
     val splashState: LiveData<ScreenState<SplashState>>
         get() = _splashState
 
+    override fun init(data: Bundle?) {
+        checkUserAuth()
+    }
 
-    fun checkUserAuth() {
+    private fun checkUserAuth() {
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            logger.debug(".........................${error.toString()}")
+            logger.debug(".........................${error}")
             when (error) {
                 is FirebaseNetworkException -> {
                     _splashState.postValue(ScreenState.Render(SplashState.ShowMessage(R.string.no_internet_connection)))
@@ -61,5 +66,4 @@ class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase, pr
             }
         }
     }
-
 }

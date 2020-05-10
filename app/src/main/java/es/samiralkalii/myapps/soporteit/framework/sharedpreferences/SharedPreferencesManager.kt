@@ -139,32 +139,32 @@ class SharedPreferencesManager(val context: Context): IPreferences {
         if (email.isBlank() || pass.isBlank()) {
             return User.EMPTY
         } else {
-            val id= getString(KEY_ID, "")
-            val name= getString(KEY_NAME, "")
-            val imageProfilePath= getString(KEY_PROFILE_IMAGE, "")
-            val imageProfileUrl= getString(KEY_REMOTE_PROFILE_IMAGE, "")
+            val id= getString(KEY_ID, "")!!
+            val name= getString(KEY_NAME, "")!!
+            val imageProfilePath= getString(KEY_PROFILE_IMAGE, "")!!
+            val imageProfileUrl= getString(KEY_REMOTE_PROFILE_IMAGE, "")!!
             val profileBackColor= getInt(KEY_PROFILE_BACK_COLOR, -1)
             val profileTextColor= getInt(KEY_PROFILE_TEXT_COLOR, -1)
-            val createdAt= getString(KEY_CREATED_AT, "")
+            val createdAt= getString(KEY_CREATED_AT, "")!!
             val isEmailVerified= getBoolean(KEY_IS_EMAIL_VERIFIED, false)
-            val profile= getString(KEY_PROFILE, "")
-            val profileId= getString(KEY_PROFILE_ID, "")
+            val profile= getString(KEY_PROFILE, "")!!
+            val profileId= getString(KEY_PROFILE_ID, "")!!
             val isBoss= getBoolean(KEY_BOSS, false)
-            val bossConfirmation= getString(KEY_BOSS_CONFIRMATION, "")
-            val bossCategory= getString(KEY_BOSS_CATEGORY, "")
-            val bossCategoryId= getString(KEY_BOSS_CATEGORY_ID, "")
+            val bossConfirmation= getString(KEY_BOSS_CONFIRMATION, "")!!
+            val bossCategory= getString(KEY_BOSS_CATEGORY, "")!!
+            val bossCategoryId= getString(KEY_BOSS_CATEGORY_ID, "")!!
             val bossLevel= getInt(KEY_BOSS_LEVEL, 0)
             val holidayDays= getInt(KEY_HOLIDAY_DAYS, -1)
             val isInternalEmployee= getBoolean(KEY_INTERNAL_EMPLOYEE, false)
-            val messagingToken= getString(KEY_MESSAGING_TOKEN, "")
-            val area= getString(KEY_AREA, "")
-            val areaId= getString(KEY_AREA_ID, "")
-            val department= getString(KEY_DEPARTMENT, "")
-            val departmentId= getString(KEY_DEPARTMENT_ID, "")
-            val state= getString(KEY_STATE, "")
-            val stateChangedAt= getString(KEY_STATE_CHANGED_AT, "")
-            val membershipConfirmation= getString(KEY_MEMBERSHIP_CONFIRMATION, "")
-            val membershipConfirmedAt= getString(KEY_MEMBERSHIP_CONFIRMED_AT, "")
+            val messagingToken= getString(KEY_MESSAGING_TOKEN, "")!!
+            val area= getString(KEY_AREA, "")!!
+            val areaId= getString(KEY_AREA_ID, "")!!
+            val department= getString(KEY_DEPARTMENT, "")!!
+            val departmentId= getString(KEY_DEPARTMENT_ID, "")!!
+            val state= getString(KEY_STATE, "")!!
+            val stateChangedAt= getString(KEY_STATE_CHANGED_AT, "")!!
+            val membershipConfirmation= getString(KEY_MEMBERSHIP_CONFIRMATION, "")!!
+            val membershipConfirmedAt= getString(KEY_MEMBERSHIP_CONFIRMED_AT, "")!!
 
             return User(email= email, password = pass, id= id, name = name, profileImage = imageProfilePath,
                 remoteProfileImage = imageProfileUrl, profileBackColor = profileBackColor,

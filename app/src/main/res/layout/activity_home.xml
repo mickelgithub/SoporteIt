@@ -6,114 +6,115 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel" />
+            name="uiModel"
+            type="es.samiralkalii.myapps.soporteit.ui.home.HomeViewModelUiModel" />
     </data>
 
-    <LinearLayout
+<!--    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical">-->
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <include layout="@layout/toolbar" />
 
-        <FrameLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context=".ui.home.HomeActivity"
+            app:visible="@{uiModel.emailValidated}">
 
+            <fragment
+                android:id="@+id/nav_host_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_graph" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNav"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:visible="@{uiModel.emailValidated}"
+                app:enabled="@{uiModel.bottomNavEnabled}"
+                app:menu="@menu/menu_home_bottom_nav">
+
+            </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            android:elevation="4dp"
+            tools:visibility="visible"
+            app:visible="@{!uiModel.emailValidated}"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".ui.home.HomeActivity">
-                <fragment
-                    android:id="@+id/nav_host_fragment"
-                    android:name="androidx.navigation.fragment.NavHostFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    app:defaultNavHost="true"
-                    app:navGraph="@navigation/nav_graph">
-
-                </fragment>
-
-                <com.google.android.material.bottomnavigation.BottomNavigationView
-                    android:id="@+id/bottomNav"
-                    android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+                <TextView
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:visible="@{viewModel.emailValidated}"
-                    app:enabled="@{viewModel.bottomNavEnabled}"
-                    app:menu="@menu/menu_home_bottom_nav">
-
-                </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
-                android:elevation="4dp"
-                tools:visibility="visible"
-                app:visible="@{!viewModel.emailValidated}"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp">
-                <LinearLayout
+                    android:padding="10dp"
+                    android:text="@string/instructions_to_validate_your_email" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:background="@color/black"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_gravity="center">
-                    <TextView
-                        android:layout_gravity="center"
-                        android:textSize="20sp"
-                        android:textColor="@color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:text="@string/instructions_to_validate_your_email" />
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:background="@color/black"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    android:layout_height="wrap_content">
 
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/borred"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:visibility="visible"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:lottie_autoPlay="true"
-                            app:lottie_loop="true"
-                            app:lottie_rawRes="@raw/borring" />
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/borred"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/borring" />
 
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/sand_clock"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:visibility="visible"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:lottie_autoPlay="true"
-                            app:lottie_loop="true"
-                            app:lottie_rawRes="@raw/sand_clock" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/sand_clock"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/sand_clock" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        </FrameLayout>
+    </FrameLayout>
 
-
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </layout>
 

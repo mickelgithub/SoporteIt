@@ -31,7 +31,7 @@ class HomeNotificationsFragment: Fragment() {
 
     private val viewModel: HomeNotificationsFragmentViewModel by viewModel()
     private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(activity!!)[HomeViewModel::class.java]
+        ViewModelProvider(requireActivity())[HomeViewModel::class.java]
     }
 
     companion object {
@@ -87,7 +87,7 @@ class HomeNotificationsFragment: Fragment() {
         //tendremos 2 pestañas, enviados y recibidos
         override fun getCount()= 2
 
-        override fun getPageTitle(position: Int)= if (position== 0) fragment.activity!!.resources.getString(R.string.notif_received) else fragment.activity!!.resources.getString(R.string.notif_sent)
+        override fun getPageTitle(position: Int)= if (position== 0) fragment.requireActivity().resources.getString(R.string.notif_received) else fragment.requireActivity().resources.getString(R.string.notif_sent)
     }
 
     override fun onDestroy() {

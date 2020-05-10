@@ -8,14 +8,31 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment"
-        android:label="HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        android:label="@string/home_title"
+        tools:layout="@layout/fragment_home">
+        <argument
+            android:name="isEmailValidated"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationsFragment"
-        android:label="NotificationsFragment" />
+        android:label="@string/notifications_title" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="@string/profile" />
+    <fragment
+        android:id="@+id/schedulersFragment"
+        android:name="es.samiralkalii.myapps.soporteit.ui.home.schedulers.SchedulersFragment"
+        android:label="@string/schedulers" />
+    <fragment
+        android:id="@+id/holidaysFragment"
+        android:name="es.samiralkalii.myapps.soporteit.ui.home.holidays.HolidaysFragment"
+        android:label="@string/holidays" />
+    <fragment
+        android:id="@+id/absencesFragment"
+        android:name="es.samiralkalii.myapps.soporteit.ui.home.absences.AbsencesFragment"
+        android:label="@string/absences" />
 </navigation>

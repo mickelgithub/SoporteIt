@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import es.samiralkalii.myapps.soporteit.R
@@ -51,14 +50,13 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         binding.fragment= this
         binding.executePendingBindings()
         setHasOptionsMenu(true)
-        (activity!! as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.profile)
         return binding.root
     }
 
     override fun initStateObservation() {
 
         viewModel.showSaveMenu.observe(this, Observer {
-            activity!!.invalidateOptionsMenu()
+            requireActivity().invalidateOptionsMenu()
         })
 
         viewModel.profileChangeState.observe(this, Observer {
@@ -80,7 +78,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         })*/
 
         viewModel.progressVisible.observe(this, Observer {
-            LoadingDialog.processDialog(it, activity!!.supportFragmentManager)
+            LoadingDialog.processDialog(it, requireActivity().supportFragmentManager)
         })
     }
 
@@ -100,8 +98,8 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_profile_fragment, menu)
-        menu.findItem(R.id.menu_item_profile)?.setVisible(false)
+        //inflater.inflate(R.menu.menu_profile_fragment, menu)
+        //menu.findItem(R.id.menu_item_profile)?.setVisible(false)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -127,7 +125,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     //called by binding from the xml layout
     fun onImageProfileClick() {
         val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.profileImage.value!= null, ProfileFragment::class.java.simpleName)
-        pickUpProfilePhotoBottonSheetDialog.show(activity!!.supportFragmentManager, PickUpProfilePhotoBottonSheetDialog::class.java.simpleName)
+        pickUpProfilePhotoBottonSheetDialog.show(requireActivity().supportFragmentManager, PickUpProfilePhotoBottonSheetDialog::class.java.simpleName)
     }
 
     private fun showChooserToPickImage() {
@@ -140,7 +138,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         )
         pickIntent.type = IMAGE_MIMETYPE
 
-        val chooserIntent = Intent.createChooser(getIntent, getString(es.samiralkalii.myapps.soporteit.R.string.select_image))
+        val chooserIntent = Intent.createChooser(getIntent, getString(R.string.select_image))
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
 
         startActivityForResult(chooserIntent, PICK_IMAGE)
@@ -174,7 +172,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
 
     private fun requestPermission() {
         if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            Toast.makeText(activity!!, getString(es.samiralkalii.myapps.soporteit.R.string.read_permission_indication), Toast.LENGTH_LONG).show();
+            Toast.makeText(requireActivity(), getString(R.string.read_permission_indication), Toast.LENGTH_LONG).show();
             requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
         } else {
             requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
@@ -190,7 +188,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     }
 
     private fun checkPermission(): Boolean {
-        val result = ContextCompat.checkSelfPermission(activity!!, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        val result = ContextCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)
         return result == PackageManager.PERMISSION_GRANTED
     }
 

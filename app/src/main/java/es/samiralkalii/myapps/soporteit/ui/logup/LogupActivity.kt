@@ -1,19 +1,13 @@
 package es.samiralkalii.myapps.soporteit.ui.logup
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler
-import android.view.View
-import android.view.ViewAnimationUtils
-import android.view.ViewTreeObserver
-import android.view.animation.AnimationUtils
 import androidx.core.view.doOnNextLayout
-import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.transition.Scene
 import androidx.transition.Transition
@@ -26,12 +20,11 @@ import es.samiralkalii.myapps.soporteit.databinding.SceneLogupFormBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseActivity
 import es.samiralkalii.myapps.soporteit.ui.dialog.*
 import es.samiralkalii.myapps.soporteit.ui.home.HomeActivity
-import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel.Companion.TO_LOG_UP
 import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealViewInverse
 import kotlinx.android.synthetic.main.activity_logup.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
-
 
 
 class LogupActivity : BaseActivity(),
@@ -39,7 +32,7 @@ class LogupActivity : BaseActivity(),
 
     private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
 
-    private val viewModel: LogupViewModel by viewModel()
+    override val viewModel: LogupViewModel by viewModel()
     private lateinit var binding: ActivityLogupBinding
     private lateinit var bindingLogup: SceneLogupFormBinding
     private val bindingLogin: SceneLoginFormBinding by lazy {
@@ -50,43 +43,46 @@ class LogupActivity : BaseActivity(),
     private lateinit var transitionMngLogUpToLogIn: Transition
 
     private fun initLoginBinding(): SceneLoginFormBinding {
-        val bindingLogin= SceneLoginFormBinding.inflate(layoutInflater, container, false)
-        bindingLogin.viewModel= viewModel
-        bindingLogin.lifecycleOwner= this
-        bindingLogin.activity= this
+        val bindingLogin= SceneLoginFormBinding.inflate(layoutInflater, container, false).apply {
+            interactor= viewModel
+            uiModel= viewModel.uiModel
+            lifecycleOwner= this@LogupActivity
+        }
         scene2= Scene(container, bindingLogin.root)
         return bindingLogin
     }
 
-
     override fun initUI() {
         hideSystemUI()
-
-        binding= ActivityLogupBinding.inflate(layoutInflater)
-
-        binding.viewModel= viewModel
-        binding.lifecycleOwner= this
-        setContentView(binding.root)
-
-        bindingLogup= SceneLogupFormBinding.inflate(layoutInflater, container, false)
-        bindingLogup.viewModel= viewModel
-        bindingLogup.lifecycleOwner= this
-        bindingLogup.activity= this
-
-        bindingLogup.cardProfileView.doOnNextLayout { v ->
-            v.postDelayed({animateRevealViewInverse(v) {}}, 1)
+        
+        binding= ActivityLogupBinding.inflate(layoutInflater).apply {
+            viewModel= viewModel
+            lifecycleOwner= this@LogupActivity
         }
 
+        setContentView(binding.root)
+
+        bindingLogup= SceneLogupFormBinding.inflate(layoutInflater, container, false).apply {
+            uiModel= viewModel.uiModel
+            interactor= viewModel
+            lifecycleOwner= this@LogupActivity
+            activity= this@LogupActivity
+
+            cardProfileView.doOnNextLayout { v ->
+                v.postDelayed({v.animateRevealViewInverse{}}, 1)
+            }
+        }
+
+
         scene1= Scene(container, bindingLogup.root)
-
         scene1.enter()
-
         transitionMngLogUpToLogIn= TransitionInflater.from(this).inflateTransition(R.transition.logup_login_transition)
 
     }
 
     override fun initStateObservation() {
-        viewModel.logupState.observe(this, Observer {
+
+        viewModel.uiModel.logupState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { screenState ->
                 if (screenState is ScreenState.Render) {
                     processStateLogUp(screenState)
@@ -94,7 +90,7 @@ class LogupActivity : BaseActivity(),
             }
         })
 
-        viewModel.loginState.observe(this, Observer {
+        viewModel.uiModel.loginState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { screenState ->
                 if (screenState is ScreenState.Render) {
                     processStateLogin(screenState)
@@ -102,34 +98,33 @@ class LogupActivity : BaseActivity(),
             }
         })
 
-        viewModel.loginOrLogUp.observe(this, Observer {
+        viewModel.uiModel.loginOrLogUp.observe(this, Observer {
             when (it) {
-                LogupViewModel.TO_LOG_IN -> {
+                LogupViewModel.SCREEN_LOGUP.LOGIN -> {
                     bindingLogin.invalidateAll()
                     TransitionManager.go(scene2, transitionMngLogUpToLogIn)
                 }
-                LogupViewModel.TO_LOG_UP -> {
+                LogupViewModel.SCREEN_LOGUP.LOGUP -> {
                     bindingLogup.invalidateAll()
                     TransitionManager.go(scene1, transitionMngLogUpToLogIn)
                 }
             }
         })
 
-        viewModel.progressVisible.observe(this, Observer {
+        viewModel.uiModel.progressVisible.observe(this, Observer {
             LoadingDialog.processDialog(it, supportFragmentManager)
         })
 
-        viewModel.area.observe(this, Observer {
+        viewModel.uiModel.area.observe(this, Observer {
             viewModel.updateDepartmentsOfArea(it)
         })
-        viewModel.profileColor.observe(this, Observer {
-            logger.debug("algo....")
-            if (viewModel.loginOrLogUp.value== TO_LOG_UP) {
+        viewModel.uiModel.profileColor.observe(this, Observer {
+            if (viewModel.uiModel.loginOrLogUp.value== LogupViewModel.SCREEN_LOGUP.LOGUP) {
                 bindingLogup.cardProfileView.postDelayed({
-                    bindingLogup.cardProfileView.setTextView(getFirstName(viewModel.name.value), it.first, it.second)
+                    bindingLogup.cardProfileView.setTextView(getFirstName(viewModel.uiModel.name.value), it.first, it.second)
                 }, MyDialog.DIALOG_DISMISS_DELAY+ 10)
             } else {
-                bindingLogin.cardProfileView.setTextView(viewModel.user.value!!.firstName, it.first, it.second)
+                bindingLogin.cardProfileView.setTextView(viewModel.uiModel.user.value!!.firstName, it.first, it.second)
             }
         })
     }
@@ -147,7 +142,7 @@ class LogupActivity : BaseActivity(),
                     Handler().postDelayed({viewModel.updateProfileColor(screenState.renderState.user.profileBackColor to screenState.renderState.user.profileTextColor)}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
                 }
                 viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                Handler().postDelayed(Runnable { HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this) }, MyDialog.DIALOG_DISMISS_DELAY*2)
+                Handler().postDelayed(Runnable { HomeActivity.startActivity(this, screenState.renderState.user.isEmailVerified) }, MyDialog.DIALOG_DISMISS_DELAY*2)
             }
             is LoginState.UpdateMessage -> {
                 logger.debug("Hubo un error en acceso, lo mostramos")
@@ -160,7 +155,7 @@ class LogupActivity : BaseActivity(),
 
     private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
         showDialog(AlertDialog.newInstanceForMessage(getString(R.string.boss_verification_title), getString(R.string.boss_verification_msg),
-            getString(R.string.agree), { HomeActivity.startActivity(logupState.user.isEmailVerified, context = this)}))
+            getString(R.string.agree), { HomeActivity.startActivity(this, logupState.user.isEmailVerified)}))
     }
 
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
@@ -173,7 +168,7 @@ class LogupActivity : BaseActivity(),
                     viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
                 }
                 Handler().postDelayed({
-                    HomeActivity.startActivity(screenState.renderState.user.isEmailVerified, context = this)
+                    HomeActivity.startActivity(this, screenState.renderState.user.isEmailVerified)
                 }, MyDialog.DIALOG_DISMISS_DELAY*2)
             }
             is LogupState.LoggedupAsManagerTeamOk -> {
@@ -222,9 +217,8 @@ class LogupActivity : BaseActivity(),
         bindingLogin.loginButton.isEnabled= false
     }
 
-    //called by bindingLogup
     fun onImageProfileClick() {
-        val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.imageProfile.value!= null)
+        val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.uiModel.imageProfile.value!= null)
         pickUpProfilePhotoBottonSheetDialog.show(supportFragmentManager, "pickUpProfilePhotoBottonSheetDialog")
     }
 
@@ -296,38 +290,13 @@ class LogupActivity : BaseActivity(),
         viewModel.updateImageProfile(null)
     }
 
-    private fun animateRevealViewInverse(view: View, onFinishAnim: () -> Unit) {
-        val cx = view.width/2
-        val cy = view.height/2
-        val initialRadius = 0
-        val endRadius= view.width/2
+    companion object {
 
-        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
-        anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                onFinishAnim()
-            }
-        })
-        anim.start()
-
-    }
-
-    private fun animateRevealView(view: View, onFinishAnim: () -> Unit) {
-        val cx = view.width/2
-        val cy = view.height/2
-        val initialRadius = view.width/2
-        val endRadius= 0
-
-        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
-        anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                onFinishAnim()
-            }
-        })
-        anim.start()
-
+        fun startLogupActivity(context: Context) {
+            context.startActivity(Intent(context, LogupActivity::class.java).also {
+                it.flags= Intent.FLAG_ACTIVITY_NO_ANIMATION
+            })
+        }
     }
 
 }

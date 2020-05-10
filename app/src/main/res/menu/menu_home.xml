@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_profile"
+        android:id="@+id/profileFragment"
         app:showAsAction="never"
         android:icon="@drawable/profile_icon"
         android:title="@string/profile" />

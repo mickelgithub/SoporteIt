@@ -6,12 +6,11 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel" />
-
+            name="interactor"
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelInteractor" />
         <variable
-            name="activity"
-            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupActivity" />
+            name="uiModel"
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelUiModel" />
     </data>
 
     <ScrollView
@@ -27,7 +26,7 @@
             <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
                 android:clickable="false"
                 android:id="@+id/card_profile_view"
-                app:imageView="@{viewModel.imageProfile.toString()}"
+                app:imageView="@{uiModel.imageProfile.toString()}"
                 app:textView='@{""}'
                 app:placeholder="@drawable/profile"
                 android:layout_width="100dp"
@@ -60,7 +59,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:padding="6dp"
-                android:onClick="@{()-> viewModel.noAcountClick()}"
+                android:onClick="@{()-> interactor.noAcountClick()}"
                 android:text="@string/her"
                 android:textColor="#000000"
                 android:textSize="16sp"
@@ -77,7 +76,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="64dp"
                 android:layout_marginEnd="8dp"
-                app:error="@{viewModel.emailError}"
+                app:error="@{uiModel.emailError}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_profile_view"
@@ -90,14 +89,14 @@
                     android:hint="@string/mail"
                     android:inputType="textEmailAddress"
                     android:nextFocusDown="@+id/password"
-                    android:text="@={viewModel.email}" />
+                    android:text="@={uiModel.email}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 app:shapeAppearance="@style/rounded_text_field"
                 android:id="@+id/pass_input_layout"
-                app:error="@{viewModel.passwordError}"
+                app:error="@{uiModel.passwordError}"
                 app:passwordToggleEnabled="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:text="@={viewModel.password}" />
+                    android:text="@={uiModel.password}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
@@ -122,8 +121,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:onClick="@{()-> viewModel.onLogInClick()}"
-                android:enabled="@{viewModel.buttonLoginEnabled}"
+                android:onClick="@{()-> interactor.onLogInClick()}"
+                android:enabled="@{uiModel.buttonLoginEnabled}"
                 android:text="@string/logIn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

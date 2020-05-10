@@ -1,12 +1,11 @@
 package es.samiralkalii.myapps.soporteit.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
-import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
+import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.BaseViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.SI
 import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
@@ -14,58 +13,57 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import java.lang.IllegalStateException
 
 
-class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
+class HomeViewModel(private val getUserUseCase: GetUserUseCase) : BaseViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeViewModel::class.java)
 
-    private val _emailValidated= MutableLiveData<Boolean>()
-    val emailValidated: LiveData<Boolean>
-        get() = _emailValidated
+    companion object {
+        const val NAVIGATE_TO_BUNDLE_KEY= "NAV_TO"
+        const val IS_EMAIL_VALIDATED_BUNDLE_KEY= "isEmailValidated"
+    }
 
-    private val _goto= MutableLiveData<Event<SplashActivity.Companion.GOTO>>()
-    val goto: LiveData<Event<SplashActivity.Companion.GOTO>>
-    get() = _goto
+    override val uiModel= HomeViewModelUiModel()
 
-    private val _bottomNavEnabled= MutableLiveData<Boolean>(true)
-    val bottomNavEnabled: LiveData<Boolean>
-        get()= _bottomNavEnabled
+    override fun init(data: Bundle?) {
+        data?.let {
+            val navTo= it.getInt(NAVIGATE_TO_BUNDLE_KEY, R.id.homeFragment)
+            val isEmailValidated= it.getBoolean(IS_EMAIL_VALIDATED_BUNDLE_KEY, false)
+            return init(navTo, isEmailValidated)
+        }
+        throw IllegalStateException(
+            "Los campos ${NAVIGATE_TO_BUNDLE_KEY} y ${IS_EMAIL_VALIDATED_BUNDLE_KEY} son obligatorios")
+    }
 
-    private var gotoExtra: Int= -1
-
-    private lateinit var user: User
-
-    fun init(gotoParam: Int, isEmailVerified: Boolean) {
+    private fun init(navTo: Int, isEmailValidated: Boolean) {
         logger.debug("init.........................")
-        gotoExtra= gotoParam
-        _emailValidated.value= isEmailVerified
-        if (isEmailVerified) {
+        uiModel._emailValidated.value= isEmailValidated
+        if (isEmailValidated) {
             when {
-                //gotoExtra nos viene desde SplashActivity cuando se realiza alguna
-                //accion sobre las notificaciones, por ejemplo pulsar en la notificacion,
-                //sino, tendria el valor por defecto -1
-                gotoExtra == SplashActivity.GOTO_PROFILE -> {
-                    _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
-                }
-                gotoExtra == SplashActivity.GOTO_NOTIFICATIONS -> {
-                    _goto.value = Event(SplashActivity.Companion.GOTO.NOTIFICATIONS)
+                //goto nos viene desde SplashActivity cuando se entra
+                //a la aplicacion desde una notificacion, en caso contrario
+                //no viene y su valor por defecto tiene que ser HOME
+                navTo in setOf(R.id.profileFragment, R.id.notificationsFragment,
+                    R.id.schedulersFragment, R.id.holidaysFragment, R.id.absencesFragment) -> {
+                    uiModel._navTo.value = Event(navTo)
                 }
                 else -> {
                     viewModelScope.launch {
-                        user = async(Dispatchers.IO) {
+                        val user = async(Dispatchers.IO) {
+                            //obtenermos el usuario de sharedPreferences (local)
                             getUserUseCase()
                         }.await()
                         if ((!user.isBoss && user.membershipConfirmation== SI) || (user.isBoss && user.bossConfirmation== SI)) {
-                            _goto.value = Event(SplashActivity.Companion.GOTO.HOME)
+                            uiModel._navTo.value = Event(R.id.homeFragment)
                         } else {
-                            _goto.value = Event(SplashActivity.Companion.GOTO.PROFILE)
+                            uiModel._navTo.value = Event(R.id.profileFragment)
                             disableBottomNav()
                         }
                     }
                 }
             }
-
         }
 
         /*if (gotoExtra== SplashActivity.GOTO_PROFILE && user.bossVerification== "N") {
@@ -101,9 +99,9 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
         //user.bossVerified= bossVerification
     }
 
-    fun updateGoto(gotoParam: SplashActivity.Companion.GOTO) {
-        _goto.value= Event(gotoParam)
-    }
+    /*fun updateGoto(gotoParam: GOTO) {
+        uiModel._goto.value= Event(gotoParam)
+    }*/
 
     fun updateUser(user: User, reply: Reply) {
         //user.teamInvitationState= reply
@@ -116,11 +114,9 @@ class HomeViewModel(private val getUserUseCase: GetUserUseCase) : ViewModel() {
     }
 
     fun disableBottomNav() {
-        _bottomNavEnabled.value= false
+        uiModel._bottomNavEnabled.value= false
     }
 
-    fun enableBottomNav() {
-        _bottomNavEnabled.value= true
-    }
+
 
 }

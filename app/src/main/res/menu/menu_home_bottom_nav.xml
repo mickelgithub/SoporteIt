@@ -3,30 +3,30 @@
 
 
     <item
-        android:id="@+id/menu_item_home"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/home"
         android:title="@string/home" />
 
     <item
-        android:id="@+id/menu_item_planning"
-        android:icon="@drawable/planning"
-        android:title="@string/planning" />
-
-    <item
-        android:id="@+id/menu_item_notifications"
+        android:id="@+id/notificationsFragment"
         android:icon="@drawable/notifications_icon"
         android:title="@string/notifications" />
 
     <item
-        android:id="@+id/menu_item_holidays"
+        android:id="@+id/schedulersFragment"
+        android:icon="@drawable/schedulers"
+        android:title="@string/schedulers" />
+
+    <item
+        android:id="@+id/holidaysFragment"
         android:icon="@drawable/ic_viajero_con_maleta"
         android:title="@string/holidays" />
 
 
     <item
-        android:id="@+id/menu_item_absence"
+        android:id="@+id/absencesFragment"
         android:icon="@drawable/absence"
-        android:title="@string/absence" />
+        android:title="@string/absences" />
 
 
 </menu>

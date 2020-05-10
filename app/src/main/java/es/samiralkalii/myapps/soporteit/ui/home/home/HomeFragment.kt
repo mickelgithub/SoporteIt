@@ -1,10 +1,10 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.databinding.MemberUserItemBinding
@@ -22,10 +22,6 @@ import org.slf4j.LoggerFactory
 
 class HomeFragment: BaseFragment() {
 
-    companion object {
-        fun newInstance(bundle: Bundle) = HomeFragment().apply { arguments= bundle }
-    }
-
     private val logger= LoggerFactory.getLogger(HomeFragment::class.java)
 
     private val viewModel: HomeFragmentViewModel by viewModel()
@@ -33,30 +29,32 @@ class HomeFragment: BaseFragment() {
         ViewModelProvider(activity!!)[HomeViewModel::class.java]
     }*/
     private lateinit var binding: FragmentHomeBinding
+    private val args: HomeFragmentArgs by navArgs()
 
     override fun initUI(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        logger.debug("initUI........")
-        binding= FragmentHomeBinding.inflate(inflater, container, false)
-        binding.viewModel= viewModel
-        binding.lifecycleOwner= viewLifecycleOwner
-        binding.fragment= this
-        binding.executePendingBindings()
-        setHasOptionsMenu(true)
-        (activity!! as AppCompatActivity).supportActionBar?.title= resources.getString(R.string.my_team)
-        return binding.root
+    ): View? {
+        if (args.isEmailValidated) {
+            logger.debug("initUI******")
+            binding= FragmentHomeBinding.inflate(inflater, container, false).apply {
+                viewModel= viewModel
+                lifecycleOwner= viewLifecycleOwner
+                fragment= this@HomeFragment
+                executePendingBindings()
+            }
+            setHasOptionsMenu(true)
+            return binding.root
+        } else {
+            logger.debug("****el valor de email validado es ${args.isEmailValidated} y por tanto no hacemos nada en initUI")
+        }
+        return null
     }
 
     override fun initStateObservation() {
 
-        binding.swipeContainer.setOnRefreshListener {
-            viewModel.init(true)
-        }
-
-        binding.swipeContainer.setDistanceToTriggerSync(activity!!.convertDpToPixels(250F).toInt())
+        binding.swipeContainer.setDistanceToTriggerSync(requireActivity().convertDpToPixels(250F).toInt())
 
         binding.groupsRecycleView.apply {
             setHasFixedSize(true)
@@ -64,7 +62,35 @@ class HomeFragment: BaseFragment() {
                 MemberUserAdapter(mutableListOf<MemberUserViewModelTemplate>(), viewModel)
         }
 
+        viewModel.uiModel.getGroupsActionState.observe(this, Observer {
+            it.getContentIfNotHandled()?.let { screenState ->
+                if (screenState is ScreenState.Render) {
+                    processGetGroupActionState(screenState)
+                }
+            }
+        })
 
+        viewModel.uiModel.progressVisible.observe(this, Observer {
+            LoadingDialog.processDialog(it, requireActivity().supportFragmentManager)
+        })
+
+        viewModel.uiModel.items.observe(this, Observer {
+            (binding.groupsRecycleView.adapter as MemberUserAdapter).setData(it)
+        })
+
+        viewModel.uiModel.refreshingState.observe(this, Observer {
+            it?.let {
+                it.getContentIfNotHandled()?.let {
+                    if (it) {
+                        binding.swipeContainer.isRefreshing= false
+                    }
+                }
+            }
+        })
+
+        binding.swipeContainer.setOnRefreshListener {
+            viewModel.initData(true)
+        }
         /*val resId = R.anim.layout_animation_fall_down
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, resId)
         binding.groupsRecycleView.setLayoutAnimation(animation)*/
@@ -83,33 +109,6 @@ class HomeFragment: BaseFragment() {
                     )
                 )
             })*/
-
-        viewModel.getGroupsActionState.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { screenState ->
-                if (screenState is ScreenState.Render) {
-                    processGetGroupActionState(screenState)
-                }
-            }
-        })
-
-        viewModel.progressVisible.observe(this, Observer {
-            LoadingDialog.processDialog(it, activity!!.supportFragmentManager)
-        })
-
-
-        viewModel.items.observe(this, Observer {
-            (binding.groupsRecycleView.adapter as MemberUserAdapter).setData(it)
-        })
-
-        viewModel.refreshingState.observe(this, Observer {
-            it?.let {
-                it.getContentIfNotHandled()?.let {
-                    if (it) {
-                        binding.swipeContainer.isRefreshing= false
-                    }
-                }
-            }
-        })
     }
 
     private fun processGetGroupActionState(screenState: ScreenState.Render<HomeFragmentStates.GetGroupsState>) {
@@ -125,11 +124,6 @@ class HomeFragment: BaseFragment() {
             }
 
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
 
@@ -202,18 +196,4 @@ class HomeFragment: BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        logger.debug("onResume...............")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        logger.debug("onStart.................")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        logger.debug("onDestroyView...............")
-    }
 }
