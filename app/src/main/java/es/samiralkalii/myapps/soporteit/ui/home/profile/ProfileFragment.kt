@@ -10,6 +10,8 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
@@ -34,6 +36,10 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     private val viewModel: ProfileViewModel by viewModel()
 
     //private lateinit var user: User
+
+    private val navController: NavController by lazy {
+        findNavController()
+    }
 
     private lateinit var binding: FragmentProfileBinding
 
@@ -98,9 +104,10 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        //inflater.inflate(R.menu.menu_profile_fragment, menu)
-        //menu.findItem(R.id.menu_item_profile)?.setVisible(false)
         super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.menu_profile_fragment, menu)
+        //menu.findItem(R.id.menu_item_profile)?.setVisible(false)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -124,8 +131,9 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
 
     //called by binding from the xml layout
     fun onImageProfileClick() {
-        val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.profileImage.value!= null, ProfileFragment::class.java.simpleName)
-        pickUpProfilePhotoBottonSheetDialog.show(requireActivity().supportFragmentManager, PickUpProfilePhotoBottonSheetDialog::class.java.simpleName)
+        //val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.profileImage.value!= null, ProfileFragment::class.java.simpleName)
+        //pickUpProfilePhotoBottonSheetDialog.show(requireActivity().supportFragmentManager, PickUpProfilePhotoBottonSheetDialog::class.java.simpleName)
+        findNavController().navigate(R.id.action_profileFragment_to_pickUpProfilePhotoBottonSheetDialog)
     }
 
     private fun showChooserToPickImage() {
@@ -232,33 +240,4 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         viewModel.updateImageProfile(null)
     }
 
-    override fun onStart() {
-        super.onStart()
-        logger.debug("OnStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        logger.debug("OnResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        logger.debug("OnPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        logger.debug("OnStop")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        logger.debug("onDestroyView")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        logger.debug("OnDestroy")
-    }
 }

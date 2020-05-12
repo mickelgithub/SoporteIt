@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ActivityHomeBinding
@@ -95,7 +99,7 @@ class HomeActivity : BaseActivity() {
 
         viewModel.uiModel.emailValidated.observe(this, Observer {
             if (!it) {
-                supportActionBar?.title= getString(R.string.app_title_need_mail_validation)
+                //supportActionBar?.title= getString(R.string.app_title_need_mail_validation)
                 finishMeInAwhile(7000L)
             }
         })
@@ -112,15 +116,16 @@ class HomeActivity : BaseActivity() {
 
     private fun gotoScreen(navTo: Int) {
         bottomNav.menu.getItem(0).isCheckable= true
-        /*when (goto) {
-            HomeViewModel.GOTO.PROFILE -> {
+        when (navTo) {
+            R.id.profileFragment -> {
                 logger.debug("Mostramos el perfil...")
-                if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
+                navController.navigate(R.id.action_homeFragment_to_profileFragment)
+                /*if (supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.simpleName)== null) {
                     //supportActionBar?.title= resources.getString(R.string.profile)
                     supportFragmentManager.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(Bundle()), ProfileFragment::class.java.simpleName).commit()
-                }
+                }*/
             }
-            HomeViewModel.GOTO.HOME -> {
+            /*HomeViewModel.GOTO.HOME -> {
                 logger.debug("Mostramos el home...")
                 if (supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)== null) {
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeFragment.newInstance(Bundle()), HomeFragment::class.java.simpleName).commit()
@@ -133,8 +138,8 @@ class HomeActivity : BaseActivity() {
                     supportActionBar?.title = resources.getString(R.string.notifications_title)
                     supportFragmentManager.beginTransaction().replace(R.id.container, HomeNotificationsFragment.newInstance(Bundle()), HomeNotificationsFragment::class.java.simpleName).commit()
                 }
-            }
-        }*/
+            }*/
+        }
     }
 
     /*private fun showMessageDialog(@StringRes message: Int, @StringRes title: Int ) {
@@ -154,7 +159,7 @@ class HomeActivity : BaseActivity() {
         }, delay)
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         viewModel.uiModel.emailValidated.value?.let {
             if (it) {
                 val inflater: MenuInflater = menuInflater
@@ -162,17 +167,11 @@ class HomeActivity : BaseActivity() {
             }
         }
         return super.onCreateOptionsMenu(menu)
-    }*/
+    }
 
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_item_profile -> {
-                viewModel.updateGoto(HomeViewModel.GOTO.PROFILE)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }*/
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+    }
 
     companion object {
 

@@ -7,7 +7,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.samiralkalii.myapps.soporteit.R
@@ -19,7 +18,7 @@ private const val KEY_FRAGMENT_TAG= "fragment"
 
 class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
 
-    private lateinit var pickProfilePhotoListener: PickProfilePhotoListener
+    //private lateinit var pickProfilePhotoListener: PickProfilePhotoListener
     private lateinit var binding: FragmentPickupProfilePhotoBottomSheetDialogBinding
 
     private var showDeleteOption: Boolean= false
@@ -34,10 +33,10 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
         }
         try {
             if (context is PickProfilePhotoListener) {
-                pickProfilePhotoListener = context
+                //pickProfilePhotoListener = context
             } else {
 
-                pickProfilePhotoListener= (context as AppCompatActivity).supportFragmentManager.findFragmentByTag(fragmentTag) as PickProfilePhotoListener
+                //pickProfilePhotoListener= (context as AppCompatActivity).supportFragmentManager.findFragmentByTag(fragmentTag) as PickProfilePhotoListener
             }
 
         } catch (e: ClassCastException) {
@@ -76,7 +75,7 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
     fun onCameraClick() {
         Handler().postDelayed({
             this@PickUpProfilePhotoBottonSheetDialog.dismiss()
-            pickProfilePhotoListener.getProfilePhotoFrom(ProfilePhotoSource.CAMERA)
+            //pickProfilePhotoListener.getProfilePhotoFrom(ProfilePhotoSource.CAMERA)
         }, 300L)
 
     }
@@ -84,7 +83,7 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
     fun onGalleryClick() {
         Handler().postDelayed({
             this@PickUpProfilePhotoBottonSheetDialog.dismiss()
-            pickProfilePhotoListener.getProfilePhotoFrom(ProfilePhotoSource.GALLERY)
+            //pickProfilePhotoListener.getProfilePhotoFrom(ProfilePhotoSource.GALLERY)
         }, 300L)
 
     }
@@ -92,7 +91,7 @@ class PickUpProfilePhotoBottonSheetDialog : BottomSheetDialogFragment() {
     fun onDeleteClick() {
         Handler().postDelayed({
             this@PickUpProfilePhotoBottonSheetDialog.dismiss()
-            pickProfilePhotoListener.deleteImageProfile()
+            //pickProfilePhotoListener.deleteImageProfile()
         }, 300L)
     }
 

@@ -54,15 +54,15 @@ class ConfirmMemberDialog: MyDialog() {
         super.onCreate(savedInstanceState)
 
         val bundle= Bundle().apply {
-            val user = arguments!!.getString(KEY_ID, "")
+            val user = requireArguments().getString(KEY_ID, "")
             this@ConfirmMemberDialog.user= user
-            val email = arguments!!.getString(KEY_EMAIL, "")
-            val remoteProfileImage = arguments!!.getString(KEY_REMOTE_PROFILE_IMAGE, "")
-            val name = arguments!!.getString(KEY_NAME, "")
-            val profileTextColor = arguments!!.getInt(KEY_PROFILE_TEXT_COLOR, -1)
-            val profileBackColor = arguments!!.getInt(KEY_PROFILE_BACK_COLOR, -1)
-            val area= arguments!!.getString(KEY_AREA_ID, "")
-            val internal= arguments!!.getBoolean(KEY_INTERNAL_EMPLOYEE, false)
+            val email = requireArguments().getString(KEY_EMAIL, "")
+            val remoteProfileImage = requireArguments().getString(KEY_REMOTE_PROFILE_IMAGE, "")
+            val name = requireArguments().getString(KEY_NAME, "")
+            val profileTextColor = requireArguments().getInt(KEY_PROFILE_TEXT_COLOR, -1)
+            val profileBackColor = requireArguments().getInt(KEY_PROFILE_BACK_COLOR, -1)
+            val area= requireArguments().getString(KEY_AREA_ID, "")
+            val internal= requireArguments().getBoolean(KEY_INTERNAL_EMPLOYEE, false)
             viewModel.publishUser(user, email, remoteProfileImage,
                 name, profileTextColor, profileBackColor, area)
             logger.debug("onCreate...")
@@ -88,7 +88,7 @@ class ConfirmMemberDialog: MyDialog() {
         viewModel.dismissDialog.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it) {
-                    val homeFragment= activity!!.supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName) as HomeFragment
+                    val homeFragment= requireActivity().supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName) as HomeFragment
                     if (homeFragment!= null) {
                         homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
                     }
@@ -111,7 +111,7 @@ class ConfirmMemberDialog: MyDialog() {
                   resources.getString(R.string.cancel),
                   {}
               )
-            (activity!! as AppCompatActivity).showDialog(confirmDialog)
+            (requireActivity() as AppCompatActivity).showDialog(confirmDialog)
         } else {
             viewModel.onConfirmButtonClick(isConfirm)
         }
