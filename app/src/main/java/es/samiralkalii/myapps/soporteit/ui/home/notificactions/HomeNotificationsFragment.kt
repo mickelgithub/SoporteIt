@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeNotificationsBinding
-import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.HomeActivityViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NOTIFICATION_CATEGORY_KEY
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationCategory
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.NotificationsFragment
@@ -30,8 +30,8 @@ class HomeNotificationsFragment: Fragment() {
     private lateinit var user: User
 
     private val viewModel: HomeNotificationsFragmentViewModel by viewModel()
-    private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+    private val homeViewModel: HomeActivityViewModel by lazy {
+        ViewModelProvider(requireActivity())[HomeActivityViewModel::class.java]
     }
 
     companion object {

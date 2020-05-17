@@ -3,13 +3,10 @@ package es.samiralkalii.myapps.soporteit.ui.splash
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
-import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.BaseViewModel
-import es.samiralkalii.myapps.soporteit.ui.UiModel
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.authlogin.CheckUserAuthUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,9 +15,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class SplashViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase) : BaseViewModel() {
+class SplashActivityViewModel(private val checkUserAuthUseCase: CheckUserAuthUseCase) : BaseViewModel() {
 
-    private val logger= LoggerFactory.getLogger(SplashViewModel::class.java)
+    private val logger= LoggerFactory.getLogger(SplashActivityViewModel::class.java)
 
     override val uiModel= null
 

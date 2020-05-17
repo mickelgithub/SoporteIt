@@ -7,7 +7,7 @@
     <data>
         <variable
             name="uiModel"
-            type="es.samiralkalii.myapps.soporteit.ui.home.HomeViewModelUiModel" />
+            type="es.samiralkalii.myapps.soporteit.ui.home.HomeActivityUiModel" />
     </data>
 
     <FrameLayout
@@ -20,7 +20,7 @@
             tools:context=".ui.home.HomeActivity"
             app:visible="@{uiModel.emailValidated}">
 
-            <include layout="@layout/toolbar" />
+            <include layout="@layout/toolbar"/>
 
             <fragment
                 android:id="@+id/nav_host_fragment"
@@ -39,8 +39,6 @@
                 app:menu="@menu/menu_home_bottom_nav">
             </com.google.android.material.bottomnavigation.BottomNavigationView>
         </LinearLayout>
-
-
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

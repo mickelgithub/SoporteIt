@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentSchedulersBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
 class SchedulersFragment: BaseFragment() {
 
     private val logger= LoggerFactory.getLogger(SchedulersFragment::class.java)
 
+    override val viewModel: SchedulersFragmentViewModel by viewModel()
     private lateinit var binding: FragmentSchedulersBinding
 
 

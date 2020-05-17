@@ -10,8 +10,6 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentProfileBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
@@ -27,31 +25,17 @@ import org.slf4j.LoggerFactory
 
 class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickProfilePhotoListener {
 
-    companion object {
-        fun newInstance(bundle: Bundle) = ProfileFragment().apply { arguments= bundle }
-    }
-
     private val logger= LoggerFactory.getLogger(ProfileFragment::class.java)
 
-    private val viewModel: ProfileViewModel by viewModel()
-
-    //private lateinit var user: User
-
-    private val navController: NavController by lazy {
-        findNavController()
-    }
+    override val viewModel: ProfileFragmentViewModel by viewModel()
 
     private lateinit var binding: FragmentProfileBinding
 
-    override fun initLoading(args: Bundle?) {
-        super.initLoading(args)
-        viewModel.init()
-    }
 
     override fun initUI(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         logger.debug("OnCreateView")
         binding= FragmentProfileBinding.inflate(inflater, container, false)
-        binding.viewModel= viewModel
+        binding.uiModel= viewModel.uiModel
         binding.lifecycleOwner= viewLifecycleOwner
         binding.fragment= this
         binding.executePendingBindings()
@@ -61,11 +45,11 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
 
     override fun initStateObservation() {
 
-        viewModel.showSaveMenu.observe(this, Observer {
+        viewModel.uiModel.showSaveMenu.observe(this, Observer {
             requireActivity().invalidateOptionsMenu()
         })
 
-        viewModel.profileChangeState.observe(this, Observer {
+        viewModel.uiModel.profileChangeState.observe(this, Observer {
             it.getContentIfNotHandled().let { screenState ->
                 if (screenState is ScreenState.Render) {
                     processStateProfileImageChanged(screenState)
@@ -74,16 +58,7 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
 
         })
 
-        /*viewModel.profileChanged.observe(this, Observer {
-            it.getContentIfNotHandled().let { update ->
-                if (update!= null && update) {
-                    binding.invalidateAll()
-                    //homeViewModel.updateProfile(user)
-                }
-            }
-        })*/
-
-        viewModel.progressVisible.observe(this, Observer {
+        viewModel.uiModel.progressVisible.observe(this, Observer {
             LoadingDialog.processDialog(it, requireActivity().supportFragmentManager)
         })
     }
@@ -91,8 +66,6 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     private fun processStateProfileImageChanged(screenState: ScreenState.Render<ProfileChangeState>) {
         when (screenState.renderState) {
             ProfileChangeState.changeOk -> {
-                //homeViewModel.updateProfileImage(user)
-                //homeViewModel.updateBossVerification(user.bossVerified)
                 viewModel.updateProgressVisible(MyDialog.DialogState.UpdateSuccess())
             }
             is ProfileChangeState.ShowMessage -> {
@@ -107,12 +80,11 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
         super.onCreateOptionsMenu(menu, inflater)
         menu.clear()
         inflater.inflate(R.menu.menu_profile_fragment, menu)
-        //menu.findItem(R.id.menu_item_profile)?.setVisible(false)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.menu_item_ok).setVisible(viewModel.showSaveMenu.value!!)
+        menu.findItem(R.id.menu_item_ok).setVisible(viewModel.uiModel.showSaveMenu.value!!)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -125,15 +97,14 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
                 return true
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
     //called by binding from the xml layout
     fun onImageProfileClick() {
         //val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.profileImage.value!= null, ProfileFragment::class.java.simpleName)
-        //pickUpProfilePhotoBottonSheetDialog.show(requireActivity().supportFragmentManager, PickUpProfilePhotoBottonSheetDialog::class.java.simpleName)
-        findNavController().navigate(R.id.action_profileFragment_to_pickUpProfilePhotoBottonSheetDialog)
+        val pickUpProfilePhotoBottonSheetDialog= PickUpProfilePhotoBottonSheetDialog.newInstance(viewModel.uiModel.profileImage.value!= null)
+        pickUpProfilePhotoBottonSheetDialog.show(requireActivity().supportFragmentManager, PickUpProfilePhotoBottonSheetDialog::class.java.simpleName)
     }
 
     private fun showChooserToPickImage() {
@@ -170,8 +141,6 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
 
     @SuppressLint("MissingSuperCall")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        // Result code is RESULT_OK only if the user selects an Image
-
         if (resultCode == Activity.RESULT_OK)
             when (requestCode) {
                 PICK_IMAGE -> pickImage(data)
@@ -214,21 +183,21 @@ class ProfileFragment: BaseFragment(), PickUpProfilePhotoBottonSheetDialog.PickP
     }
 
     fun onImageConfirmationClick() {
-        viewModel.user.value?.let {
-            if (viewModel.showVerified.value!! && it.isBoss) {
+        viewModel.uiModel.user.value?.let {
+            if (viewModel.uiModel.showVerified.value!! && it.isBoss) {
                 viewModel.updateProgressVisible(
                     MyDialog.DialogState.ShowMessageDialog(resources.getString(
                             R.string.verified
                         ), error = false)
                 )
-            } else if (viewModel.showVerified.value!! && !it.isBoss) {
+            } else if (viewModel.uiModel.showVerified.value!! && !it.isBoss) {
                 viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(
                         R.string.membership_confirmed
                     ), error = false)
                 )
-            } else if (viewModel.showNotVerifiedYet.value!! && it.isBoss){
+            } else if (viewModel.uiModel.showNotVerifiedYet.value!! && it.isBoss){
                 viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(R.string.verification_pending)))
-            } else if (viewModel.showNotVerifiedYet.value!! && !it.isBoss) {
+            } else if (viewModel.uiModel.showNotVerifiedYet.value!! && !it.isBoss) {
                 viewModel.updateProgressVisible(MyDialog.DialogState.ShowMessageDialog(resources.getString(
                     R.string.membership_not_confirmed_yet))
                 )

@@ -24,8 +24,8 @@ import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.pager.adapter.NotificationViewModelTemplate
-import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
-import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragmentViewModel
+import es.samiralkalii.myapps.soporteit.ui.logup.LogupActivityViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
 import org.slf4j.LoggerFactory
 
@@ -60,7 +60,7 @@ fun AutoCompleteTextView.bindValue(value: String?) {
 
 @BindingAdapter("data")
 fun AutoCompleteTextView.bindData(data: List<String>?) {
-    val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
+    val logger = LoggerFactory.getLogger(LogupActivityViewModel::class.java)
     if (data!= null && data.size> 0) {
         val adapter = ArrayAdapter(context, R.layout.spinner_item, R.id.tvItem, data)
         setAdapter(adapter)
@@ -169,7 +169,7 @@ private fun hideSoftKeybord(context: Context) {
 }
 
 @BindingAdapter(value= arrayOf("valueAttrChanged", "viewmodel"), requireAll = false)
-fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?, viewmodel: ProfileViewModel?) {
+fun Spinner.setListeners(inverseBindingListener: InverseBindingListener?, viewmodel: ProfileFragmentViewModel?) {
 
     if (inverseBindingListener== null) {
         onItemClickListener= null

@@ -7,6 +7,10 @@
         <variable
             name="item"
             type="es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate.MemberUserViewModel" />
+
+        <variable
+            name="fragment"
+            type="es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -27,6 +31,8 @@
                 app:bgColor="@{item.profileBackColor}"
                 app:textColor="@{item.profileTextColor}"
                 app:textView="@{item.firstName}"
+                android:clickable="@{item.isBoss()}"
+                android:onClick="@{()-> fragment.onProfileImageClick(item.)"
                 app:animation="false"
                 android:layout_width="50dp"
                 android:layout_height="50dp"

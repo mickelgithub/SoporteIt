@@ -19,14 +19,17 @@ import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteT
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.database.RemoteUserDatasourceManager
 import es.samiralkalii.myapps.soporteit.framework.remotestorage.storage.RemoteUserStorageDataSourceManager
 import es.samiralkalii.myapps.soporteit.framework.sharedpreferences.SharedPreferencesManager
-import es.samiralkalii.myapps.soporteit.ui.home.HomeViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.HomeActivityViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.absences.AbsencesFragmentViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.holidays.HolidaysFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
-import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel
-import es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModel
-import es.samiralkalii.myapps.soporteit.ui.splash.SplashViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragmentViewModel
+import es.samiralkalii.myapps.soporteit.ui.home.schedulers.SchedulersFragmentViewModel
+import es.samiralkalii.myapps.soporteit.ui.logup.LogupActivityViewModel
+import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivityViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -51,12 +54,15 @@ val appModule= module {
 
 
 
-    viewModel { SplashViewModel(get()) }
-    viewModel { LogupViewModel(get(), get(), get(), get(), get()) }
-    viewModel { HomeViewModel(get())}
-    viewModel { ProfileViewModel(get(), get(), get()) }
+    viewModel { SplashActivityViewModel(get()) }
+    viewModel { LogupActivityViewModel(get(), get(), get(), get(), get()) }
+    viewModel { HomeActivityViewModel(get())}
+    viewModel { ProfileFragmentViewModel(get(), get(), get()) }
     viewModel { HomeFragmentViewModel(get(), get(), get()) }
     viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get(), get()) }
     viewModel { HomeNotificationsFragmentViewModel(get(), get(), get(), get()) }
     viewModel { ConfirmMemberDialog.ConfirmMemberDialogViewModel(get(), get(), get()) }
+    viewModel { SchedulersFragmentViewModel() }
+    viewModel { AbsencesFragmentViewModel() }
+    viewModel { HolidaysFragmentViewModel() }
 }

@@ -32,7 +32,7 @@ class LogupActivity : BaseActivity(),
 
     private val logger = LoggerFactory.getLogger(LogupActivity::class.java)
 
-    override val viewModel: LogupViewModel by viewModel()
+    override val viewModel: LogupActivityViewModel by viewModel()
     private lateinit var binding: ActivityLogupBinding
     private lateinit var bindingLogup: SceneLogupFormBinding
     private val bindingLogin: SceneLoginFormBinding by lazy {
@@ -59,7 +59,6 @@ class LogupActivity : BaseActivity(),
             viewModel= viewModel
             lifecycleOwner= this@LogupActivity
         }
-
         setContentView(binding.root)
 
         bindingLogup= SceneLogupFormBinding.inflate(layoutInflater, container, false).apply {
@@ -72,7 +71,6 @@ class LogupActivity : BaseActivity(),
                 v.postDelayed({v.animateRevealViewInverse{}}, 1)
             }
         }
-
 
         scene1= Scene(container, bindingLogup.root)
         scene1.enter()
@@ -100,11 +98,11 @@ class LogupActivity : BaseActivity(),
 
         viewModel.uiModel.loginOrLogUp.observe(this, Observer {
             when (it) {
-                LogupViewModel.SCREEN_LOGUP.LOGIN -> {
+                LogupActivityViewModel.ScreenLogup.LOGIN -> {
                     bindingLogin.invalidateAll()
                     TransitionManager.go(scene2, transitionMngLogUpToLogIn)
                 }
-                LogupViewModel.SCREEN_LOGUP.LOGUP -> {
+                LogupActivityViewModel.ScreenLogup.LOGUP -> {
                     bindingLogup.invalidateAll()
                     TransitionManager.go(scene1, transitionMngLogUpToLogIn)
                 }
@@ -119,7 +117,7 @@ class LogupActivity : BaseActivity(),
             viewModel.updateDepartmentsOfArea(it)
         })
         viewModel.uiModel.profileColor.observe(this, Observer {
-            if (viewModel.uiModel.loginOrLogUp.value== LogupViewModel.SCREEN_LOGUP.LOGUP) {
+            if (viewModel.uiModel.loginOrLogUp.value== LogupActivityViewModel.ScreenLogup.LOGUP) {
                 bindingLogup.cardProfileView.postDelayed({
                     bindingLogup.cardProfileView.setTextView(getFirstName(viewModel.uiModel.name.value), it.first, it.second)
                 }, MyDialog.DIALOG_DISMISS_DELAY+ 10)
@@ -134,15 +132,17 @@ class LogupActivity : BaseActivity(),
             is LoginState.LoginOk -> {
                 logger.debug("Login correcto, goto Home")
                 disableInputsLogin()
-                if (!screenState.renderState.user.profileImage.isNullOrBlank()) {
+                if (screenState.renderState.user.profileImage.isNotEmpty()) {
                     //val shake = AnimationUtils.loadAnimation(this, R.anim.shake);
                     //profile_image.startAnimation(shake)
                     Handler().postDelayed({viewModel.updateImageProfile(Uri.parse(screenState.renderState.user.profileImage))}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
                 } else {
                     Handler().postDelayed({viewModel.updateProfileColor(screenState.renderState.user.profileBackColor to screenState.renderState.user.profileTextColor)}, MyDialog.DIALOG_DISMISS_DELAY+ 10)
                 }
+                val confirmed= (screenState.renderState.user.isBoss && screenState.renderState.user.bossConfirmation== SI ||
+                        !screenState.renderState.user.isBoss && screenState.renderState.user.membershipConfirmation== SI)
                 viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                Handler().postDelayed(Runnable { HomeActivity.startActivity(this, screenState.renderState.user.isEmailVerified) }, MyDialog.DIALOG_DISMISS_DELAY*2)
+                Handler().postDelayed({ HomeActivity.startActivity(this, screenState.renderState.user.isEmailVerified, confirmed) }, MyDialog.DIALOG_DISMISS_DELAY*2)
             }
             is LoginState.UpdateMessage -> {
                 logger.debug("Hubo un error en acceso, lo mostramos")
@@ -155,7 +155,7 @@ class LogupActivity : BaseActivity(),
 
     private fun showTeamVerificationMessage(logupState: LogupState.LoggedupAsManagerTeamOk) {
         showDialog(AlertDialog.newInstanceForMessage(getString(R.string.boss_verification_title), getString(R.string.boss_verification_msg),
-            getString(R.string.agree), { HomeActivity.startActivity(this, logupState.user.isEmailVerified)}))
+            getString(R.string.agree), { HomeActivity.startActivity(this, false, false)}))
     }
 
     private fun processStateLogUp(screenState: ScreenState.Render<LogupState>) {
@@ -164,17 +164,17 @@ class LogupActivity : BaseActivity(),
                 logger.debug("Registracion correcto, goto Home")
                 disableInputsLogup()
                 viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
-                if (screenState.renderState.user.profileImage.isNullOrBlank()) {
+                if (screenState.renderState.user.profileImage.isEmpty()) {
                     viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
                 }
                 Handler().postDelayed({
-                    HomeActivity.startActivity(this, screenState.renderState.user.isEmailVerified)
+                    HomeActivity.startActivity(this, false, false)
                 }, MyDialog.DIALOG_DISMISS_DELAY*2)
             }
             is LogupState.LoggedupAsManagerTeamOk -> {
                 logger.debug("Registracion correcto como jefe de equipo, mostrar mensaje y go home")
                 disableInputsLogup()
-                if (screenState.renderState.user.profileImage.isNullOrBlank()) {
+                if (screenState.renderState.user.profileImage.isEmpty()) {
                     viewModel.updateProfileColor(Pair(screenState.renderState.user.profileBackColor, screenState.renderState.user.profileTextColor))
                 }
                 viewModel.updateDialogState(MyDialog.DialogState.UpdateSuccess())
@@ -232,7 +232,7 @@ class LogupActivity : BaseActivity(),
         )
         pickIntent.type = IMAGE_MIMETYPE
 
-        val chooserIntent = Intent.createChooser(getIntent, getString(es.samiralkalii.myapps.soporteit.R.string.select_image))
+        val chooserIntent = Intent.createChooser(getIntent, getString(R.string.select_image))
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
 
         startActivityForResult(chooserIntent, PICK_IMAGE)
@@ -262,10 +262,10 @@ class LogupActivity : BaseActivity(),
         when(requestCode) {
             PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    logger.debug("value", "Permission Granted, Now you can use local drive .");
+                    logger.debug("value", "Permission Granted, Now you can use local drive .")
                     showChooserToPickImage()
                 } else {
-                    logger.debug("value", "Permission Denied, You cannot use local drive .");
+                    logger.debug("value", "Permission Denied, You cannot use local drive .")
                 }
             }
         }

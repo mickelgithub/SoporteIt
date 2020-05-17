@@ -11,16 +11,18 @@ abstract class BaseFragment: Fragment() {
 
     private val logger= LoggerFactory.getLogger(BaseFragment::class.java)
 
+    internal abstract val viewModel: BaseFragmentViewModel
 
     abstract fun initUI(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     abstract fun initStateObservation()
-    open fun initLoading(args: Bundle?) {
+    open fun initLoading() {
+        viewModel.init(arguments)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        logger.debug("${this.javaClass.name} onCreate******")
-        initLoading(arguments)
+        logger.debug("{$this.javaClass.simpleName} ${this.hashCode()} onCreate******")
+        initLoading()
     }
 
     override fun onCreateView(
@@ -28,50 +30,49 @@ abstract class BaseFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        logger.debug("${this.javaClass.name} onCreateView******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onCreateView******")
         return initUI(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        logger.debug("${this.javaClass.name} onViewCreated******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onViewCreated******")
         initStateObservation()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        logger.debug("${this.javaClass.name} onActivityCreated******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onActivityCreated******")
     }
 
     override fun onStart() {
         super.onStart()
-        logger.debug("${this.javaClass.name} onStart******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onStart******")
     }
 
     override fun onResume() {
         super.onResume()
-        logger.debug("${this.javaClass.name} onResume******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onResume******")
     }
 
     override fun onPause() {
         super.onPause()
-        logger.debug("${this.javaClass.name} onPause******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onPause******")
     }
 
     override fun onStop() {
         super.onStop()
-        logger.debug("${this.javaClass.name} onStop******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onStop******")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        logger.debug("${this.javaClass.name} onDestroyView******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onDestroyView******")
     }
-
-
 
     override fun onDestroy() {
         super.onDestroy()
-        logger.debug("${this.javaClass.name} onDestroy******")
+        logger.debug("${this.javaClass.simpleName} ${this.hashCode()} onDestroy******")
     }
+
 }

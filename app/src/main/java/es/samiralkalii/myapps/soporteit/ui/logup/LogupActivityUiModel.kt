@@ -13,7 +13,7 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 
-class LogupViewModelUiModel: UiModel {
+class LogupActivityUiModel: UiModel {
 
     val name= MutableLiveData("")
     val email= MutableLiveData("")
@@ -109,8 +109,8 @@ class LogupViewModelUiModel: UiModel {
     val progressVisible: LiveData<MyDialog.DialogState>
         get()= _progressVisible
 
-    val _loginOrLogUp= MutableLiveData(LogupViewModel.SCREEN_LOGUP.LOGUP)
-    val loginOrLogUp: LiveData<LogupViewModel.SCREEN_LOGUP>
+    val _loginOrLogUp= MutableLiveData(LogupActivityViewModel.ScreenLogup.LOGUP)
+    val loginOrLogUp: LiveData<LogupActivityViewModel.ScreenLogup>
         get()= _loginOrLogUp
 
     private fun getMediatorLiveDataForLoginButtonEnabledState()= MediatorLiveData<Boolean>().apply {
@@ -196,7 +196,7 @@ class LogupViewModelUiModel: UiModel {
                     _areasEnabled.value= true
                 }
             }
-            val isBossLocal= isBoss?.value!= null && isBoss?.value== true
+            val isBossLocal= isBoss.value!= null && isBoss.value== true
             if (isBossLocal) {
                 if (bossCategories.getBossCategory(it).level>=2) {
                     departCorrect= true

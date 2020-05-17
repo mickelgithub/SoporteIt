@@ -9,12 +9,14 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHolidaysBinding
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
 class HolidaysFragment: BaseFragment() {
 
     private val logger= LoggerFactory.getLogger(HolidaysFragment::class.java)
 
+    override val viewModel: HolidaysFragmentViewModel by viewModel()
     private lateinit var binding: FragmentHolidaysBinding
 
     override fun initUI(

@@ -2,6 +2,7 @@ package es.samiralkalii.myapps.soporteit.ui.home.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.ui.UiModel
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
@@ -25,5 +26,9 @@ class HomeFragmentViewModelUiModel: UiModel {
     val _refreshingState= MutableLiveData<Event<Boolean>?>()
     val refreshingState: LiveData<Event<Boolean>?>
         get() = _refreshingState
+
+    var _user= MutableLiveData<User?>()
+    val user: LiveData<User?>
+        get() = _user
 
 }

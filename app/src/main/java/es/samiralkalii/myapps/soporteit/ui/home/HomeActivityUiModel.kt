@@ -5,11 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import es.samiralkalii.myapps.soporteit.ui.UiModel
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 
-class HomeViewModelUiModel: UiModel {
+class HomeActivityUiModel: UiModel {
 
     val _emailValidated= MutableLiveData<Boolean>()
     val emailValidated: LiveData<Boolean>
         get() = _emailValidated
+
+    val _confirmed= MutableLiveData<Boolean>()
+    val confirmed: LiveData<Boolean>
+        get() = _confirmed
 
     val _navTo= MutableLiveData<Event<Int>>()
     val navTo: LiveData<Event<Int>>

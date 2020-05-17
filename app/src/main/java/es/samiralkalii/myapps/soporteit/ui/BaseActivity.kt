@@ -18,8 +18,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        logger.debug("${this.javaClass.name} onCreate******")
-        //logger.debug(this.javaClass.name+ "...............................................")
+        logger.debug("${this.javaClass.simpleName} onCreate******")
         initLoading(intent.extras)
         initUI()
         initStateObservation()
@@ -27,31 +26,31 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        logger.debug("${this.javaClass.name} onStart******")
+        logger.debug("${this.javaClass.simpleName} onStart******")
     }
 
     override fun onResume() {
         super.onResume()
-        logger.debug("${this.javaClass.name} onResume******")
+        logger.debug("${this.javaClass.simpleName} onResume******")
     }
 
     override fun onPause() {
         super.onPause()
-        logger.debug("${this.javaClass.name} onPause******")
+        logger.debug("${this.javaClass.simpleName} onPause******")
     }
 
     override fun onStop() {
         super.onStop()
-        logger.debug("${this.javaClass.name} onStop******")
+        logger.debug("${this.javaClass.simpleName} onStop******")
     }
 
     override fun onRestart() {
         super.onRestart()
-        logger.debug("${this.javaClass.name} onRestart******")
+        logger.debug("${this.javaClass.simpleName} onRestart******")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        logger.debug("${this.javaClass.name} onDestroy******")
+        logger.debug("${this.javaClass.simpleName} onDestroy******")
     }
 }

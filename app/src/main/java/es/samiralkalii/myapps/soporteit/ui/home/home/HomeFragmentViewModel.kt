@@ -3,21 +3,18 @@ package es.samiralkalii.myapps.soporteit.ui.home.home
 import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestoreException
-import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.BaseFragmentViewModel
-import es.samiralkalii.myapps.soporteit.ui.BaseViewModel
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.home.HomeActivityViewModel.Companion.CONFIRMED_BUNDLE_KEY
+import es.samiralkalii.myapps.soporteit.ui.home.HomeActivityViewModel.Companion.IS_EMAIL_VALIDATED_BUNDLE_KEY
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.ConfirmDenyMemberUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetGroupsUseCase
 import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 
 class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
@@ -27,12 +24,16 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
 
     private val logger = LoggerFactory.getLogger(HomeFragmentViewModel::class.java)
 
-    private lateinit var user: User
-
     override val uiModel= HomeFragmentViewModelUiModel()
 
-    override fun init() {
-        initData()
+    override fun init(bundle: Bundle?) {
+        bundle?.let {
+            val isEmailValidated= it.getBoolean(IS_EMAIL_VALIDATED_BUNDLE_KEY, false)
+            val isConfirmed= it.getBoolean(CONFIRMED_BUNDLE_KEY, false)
+            if (isEmailValidated && isConfirmed) {
+                initData()
+            }
+        }
     }
 
     fun updateDialogState(dialog: MyDialog.DialogState) {
@@ -43,8 +44,8 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         uiModel._items.value= items.toMutableList()
     }
 
-
     fun initData(refresh: Boolean= false) {
+        logger.debug("estamos haciendo el initData...<>><<<<<<<<<<<<<<<<<<<<<<<<")
         if (!refresh) {
             uiModel._items.value= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelLoading)
         }
@@ -63,18 +64,19 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         }
         viewModelScope.launch(errorHandler) {
 
-            val groupList= async(Dispatchers.IO) {
-                user= getUserUseCase()
+            val groupList= withContext(Dispatchers.IO) {
+                val user= getUserUseCase()
+                uiModel._user.postValue(user)
                 getGroupsUseCase(user)
-            }.await()
+            }
             var result= mutableListOf<MemberUserViewModelTemplate>(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
             if (!groupList.isEmpty) {
                 result= groupList.groups.map {
                     val items= mutableListOf<MemberUserViewModelTemplate>()
                     items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name))
-                    items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, this@HomeFragmentViewModel) })
+                    items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem) })
                     items
-                }.flatMap({it}).toMutableList()
+                }.flatMap{it}.toMutableList()
                 if (groupList.groups.size== 1 && groupList.groups[0].members.isEmpty()) {
                     result.add(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
                 }
@@ -86,7 +88,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         }
     }
 
-    suspend fun confirmDenyMember(user: String, isConfirmed: Boolean)= confirmDenyMemberUseCase(user, isConfirmed)
+    //suspend fun confirmDenyMember(user: String, isConfirmed: Boolean)= confirmDenyMemberUseCase(user, isConfirmed)
 
     fun updateItem(position: Int, memberUserViewModel: MemberUserViewModelTemplate) {
         uiModel._items.value?.let {
@@ -97,7 +99,5 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
     fun removeItem(position: Int) {
         uiModel._items.value?.removeAt(position)
     }
-
-
 
 }

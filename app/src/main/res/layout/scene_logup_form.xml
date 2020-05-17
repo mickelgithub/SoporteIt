@@ -9,7 +9,7 @@
         <import type="android.view.View" />
         <variable
             name="uiModel"
-            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelUiModel" />
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupActivityUiModel" />
         <variable
             name="interactor"
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelInteractor" />

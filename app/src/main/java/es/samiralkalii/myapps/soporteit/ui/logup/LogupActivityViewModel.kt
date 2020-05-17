@@ -20,21 +20,18 @@ import es.samiralkalii.myapps.usecase.authlogin.LogupUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetAreasDepartmentsUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetBossCategoriesUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetHolidayDaysUseCase
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 
-class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase,
-                     private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase,
-                     private val getBossCategoriesUseCase: GetBossCategoriesUseCase,
-                     private val getHolidayDaysUseCase: GetHolidayDaysUseCase
+class LogupActivityViewModel(private val logupUseCase: LogupUseCase, private val loginUserCase: LoginUserCase,
+                             private val getAreasDepartmentsUseCase: GetAreasDepartmentsUseCase,
+                             private val getBossCategoriesUseCase: GetBossCategoriesUseCase,
+                             private val getHolidayDaysUseCase: GetHolidayDaysUseCase
 ) : BaseViewModel(), LogupViewModelInteractor {
 
-    private val logger = LoggerFactory.getLogger(LogupViewModel::class.java)
+    private val logger = LoggerFactory.getLogger(LogupActivityViewModel::class.java)
 
-    override val uiModel= LogupViewModelUiModel()
+    override val uiModel= LogupActivityUiModel()
 
     override fun init(data: Bundle?) {
         loadData()
@@ -68,7 +65,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             uiModel._areas.value= uiModel.areasDepartments.areasDepartments.keys.map { it.name }.toList()
             uiModel.bossCategories.getBossCategoriesName().let {
                 uiModel._bossCategories.value= it
-                if (!it.isEmpty()) {
+                if (it.isNotEmpty()) {
                     uiModel.bossCategory.value= it[0]
                 }
             }
@@ -92,7 +89,6 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     }
 
     private fun loginUser() {
-
         clearErrorsLogin()
         if (uiModel.email.value!!.isBlank() || !uiModel.email.value!!.contains("@")) {
             uiModel._emailError.value = R.string.email_incorrect_message_error
@@ -128,10 +124,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
                 }
             }
             viewModelScope.launch(errorHandler) {
-                val result= async(Dispatchers.IO) {
+                val result= withContext(Dispatchers.IO) {
                     val resultLoginIn= loginUserCase(uiModel.email.value!!, uiModel.password.value!!)
                     resultLoginIn
-                }.await()
+                }
                 when (result) {
                     is LoginUserCase.Result.LoginOk -> {
                         uiModel._user.value= result.user
@@ -142,7 +138,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         }
     }
 
-    fun logupUser() {
+    private fun logupUser() {
         clearErrorsLogUp()
         if (uiModel.name.value!!.isBlank() || uiModel.name.value!!.length< 4) {
             uiModel._nameError.value = R.string.name_incorrect_message_error
@@ -189,10 +185,10 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
 
             viewModelScope.launch(errorHandler) {
                 var userLocal: User?= null
-                val result= async(Dispatchers.IO) {
+                val result= withContext(Dispatchers.IO) {
                     userLocal= createUserForLogup()
                     logupUseCase(userLocal!!)
-                }.await()
+                }
                 when (result) {
                     is LogupUseCase.Result.LoggedUpOk -> {
                         uiModel._logupState.value = Event(ScreenState.Render(LogupState.LoggedupOk(result.user)))
@@ -225,17 +221,16 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
             uiModel.areasDepartments.getDepartment(uiModel.area.value!!, uiModel.department.value!!) else null
 
         val holidaysDay= if (isEmployeeBoss) uiModel.holidays.holidayDays else User.DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS
-        val internalEmployee= if (isEmployeeBoss) true else false
 
         return User(name= uiModel.name.value!!, email = uiModel.email.value!!, password = uiModel.password.value!!,
             profileImage = uiModel._imageProfile.value?.toString() ?: "", area= areaObj?.name ?: "",
             areaId = areaObj?.id ?: "", department = departmentObj?.name ?: "", departmentId = departmentObj?.id ?: "",
             isBoss = isEmployeeBoss, bossCategory = bossCategoryObj?.name ?: "",
-            holidayDays = holidaysDay, internalEmployee = internalEmployee,
+            holidayDays = holidaysDay, internalEmployee = isEmployeeBoss,
             bossCategoryId = bossCategoryObj?.id ?: "",
             bossLevel = bossCategoryObj?.level ?: 0,
-            profileBackColor = profColor.first ?: -1,
-            profileTextColor = profColor.second ?: -1)
+            profileBackColor = profColor.first,
+            profileTextColor = profColor.second)
     }
 
     override fun onLogupClick()= logupUser()
@@ -247,19 +242,19 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
     }
 
     override fun onAlreadyLoggedUpClick() {
-        uiModel._loginOrLogUp.value= SCREEN_LOGUP.LOGIN
+        uiModel._loginOrLogUp.value= ScreenLogup.LOGIN
         updateImageProfile(null)
         clearErrorsLogUp()
     }
 
     override fun noAcountClick() {
-        uiModel._loginOrLogUp.value= SCREEN_LOGUP.LOGUP
+        uiModel._loginOrLogUp.value= ScreenLogup.LOGUP
         clearErrorsLogin()
     }
 
     fun updateDepartmentsOfArea(area: String?) {
         if (!area.isNullOrBlank()) {
-            val departments= uiModel.areasDepartments.getDepartmentsName(area!!)
+            val departments= uiModel.areasDepartments.getDepartmentsName(area)
             if (departments!= uiModel._departments.value) {
                 uiModel._departments.value= departments
                 uiModel.department.value= ""
@@ -275,7 +270,7 @@ class LogupViewModel(private val logupUseCase: LogupUseCase, private val loginUs
         uiModel._profileColor.value= color
     }
 
-    enum class SCREEN_LOGUP {
+    enum class ScreenLogup {
         LOGUP, LOGIN
     }
 

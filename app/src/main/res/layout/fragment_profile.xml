@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileViewModel" />
+            name="uiModel"
+            type="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragmentUiModel" />
 
         <variable
             name="fragment"
@@ -24,10 +24,10 @@
             android:clickable="true"
             android:id="@+id/costum_profile_image"
             android:onClick="@{()-> fragment.onImageProfileClick()}"
-            app:imageView="@{viewModel.profileImage.toString()}"
-            app:bgColor="@{viewModel.user.profileBackColor}"
-            app:textColor="@{viewModel.user.profileTextColor}"
-            app:textView="@{viewModel.user.firstName}"
+            app:imageView="@{uiModel.profileImage.toString()}"
+            app:bgColor="@{uiModel.user.profileBackColor}"
+            app:textColor="@{uiModel.user.profileTextColor}"
+            app:textView="@{uiModel.user.firstName}"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
@@ -76,7 +76,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/backgroud_rounded"
-            android:text="@{viewModel.user.name}"
+            android:text="@{uiModel.user.name}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/name_image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +101,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/backgroud_rounded"
-            android:text="@{viewModel.user.email}"
+            android:text="@{uiModel.user.email}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/email_image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -126,7 +126,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/backgroud_rounded"
-            android:text='@{viewModel.user.bossLevel&gt;=1 ? viewModel.user.bossCategory : (viewModel.user.profile=="" ? @string/profile_not_confirmed_yet : viewModel.user.profile)}'
+            android:text='@{uiModel.user.bossLevel&gt;=1 ? uiModel.user.bossCategory : (uiModel.user.profile=="" ? @string/profile_not_confirmed_yet : uiModel.user.profile)}'
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/profile_image"
             app:layout_constraintEnd_toStartOf="@+id/boss_verification_state_image"
@@ -134,14 +134,14 @@
             app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
         <ImageView
-            android:src="@{viewModel.showVerified ? @drawable/ok_icon : @drawable/ko}"
+            android:src="@{uiModel.showVerified ? @drawable/ok_icon : @drawable/ko}"
             android:id="@+id/boss_verification_state_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            app:visible="@{viewModel.showVerified || viewModel.showNotVerifiedYet}"
+            app:visible="@{uiModel.showVerified || uiModel.showNotVerifiedYet}"
             android:onClick="@{()-> fragment.onImageConfirmationClick()}"
             app:layout_constraintBottom_toBottomOf="@+id/profile_text"
             app:layout_constraintEnd_toEndOf="parent"
@@ -153,7 +153,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            app:visible="@{viewModel.user.bossLevel&lt;=2}"
+            app:visible="@{uiModel.user.bossLevel&lt;=2}"
             android:tint="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image"
@@ -166,8 +166,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/backgroud_rounded"
-            android:text="@{viewModel.user.area}"
-            app:visible="@{viewModel.user.bossLevel&lt;=2}"
+            android:text="@{uiModel.user.area}"
+            app:visible="@{uiModel.user.bossLevel&lt;=2}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/area_image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -181,7 +181,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:tint="@color/colorPrimary"
-            app:visible="@{viewModel.user.bossLevel&lt;=1}"
+            app:visible="@{uiModel.user.bossLevel&lt;=1}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/area_image"
             app:srcCompat="@drawable/ic_group" />
@@ -193,8 +193,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/backgroud_rounded"
-            app:visible="@{viewModel.user.bossLevel&lt;=1}"
-            android:text="@{viewModel.user.department}"
+            app:visible="@{uiModel.user.bossLevel&lt;=1}"
+            android:text="@{uiModel.user.department}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/department_image"
             app:layout_constraintEnd_toEndOf="parent"

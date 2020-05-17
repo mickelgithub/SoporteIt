@@ -10,7 +10,7 @@
             type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelInteractor" />
         <variable
             name="uiModel"
-            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupViewModelUiModel" />
+            type="es.samiralkalii.myapps.soporteit.ui.logup.LogupActivityUiModel" />
     </data>
 
     <ScrollView

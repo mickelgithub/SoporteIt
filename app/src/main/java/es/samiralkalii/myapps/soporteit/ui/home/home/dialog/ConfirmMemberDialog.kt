@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.teammanagement.Profiles
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogMemberConfirmationBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.*
@@ -52,21 +54,20 @@ class ConfirmMemberDialog: MyDialog() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        logger.debug("onCreate...")
 
-        val bundle= Bundle().apply {
-            val user = requireArguments().getString(KEY_ID, "")
-            this@ConfirmMemberDialog.user= user
-            val email = requireArguments().getString(KEY_EMAIL, "")
-            val remoteProfileImage = requireArguments().getString(KEY_REMOTE_PROFILE_IMAGE, "")
-            val name = requireArguments().getString(KEY_NAME, "")
-            val profileTextColor = requireArguments().getInt(KEY_PROFILE_TEXT_COLOR, -1)
-            val profileBackColor = requireArguments().getInt(KEY_PROFILE_BACK_COLOR, -1)
-            val area= requireArguments().getString(KEY_AREA_ID, "")
-            val internal= requireArguments().getBoolean(KEY_INTERNAL_EMPLOYEE, false)
-            viewModel.publishUser(user, email, remoteProfileImage,
-                name, profileTextColor, profileBackColor, area)
-            logger.debug("onCreate...")
-        }
+        val user = requireArguments().getString(KEY_ID, "")
+        this@ConfirmMemberDialog.user= user
+        val email = requireArguments().getString(KEY_EMAIL, "")
+        val remoteProfileImage = requireArguments().getString(KEY_REMOTE_PROFILE_IMAGE, "")
+        val name = requireArguments().getString(KEY_NAME, "")
+        val profileTextColor = requireArguments().getInt(KEY_PROFILE_TEXT_COLOR, -1)
+        val profileBackColor = requireArguments().getInt(KEY_PROFILE_BACK_COLOR, -1)
+        val area= requireArguments().getString(KEY_AREA_ID, "")
+        viewModel.publishUser(user, email, remoteProfileImage,
+            name, profileTextColor, profileBackColor, area)
+
+
     }
 
     override fun onCreateView(
@@ -83,12 +84,22 @@ class ConfirmMemberDialog: MyDialog() {
         return binding.root
     }
 
+    private fun getCallingFragment(): HomeFragment {
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        navHost?.let { navFragment ->
+            navFragment.childFragmentManager.primaryNavigationFragment?.let {fragment->
+                return fragment as HomeFragment
+            }
+        }
+        throw java.lang.IllegalStateException("Algun error de estado")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.dismissDialog.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it) {
-                    val homeFragment= requireActivity().supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName) as HomeFragment
+                    val homeFragment= getCallingFragment()
                     if (homeFragment!= null) {
                         homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
                     }

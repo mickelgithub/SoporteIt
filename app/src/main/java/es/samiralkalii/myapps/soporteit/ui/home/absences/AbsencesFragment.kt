@@ -4,17 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentAbsencesBinding
 import es.samiralkalii.myapps.soporteit.ui.BaseFragment
 import org.slf4j.LoggerFactory
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class AbsencesFragment: BaseFragment() {
 
     private val logger = LoggerFactory.getLogger(AbsencesFragment::class.java)
 
+    override val viewModel: AbsencesFragmentViewModel by viewModel()
+
     private lateinit var binding: FragmentAbsencesBinding
+
     override fun initUI(
         inflater: LayoutInflater,
         container: ViewGroup?,
