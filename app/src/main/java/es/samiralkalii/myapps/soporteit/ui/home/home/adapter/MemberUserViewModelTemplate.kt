@@ -14,7 +14,7 @@ sealed class MemberUserViewModelTemplate {
 
     class GroupMemberUserViewModel(val groupName: String): MemberUserViewModelTemplate()
 
-    class MemberUserViewModel(val user: User): MemberUserViewModelTemplate() {
+    class MemberUserViewModel(val user: User, val hostUser: User): MemberUserViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(MemberUserViewModel::class.java)
 

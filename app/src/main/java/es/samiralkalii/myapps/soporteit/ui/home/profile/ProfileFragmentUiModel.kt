@@ -15,7 +15,7 @@ class ProfileFragmentUiModel: UiModel {
     val profileImage: LiveData<Uri?>
         get()= _profileImage
 
-    val _showSaveMenu= MutableLiveData<Boolean>(false)
+    val _showSaveMenu= MutableLiveData(false)
     val showSaveMenu: LiveData<Boolean>
         get()= _showSaveMenu
 
@@ -35,9 +35,13 @@ class ProfileFragmentUiModel: UiModel {
     val showNotVerifiedYet: LiveData<Boolean>
         get() = _showNotVerifiedYet
 
-    val _user= MutableLiveData<User?>(User.EMPTY)
+    val _user= MutableLiveData(User.EMPTY)
     val user: LiveData<User?>
         get()= _user
+
+    val _isHost= MutableLiveData(true)
+    val isHost: LiveData<Boolean>
+        get()= _isHost
 
     var imageChanged: Boolean= false
 }

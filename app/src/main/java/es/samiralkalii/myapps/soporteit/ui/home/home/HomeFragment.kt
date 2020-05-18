@@ -163,7 +163,7 @@ class HomeFragment: BaseFragment() {
             it.postDelayed({
                 it.animateRevealView{it.visibility= View.GONE}
                 if (isConfirmed) {
-                    val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"))
+                    val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel.uiModel.user.value!!)
                     val position= adapter.members.indexOf(memberUserViewModel)
                     viewModel.updateItem(position, newItem)
                     adapter.members[position]= newItem
@@ -182,7 +182,8 @@ class HomeFragment: BaseFragment() {
     }
 
     fun onProfileImageClick(user: String) {
-
+        val action= HomeFragmentDirections.actionHomeFragmentToProfileFragment(user)
+        navController.navigate(action)
     }
 
 }

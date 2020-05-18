@@ -20,10 +20,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
+
+
 class ProfileFragmentViewModel(private val compare2ImageProfileUseCase: Compare2ImageProfileUseCase,
                                private val updateProfileImageUseCase: UpdateProfileImageUseCase,
                                private val getUserUseCase: GetUserUseCase
 ): BaseFragmentViewModel() {
+
+    companion object {
+        const val USER_BUNDLE_KEY= "user"
+    }
 
     private val logger = LoggerFactory.getLogger(ProfileFragmentViewModel::class.java)
 
@@ -32,11 +38,18 @@ class ProfileFragmentViewModel(private val compare2ImageProfileUseCase: Compare2
 
     override fun init(bundle: Bundle?) {
         viewModelScope.launch {
+            val userArg= bundle?.getString(USER_BUNDLE_KEY, "")
             uiModel._user.value = async(Dispatchers.IO) {
-                getUserUseCase()
+                getUserUseCase(userArg)
             }.await()
             uiModel._user.value?.let {
-                uiModel._profileImage.value= if (!it.profileImage.isNullOrBlank()) Uri.parse(it.profileImage) else null
+                val isHost= if (userArg.isNullOrBlank()) true else false
+                if (!isHost) {
+                    uiModel._isHost.value= isHost
+                    uiModel._profileImage.value= if (it.remoteProfileImage.isNullOrBlank()) null else Uri.parse(it.remoteProfileImage)
+                } else {
+                    uiModel._profileImage.value= if (!it.profileImage.isNullOrBlank()) Uri.parse(it.profileImage) else null
+                }
                 uiModel._showVerified.value= (it.isBoss && it.bossConfirmation== SI) ||
                         (!it.isBoss && it.membershipConfirmation== SI)
                 uiModel._showNotVerifiedYet.value= (it.isBoss && it.bossConfirmation== "") ||

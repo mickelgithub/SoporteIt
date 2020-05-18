@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage
-            android:clickable="true"
+            android:clickable="@{uiModel.isHost}"
             android:id="@+id/costum_profile_image"
             android:onClick="@{()-> fragment.onImageProfileClick()}"
             app:imageView="@{uiModel.profileImage.toString()}"
@@ -140,7 +140,7 @@
             android:layout_height="30dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
+            android:clickable="@{uiModel.isHost}"
             app:visible="@{uiModel.showVerified || uiModel.showNotVerifiedYet}"
             android:onClick="@{()-> fragment.onImageConfirmationClick()}"
             app:layout_constraintBottom_toBottomOf="@+id/profile_text"

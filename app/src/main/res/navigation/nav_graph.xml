@@ -30,7 +30,10 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragment"
-        android:label="@string/profile" >
+        android:label="@string/profile">
+        <argument
+            android:name="user"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/profileFragmentTopLevel"
