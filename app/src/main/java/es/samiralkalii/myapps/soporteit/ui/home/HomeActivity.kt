@@ -115,7 +115,7 @@ class HomeActivity : BaseActivity() {
 
 
     private fun gotoScreen(navTo: Int) {
-        bottomNav.menu.getItem(0).isCheckable= true
+        //bottomNav.menu.getItem(0).isCheckable= true
 
         when (navTo) {
             R.id.profileFragmentTopLevel -> {
@@ -123,6 +123,7 @@ class HomeActivity : BaseActivity() {
             }
             R.id.homeFragment -> {
                 //nothing because is the the startDestination
+                disableEnableBottonNavViewOption(navTo)
             }
             else -> {
                 navController.navigate(navTo)
