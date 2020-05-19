@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import androidx.annotation.IdRes
 import androidx.core.os.bundleOf
+import androidx.core.view.iterator
 import androidx.lifecycle.Observer
 import androidx.navigation.NavArgument
 import androidx.navigation.NavController
@@ -20,7 +22,6 @@ import es.samiralkalii.myapps.soporteit.ui.home.HomeActivityViewModel.Companion.
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentDirections
 import es.samiralkalii.myapps.soporteit.ui.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.dialog_member_confirmation.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -62,15 +63,29 @@ class HomeActivity : BaseActivity() {
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id) {
                 R.id.homeFragment -> {
-                    val args1= NavArgument.Builder().setDefaultValue(viewModel.uiModel.emailValidated.value).build()
-                    val args2= NavArgument.Builder().setDefaultValue(viewModel.uiModel.confirmed.value).build()
+                    val args1 = NavArgument.Builder()
+                        .setDefaultValue(viewModel.uiModel.emailValidated.value).build()
+                    val args2 =
+                        NavArgument.Builder().setDefaultValue(viewModel.uiModel.confirmed.value)
+                            .build()
                     destination.addArgument(IS_EMAIL_VALIDATED_BUNDLE_KEY, args1)
                     destination.addArgument(CONFIRMED_BUNDLE_KEY, args2)
                 }
             }
+            disableEnableBottonNavViewOption(destination.id)
         }
         navController.setGraph(navController.graph, bundleOf(IS_EMAIL_VALIDATED_BUNDLE_KEY to intent.extras!!.getBoolean(IS_EMAIL_VALIDATED_BUNDLE_KEY, false),
         CONFIRMED_BUNDLE_KEY to intent.extras!!.getBoolean(CONFIRMED_BUNDLE_KEY, false)))
+    }
+
+    private fun disableEnableBottonNavViewOption(@IdRes id: Int) {
+        bottomNav.menu.iterator().forEach {
+            if (it.itemId== id) {
+                it.isEnabled= false
+            } else {
+                it.isEnabled= true
+            }
+        }
     }
 
     private fun setupToolbarNavigationView() {
