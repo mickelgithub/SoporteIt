@@ -1,8 +1,11 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -21,11 +24,12 @@ import es.samiralkalii.myapps.soporteit.ui.util.convertDpToPixels
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
+
 private const val DISTANCE_TO_TRIGGER_SWIP= 250F
 private const val DELAY_1000= 1000L
 private const val DELAY_400= 400L
 
-class HomeFragment: BaseFragment() {
+class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
 
     private val logger= LoggerFactory.getLogger(HomeFragment::class.java)
 
@@ -45,7 +49,7 @@ class HomeFragment: BaseFragment() {
         if (args.isEmailValidated) {
             logger.debug("initUI******")
             binding= FragmentHomeBinding.inflate(inflater, container, false).apply {
-                viewModel= this@HomeFragment.viewModel
+                uiModel= this@HomeFragment.viewModel.uiModel
                 lifecycleOwner= viewLifecycleOwner
                 fragment= this@HomeFragment
                 swipeContainer.setDistanceToTriggerSync(requireActivity().convertDpToPixels(DISTANCE_TO_TRIGGER_SWIP).toInt())
@@ -101,6 +105,10 @@ class HomeFragment: BaseFragment() {
             }
         })
 
+        viewModel.uiModel.searchViewVisibility.observe(viewLifecycleOwner, Observer {
+            requireActivity().invalidateOptionsMenu()
+        })
+
         /*val resId = R.anim.layout_animation_fall_down
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, resId)
         binding.groupsRecycleView.setLayoutAnimation(animation)*/
@@ -135,17 +143,35 @@ class HomeFragment: BaseFragment() {
         }
     }
 
+    private fun initSearchView(menu: Menu) {
+        if (viewModel.uiModel.searchViewVisibility.value!!) {
+            val searchManager = getSystemService(requireActivity(), SearchManager::class.java)
+            val searchMenuItem = menu.findItem(R.id.search)
+            searchMenuItem.isVisible= true
+            val searchView = searchMenuItem.getActionView() as SearchView
+            searchView.setSearchableInfo(searchManager!!.getSearchableInfo(requireActivity().componentName))
+            searchView.setSubmitButtonEnabled(false)
+            searchView.setOnQueryTextListener(this)
+        } else {
+            menu.findItem(R.id.search).isVisible= false
+        }
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu) {
+        logger.debug("onPrepareOptionsMenu+++++++++++++++++++")
         super.onPrepareOptionsMenu(menu)
         if (menu.size()== 0) {
             requireActivity().menuInflater.inflate(R.menu.menu_home, menu)
         }
+        initSearchView(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        logger.debug("onCreateOptionsMenu+++++++++++++++++++")
         viewModel.uiModel.user.value?.let {
             if (it.isEmailVerified) {
                 inflater.inflate(R.menu.menu_home, menu)
+                initSearchView(menu)
             }
         }
     }
@@ -184,6 +210,17 @@ class HomeFragment: BaseFragment() {
     fun onProfileImageClick(user: String) {
         val action= HomeFragmentDirections.actionHomeFragmentToProfileFragment(user)
         navController.navigate(action)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        newText?.let {
+            viewModel.filterGroups(it)
+        }
+        return true
     }
 
 }

@@ -6,8 +6,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel" />
+            name="uiModel"
+            type="es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModelUiModel" />
 
         <variable
             name="fragment"
@@ -25,5 +25,6 @@
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </layout>

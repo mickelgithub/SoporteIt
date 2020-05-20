@@ -103,7 +103,7 @@
             app:startIconDrawable="@drawable/ic_viajero_con_maleta">
 
             <AutoCompleteTextView
-                android:id="@+id/holiday_days__dropdown"
+                android:id="@+id/holiday_days_dropdown"
                 style="@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle"
                 value="@={viewModel.holidayDaysValue}"
                 android:layout_width="match_parent"

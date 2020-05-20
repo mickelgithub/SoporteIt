@@ -27,6 +27,10 @@ class HomeFragmentViewModelUiModel: UiModel {
     val refreshingState: LiveData<Event<Boolean>?>
         get() = _refreshingState
 
+    val _searchViewVisibility= MutableLiveData<Boolean>(false)
+    val searchViewVisibility: LiveData<Boolean>
+        get() = _searchViewVisibility
+
     var _user= MutableLiveData<User?>()
     val user: LiveData<User?>
         get() = _user
