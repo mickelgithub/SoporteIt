@@ -189,14 +189,15 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
             it.postDelayed({
                 it.animateRevealView{it.visibility= View.GONE}
                 if (isConfirmed) {
-                    val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel.uiModel.user.value!!)
+                    /*val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel.uiModel.user.value!!)
                     val position= adapter.members.indexOf(memberUserViewModel)
                     viewModel.updateItem(position, newItem)
                     adapter.members[position]= newItem
                     adapter.notifyItemChanged(position)
                     if (internal) {
                         it.postDelayed({viewModel.init(null)}, DELAY_1000)
-                    }
+                    }*/
+                    viewModel.initData(true)
                 } else {
                     val position= adapter.members.indexOf(memberUserViewModel)
                     viewModel.removeItem(position)
