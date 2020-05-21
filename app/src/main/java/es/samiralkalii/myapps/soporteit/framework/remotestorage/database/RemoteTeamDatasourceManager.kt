@@ -199,12 +199,14 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
                 .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
                 .whereEqualTo(KEY_AREA_ID, user.areaId)
                 .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
+                .orderBy(KEY_BOSS_LEVEL, Query.Direction.DESCENDING)
         } else if (!user.isBoss && user.membershipConfirmation== SI){
             membersQuery= fstore.collection(USERS_REF)
                 .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
                 .whereEqualTo(KEY_AREA_ID, user.areaId)
                 .whereEqualTo(KEY_DEPARTMENT_ID, user.departmentId)
                 .whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, SI)
+                .orderBy(KEY_BOSS_LEVEL, Query.Direction.DESCENDING)
         }
         membersQuery?.let {
             val membersQueryresult= it.get(Source.SERVER).await()
