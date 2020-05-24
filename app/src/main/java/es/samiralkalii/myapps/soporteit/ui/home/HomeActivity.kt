@@ -80,11 +80,7 @@ class HomeActivity : BaseActivity() {
 
     private fun disableEnableBottonNavViewOption(@IdRes id: Int) {
         bottomNav.menu.iterator().forEach {
-            if (it.itemId== id) {
-                it.isEnabled= false
-            } else {
-                it.isEnabled= true
-            }
+            it.isEnabled= it.itemId!= id
         }
     }
 
@@ -105,12 +101,15 @@ class HomeActivity : BaseActivity() {
         })
 
         viewModel.uiModel.navTo.observe(this, Observer {
-            it.getContentIfNotHandled().let { navTo ->
-                if (navTo!= null) {
-                    gotoScreen(navTo)
+            logger.debug("hey....")
+            it.let {event ->
+                event.getContentIfNotHandled().let { navTo ->
+                    if (navTo!= 0) {
+                        gotoScreen(navTo!!)
+                    }
                 }
-            }}
-        )
+            }
+        })
     }
 
 
