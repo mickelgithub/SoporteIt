@@ -14,7 +14,6 @@ import es.samiralkalii.myapps.soporteit.databinding.HeaderGroupMembersItemBindin
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.MemberUserItemBinding
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
-import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 
 
 class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, val fragment: HomeFragment): RecyclerView.Adapter<MemberUserAdapter.MemberUserViewHolder>() {
@@ -31,7 +30,7 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
                     binding.item= memberUserViewModel as MemberUserViewModelTemplate.MemberUserViewModel
                     binding.fragment= fragment
                     memberUserViewModel.viewHolder= this
-                    memberUserViewModel.memberUserAdapter= memberUserAdapter!!
+                    //memberUserViewModel.memberUserAdapter= memberUserAdapter!!
                     memberUserViewModel.init()
                     binding.invalidateAll() //executePendingBindings()
                 }

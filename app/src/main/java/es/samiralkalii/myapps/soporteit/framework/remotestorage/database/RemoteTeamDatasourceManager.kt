@@ -279,4 +279,24 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
 
     }
 
+    override suspend fun getDepartmentUsers(area: String, deparment: String): List<User> {
+        delay(5000)
+        var queryResult = fstore.collection(USERS_REF)
+            .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
+            .whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, SI)
+            .whereEqualTo(KEY_AREA_ID, area)
+            .whereEqualTo(KEY_DEPARTMENT_ID, deparment)
+            .get(Source.SERVER).await()
+        if (!queryResult.isEmpty) {
+            val result = mutableListOf<User>()
+            queryResult.forEach { document ->
+                val user= document.toObject(User::class.java)
+                logger.debug(user.toString())
+                result.add(user)
+            }
+            return result
+        }
+        return listOf()
+    }
+
 }

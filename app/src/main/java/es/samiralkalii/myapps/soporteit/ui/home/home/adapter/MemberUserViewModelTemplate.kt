@@ -2,11 +2,12 @@ package es.samiralkalii.myapps.soporteit.ui.home.home.adapter
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
-import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.slf4j.LoggerFactory
 
@@ -19,7 +20,7 @@ sealed class MemberUserViewModelTemplate {
         private val logger= LoggerFactory.getLogger(MemberUserViewModel::class.java)
 
         lateinit var viewHolder: MemberUserAdapter.MemberUserViewHolder
-        lateinit var memberUserAdapter: MemberUserAdapter
+        //lateinit var memberUserAdapter: MemberUserAdapter
 
         private val _email= MutableLiveData<String?>()
         val email: LiveData<String?>
@@ -79,17 +80,17 @@ sealed class MemberUserViewModelTemplate {
 
         private fun showConfirmMemberDialog(user: String, email: String, remoteProfileImage: String,
                                             name: String, profileTextColor: Int, profileBackColor: Int, area: String) {
-            var confirmMemberDialog: ConfirmMemberDialog?= (viewHolder.itemView.context as AppCompatActivity).supportFragmentManager.findFragmentByTag(ConfirmMemberDialog::class.java.simpleName) as ConfirmMemberDialog?
+            var confirmMemberDialog: ConfirmMemberDialog?= (viewHolder.itemView.context as AppCompatActivity).supportFragmentManager.findFragmentByTag(
+                ConfirmMemberDialog::class.java.simpleName) as ConfirmMemberDialog?
             if (confirmMemberDialog== null) {
-                val bundle= Bundle().apply {
-                    putString(KEY_ID, user)
-                    putString(KEY_EMAIL, email)
-                    putString(KEY_REMOTE_PROFILE_IMAGE, remoteProfileImage)
-                    putString(KEY_NAME, name)
-                    putInt(KEY_PROFILE_TEXT_COLOR, profileTextColor)
-                    putInt(KEY_PROFILE_BACK_COLOR, profileBackColor)
-                    putString(KEY_AREA_ID, area)
-                }
+                val bundle= bundleOf(KEY_ID to user,
+                    KEY_EMAIL to email,
+                    KEY_REMOTE_PROFILE_IMAGE to remoteProfileImage,
+                    KEY_NAME to name,
+                    KEY_PROFILE_TEXT_COLOR to profileTextColor,
+                    KEY_PROFILE_BACK_COLOR to profileBackColor,
+                    KEY_AREA_ID to area
+                )
                 confirmMemberDialog= ConfirmMemberDialog.newInstance(bundle)
                 confirmMemberDialog.show((viewHolder.itemView.context as AppCompatActivity).supportFragmentManager, ConfirmMemberDialog::class.java.simpleName)
             }

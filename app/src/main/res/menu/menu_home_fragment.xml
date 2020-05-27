@@ -3,23 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_create_team"
+        android:id="@+id/new_group"
         app:showAsAction="never"
-        android:icon="@drawable/team_management"
-        android:title="@string/create_team" />
+        android:icon="@drawable/profile_icon"
+        android:title="@string/new_group" />
 
     <item
-        android:id="@+id/menu_item_invite"
+        android:id="@+id/profileFragment"
         app:showAsAction="never"
-        android:icon="@drawable/team_management"
-        android:title="@string/invite" />
+        android:icon="@drawable/profile_icon"
+        android:title="@string/profile" />
 
-    <item
-        android:id="@+id/menu_item_create_group"
-        app:showAsAction="never"
-        android:icon="@drawable/team_management"
-        android:title="@string/create_group" />
-
-
+    <item android:id="@+id/search"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
 </menu>

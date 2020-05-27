@@ -25,6 +25,7 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
 
     suspend fun getProfiles(area: String)= remoteTeamManagementDatasource.getProfiles(area)
 
+    suspend fun getDepartmentUsers(area: String, deparment: String)= remoteTeamManagementDatasource.getDepartmentUsers(area, deparment)
 
 }
 
@@ -44,6 +45,7 @@ interface IRemoteTeamManagementDatasource {
                                   profileId: String, holidayDays: Int, internal: Boolean)
     suspend fun getMemberConfirmationData(user: String): Map<String, Any?>
     suspend fun getProfiles(area: String): Profiles
+    suspend fun getDepartmentUsers(area: String, deparment: String): List<User>
 
 
 }

@@ -4,8 +4,10 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,9 +20,10 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
-import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
+import es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember.ConfirmMemberDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.newgroup.NewGroupDialog
+import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
-import es.samiralkalii.myapps.soporteit.ui.util.convertDpToPixels
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -161,7 +164,12 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         logger.debug("onPrepareOptionsMenu+++++++++++++++++++")
         super.onPrepareOptionsMenu(menu)
         if (menu.size()== 0) {
-            requireActivity().menuInflater.inflate(R.menu.menu_home, menu)
+            requireActivity().menuInflater.inflate(R.menu.menu_home_fragment, menu)
+            viewModel.uiModel.user.value?.let {
+                if (!it.isBoss) {
+                    menu.findItem(R.id.new_group).isVisible = false
+                }
+            }
         }
         initSearchView(menu)
     }
@@ -170,14 +178,27 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         logger.debug("onCreateOptionsMenu+++++++++++++++++++")
         viewModel.uiModel.user.value?.let {
             if (it.isEmailVerified) {
-                inflater.inflate(R.menu.menu_home, menu)
+                inflater.inflate(R.menu.menu_home_fragment, menu)
+                if (!it.isBoss) {
+                    menu.findItem(R.id.new_group).isVisible= false
+                }
                 initSearchView(menu)
             }
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.new_group -> {
+                viewModel.uiModel.user.value?.let {
+                    showNewGroupDialog(it.id, it.areaId, it.departmentId)
+                }
+                return true
+            }
+            else -> {
+                return item.onNavDestinationSelected(navController)
+            }
+        }
     }
 
     fun updateModelUserConfirmed(user: String, isConfirmed: Boolean, internal: Boolean) {
@@ -222,6 +243,18 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
             viewModel.filterGroups(it)
         }
         return true
+    }
+
+    private fun showNewGroupDialog(boss: String, area: String, department: String) {
+        var newGroupDialog: NewGroupDialog?= requireActivity().supportFragmentManager.findFragmentByTag(
+            NewGroupDialog::class.java.simpleName) as NewGroupDialog?
+        if (newGroupDialog== null) {
+            val bundle= bundleOf(KEY_ID to boss,
+                KEY_AREA_ID to area,
+                KEY_DEPARTMENT_ID to department)
+            newGroupDialog= NewGroupDialog.newInstance(bundle)
+            newGroupDialog.show(requireActivity().supportFragmentManager, NewGroupDialog::class.java.simpleName)
+        }
     }
 
 }

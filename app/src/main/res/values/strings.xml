@@ -2,6 +2,7 @@
     <string name="app_name">SoporteIt</string>
     <string name="to_filter">Filtrar...</string>
     <string name="name">Nombre Completo</string>
+    <string name="group_name">Nombre del grupo</string>
     <string name="mail">Email</string>
     <string name="password">Contraseña</string>
     <string name="retype_password">Repetir Contraseña</string>
@@ -46,6 +47,7 @@
     <string name="instructions_to_validate_your_email">Es necesario validar tu email, revisa tu correo y siga las instrucciones.</string>
     <string name="app_title_need_mail_validation">Es necesario validar tu email</string>
     <string name="profile">Perfil</string>
+    <string name="new_group">Nuevo grupo</string>
     <string name="schedulers">Planificadores</string>
     <string name="home_title">Mi equipo</string>
     <string name="team_created_title">Equipo: %1$s</string>

@@ -1,4 +1,4 @@
-package es.samiralkalii.myapps.soporteit.ui.home.home.dialog
+package es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember
 
 import android.content.Context
 import android.os.Bundle
@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestoreException
 import es.samiralkalii.myapps.domain.teammanagement.Profiles
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogMemberConfirmationBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
-import es.samiralkalii.myapps.soporteit.ui.dialog.PickUpProfilePhotoBottonSheetDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.*
@@ -41,7 +39,8 @@ class ConfirmMemberDialog: MyDialog() {
 
     companion object {
 
-        fun newInstance(bundle: Bundle)= ConfirmMemberDialog().apply {
+        fun newInstance(bundle: Bundle)= ConfirmMemberDialog()
+            .apply {
             this.arguments= bundle
         }
 

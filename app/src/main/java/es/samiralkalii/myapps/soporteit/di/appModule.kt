@@ -23,8 +23,9 @@ import es.samiralkalii.myapps.soporteit.ui.home.HomeActivityViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.absences.AbsencesFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.holidays.HolidaysFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
-import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.ConfirmMemberDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.dialog.InviteMemberDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.newgroup.NewGroupDialogViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.notificactions.HomeNotificationsFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.profile.ProfileFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.home.schedulers.SchedulersFragmentViewModel
@@ -65,4 +66,5 @@ val appModule= module {
     viewModel { SchedulersFragmentViewModel() }
     viewModel { AbsencesFragmentViewModel() }
     viewModel { HolidaysFragmentViewModel() }
+    viewModel { NewGroupDialogViewModel(get()) }
 }
