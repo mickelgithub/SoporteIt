@@ -7,6 +7,8 @@ val IMAGE_MIMETYPE= "image/*"
 val SI= "S"
 val NO= "N"
 
+val char_separator= ";;;"
+
 enum class OK_KO {
     OK, KO
 }

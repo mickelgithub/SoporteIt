@@ -9,8 +9,8 @@
     <color name="red_error">#FFBB2727</color>
 
     <color name="loading_dialog_bk">#FFFFFF</color>
-
     <color name="notif_backgroud_new">#F5EAEA</color>
     <color name="notif_backgroud_read">#FFFFFF</color>
+    <color name="light_gray">#ededed</color>
 
 </resources>

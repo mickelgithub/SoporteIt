@@ -191,8 +191,10 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         when (item.itemId) {
             R.id.new_group -> {
                 viewModel.uiModel.user.value?.let {
-                    showNewGroupDialog(it.id, it.areaId, it.departmentId)
-                }
+                    showNewGroupDialog(it.id, it.areaId, it.departmentId, viewModel.myGroups.groups.map { it.name.toUpperCase() }.reduce {
+                            element1, element2 -> element1+ char_separator+ element2
+                        })
+                    }
                 return true
             }
             else -> {
@@ -245,13 +247,14 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         return true
     }
 
-    private fun showNewGroupDialog(boss: String, area: String, department: String) {
+    private fun showNewGroupDialog(boss: String, area: String, department: String, groups: String) {
         var newGroupDialog: NewGroupDialog?= requireActivity().supportFragmentManager.findFragmentByTag(
             NewGroupDialog::class.java.simpleName) as NewGroupDialog?
         if (newGroupDialog== null) {
             val bundle= bundleOf(KEY_ID to boss,
                 KEY_AREA_ID to area,
-                KEY_DEPARTMENT_ID to department)
+                KEY_DEPARTMENT_ID to department,
+                KEY_GROUPS to groups)
             newGroupDialog= NewGroupDialog.newInstance(bundle)
             newGroupDialog.show(requireActivity().supportFragmentManager, NewGroupDialog::class.java.simpleName)
         }

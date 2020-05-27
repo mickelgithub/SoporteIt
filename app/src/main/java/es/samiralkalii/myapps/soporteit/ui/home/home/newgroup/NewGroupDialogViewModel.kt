@@ -22,11 +22,13 @@ class NewGroupDialogViewModel(
     private lateinit var boss: String
     private lateinit var area: String
     private lateinit var department: String
+    private lateinit var groups: List<String>
 
-    fun publishUser(boss: String, area: String, department: String) {
+    fun publishUser(boss: String, area: String, department: String, groups: List<String>) {
         this.boss= boss
         this.area= area
         this.department= department
+        this.groups= groups
         uiModel= NewGroupDialogViewModelUiModel()
         //we load users
         init()
@@ -50,9 +52,9 @@ class NewGroupDialogViewModel(
         uiModel._dataLoaded.value= false
         viewModelScope.launch(errorHandler) {
             uiModel.items= async(Dispatchers.IO) {
-                getDeparmentUsersUseCase(area, department)
+                getDeparmentUsersUseCase(area, department).filter { it.id!= boss }
             }.await()
-            uiModel._itemsLiveData.value= uiModel.items.filter { it.id!= boss }.map {
+            uiModel._itemsLiveData.value= uiModel.items.map {
                 MemberUserNewGroupTemplate.MemberUserNewGroupViewModel(
                     it
                 )
@@ -63,9 +65,15 @@ class NewGroupDialogViewModel(
     }
 
     override fun createGroup() {
-        logger.debug("Vamos a crear el grupo.........................................")
+        if (groups.contains(uiModel.groupName.value!!.toUpperCase())) {
+            uiModel._groupNameError.value= R.string.group_already_exist
+        }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        logger.debug("NewGroupDialogViewModel cleared------")
+    }
 }
 
 interface NewGroupDialogViewModelInteractor {

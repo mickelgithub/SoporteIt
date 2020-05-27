@@ -38,9 +38,9 @@ class NewGroupDialogViewModelUiModel() {
     val buttonCreateGroupEnabled: LiveData<Boolean>
         get() = _buttonCreateGroupEnabled
 
-    /*val _buttonCreateGroupVisible= MutableLiveData(false)
-    val buttonCreateGroupVisible: LiveData<Boolean>
-        get() = _buttonCreateGroupVisible*/
+    val _buttonLoadEnabled= getMediatorLiveDataForLoadButtonEnabledState()
+    val buttonLoadEnabled: LiveData<Boolean>
+        get() = _buttonLoadEnabled
 
     private fun getMediatorLiveDataForCreateGrooupButtonEnabledState()= MediatorLiveData<Boolean>().apply {
         value= false
@@ -57,6 +57,25 @@ class NewGroupDialogViewModelUiModel() {
                     condition, element -> condition && element is MemberUserNewGroupTemplate.MemberUserNewGroupViewModel
             }
             value= groupNameCorrect && selectedMembersCorrect
+        }
+        })
+    }
+
+    private fun getMediatorLiveDataForLoadButtonEnabledState()= MediatorLiveData<Boolean>().apply {
+        value= false
+        var loadCorrect= false
+        var dataCorrect= false
+
+        addSource(dataLoaded, { x -> x?.let {
+            loadCorrect= it
+            value= loadCorrect && dataCorrect
+        }
+        })
+        addSource(_itemsLiveData, { x -> x?.let {
+            dataCorrect= it.isNotEmpty() && it.fold(true) {
+                    condition, element -> condition && element is MemberUserNewGroupTemplate.MemberUserNewGroupViewModel
+            } && items.size!= it.size
+            value= loadCorrect && dataCorrect
         }
         })
     }

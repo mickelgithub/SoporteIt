@@ -28,7 +28,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
 
     override val uiModel= HomeFragmentViewModelUiModel()
 
-    private lateinit var myGroups: GroupList
+    lateinit var myGroups: GroupList
 
     override fun init(bundle: Bundle?) {
         bundle?.let {
