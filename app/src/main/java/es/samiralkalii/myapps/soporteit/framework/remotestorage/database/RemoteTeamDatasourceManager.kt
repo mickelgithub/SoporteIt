@@ -280,7 +280,6 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun getDepartmentUsers(area: String, deparment: String): List<User> {
-        delay(5000)
         var queryResult = fstore.collection(USERS_REF)
             .whereEqualTo(KEY_IS_EMAIL_VERIFIED, true)
             .whereEqualTo(KEY_MEMBERSHIP_CONFIRMATION, SI)
