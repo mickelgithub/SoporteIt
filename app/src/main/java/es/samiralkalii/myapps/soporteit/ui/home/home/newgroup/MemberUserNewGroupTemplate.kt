@@ -7,6 +7,7 @@ import es.samiralkalii.myapps.domain.User
 sealed class MemberUserNewGroupTemplate {
 
     object MemberUserNewGroupViewModelLoading: MemberUserNewGroupTemplate()
+    object MemberUserNewGroupViewModelSuccess: MemberUserNewGroupTemplate()
 
     class MemberUserNewGroupViewModelError(val error: String): MemberUserNewGroupTemplate()
 

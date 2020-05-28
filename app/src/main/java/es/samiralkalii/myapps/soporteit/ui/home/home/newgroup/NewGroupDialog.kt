@@ -1,9 +1,14 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.newgroup
 
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -13,17 +18,15 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
-import org.slf4j.LoggerFactory
+
 
 class NewGroupDialog: MyDialog() {
-
-    private val logger = LoggerFactory.getLogger(NewGroupDialog::class.java)
 
     private lateinit var binding: DialogNewGroupBinding
 
     val viewModel: NewGroupDialogViewModel by viewModel()
 
-    private val itemTouchHelper= ItemTouchHelper(SwipeToDeleteCallback())
+    private lateinit var itemTouchHelper: ItemTouchHelper
 
     companion object {
 
@@ -33,6 +36,11 @@ class NewGroupDialog: MyDialog() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        itemTouchHelper= ItemTouchHelper(SwipeToDeleteCallback())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val hostActivity= requireArguments()
@@ -40,7 +48,7 @@ class NewGroupDialog: MyDialog() {
         val area= hostActivity.getString(KEY_AREA_ID, "")
         val department =  hostActivity.getString(KEY_DEPARTMENT_ID, "")
         val groups= hostActivity.getString(KEY_GROUPS, "").split(char_separator)
-        viewModel.publishUser(boss, area, department, groups)
+        viewModel.publishInitInfo(boss, area, department, groups)
     }
 
     override fun onCreateView(
@@ -48,21 +56,23 @@ class NewGroupDialog: MyDialog() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding= DialogNewGroupBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner= viewLifecycleOwner
-        binding.uiModel= viewModel.uiModel
-        binding.interactor= viewModel
-
-        binding.recyclerView.apply {
-            setHasFixedSize(true)
-            adapter = NewGroupMembersAdapter(mutableListOf())
+        binding= DialogNewGroupBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner= viewLifecycleOwner
+            uiModel= viewModel.uiModel
+            interactor= viewModel
+            recyclerView.apply {
+                setHasFixedSize(true)
+                adapter = NewGroupMembersAdapter(mutableListOf())
+                ViewCompat.setNestedScrollingEnabled(this, true)
+            }
+            executePendingBindings()
         }
-        binding.executePendingBindings()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel.uiModel.dismissDialog.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it) {
@@ -70,7 +80,7 @@ class NewGroupDialog: MyDialog() {
                     if (homeFragment!= null) {
                         //homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
                     }
-                    dismiss()
+                    binding.root.postDelayed({dismiss()}, 3000)
                 }
             }
         })
@@ -79,12 +89,13 @@ class NewGroupDialog: MyDialog() {
         })
         viewModel.uiModel.itemsLiveData.observe(viewLifecycleOwner, Observer {
             (binding.recyclerView.adapter as NewGroupMembersAdapter).setData(it)
-            if (!it.isEmpty() && it.fold(true) {
+            if (it.isNotEmpty() && it.fold(true) {
                         condition, element -> condition && element is MemberUserNewGroupTemplate.MemberUserNewGroupViewModel
                 }) {
                 itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+            } else {
+                itemTouchHelper.attachToRecyclerView(null)
             }
-
         })
         viewModel.uiModel.error.observe(viewLifecycleOwner, Observer {
             if (it!= 0) {
@@ -108,6 +119,10 @@ class NewGroupDialog: MyDialog() {
     private inner class SwipeToDeleteCallback: ItemTouchHelper.SimpleCallback(0,
         ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
+        private val icon= ContextCompat.getDrawable(requireActivity(),
+            R.drawable.delete)!!
+        private val background= ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.light_gray))
+
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
@@ -118,8 +133,51 @@ class NewGroupDialog: MyDialog() {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position= viewHolder.adapterPosition
-            (this@NewGroupDialog.binding.recyclerView.adapter as NewGroupMembersAdapter).members.removeAt(position)
-            (this@NewGroupDialog.binding.recyclerView.adapter as NewGroupMembersAdapter).notifyItemRemoved(position)
+            viewModel.deleteItemAt(position)
+            (this@NewGroupDialog.binding.recyclerView.adapter as NewGroupMembersAdapter).apply {
+                members.removeAt(position)
+                notifyItemRemoved(position)
+            }
+        }
+
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dX: Float,
+            dY: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            val itemView = viewHolder.itemView
+            val backgroundCornerOffset =
+                20 //so background is behind the rounded corners of itemView
+            val iconMargin = (itemView.height - icon.intrinsicHeight) / 2
+            val iconTop =
+                itemView.top + (itemView.height - icon.intrinsicHeight) / 2
+            val iconBottom = iconTop + icon.intrinsicHeight
+            if (dX > 0) { // Swiping to the right
+                val iconLeft = itemView.left + iconMargin
+                val iconRight = itemView.left + iconMargin + icon.intrinsicWidth
+                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                background.setBounds(
+                    itemView.left, itemView.top,
+                    itemView.left + dX.toInt() + backgroundCornerOffset, itemView.bottom
+                )
+            } else if (dX < 0) { // Swiping to the left
+                val iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
+                val iconRight = itemView.right - iconMargin
+                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                background.setBounds(
+                    itemView.right + dX.toInt() - backgroundCornerOffset,
+                    itemView.top, itemView.right, itemView.bottom
+                )
+            } else { // view is unSwiped
+                background.setBounds(0, 0, 0, 0)
+            }
+            background.draw(c)
+            icon.draw(c)
         }
 
     }

@@ -149,7 +149,7 @@ class RemoteUserDatasourceManager(val fstore: FirebaseFirestore, val fbAuth: Fir
         fstore.runTransaction { _ ->
             fstore.collection(USERS_REF).document(user.id).set(user)
             if (user.isBoss) {
-                fstore.collection(REF_MANAGERS).document(user.id).set(mapOf<String, Object>(
+                fstore.collection(REF_MANAGERS).document(user.id).set(mapOf(
                     KEY_BOSS to user.id as Object, KEY_AREA_ID to user.areaId as Object,
                     KEY_DEPARTMENT_ID to user.departmentId as Object,
                     KEY_BOSS_LEVEL to user.bossLevel as Object

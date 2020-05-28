@@ -1,15 +1,23 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.newgroup
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ErrorItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.NewGroupMemberUserItemBinding
+import es.samiralkalii.myapps.soporteit.databinding.SuccessItemViewBinding
+import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 
 class NewGroupMembersAdapter(val members: MutableList<MemberUserNewGroupTemplate>): RecyclerView.Adapter<NewGroupMembersAdapter.NewGroupMemberUserViewHolder>() {
+
+    private lateinit var recyclerView: RecyclerView
 
     class NewGroupMemberUserViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -41,6 +49,13 @@ class NewGroupMembersAdapter(val members: MutableList<MemberUserNewGroupTemplate
                 false
             )
         )
+        R.layout.success_item_view -> NewGroupMemberUserViewHolder(
+            SuccessItemViewBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
         else -> NewGroupMemberUserViewHolder(
             ErrorItemViewBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -67,6 +82,30 @@ class NewGroupMembersAdapter(val members: MutableList<MemberUserNewGroupTemplate
         is MemberUserNewGroupTemplate.MemberUserNewGroupViewModel -> R.layout.new_group_member_user_item
         is MemberUserNewGroupTemplate.MemberUserNewGroupViewModelError -> R.layout.error_item_view
         MemberUserNewGroupTemplate.MemberUserNewGroupViewModelLoading -> R.layout.loading_item_view
+        MemberUserNewGroupTemplate.MemberUserNewGroupViewModelSuccess -> R.layout.success_item_view
+    }
+
+    private fun runLayoutAnimation() {
+        val context: Context = recyclerView.context
+        val controller: LayoutAnimationController =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+        recyclerView.apply {
+            layoutAnimation = controller
+            layoutAnimationListener = object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {
+                    members.forEachIndexed {
+                            index, viewModel ->
+                        if (viewModel== MemberUserNewGroupTemplate.MemberUserNewGroupViewModelLoading ||
+                            viewModel is MemberUserNewGroupTemplate.MemberUserNewGroupViewModelError) {
+                            recyclerView.layoutManager?.findViewByPosition(index)?.clearAnimation()
+                        }
+                    }
+                }
+                override fun onAnimationEnd(animation: Animation?) { }
+                override fun onAnimationRepeat(animation: Animation?) { }
+            }
+            scheduleLayoutAnimation()
+        }
     }
 
     fun setData(data: List<MemberUserNewGroupTemplate>?) {
@@ -74,7 +113,13 @@ class NewGroupMembersAdapter(val members: MutableList<MemberUserNewGroupTemplate
             members.clear()
             members.addAll(data)
             notifyDataSetChanged()
+            runLayoutAnimation()
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
     }
 
 }

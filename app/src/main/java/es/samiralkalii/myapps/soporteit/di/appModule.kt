@@ -66,5 +66,5 @@ val appModule= module {
     viewModel { SchedulersFragmentViewModel() }
     viewModel { AbsencesFragmentViewModel() }
     viewModel { HolidaysFragmentViewModel() }
-    viewModel { NewGroupDialogViewModel(get()) }
+    viewModel { NewGroupDialogViewModel(get(), get()) }
 }
