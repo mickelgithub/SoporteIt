@@ -12,8 +12,6 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.ErrorItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.NewGroupMemberUserItemBinding
-import es.samiralkalii.myapps.soporteit.databinding.SuccessItemViewBinding
-import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 
 class NewGroupMembersAdapter(val members: MutableList<MemberUserNewGroupTemplate>): RecyclerView.Adapter<NewGroupMembersAdapter.NewGroupMemberUserViewHolder>() {
 
@@ -49,13 +47,6 @@ class NewGroupMembersAdapter(val members: MutableList<MemberUserNewGroupTemplate
                 false
             )
         )
-        R.layout.success_item_view -> NewGroupMemberUserViewHolder(
-            SuccessItemViewBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
         else -> NewGroupMemberUserViewHolder(
             ErrorItemViewBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -82,7 +73,6 @@ class NewGroupMembersAdapter(val members: MutableList<MemberUserNewGroupTemplate
         is MemberUserNewGroupTemplate.MemberUserNewGroupViewModel -> R.layout.new_group_member_user_item
         is MemberUserNewGroupTemplate.MemberUserNewGroupViewModelError -> R.layout.error_item_view
         MemberUserNewGroupTemplate.MemberUserNewGroupViewModelLoading -> R.layout.loading_item_view
-        MemberUserNewGroupTemplate.MemberUserNewGroupViewModelSuccess -> R.layout.success_item_view
     }
 
     private fun runLayoutAnimation() {

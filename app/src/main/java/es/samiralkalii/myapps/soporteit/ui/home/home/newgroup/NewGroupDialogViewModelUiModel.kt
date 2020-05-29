@@ -42,6 +42,10 @@ class NewGroupDialogViewModelUiModel(val groups: List<String>) {
     val buttonCreateGroupEnabled: LiveData<Boolean>
         get() = _buttonCreateGroupEnabled
 
+    val _sucessVisible= MutableLiveData(false)
+    val sucessVisible: LiveData<Boolean>
+        get() = _sucessVisible
+
     val _buttonLoadEnabled= getMediatorLiveDataForLoadButtonEnabledState()
     val buttonLoadEnabled: LiveData<Boolean>
         get() = _buttonLoadEnabled
@@ -76,7 +80,7 @@ class NewGroupDialogViewModelUiModel(val groups: List<String>) {
         var loadCorrect= false
         var dataCorrect= false
 
-        addSource(dataLoaded, { x -> x?.let {
+        addSource(_dataLoaded, { x -> x?.let {
             loadCorrect= it
             value= loadCorrect && dataCorrect
         }

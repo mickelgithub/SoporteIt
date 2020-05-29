@@ -80,7 +80,7 @@ class NewGroupDialog: MyDialog() {
                     if (homeFragment!= null) {
                         //homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
                     }
-                    binding.root.postDelayed({dismiss()}, 3000)
+                    binding.root.postDelayed({dismiss()}, 5000)
                 }
             }
         })
