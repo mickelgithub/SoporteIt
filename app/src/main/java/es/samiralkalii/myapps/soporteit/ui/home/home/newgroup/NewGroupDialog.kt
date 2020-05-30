@@ -39,6 +39,7 @@ class NewGroupDialog: MyDialog() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         itemTouchHelper= ItemTouchHelper(SwipeToDeleteCallback())
+        AndroidUtility.hideKeyboard(requireActivity())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +80,11 @@ class NewGroupDialog: MyDialog() {
                     val homeFragment= getCallingFragment()
                     if (homeFragment!= null) {
                         //homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
+
                     }
-                    binding.root.postDelayed({dismiss()}, 5000)
+                    binding.root.postDelayed({
+                        dismiss()
+                        homeFragment.viewModel.initData()}, 3000)
                 }
             }
         })
@@ -103,6 +107,9 @@ class NewGroupDialog: MyDialog() {
                     MemberUserNewGroupTemplate.MemberUserNewGroupViewModelError(requireActivity().resources.getString(it))
                 ))
             }
+        })
+        viewModel.uiModel.disable_recyclerview_swipping.observe(viewLifecycleOwner, Observer {
+            itemTouchHelper.attachToRecyclerView(null)
         })
     }
 

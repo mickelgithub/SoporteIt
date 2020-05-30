@@ -50,6 +50,10 @@ class NewGroupDialogViewModelUiModel(val groups: List<String>) {
     val buttonLoadEnabled: LiveData<Boolean>
         get() = _buttonLoadEnabled
 
+    val _disable_recyclerview_swipping= MutableLiveData(false)
+    val disable_recyclerview_swipping: LiveData<Boolean>
+        get() = _disable_recyclerview_swipping
+
     private fun getMediatorLiveDataForCreateGrooupButtonEnabledState()= MediatorLiveData<Boolean>().apply {
         value= false
         var groupNameCorrect= false

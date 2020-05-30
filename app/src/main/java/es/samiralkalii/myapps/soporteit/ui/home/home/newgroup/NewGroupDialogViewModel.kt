@@ -94,10 +94,12 @@ class NewGroupDialogViewModel(
         uiModel._buttonCreateGroupEnabled.value= false
         uiModel._buttonLoadEnabled.value= false
         uiModel._dialogCancelable.value= false
+        uiModel._disable_recyclerview_swipping.value= true
         viewModelScope.launch(errorHandler) {
             async(Dispatchers.IO) {
+                val users= listOf<String>(boss, *uiModel._itemsLiveData.value!!.map { (it as MemberUserNewGroupTemplate.MemberUserNewGroupViewModel).user.id }.toTypedArray())
                 newGroupUseCase(mutableMapOf(KEY_GROUP_NAME to uiModel.groupName.value!!,
-                    KEY_AREA_ID to area, KEY_DEPARTMENT_ID to department, KEY_GROUP_MEMBERS to uiModel._itemsLiveData.value!!.map { (it as MemberUserNewGroupTemplate.MemberUserNewGroupViewModel).user.id }))
+                    KEY_AREA_ID to area, KEY_DEPARTMENT_ID to department, KEY_GROUP_MEMBERS to users))
             }.await()
             uiModel._dataLoaded.value= false
             uiModel._sucessVisible.value= true

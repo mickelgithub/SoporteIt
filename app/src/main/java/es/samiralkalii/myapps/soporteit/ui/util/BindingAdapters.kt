@@ -124,9 +124,11 @@ fun ViewGroup.bindShowError(spinnerState: Int) {
 @BindingAdapter("error")
 fun com.google.android.material.textfield.TextInputLayout.bindError(errorMessage: Int?) {
     if (errorMessage!= null) {
+        isErrorEnabled= true
         error= resources.getString(errorMessage)
     } else {
-        error= ""
+        isErrorEnabled= false
+        error= null
     }
 }
 

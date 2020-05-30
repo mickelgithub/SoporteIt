@@ -25,11 +25,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:enabled="@{uiModel.dataLoaded}"
-            android:imeOptions="actionDone"
             app:error="@{uiModel.groupNameError}"
-            app:layout_constraintEnd_toStartOf="@+id/refresh_members"
+            app:layout_constraintEnd_toStartOf="@+id/refresh_members_sucess"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/ic_person">
@@ -39,26 +37,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/group_name"
+                android:imeOptions="actionDone"
                 android:inputType="textPersonName"
                 android:text="@={uiModel.groupName}" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/refresh_members"
+
+        <FrameLayout
+            android:id="@+id/refresh_members_sucess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:adjustViewBounds="true"
-            android:clickable="true"
-            app:visible="@{!uiModel.sucessVisible}"
-            android:cropToPadding="true"
-            android:enabled="@{uiModel.buttonLoadEnabled}"
-            android:onClick="@{() -> interactor.refreshUsers()}"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@+id/group_name_input_layout"
+            app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/group_name_input_layout"
-            app:srcCompat="@drawable/refresh_selector" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/refresh_members"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:clickable="true"
+                android:cropToPadding="true"
+                android:enabled="@{uiModel.buttonLoadEnabled}"
+                android:onClick="@{() -> interactor.refreshUsers()}"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/refresh_selector"
+                app:visible="@{!uiModel.sucessVisible}" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/success"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/ok"
+                app:visible="@{uiModel.sucessVisible}" />
+
+        </FrameLayout>
 
         <Button
             android:id="@+id/create_group_button"
@@ -73,19 +92,7 @@
             android:text="@string/create_group"
             app:visible="@{uiModel.dataLoaded}" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/success"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/group_name_input_layout"
-            app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/group_name_input_layout"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/lottie_ok"
-            app:visible="@{uiModel.sucessVisible}" />
+
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll"
