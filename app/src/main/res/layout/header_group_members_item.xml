@@ -37,6 +37,7 @@
             android:layout_marginEnd="10dp"
             android:clickable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:onClick="@{(v) -> item.onGroupOverflowMenuClick(v)}"
             android:src="@drawable/more"/>
 
     </androidx.cardview.widget.CardView>

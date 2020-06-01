@@ -3,7 +3,6 @@ package es.samiralkalii.myapps.soporteit.ui.home.home
 import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestoreException
-import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.domain.teammanagement.GroupList
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.BaseFragmentViewModel
@@ -13,7 +12,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.HomeActivityViewModel.Companion.
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
-import es.samiralkalii.myapps.usecase.teammanagement.ConfirmDenyMemberUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.DeleteGroupUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetGroupsUseCase
 import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
 import kotlinx.coroutines.*
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory
 
 class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
                             private val getUserUseCase: GetUserUseCase,
-                            private val confirmDenyMemberUseCase: ConfirmDenyMemberUseCase
+                            private val deleteGroupUseCase: DeleteGroupUseCase
 ): BaseFragmentViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeFragmentViewModel::class.java)
@@ -67,17 +66,19 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             }
         }
         viewModelScope.launch(errorHandler) {
-
+            var user= uiModel._user.value
             myGroups= withContext(Dispatchers.IO) {
-                val user= getUserUseCase()
-                uiModel._user.postValue(user)
-                getGroupsUseCase(user)
+                if (user== null) {
+                    user= getUserUseCase()
+                    uiModel._user.postValue(user)
+                }
+                getGroupsUseCase(user!!)
             }
             var result= mutableListOf<MemberUserViewModelTemplate>(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
             if (!myGroups.isEmpty) {
                 result= myGroups.groups.map {
                     val items= mutableListOf<MemberUserViewModelTemplate>()
-                    items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name))
+                    items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name, it.id, this@HomeFragmentViewModel, user!!.isBoss))
                     items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!) })
                     items
                 }.flatMap{it}.toMutableList()
@@ -114,7 +115,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         if (filteredGroups.isNotEmpty()) {
             result= filteredGroups.map {
                 val items= mutableListOf<MemberUserViewModelTemplate>()
-                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name))
+                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name, it.id, this, uiModel._user.value!!.isBoss))
                 items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!) })
                 items
             }.flatMap{it}.toMutableList()
@@ -123,6 +124,24 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             }
         }
         uiModel._getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
+    }
+
+    fun onDeleteGroup(group: String) {
+        val errorHandler = CoroutineExceptionHandler { _, error ->
+            logger.error(error.toString(), error)
+            var message= R.string.not_controled_error
+            if (error is FirebaseFirestoreException) {
+                if (error.code.ordinal== FirebaseFirestoreException.Code.UNAVAILABLE.ordinal) {
+                    message= R.string.no_internet_connection
+                }
+            }
+        }
+        viewModelScope.launch(errorHandler) {
+            async(Dispatchers.IO) {
+                deleteGroupUseCase(group)
+            }.await()
+            initData()
+        }
     }
 
 }

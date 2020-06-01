@@ -1,19 +1,58 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.adapter
 
-import android.os.Bundle
+import android.view.MenuInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
+import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
+import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
+
 import es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import org.slf4j.LoggerFactory
 
 sealed class MemberUserViewModelTemplate {
 
-    class GroupMemberUserViewModel(val groupName: String): MemberUserViewModelTemplate()
+    class GroupMemberUserViewModel(val groupName: String, val groupId: String, val viewModel: HomeFragmentViewModel, val isBoss: Boolean): MemberUserViewModelTemplate() {
+
+        private val logger= LoggerFactory.getLogger(GroupMemberUserViewModel::class.java)
+
+        lateinit var viewHolder: MemberUserAdapter.MemberUserViewHolder
+
+        fun onGroupOverflowMenuClick(v: View) {
+            PopupMenu(v.context, v).apply {
+                setOnMenuItemClickListener { when (it.itemId) {
+                    R.id.delete_group -> {
+                        val confirmDialog= AlertDialog.newInstanceForMessage(
+                            v.resources.getString(R.string.confirm_operacion),
+                            v.resources.getString(R.string.confirm_group_deletion, groupName),
+                            v.resources.getString(R.string.confirm),
+                            {viewModel.onDeleteGroup(groupId)},
+                            v.resources.getString(R.string.cancel),
+                            {}
+                        )
+                        (v.context as AppCompatActivity).showDialog(confirmDialog)
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                } }
+                inflate(R.menu.menu_group_overflow)
+                if (groupName in listOf(GROUP_TODOS, GROUP_INTERNALS) || !isBoss) {
+                    menu.findItem(R.id.delete_group).isVisible= false
+                }
+                show()
+            }
+        }
+
+    }
 
     class MemberUserViewModel(val user: User, val hostUser: User): MemberUserViewModelTemplate() {
 

@@ -12,3 +12,6 @@ val char_separator= ";;;"
 enum class OK_KO {
     OK, KO
 }
+
+const val GROUP_TODOS= "Todos"
+const val GROUP_INTERNALS= "Internos"

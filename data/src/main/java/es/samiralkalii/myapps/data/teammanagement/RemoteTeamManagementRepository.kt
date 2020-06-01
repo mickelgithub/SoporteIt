@@ -29,6 +29,8 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
 
     suspend fun createNewGroup(group: MutableMap<String, Any>)= remoteTeamManagementDatasource.createNewGroup(group)
 
+    suspend fun deleteGroup(group: String)= remoteTeamManagementDatasource.deleteGroup(group)
+
 }
 
 interface IRemoteTeamManagementDatasource {
@@ -50,6 +52,8 @@ interface IRemoteTeamManagementDatasource {
     suspend fun getDepartmentUsers(area: String, deparment: String): List<User>
 
     suspend fun createNewGroup(group: MutableMap<String, Any>)
+
+    suspend fun deleteGroup(group: String)
 
 
 }

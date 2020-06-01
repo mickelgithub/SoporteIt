@@ -65,6 +65,7 @@
     <string name="profile_mandatory">El perfil es obligatorio</string>
     <string name="boss_label">(Big Boss)</string>
     <string name="home">Inicio</string>
+    <string name="menu_delete_group">Borrar grupo</string>
     <string name="nothing"></string>
     <string name="team_name_input">Indica el nombre del equipo</string>
     <string name="wait_while_loading_data">Espere mientras cargamos los datos</string>
@@ -94,6 +95,7 @@
     <string name="confirm">Confirmar</string>
     <string name="deny">Rechazar</string>
     <string name="confirm_deny_member_message">¿Estas seguro que quieres rechazar a este usuario?</string>
+    <string name="confirm_group_deletion">¿Estas seguro que quieres borrar el grupo \'%1$s\'?</string>
     <string name="confirm_operacion">Confirmar la operacion</string>
     <string name="profile_is_needed">Es importante que informes tu perfil</string>
     <string name="advertisement">Aviso</string>
