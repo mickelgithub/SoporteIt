@@ -3,4 +3,8 @@
     <item
         android:id="@+id/delete_group"
         android:title="@string/menu_delete_group" />
+
+    <item
+        android:id="@+id/update_group"
+        android:title="@string/menu_update_group" />
 </menu>

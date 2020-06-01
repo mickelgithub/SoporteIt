@@ -1,10 +1,8 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home
 
 import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
@@ -12,6 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.onNavDestinationSelected
+import es.samiralkalii.myapps.domain.teammanagement.Group
+import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_ID
+import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_NAME
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
 import es.samiralkalii.myapps.soporteit.databinding.MemberUserItemBinding
@@ -20,7 +21,6 @@ import es.samiralkalii.myapps.soporteit.ui.dialog.LoadingDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
-import es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.newgroup.NewGroupDialog
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory
 
 
 private const val DISTANCE_TO_TRIGGER_SWIP= 250F
-private const val DELAY_1000= 1000L
 private const val DELAY_400= 400L
 
 class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
@@ -50,7 +49,6 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         savedInstanceState: Bundle?
     ): View? {
         if (args.isEmailValidated) {
-            logger.debug("initUI******")
             binding= FragmentHomeBinding.inflate(inflater, container, false).apply {
                 uiModel= this@HomeFragment.viewModel.uiModel
                 lifecycleOwner= viewLifecycleOwner
@@ -68,8 +66,6 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
             }
             setHasOptionsMenu(true)
             return binding.root
-        } else {
-            logger.debug("****el valor de email validado es ${args.isEmailValidated} y por tanto no hacemos nada en initUI")
         }
         return null
     }
@@ -94,8 +90,8 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
 
         viewModel.uiModel.refreshingState.observe(viewLifecycleOwner, Observer {
             it?.let {
-                it.getContentIfNotHandled()?.let {
-                    if (it) {
+                it.getContentIfNotHandled()?.let { refresh ->
+                    if (refresh) {
                         binding.swipeContainer.isRefreshing= false
                     }
                 }
@@ -110,6 +106,14 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
 
         viewModel.uiModel.searchViewVisibility.observe(viewLifecycleOwner, Observer {
             requireActivity().invalidateOptionsMenu()
+        })
+
+        viewModel.uiModel.updateGroup.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                it.getContentIfNotHandled()?.let { group ->
+                    showNewGroupForUpdate(group)
+                }
+            }
         })
 
         /*val resId = R.anim.layout_animation_fall_down
@@ -151,9 +155,9 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
             val searchManager = getSystemService(requireActivity(), SearchManager::class.java)
             val searchMenuItem = menu.findItem(R.id.search)
             searchMenuItem.isVisible= true
-            val searchView = searchMenuItem.getActionView() as SearchView
+            val searchView = searchMenuItem.actionView as SearchView
             searchView.setSearchableInfo(searchManager!!.getSearchableInfo(requireActivity().componentName))
-            searchView.setSubmitButtonEnabled(false)
+            searchView.isSubmitButtonEnabled= false
             searchView.setOnQueryTextListener(this)
         } else {
             menu.findItem(R.id.search).isVisible= false
@@ -161,7 +165,6 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        logger.debug("onPrepareOptionsMenu+++++++++++++++++++")
         super.onPrepareOptionsMenu(menu)
         if (menu.size()== 0) {
             requireActivity().menuInflater.inflate(R.menu.menu_home_fragment, menu)
@@ -175,7 +178,6 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        logger.debug("onCreateOptionsMenu+++++++++++++++++++")
         viewModel.uiModel.user.value?.let {
             if (it.isEmailVerified) {
                 inflater.inflate(R.menu.menu_home_fragment, menu)
@@ -187,19 +189,15 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.new_group -> {
-                viewModel.uiModel.user.value?.let {
-                    showNewGroupDialog(it.id, it.areaId, it.departmentId, viewModel.myGroups.groups.map { it.name.toUpperCase() }.reduce {
-                            element1, element2 -> element1+ char_separator+ element2
-                        })
-                    }
-                return true
-            }
-            else -> {
-                return item.onNavDestinationSelected(navController)
-            }
+    override fun onOptionsItemSelected(item: MenuItem)= when (item.itemId) {
+        R.id.new_group -> {
+            viewModel.uiModel.user.value?.let { user ->
+                showNewGroupDialog(user.id, user.areaId, user.departmentId, viewModel.myGroups.groups)
+                }
+            true
+        }
+        else -> {
+            item.onNavDestinationSelected(navController)
         }
     }
 
@@ -212,12 +210,12 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
             it.postDelayed({
                 it.animateRevealView{it.visibility= View.GONE}
                 if (isConfirmed) {
-                    /*val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel.uiModel.user.value!!)
+                    val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel.uiModel.user.value!!)
                     val position= adapter.members.indexOf(memberUserViewModel)
                     viewModel.updateItem(position, newItem)
                     adapter.members[position]= newItem
                     adapter.notifyItemChanged(position)
-                    if (internal) {
+                    /*if (internal) {
                         it.postDelayed({viewModel.init(null)}, DELAY_1000)
                     }*/
                     viewModel.initData(true)
@@ -247,16 +245,44 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         return true
     }
 
-    private fun showNewGroupDialog(boss: String, area: String, department: String, groups: String) {
+    private fun showNewGroupDialog(boss: String, area: String, department: String, groups: List<Group>) {
         var newGroupDialog: NewGroupDialog?= requireActivity().supportFragmentManager.findFragmentByTag(
             NewGroupDialog::class.java.simpleName) as NewGroupDialog?
         if (newGroupDialog== null) {
-            val bundle= bundleOf(KEY_ID to boss,
+            val bundle= bundleOf(
+                KEY_OPERATION to OPERATION_NEW,
+                KEY_ID to boss,
                 KEY_AREA_ID to area,
                 KEY_DEPARTMENT_ID to department,
-                KEY_GROUPS to groups)
+                KEY_GROUPS to groups.map { it.name.toUpperCase() }.reduce {
+                        element1, element2 -> element1+ char_separator+ element2
+                })
             newGroupDialog= NewGroupDialog.newInstance(bundle)
             newGroupDialog.show(requireActivity().supportFragmentManager, NewGroupDialog::class.java.simpleName)
+        }
+    }
+
+    fun showNewGroupForUpdate(group: Group) {
+
+        viewModel.uiModel.user.value?.let { user ->
+            var newGroupDialog: NewGroupDialog?= requireActivity().supportFragmentManager.findFragmentByTag(
+                NewGroupDialog::class.java.simpleName) as NewGroupDialog?
+            if (newGroupDialog== null) {
+                val bundle= bundleOf(
+                    KEY_OPERATION to OPERATION_UPDATE,
+                    KEY_ID to user.id,
+                    KEY_AREA_ID to user.areaId,
+                    KEY_DEPARTMENT_ID to user.departmentId,
+                    KEY_GROUPS to viewModel.myGroups.groups.map { it.name.toUpperCase() }.reduce {
+                            element1, element2 -> element1+ char_separator+ element2
+                    },
+                    KEY_GROUP_NAME to group.name,
+                    KEY_GROUP_USERS to group.members.map{ it.id }.reduce{
+                        element1, element2 -> element1+ char_separator+ element2
+                })
+                newGroupDialog= NewGroupDialog.newInstance(bundle)
+                newGroupDialog.show(requireActivity().supportFragmentManager, NewGroupDialog::class.java.simpleName)
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.ui.home.home.newgroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestoreException
+import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_MEMBERS
 import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_NAME
@@ -10,6 +11,7 @@ import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.util.KEY_AREA
 import es.samiralkalii.myapps.soporteit.ui.util.KEY_AREA_ID
 import es.samiralkalii.myapps.soporteit.ui.util.KEY_DEPARTMENT_ID
+import es.samiralkalii.myapps.soporteit.ui.util.OPERATION_UPDATE
 import es.samiralkalii.myapps.usecase.teammanagement.GetDeparmentUsersUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.NewGroupUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -31,13 +33,24 @@ class NewGroupDialogViewModel(
     private lateinit var area: String
     private lateinit var department: String
     private lateinit var groups: List<String>
+    private lateinit var operation: String
+    private lateinit var groupUsers: List<String>
+    private lateinit var groupName: String
 
-    fun publishInitInfo(boss: String, area: String, department: String, groups: List<String>) {
+    fun publishInitInfo(boss: String, area: String,
+                        department: String,
+                        groups: List<String>,
+                        operation: String,
+                        groupUsers: List<String>,
+                        groupName: String) {
         this.boss= boss
         this.area= area
         this.department= department
         this.groups= groups
         uiModel= NewGroupDialogViewModelUiModel(groups)
+        this.operation= operation
+        this.groupUsers= groupUsers
+        this.groupName= groupName
         //we load users
         init()
     }
@@ -62,11 +75,21 @@ class NewGroupDialogViewModel(
             uiModel.items= async(Dispatchers.IO) {
                 getDeparmentUsersUseCase(area, department).filter { it.id!= boss }
             }.await()
+            if (operation== OPERATION_UPDATE) {
+                uiModel.items= uiModel.items.sortedWith(Comparator<User> { p0: User, p1: User ->
+                    if (p0.id in groupUsers && p1.id !in groupUsers) {
+                        -1
+                    } else if (p0.id !in groupUsers && p1.id in groupUsers) {
+                        1
+                    } else 0
+                })
+            }
             uiModel._itemsLiveData.value= uiModel.items.map {
                 MemberUserNewGroupTemplate.MemberUserNewGroupViewModel(
                     it
                 )
             }.toMutableList()
+
             uiModel._itemsLeft.value= uiModel.items.size
             uiModel._dataLoaded.value= true
             uiModel._dialogCancelable.value= true
@@ -101,7 +124,6 @@ class NewGroupDialogViewModel(
                 newGroupUseCase(mutableMapOf(KEY_GROUP_NAME to uiModel.groupName.value!!,
                     KEY_AREA_ID to area, KEY_DEPARTMENT_ID to department, KEY_GROUP_MEMBERS to users))
             }.await()
-            uiModel._dataLoaded.value= false
             uiModel._sucessVisible.value= true
             uiModel._dismissDialog.value= true
         }

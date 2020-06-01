@@ -8,9 +8,11 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
+import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 
 import es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember.ConfirmMemberDialog
@@ -19,7 +21,7 @@ import org.slf4j.LoggerFactory
 
 sealed class MemberUserViewModelTemplate {
 
-    class GroupMemberUserViewModel(val groupName: String, val groupId: String, val viewModel: HomeFragmentViewModel, val isBoss: Boolean): MemberUserViewModelTemplate() {
+    class GroupMemberUserViewModel(val user: User, val group: Group, val viewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(GroupMemberUserViewModel::class.java)
 
@@ -31,13 +33,17 @@ sealed class MemberUserViewModelTemplate {
                     R.id.delete_group -> {
                         val confirmDialog= AlertDialog.newInstanceForMessage(
                             v.resources.getString(R.string.confirm_operacion),
-                            v.resources.getString(R.string.confirm_group_deletion, groupName),
+                            v.resources.getString(R.string.confirm_group_deletion, group.name),
                             v.resources.getString(R.string.confirm),
-                            {viewModel.onDeleteGroup(groupId)},
+                            {viewModel.onDeleteGroup(group.id)},
                             v.resources.getString(R.string.cancel),
                             {}
                         )
                         (v.context as AppCompatActivity).showDialog(confirmDialog)
+                        true
+                    }
+                    R.id.update_group -> {
+                        viewModel.updateGroup(group)
                         true
                     }
                     else -> {
@@ -45,8 +51,9 @@ sealed class MemberUserViewModelTemplate {
                     }
                 } }
                 inflate(R.menu.menu_group_overflow)
-                if (groupName in listOf(GROUP_TODOS, GROUP_INTERNALS) || !isBoss) {
+                if (group.name in listOf(GROUP_TODOS, GROUP_INTERNALS) || !user.isBoss) {
                     menu.findItem(R.id.delete_group).isVisible= false
+                    menu.findItem(R.id.update_group).isVisible= false
                 }
                 show()
             }
@@ -59,52 +66,34 @@ sealed class MemberUserViewModelTemplate {
         private val logger= LoggerFactory.getLogger(MemberUserViewModel::class.java)
 
         lateinit var viewHolder: MemberUserAdapter.MemberUserViewHolder
-        //lateinit var memberUserAdapter: MemberUserAdapter
 
-        private val _email= MutableLiveData<String?>()
-        val email: LiveData<String?>
+        private val _email= MutableLiveData(user.email)
+        val email: LiveData<String>
             get() = _email
 
-        private val _firstName= MutableLiveData<String?>()
-        val firstName: LiveData<String?>
+        private val _firstName= MutableLiveData(user.firstName)
+        val firstName: LiveData<String>
             get() = _firstName
 
-        private val _profileImage= MutableLiveData<String?>()
-        val profileImage: LiveData<String?>
+        private val _profileImage= MutableLiveData(user.remoteProfileImage)
+        val profileImage: LiveData<String>
             get() = _profileImage
 
-        private val _profileBackColor= MutableLiveData<Int?>()
-        val profileBackColor: LiveData<Int?>
+        private val _profileBackColor= MutableLiveData(user.profileBackColor)
+        val profileBackColor: LiveData<Int>
             get() = _profileBackColor
 
-        private val _profileTextColor= MutableLiveData<Int?>()
-        val profileTextColor: LiveData<Int?>
+        private val _profileTextColor= MutableLiveData(user.profileTextColor)
+        val profileTextColor: LiveData<Int>
             get() = _profileTextColor
 
-        private val _memberStateImage= MutableLiveData<Int?>()
+        private val _memberStateImage= MutableLiveData(if (!user.isBoss && user.membershipConfirmation== "") R.drawable.ko else null)
         val memberStateImage: LiveData<Int?>
             get() = _memberStateImage
 
-        private val _isBoss= MutableLiveData<Boolean?>()
-        val isBoss: LiveData<Boolean?>
+        private val _isBoss= MutableLiveData(user.isBoss)
+        val isBoss: LiveData<Boolean>
             get() = _isBoss
-
-        init {
-            init()
-        }
-
-        fun init() {
-            _email.value= user.email
-            _profileImage.value= user.remoteProfileImage
-            _profileBackColor.value= user.profileBackColor
-            _profileTextColor.value= user.profileTextColor
-            _firstName.value= user.firstName
-            _memberStateImage.value= when {
-                !user.isBoss && user.membershipConfirmation== "" -> R.drawable.ko
-                else -> null
-            }
-            _isBoss.value= user.isBoss
-        }
 
         fun onMemberStateImageClick() {
             when (_memberStateImage.value) {

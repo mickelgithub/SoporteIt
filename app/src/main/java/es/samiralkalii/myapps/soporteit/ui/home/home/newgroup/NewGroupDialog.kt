@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_NAME
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogNewGroupBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
@@ -44,12 +45,15 @@ class NewGroupDialog: MyDialog() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val hostActivity= requireArguments()
-        val boss = hostActivity.getString(KEY_ID, "")
-        val area= hostActivity.getString(KEY_AREA_ID, "")
-        val department =  hostActivity.getString(KEY_DEPARTMENT_ID, "")
-        val groups= hostActivity.getString(KEY_GROUPS, "").split(char_separator)
-        viewModel.publishInitInfo(boss, area, department, groups)
+        val args= requireArguments()
+        val operation= args.getString(KEY_OPERATION, "")
+        val boss = args.getString(KEY_ID, "")
+        val area= args.getString(KEY_AREA_ID, "")
+        val department =  args.getString(KEY_DEPARTMENT_ID, "")
+        val groups= args.getString(KEY_GROUPS, "").split(char_separator)
+        val groupUsers= args.getString(KEY_GROUP_USERS, "").split(char_separator)
+        val groupName= args.getString(KEY_GROUP_NAME, "")
+        viewModel.publishInitInfo(boss, area, department, groups, operation, groupUsers, groupName)
     }
 
     override fun onCreateView(
@@ -79,12 +83,10 @@ class NewGroupDialog: MyDialog() {
                 if (it) {
                     val homeFragment= getCallingFragment()
                     if (homeFragment!= null) {
-                        //homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
-
+                        binding.root.postDelayed({
+                            dismiss()
+                            homeFragment.viewModel.initData()}, 3000)
                     }
-                    binding.root.postDelayed({
-                        dismiss()
-                        homeFragment.viewModel.initData()}, 3000)
                 }
             }
         })

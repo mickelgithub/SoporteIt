@@ -30,8 +30,6 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
                     binding.item= memberUserViewModel as MemberUserViewModelTemplate.MemberUserViewModel
                     binding.fragment= fragment
                     memberUserViewModel.viewHolder= this
-                    //memberUserViewModel.memberUserAdapter= memberUserAdapter!!
-                    memberUserViewModel.init()
                     binding.invalidateAll() //executePendingBindings()
                 }
                 is HeaderGroupMembersItemBinding -> {

@@ -1,8 +1,10 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.soporteit.ui.UiModel
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
@@ -34,5 +36,9 @@ class HomeFragmentViewModelUiModel: UiModel {
     var _user= MutableLiveData<User?>()
     val user: LiveData<User?>
         get() = _user
+
+    val _updateGroup= MutableLiveData<Event<Group>?>()
+    val updateGroup: LiveData<Event<Group>?>
+        get() = _updateGroup
 
 }

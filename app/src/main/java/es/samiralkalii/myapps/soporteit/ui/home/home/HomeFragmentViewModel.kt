@@ -3,6 +3,7 @@ package es.samiralkalii.myapps.soporteit.ui.home.home
 import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestoreException
+import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.domain.teammanagement.GroupList
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.BaseFragmentViewModel
@@ -48,7 +49,6 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
     }
 
     fun initData(refresh: Boolean= false) {
-        logger.debug("estamos haciendo el initData...<>><<<<<<<<<<<<<<<<<<<<<<<<")
         if (!refresh) {
             uiModel._items.value= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelLoading)
         }
@@ -78,7 +78,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             if (!myGroups.isEmpty) {
                 result= myGroups.groups.map {
                     val items= mutableListOf<MemberUserViewModelTemplate>()
-                    items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name, it.id, this@HomeFragmentViewModel, user!!.isBoss))
+                    items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(user!!, it, this@HomeFragmentViewModel))
                     items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!) })
                     items
                 }.flatMap{it}.toMutableList()
@@ -115,7 +115,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         if (filteredGroups.isNotEmpty()) {
             result= filteredGroups.map {
                 val items= mutableListOf<MemberUserViewModelTemplate>()
-                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(it.name, it.id, this, uiModel._user.value!!.isBoss))
+                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(uiModel._user.value!!, it, this))
                 items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!) })
                 items
             }.flatMap{it}.toMutableList()
@@ -142,6 +142,10 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             }.await()
             initData()
         }
+    }
+
+    fun updateGroup(group: Group) {
+        uiModel._updateGroup.value= Event(group)
     }
 
 }

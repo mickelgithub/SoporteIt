@@ -66,6 +66,7 @@
     <string name="boss_label">(Big Boss)</string>
     <string name="home">Inicio</string>
     <string name="menu_delete_group">Borrar grupo</string>
+    <string name="menu_update_group">Modificar grupo</string>
     <string name="nothing"></string>
     <string name="team_name_input">Indica el nombre del equipo</string>
     <string name="wait_while_loading_data">Espere mientras cargamos los datos</string>

@@ -40,6 +40,8 @@ const val KEY_BOSS_CONFIRMATION= "bossConfirmation"
 const val KEY_MEMBERSHIP_CONFIRMATION= "membershipConfirmation"
 const val KEY_MEMBERSHIP_CONFIRMED_AT= "membershipConfirmedAt"
 const val KEY_GROUPS= "groups"
+const val KEY_GROUP_USERS= "groupUsers"
+const val KEY_OPERATION= "operation"
 
 const val KEY_TEAM_NAME_INSENSITIVE= "nameInsensitive"
 
