@@ -3,7 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
     <data>
+
+        <import type="es.samiralkalii.myapps.soporteit.ui.util.Constants" alias="Constants" />
         <variable
             name="uiModel"
             type="es.samiralkalii.myapps.soporteit.ui.home.home.newgroup.NewGroupDialogViewModelUiModel" />
@@ -88,11 +92,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/group_name_input_layout"
             android:enabled="@{uiModel.buttonCreateGroupEnabled}"
-            android:onClick="@{() -> interactor.createGroup()}"
-            android:text="@string/create_group"
+            android:onClick="@{() -> uiModel.operation== Constants.OPERATION_NEW ? interactor.createGroup() : interactor.updateGroup()}"
+            android:text="@{uiModel.operation== Constants.OPERATION_NEW ? @string/create_group : @string/update_group}"
             app:visible="@{uiModel.dataLoaded}" />
-
-
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll"

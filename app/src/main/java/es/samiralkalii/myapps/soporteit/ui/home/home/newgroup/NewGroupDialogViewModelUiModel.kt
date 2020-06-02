@@ -7,12 +7,12 @@ import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.soporteit.R
 import kotlinx.android.synthetic.main.new_group_member_user_item.view.*
 
-class NewGroupDialogViewModelUiModel(val groups: List<String>) {
+class NewGroupDialogViewModelUiModel(val groups: List<String>, groupNameInput: String, val operation: String) {
 
     lateinit var items: List<User>
-    val groupName= MutableLiveData("")
+    val groupName= MutableLiveData(groupNameInput)
 
-    val _itemsLeft= MutableLiveData<Int>(-1)
+    val _itemsLeft= MutableLiveData(-1)
 
     val _itemsLiveData= MutableLiveData<MutableList<MemberUserNewGroupTemplate>>()
     val itemsLiveData: LiveData<MutableList<MemberUserNewGroupTemplate>>

@@ -12,12 +12,15 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_ID
+import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_MAP_ID
 import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_NAME
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogNewGroupBinding
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.OPERATION_UPDATE
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
@@ -50,10 +53,16 @@ class NewGroupDialog: MyDialog() {
         val boss = args.getString(KEY_ID, "")
         val area= args.getString(KEY_AREA_ID, "")
         val department =  args.getString(KEY_DEPARTMENT_ID, "")
-        val groups= args.getString(KEY_GROUPS, "").split(char_separator)
         val groupUsers= args.getString(KEY_GROUP_USERS, "").split(char_separator)
         val groupName= args.getString(KEY_GROUP_NAME, "")
-        viewModel.publishInitInfo(boss, area, department, groups, operation, groupUsers, groupName)
+        val groupId= args.getString(KEY_GROUP_MAP_ID, "")
+        val groups: List<String>
+        if (operation== OPERATION_UPDATE) {
+            groups= args.getString(KEY_GROUPS, "").split(char_separator).filter { !it.equals(groupName, true) }
+        } else {
+            groups= args.getString(KEY_GROUPS, "").split(char_separator)
+        }
+        viewModel.publishInitInfo(boss, area, department, groups, operation, groupUsers, groupName, groupId)
     }
 
     override fun onCreateView(

@@ -39,5 +39,6 @@ val useCaseModule= module {
     factory { GetDeparmentUsersUseCase(get()) }
     factory { NewGroupUseCase(get()) }
     factory { DeleteGroupUseCase(get()) }
+    factory { UpdateGroupUseCase(get()) }
 
 }

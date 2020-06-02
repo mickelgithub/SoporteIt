@@ -304,6 +304,11 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
         newGroupRef.set(group)
     }
 
+    override suspend fun updateGroup(groupId: String, group: MutableMap<String, Any>) {
+        group[KEY_ID]= groupId
+        fstore.collection(GROUPS_REF).document(groupId).set(group)
+    }
+
     override suspend fun deleteGroup(group: String) {
         val groupRef= fstore.collection(GROUPS_REF).document(group)
         groupRef.delete()

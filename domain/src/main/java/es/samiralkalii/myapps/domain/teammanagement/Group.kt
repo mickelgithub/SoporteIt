@@ -4,6 +4,7 @@ import es.samiralkalii.myapps.domain.User
 
 const val KEY_GROUP_NAME= "name"
 const val KEY_GROUP_ID= "id"
+const val KEY_GROUP_MAP_ID= "groupId"
 const val KEY_GROUP_CREATEDAT= "createdAt"
 const val KEY_GROUP_MEMBERS= "members"
 

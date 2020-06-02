@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.onNavDestinationSelected
 import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_ID
+import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_MAP_ID
 import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_NAME
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.FragmentHomeBinding
@@ -23,6 +24,8 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserAdapter
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
 import es.samiralkalii.myapps.soporteit.ui.home.home.newgroup.NewGroupDialog
 import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.OPERATION_NEW
+import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.OPERATION_UPDATE
 import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
@@ -277,6 +280,7 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
                             element1, element2 -> element1+ char_separator+ element2
                     },
                     KEY_GROUP_NAME to group.name,
+                    KEY_GROUP_MAP_ID to group.id,
                     KEY_GROUP_USERS to group.members.map{ it.id }.reduce{
                         element1, element2 -> element1+ char_separator+ element2
                 })

@@ -103,6 +103,7 @@
     <string name="create_team">Crear equipo</string>
     <string name="invite">Invitar</string>
     <string name="create_group">Crear grupo</string>
+    <string name="update_group">Modificar grupo</string>
     <string name="group_already_exist">Ya existe el grupo</string>
     <string name="add">Añadir</string>
     <string name="verified">Verificado perfil \'responsable de equipo\'  &#9996;</string>

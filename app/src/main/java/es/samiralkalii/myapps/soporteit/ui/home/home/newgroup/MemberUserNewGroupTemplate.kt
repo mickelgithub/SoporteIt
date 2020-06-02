@@ -10,7 +10,7 @@ sealed class MemberUserNewGroupTemplate {
 
     class MemberUserNewGroupViewModelError(val error: String): MemberUserNewGroupTemplate()
 
-    class MemberUserNewGroupViewModel(val user: User): MemberUserNewGroupTemplate() {
+    class MemberUserNewGroupViewModel(val user: User, itBelongs: Boolean= false): MemberUserNewGroupTemplate() {
 
         private val _email= MutableLiveData(user.email.substring(0, user.email.indexOf("@")))
         val email: LiveData<String>
@@ -31,6 +31,10 @@ sealed class MemberUserNewGroupTemplate {
         private val _profileTextColor= MutableLiveData(user.profileTextColor)
         val profileTextColor: LiveData<Int>
             get() = _profileTextColor
+
+        private val _itBelongs= MutableLiveData(itBelongs)
+        val itBelongs: LiveData<Boolean>
+            get() = _itBelongs
 
     }
 
