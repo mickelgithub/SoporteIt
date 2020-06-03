@@ -60,7 +60,7 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
                 groupsRecycleView.apply {
                     setHasFixedSize(true)
                     adapter =
-                        MemberUserAdapter(mutableListOf(), this@HomeFragment, viewModel)
+                        MemberUserAdapter(mutableListOf(), this@HomeFragment)
                 }
                 swipeContainer.setOnRefreshListener {
                     this@HomeFragment.viewModel.initData(true)

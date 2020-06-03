@@ -9,6 +9,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 class DeleteUserActionModeCallback(val adapter: MemberUserAdapter, homeFragmentViewModel: HomeFragmentViewModel): ActionMode.Callback  {
 
     private var multiSelect= false
+    private val selectedUsers= mutableListOf<String>()
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return false
@@ -16,6 +17,7 @@ class DeleteUserActionModeCallback(val adapter: MemberUserAdapter, homeFragmentV
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         mode?.let {
+            multiSelect= true
             it.menuInflater.inflate(R.menu.menu_action_mode_home_fragment, menu)
         }
         return true
@@ -26,7 +28,21 @@ class DeleteUserActionModeCallback(val adapter: MemberUserAdapter, homeFragmentV
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
+        multiSelect= false
+        selectedUsers.clear()
+        adapter.notifyDataSetChanged()
+    }
 
+    fun selectUser(memberUserViewModel: MemberUserViewModelTemplate.MemberUserViewModel) {
+        if (multiSelect) {
+            if (memberUserViewModel.user.id in selectedUsers) {
+                selectedUsers.remove(memberUserViewModel.user.id)
+                memberUserViewModel.select(false)
+            } else {
+                selectedUsers.add(memberUserViewModel.user.id)
+                memberUserViewModel.select(true)
+            }
+        }
     }
 
 }

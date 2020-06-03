@@ -19,14 +19,14 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.Constants
 
 
-class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, val fragment: HomeFragment, viewModel: HomeFragmentViewModel): RecyclerView.Adapter<MemberUserAdapter.MemberUserViewHolder>() {
+class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, val fragment: HomeFragment): RecyclerView.Adapter<MemberUserAdapter.MemberUserViewHolder>() {
 
     //private val logger= LoggerFactory.getLogger(MemberUserAdapter::class.java)
 
     private lateinit var recyclerView: RecyclerView
 
     private val deleteUserActionModeCallback by lazy {
-        DeleteUserActionModeCallback(this, viewModel)
+        DeleteUserActionModeCallback(this, fragment.viewModel)
     }
 
     class MemberUserViewHolder(val binding: ViewDataBinding, val fragment: HomeFragment, val deleteUserActionModeCallback: DeleteUserActionModeCallback?): RecyclerView.ViewHolder(binding.root) {
@@ -39,8 +39,15 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
                     binding.fragment= fragment
                     memberUserViewModel.viewHolder= this
                     this.itemView.setOnLongClickListener {
-                        if (item.group.name.equals(Constants.GROUP_TODOS, true)) {
+                        if (item.group.name.equals(Constants.GROUP_TODOS, true) && fragment.viewModel.uiModel.user.value!!.isBoss) {
                             (itemView.context as AppCompatActivity).startSupportActionMode(deleteUserActionModeCallback!!)
+                            deleteUserActionModeCallback.selectUser(item)
+                        }
+                        true
+                    }
+                    this.itemView.setOnClickListener {
+                        if (item.group.name.equals(Constants.GROUP_TODOS, true) && fragment.viewModel.uiModel.user.value!!.isBoss) {
+                            deleteUserActionModeCallback!!.selectUser(item)
                         }
                         true
                     }

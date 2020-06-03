@@ -22,7 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@{item.isBoss ? @color/colorPrimaryLight : @color/white}"
+            android:background="@{(item.isBoss || item.isSelected()) ? @color/colorPrimaryLight : @color/white}"
             >
 
             <es.samiralkalii.myapps.soporteit.ui.util.view.customdrawable.ProfileImage

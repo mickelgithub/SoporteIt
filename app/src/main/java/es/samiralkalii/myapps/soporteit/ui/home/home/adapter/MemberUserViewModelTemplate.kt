@@ -98,6 +98,10 @@ sealed class MemberUserViewModelTemplate {
         val isBoss: LiveData<Boolean>
             get() = _isBoss
 
+        private val _isSelected= MutableLiveData<Boolean>(false)
+        val isSelected: LiveData<Boolean>
+            get() = _isSelected
+
         fun onMemberStateImageClick() {
             when (_memberStateImage.value) {
                 R.drawable.ko -> {
@@ -126,6 +130,11 @@ sealed class MemberUserViewModelTemplate {
                 confirmMemberDialog= ConfirmMemberDialog.newInstance(bundle)
                 confirmMemberDialog.show((viewHolder.itemView.context as AppCompatActivity).supportFragmentManager, ConfirmMemberDialog::class.java.simpleName)
             }
+        }
+
+        fun select(selected: Boolean) {
+            _isSelected.value= selected
+            viewHolder.binding.invalidateAll()
         }
     }
 
