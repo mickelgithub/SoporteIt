@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.google.firebase.firestore.FirebaseFirestoreException
+import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_MAP_ID
 import es.samiralkalii.myapps.domain.teammanagement.Profiles
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.DialogMemberConfirmationBinding
@@ -63,8 +64,9 @@ class ConfirmMemberDialog: MyDialog() {
         val profileTextColor = requireArguments().getInt(KEY_PROFILE_TEXT_COLOR, -1)
         val profileBackColor = requireArguments().getInt(KEY_PROFILE_BACK_COLOR, -1)
         val area= requireArguments().getString(KEY_AREA_ID, "")
-        viewModel.publishUser(user, email, remoteProfileImage,
-            name, profileTextColor, profileBackColor, area)
+        val group= requireArguments().getString(KEY_GROUP_MAP_ID, "")
+        viewModel.publishInitInfo(user, email, remoteProfileImage,
+            name, profileTextColor, profileBackColor, area, group)
 
 
     }
@@ -100,7 +102,7 @@ class ConfirmMemberDialog: MyDialog() {
                 if (it) {
                     val homeFragment= getCallingFragment()
                     if (homeFragment!= null) {
-                        homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!)
+                        homeFragment.updateModelUserConfirmed(user, viewModel.confirmUser, viewModel.internal.value!!, viewModel.group)
                     }
                     dismiss()
                 }
@@ -152,6 +154,7 @@ class ConfirmMemberDialog: MyDialog() {
         private var internalHolidayDays: Int by Delegates.notNull()
         private lateinit var user: String
         private lateinit var area: String
+        lateinit var group: String
         private val holidaysData= listOf("20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30")
 
         private lateinit var profilesData: Profiles
@@ -281,9 +284,9 @@ class ConfirmMemberDialog: MyDialog() {
 
         val buttonConfirmEnabled= getMediatorLiveDataForConfirmButtonEnabledState()
 
-        fun publishUser(user: String, email: String, remoteProfileImage: String,
-                        name: String, profileTextColor: Int, profileBackColor: Int,
-                        area: String) {
+        fun publishInitInfo(user: String, email: String, remoteProfileImage: String,
+                            name: String, profileTextColor: Int, profileBackColor: Int,
+                            area: String, group: String) {
             this.user= user
             _email.value= email.substring(0, email.indexOf("@"))
             _profileImage.value= remoteProfileImage
@@ -291,6 +294,7 @@ class ConfirmMemberDialog: MyDialog() {
             _profileTextColor.value= profileTextColor
             _profileBackColor.value= profileBackColor
             this.area= area
+            this.group= group
             //we load profiles
             init()
         }

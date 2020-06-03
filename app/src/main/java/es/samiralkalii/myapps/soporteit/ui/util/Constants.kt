@@ -14,12 +14,13 @@ enum class OK_KO {
     OK, KO
 }
 
-const val GROUP_TODOS= "Todos"
-const val GROUP_INTERNALS= "Internos"
+
 
 class Constants {
     companion object {
         const val OPERATION_NEW= "new"
         const val OPERATION_UPDATE= "update"
+        const val GROUP_TODOS= "Todos"
+        const val GROUP_INTERNALS= "Internos"
     }
 }

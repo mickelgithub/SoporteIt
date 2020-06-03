@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import es.samiralkalii.myapps.soporteit.R
@@ -14,22 +15,35 @@ import es.samiralkalii.myapps.soporteit.databinding.HeaderGroupMembersItemBindin
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.MemberUserItemBinding
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
+import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
+import es.samiralkalii.myapps.soporteit.ui.util.Constants
 
 
-class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, val fragment: HomeFragment): RecyclerView.Adapter<MemberUserAdapter.MemberUserViewHolder>() {
+class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, val fragment: HomeFragment, viewModel: HomeFragmentViewModel): RecyclerView.Adapter<MemberUserAdapter.MemberUserViewHolder>() {
 
     //private val logger= LoggerFactory.getLogger(MemberUserAdapter::class.java)
 
     private lateinit var recyclerView: RecyclerView
 
-    class MemberUserViewHolder(val binding: ViewDataBinding, val fragment: HomeFragment): RecyclerView.ViewHolder(binding.root) {
+    private val deleteUserActionModeCallback by lazy {
+        DeleteUserActionModeCallback(this, viewModel)
+    }
+
+    class MemberUserViewHolder(val binding: ViewDataBinding, val fragment: HomeFragment, val deleteUserActionModeCallback: DeleteUserActionModeCallback?): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(memberUserViewModel: MemberUserViewModelTemplate, memberUserAdapter: MemberUserAdapter?) {
             when (binding) {
                 is MemberUserItemBinding -> {
-                    binding.item= memberUserViewModel as MemberUserViewModelTemplate.MemberUserViewModel
+                    val item= memberUserViewModel as MemberUserViewModelTemplate.MemberUserViewModel
+                    binding.item= item
                     binding.fragment= fragment
                     memberUserViewModel.viewHolder= this
+                    this.itemView.setOnLongClickListener {
+                        if (item.group.name.equals(Constants.GROUP_TODOS, true)) {
+                            (itemView.context as AppCompatActivity).startSupportActionMode(deleteUserActionModeCallback!!)
+                        }
+                        true
+                    }
                     binding.invalidateAll() //executePendingBindings()
                 }
                 is HeaderGroupMembersItemBinding -> {
@@ -47,29 +61,25 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
         R.layout.header_group_members_item -> MemberUserViewHolder(
             HeaderGroupMembersItemBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
-            ), fragment
-        )
+            ), fragment, null)
         R.layout.member_user_item -> MemberUserViewHolder(
             MemberUserItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), fragment
-        )
+            ), fragment, deleteUserActionModeCallback)
         R.layout.empty_item_view -> MemberUserViewHolder(
             EmptyItemViewBindingImpl.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), fragment
-        )
+            ), fragment, null)
         else -> MemberUserViewHolder(
             LoadingItemViewBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), fragment
-        )
+            ), fragment, null)
     }
 
     override fun getItemCount()= members.size
@@ -79,7 +89,8 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
             holder.bind(members[position] as MemberUserViewModelTemplate.GroupMemberUserViewModel, null)
         }
         R.layout.member_user_item -> {
-            holder.bind(members[position] as MemberUserViewModelTemplate.MemberUserViewModel, this)
+            val memberUserViewModel= members[position] as MemberUserViewModelTemplate.MemberUserViewModel
+            holder.bind(memberUserViewModel, this)
         } else -> {
             holder.itemView.isClickable= false
         }

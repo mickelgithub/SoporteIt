@@ -65,7 +65,8 @@
     <string name="profile_mandatory">El perfil es obligatorio</string>
     <string name="boss_label">(Big Boss)</string>
     <string name="home">Inicio</string>
-    <string name="menu_delete_group">Borrar grupo</string>
+    <string name="menu_delete_group">Eliminar grupo</string>
+    <string name="menu_delete_user">Eliminar usuario</string>
     <string name="menu_update_group">Modificar grupo</string>
     <string name="nothing"></string>
     <string name="team_name_input">Indica el nombre del equipo</string>

@@ -60,7 +60,7 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
                 groupsRecycleView.apply {
                     setHasFixedSize(true)
                     adapter =
-                        MemberUserAdapter(mutableListOf(), this@HomeFragment)
+                        MemberUserAdapter(mutableListOf(), this@HomeFragment, viewModel)
                 }
                 swipeContainer.setOnRefreshListener {
                     this@HomeFragment.viewModel.initData(true)
@@ -204,16 +204,16 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
         }
     }
 
-    fun updateModelUserConfirmed(user: String, isConfirmed: Boolean, internal: Boolean) {
+    fun updateModelUserConfirmed(user: String, isConfirmed: Boolean, internal: Boolean, group: String) {
         val adapter= binding.groupsRecycleView.adapter as MemberUserAdapter
         val memberUserViewModel= adapter.members.filter {
-            it is MemberUserViewModelTemplate.MemberUserViewModel && it.user.id== user
+            it is MemberUserViewModelTemplate.MemberUserViewModel && it.user.id== user && it.group.id== group
         }.first() as MemberUserViewModelTemplate.MemberUserViewModel
         (memberUserViewModel.viewHolder.binding as MemberUserItemBinding).memberStateImage.let {
             it.postDelayed({
                 it.animateRevealView{it.visibility= View.GONE}
                 if (isConfirmed) {
-                    val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel.uiModel.user.value!!)
+                    val newItem= MemberUserViewModelTemplate.MemberUserViewModel(memberUserViewModel.user.copy(membershipConfirmation = "S"), viewModel.uiModel.user.value!!, memberUserViewModel.group)
                     val position= adapter.members.indexOf(memberUserViewModel)
                     viewModel.updateItem(position, newItem)
                     adapter.members[position]= newItem

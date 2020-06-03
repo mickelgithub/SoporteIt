@@ -79,7 +79,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
                 result= myGroups.groups.map {
                     val items= mutableListOf<MemberUserViewModelTemplate>()
                     items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(user!!, it, this@HomeFragmentViewModel))
-                    items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!) })
+                    items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) })
                     items
                 }.flatMap{it}.toMutableList()
                 if (myGroups.groups.size== 1 && myGroups.groups[0].members.isEmpty()) {
@@ -116,7 +116,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             result= filteredGroups.map {
                 val items= mutableListOf<MemberUserViewModelTemplate>()
                 items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(uiModel._user.value!!, it, this))
-                items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!) })
+                items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) })
                 items
             }.flatMap{it}.toMutableList()
             if (filteredGroups.size== 1 && filteredGroups[0].members.isEmpty()) {

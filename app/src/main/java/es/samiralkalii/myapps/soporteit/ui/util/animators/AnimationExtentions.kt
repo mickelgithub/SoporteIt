@@ -22,18 +22,21 @@ fun View.animateRevealView(onFinishAnim: () -> Unit) {
 }
 
 fun View.animateRevealViewInverse(onFinishAnim: () -> Unit) {
-    val cx = width/2
-    val cy = height/2
-    val initialRadius = 0
-    val endRadius= width/2
 
-    val anim = ViewAnimationUtils.createCircularReveal(this, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
-    anim.addListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-            super.onAnimationEnd(animation)
-            onFinishAnim()
-        }
-    })
-    anim.start()
+    if (this.isAttachedToWindow) {
+        val cx = width/2
+        val cy = height/2
+        val initialRadius = 0
+        val endRadius= width/2
+
+        val anim = ViewAnimationUtils.createCircularReveal(this, cx, cy, initialRadius.toFloat(), endRadius.toFloat())
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                onFinishAnim()
+            }
+        })
+        anim.start()
+    }
 
 }
