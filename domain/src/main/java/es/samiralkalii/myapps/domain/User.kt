@@ -2,8 +2,7 @@ package es.samiralkalii.myapps.domain
 
 import java.util.*
 
-const val STATE_SUBSCRIBED= "S"
-const val STATE_UNSUBSCRIBED= "U"
+
 
 data class User(
     val email: String= "",
@@ -42,8 +41,9 @@ data class User(
 
     companion object {
         val EMPTY= User()
-        val DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS= 22
-        //val DEFAULT_HOLIDAY_DAYS_FOR_INTERNALS= 26
+        const val DEFAULT_HOLIDAY_DAYS_FOR_EXTERNALS= 22
+        const val STATE_SUBSCRIBED= "S"
+        const val STATE_UNSUBSCRIBED= "U"
     }
 }
 

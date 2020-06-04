@@ -14,6 +14,7 @@ import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 import es.samiralkalii.myapps.usecase.teammanagement.DeleteGroupUseCase
+import es.samiralkalii.myapps.usecase.teammanagement.DeleteUsersUseCase
 import es.samiralkalii.myapps.usecase.teammanagement.GetGroupsUseCase
 import es.samiralkalii.myapps.usecase.usermanagment.GetUserUseCase
 import kotlinx.coroutines.*
@@ -21,7 +22,8 @@ import org.slf4j.LoggerFactory
 
 class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
                             private val getUserUseCase: GetUserUseCase,
-                            private val deleteGroupUseCase: DeleteGroupUseCase
+                            private val deleteGroupUseCase: DeleteGroupUseCase,
+                            private val deleteUsersUseCase: DeleteUsersUseCase
 ): BaseFragmentViewModel() {
 
     private val logger = LoggerFactory.getLogger(HomeFragmentViewModel::class.java)
@@ -146,6 +148,52 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
 
     fun updateGroup(group: Group) {
         uiModel._updateGroup.value= Event(group)
+    }
+
+    fun deleteUsers(users: List<String>) {
+        val errorHandler = CoroutineExceptionHandler { _, error ->
+            logger.error(error.toString(), error)
+            var message= R.string.not_controled_error
+            if (error is FirebaseFirestoreException) {
+                if (error.code.ordinal== FirebaseFirestoreException.Code.UNAVAILABLE.ordinal) {
+                    message= R.string.no_internet_connection
+                }
+            }
+        }
+        viewModelScope.launch(errorHandler) {
+            async(Dispatchers.IO) {
+                deleteUsersUseCase(users)
+            }.await()
+
+            updateStateAfterUsersDeletion(users)
+
+        }
+    }
+
+    private fun updateStateAfterUsersDeletion(users: List<String>) {
+
+        var groups= mutableListOf<Group>()
+        var result: MutableList<MemberUserViewModelTemplate>
+
+        myGroups.groups.forEach {
+            val members= it.members.filter { user -> user.id !in users }
+            if (members.size> 0) {
+                val newGroup= it.copy(members = members)
+                groups.add(newGroup)
+            }
+        }
+        if (groups.isNotEmpty()) {
+            result= groups.map {
+                val items= mutableListOf<MemberUserViewModelTemplate>()
+                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(uiModel._user.value!!, it, this@HomeFragmentViewModel))
+                items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) })
+                items
+            }.flatMap{it}.toMutableList()
+        } else {
+            result= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
+        }
+        uiModel._getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
+
     }
 
 }

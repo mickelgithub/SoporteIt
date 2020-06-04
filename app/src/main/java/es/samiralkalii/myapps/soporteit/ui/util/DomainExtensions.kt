@@ -1,8 +1,8 @@
 package es.samiralkalii.myapps.soporteit.ui.util
 
 import android.os.Bundle
-import es.samiralkalii.myapps.domain.STATE_SUBSCRIBED
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.User.Companion.STATE_SUBSCRIBED
 import java.util.*
 
 

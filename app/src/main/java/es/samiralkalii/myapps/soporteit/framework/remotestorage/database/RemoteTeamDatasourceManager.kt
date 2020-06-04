@@ -1,17 +1,16 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import es.samiralkalii.myapps.data.teammanagement.IRemoteTeamManagementDatasource
 import es.samiralkalii.myapps.domain.User
+import es.samiralkalii.myapps.domain.User.Companion.STATE_UNSUBSCRIBED
 import es.samiralkalii.myapps.domain.notification.NotifType
 import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -312,6 +311,14 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     override suspend fun deleteGroup(group: String) {
         val groupRef= fstore.collection(GROUPS_REF).document(group)
         groupRef.delete()
+    }
+
+    override suspend fun deleteUsers(users: List<String>) {
+        val usersRef= fstore.collection(USERS_REF)
+        users.forEach {
+            usersRef.document(it).update(mapOf(
+                KEY_STATE to STATE_UNSUBSCRIBED, KEY_STATE_CHANGED_AT to formatDate(Calendar.getInstance().timeInMillis)))
+        }
     }
 
 }

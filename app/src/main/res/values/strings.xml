@@ -98,6 +98,7 @@
     <string name="deny">Rechazar</string>
     <string name="confirm_deny_member_message">¿Estas seguro que quieres rechazar a este usuario?</string>
     <string name="confirm_group_deletion">¿Estas seguro que quieres borrar el grupo \'%1$s\'?</string>
+    <string name="confirm_users_deletion">¿Estas seguro que quieres realizar esta operacion de borrado?</string>
     <string name="confirm_operacion">Confirmar la operacion</string>
     <string name="profile_is_needed">Es importante que informes tu perfil</string>
     <string name="advertisement">Aviso</string>

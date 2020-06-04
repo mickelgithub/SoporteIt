@@ -4,7 +4,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import es.samiralkalii.myapps.data.authlogin.IRemoteUserDatasource
-import es.samiralkalii.myapps.domain.STATE_SUBSCRIBED
 import es.samiralkalii.myapps.domain.User
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.Team

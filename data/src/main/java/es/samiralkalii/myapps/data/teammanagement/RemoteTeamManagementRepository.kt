@@ -33,6 +33,9 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
 
     suspend fun deleteGroup(group: String)= remoteTeamManagementDatasource.deleteGroup(group)
 
+
+    suspend fun deleteUsers(users: List<String>)= remoteTeamManagementDatasource.deleteUsers(users)
+
 }
 
 interface IRemoteTeamManagementDatasource {
@@ -58,6 +61,8 @@ interface IRemoteTeamManagementDatasource {
     suspend fun updateGroup(groupId: String, group: MutableMap<String, Any>)
 
     suspend fun deleteGroup(group: String)
+
+    suspend fun deleteUsers(users: List<String>)
 
 
 }

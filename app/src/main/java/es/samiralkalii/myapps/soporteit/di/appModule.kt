@@ -54,12 +54,11 @@ val appModule= module {
     factory<IRemoteNotificationsDatasource> { RemoteNotificationsDatasourceManager(get()) }
 
 
-
     viewModel { SplashActivityViewModel(get()) }
     viewModel { LogupActivityViewModel(get(), get(), get(), get(), get()) }
     viewModel { HomeActivityViewModel(get())}
     viewModel { ProfileFragmentViewModel(get(), get(), get()) }
-    viewModel { HomeFragmentViewModel(get(), get(), get()) }
+    viewModel { HomeFragmentViewModel(get(), get(), get(), get()) }
     viewModel { InviteMemberDialog.InviteMemberDialogViewModel(get(), get()) }
     viewModel { HomeNotificationsFragmentViewModel(get(), get(), get(), get()) }
     viewModel { ConfirmMemberDialog.ConfirmMemberDialogViewModel(get(), get(), get()) }

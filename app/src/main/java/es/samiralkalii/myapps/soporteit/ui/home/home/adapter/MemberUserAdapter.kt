@@ -26,7 +26,7 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
     private lateinit var recyclerView: RecyclerView
 
     private val deleteUserActionModeCallback by lazy {
-        DeleteUserActionModeCallback(this, fragment.viewModel)
+        DeleteUserActionModeCallback(this, fragment)
     }
 
     class MemberUserViewHolder(val binding: ViewDataBinding, val fragment: HomeFragment, val deleteUserActionModeCallback: DeleteUserActionModeCallback?): RecyclerView.ViewHolder(binding.root) {
