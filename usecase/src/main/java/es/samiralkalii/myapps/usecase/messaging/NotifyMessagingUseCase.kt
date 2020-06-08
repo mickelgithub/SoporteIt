@@ -30,6 +30,7 @@ const val MESSAGE_ID_BOSS_VERIFICATION= "boss_verification"
 const val MESSAGE_ID_INVITATION_TO_BE_PART_OF_TEAM= "invitation_to_be_part_of_team"
 const val MESSAGE_ID_MEMBER_CONFIRMATION= "member_confirmation"
 const val MESSAGE_ID_NEW_MEMBER= "new_member"
+const val MESSAGE_ID_MEMBER_DELETION= "member_deletion"
 
 class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                              val preferenceRepository: PreferenceRepository,
@@ -70,6 +71,10 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
                 logger.debug("Se ha verificado el mail de un miembro, es decir un nuevo miembro que hay que confirmar")
                 processNewMemberNotification(result, userId, extraData)
             }
+            MESSAGE_ID_MEMBER_DELETION -> {
+                logger.debug("ME ha llegado la notificacion porque me borran...")
+                processMemberDeletion()
+            }
         }
     }
 
@@ -89,6 +94,13 @@ class NotifyMessagingUseCase(val notificationRepository: NotificationRepository,
             result == RESULT_OK_VALUE,
             user.department
         )
+    }
+
+    private suspend fun processMemberDeletion() {
+        val user = preferenceRepository.getUser()
+        remoteUserRepository.signOut()
+        preferenceRepository.deleteUserData()
+        fileSystemRepository.deleteImageProfile(user.profileImage)
     }
 
     private suspend fun processBossVerifNotif(result: String, userId: String) {
