@@ -193,6 +193,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             result= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
         }
         uiModel._getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
+        myGroups= GroupList(groups)
 
     }
 
