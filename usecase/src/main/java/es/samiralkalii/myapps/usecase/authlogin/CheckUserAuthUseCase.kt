@@ -28,7 +28,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
         var user = preferenceRepository.getUser()
         val (loggedIn, isEmailVerified)= remoteUserAuthRepository.checkUserLoggedIn(user.isEmailVerified)
         if (loggedIn) {
-            logger.debug("active session...")
+            logger.debug("active session for user ${user.email}...")
             if (!user.isEmailVerified && isEmailVerified) {
                 //we have to update this informacion en preferences
                 //and update it in firebase database
@@ -42,7 +42,7 @@ class CheckUserAuthUseCase(private val remoteUserAuthRepository: RemoteUserAuthR
             if (user != User.EMPTY) {
                  //user already registered but he has a expired token
                 //we have to login
-                logger.debug("expired session, login taking data from preferences...")
+                logger.debug("expired session for user ${user.email}, login taking data from preferences...")
                 val (isEmailVerified, _)= remoteUserAuthRepository.signInUser(user.email, user.password, false)
                 if (isEmailVerified && !user.isEmailVerified) {
                     //we have to update this informacion en preferences
