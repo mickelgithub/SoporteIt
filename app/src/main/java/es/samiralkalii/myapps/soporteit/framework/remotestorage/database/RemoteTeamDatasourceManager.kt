@@ -1,5 +1,6 @@
 package es.samiralkalii.myapps.soporteit.framework.remotestorage.database
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
@@ -11,6 +12,7 @@ import es.samiralkalii.myapps.domain.notification.Notification
 import es.samiralkalii.myapps.domain.notification.Reply
 import es.samiralkalii.myapps.domain.teammanagement.*
 import es.samiralkalii.myapps.soporteit.ui.util.*
+import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.GROUP_INTERNALS
 import kotlinx.coroutines.tasks.await
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -242,7 +244,8 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
     }
 
     override suspend fun confirmDenyMember(user: String, isConfirmed: Boolean, profile: String,
-                                           profileId: String, holidayDays: Int, internal: Boolean) {
+                                           profileId: String, holidayDays: Int,internal: Boolean,
+                                           area: String, department: String) {
         if (!isConfirmed) {
             fstore.collection(USERS_REF).document(user).update(
                 mapOf( KEY_MEMBERSHIP_CONFIRMATION to NO, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time))).await()
@@ -251,6 +254,16 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
                 mapOf( KEY_MEMBERSHIP_CONFIRMATION to SI, KEY_MEMBERSHIP_CONFIRMED_AT to formatDate(Date().time),
                 KEY_PROFILE to profile, KEY_PROFILE_ID to profileId, KEY_INTERNAL_EMPLOYEE to internal,
                 KEY_HOLIDAY_DAYS to holidayDays.toLong())).await()
+            if (internal) {
+                val internalGroups= fstore.collection(GROUPS_REF)
+                    .whereEqualTo(KEY_AREA_ID, area)
+                    .whereEqualTo(KEY_DEPARTMENT_ID, department)
+                    .whereEqualTo(KEY_GROUP_NAME, GROUP_INTERNALS).get().await()
+                if (!internalGroups.isEmpty) {
+                    val internalGroupDoc= internalGroups.documents[0].reference
+                    internalGroupDoc.update(MEMBERS_FIELD, FieldValue.arrayUnion(user))
+                }
+            }
         }
     }
 

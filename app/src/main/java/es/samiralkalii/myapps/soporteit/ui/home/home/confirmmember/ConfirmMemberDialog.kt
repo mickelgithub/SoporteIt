@@ -55,20 +55,20 @@ class ConfirmMemberDialog: MyDialog() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         logger.debug("onCreate...")
-
-        val user = requireArguments().getString(KEY_ID, "")
-        this@ConfirmMemberDialog.user= user
-        val email = requireArguments().getString(KEY_EMAIL, "")
-        val remoteProfileImage = requireArguments().getString(KEY_REMOTE_PROFILE_IMAGE, "")
-        val name = requireArguments().getString(KEY_NAME, "")
-        val profileTextColor = requireArguments().getInt(KEY_PROFILE_TEXT_COLOR, -1)
-        val profileBackColor = requireArguments().getInt(KEY_PROFILE_BACK_COLOR, -1)
-        val area= requireArguments().getString(KEY_AREA_ID, "")
-        val group= requireArguments().getString(KEY_GROUP_MAP_ID, "")
-        viewModel.publishInitInfo(user, email, remoteProfileImage,
-            name, profileTextColor, profileBackColor, area, group)
-
-
+        with(requireArguments()) {
+            val user = getString(KEY_ID, "")
+            this@ConfirmMemberDialog.user= user
+            val email = getString(KEY_EMAIL, "")
+            val remoteProfileImage = getString(KEY_REMOTE_PROFILE_IMAGE, "")
+            val name = getString(KEY_NAME, "")
+            val profileTextColor = getInt(KEY_PROFILE_TEXT_COLOR, -1)
+            val profileBackColor = getInt(KEY_PROFILE_BACK_COLOR, -1)
+            val area= getString(KEY_AREA_ID, "")
+            val department= getString(KEY_DEPARTMENT_ID, "")
+            val group= requireArguments().getString(KEY_GROUP_MAP_ID, "")
+            viewModel.publishInitInfo(user, email, remoteProfileImage,
+                name, profileTextColor, profileBackColor, area, department, group)
+        }
     }
 
     override fun onCreateView(
@@ -154,6 +154,7 @@ class ConfirmMemberDialog: MyDialog() {
         private var internalHolidayDays: Int by Delegates.notNull()
         private lateinit var user: String
         private lateinit var area: String
+        private lateinit var department: String
         lateinit var group: String
         private val holidaysData= listOf("20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30")
 
@@ -286,7 +287,7 @@ class ConfirmMemberDialog: MyDialog() {
 
         fun publishInitInfo(user: String, email: String, remoteProfileImage: String,
                             name: String, profileTextColor: Int, profileBackColor: Int,
-                            area: String, group: String) {
+                            area: String, department: String, group: String) {
             this.user= user
             _email.value= email.substring(0, email.indexOf("@"))
             _profileImage.value= remoteProfileImage
@@ -294,6 +295,7 @@ class ConfirmMemberDialog: MyDialog() {
             _profileTextColor.value= profileTextColor
             _profileBackColor.value= profileBackColor
             this.area= area
+            this.department= department
             this.group= group
             //we load profiles
             init()
@@ -337,10 +339,10 @@ class ConfirmMemberDialog: MyDialog() {
                     if (isConfirm) {
                         val profileId= profilesData.getProfileId(profile.value!!)
                         confirmDenyMemberUseCase(user, isConfirm, profile.value!!, profileId,
-                            holidayDaysValue.value!!.toInt(), _internal.value!!)
+                            holidayDaysValue.value!!.toInt(), _internal.value!!, area, department)
                     } else {
                         confirmDenyMemberUseCase(user, isConfirm, "", "",
-                            0, false)
+                            0, false, "", "")
                     }
                 }.await()
                 if (!isConfirm) {

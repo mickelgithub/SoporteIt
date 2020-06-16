@@ -108,13 +108,13 @@ sealed class MemberUserViewModelTemplate {
                     //Se trata del boss confirmando un miembro
                     logger.debug("CONFIRMAMOS EL USUARIO ${user.email}......................")
                     showConfirmMemberDialog(user.id, user.email, user.remoteProfileImage,
-                        user.firstName, user.profileTextColor, user.profileBackColor, user.areaId, group.id)
+                        user.firstName, user.profileTextColor, user.profileBackColor, user.areaId, user.departmentId, group.id)
                 }
             }
         }
 
         private fun showConfirmMemberDialog(user: String, email: String, remoteProfileImage: String,
-                                            name: String, profileTextColor: Int, profileBackColor: Int, area: String, group: String) {
+                                            name: String, profileTextColor: Int, profileBackColor: Int, area: String, department: String, group: String) {
             var confirmMemberDialog: ConfirmMemberDialog?= (viewHolder.itemView.context as AppCompatActivity).supportFragmentManager.findFragmentByTag(
                 ConfirmMemberDialog::class.java.simpleName) as ConfirmMemberDialog?
             if (confirmMemberDialog== null) {
@@ -125,6 +125,7 @@ sealed class MemberUserViewModelTemplate {
                     KEY_PROFILE_TEXT_COLOR to profileTextColor,
                     KEY_PROFILE_BACK_COLOR to profileBackColor,
                     KEY_AREA_ID to area,
+                    KEY_DEPARTMENT_ID to department,
                     KEY_GROUP_MAP_ID to group
                 )
                 confirmMemberDialog= ConfirmMemberDialog.newInstance(bundle)

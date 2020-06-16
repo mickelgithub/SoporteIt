@@ -19,8 +19,9 @@ class RemoteTeamManagementRepository(val remoteTeamManagementDatasource: IRemote
 
     suspend fun getMyGroups(user: User)= remoteTeamManagementDatasource.getMyGroups(user)
     suspend fun confirmDenyMember(user: String, isConfirmed: Boolean,profile: String,
-                                  profileId: String, holidayDays: Int, internal: Boolean)= remoteTeamManagementDatasource.confirmDenyMember(
-        user, isConfirmed, profile, profileId, holidayDays, internal)
+                                  profileId: String, holidayDays: Int, internal: Boolean,
+                                  area: String, department: String)= remoteTeamManagementDatasource.confirmDenyMember(
+        user, isConfirmed, profile, profileId, holidayDays, internal, area, department)
     suspend fun getMemberConfirmationData(user: String)= remoteTeamManagementDatasource.getMemberConfirmationData(user)
 
     suspend fun getProfiles(area: String)= remoteTeamManagementDatasource.getProfiles(area)
@@ -51,7 +52,8 @@ interface IRemoteTeamManagementDatasource {
     suspend fun getHolidayDays(): Holidays
     suspend fun getMyGroups(user: User): GroupList
     suspend fun confirmDenyMember(user: String, isConfirmed: Boolean,profile: String,
-                                  profileId: String, holidayDays: Int, internal: Boolean)
+                                  profileId: String, holidayDays: Int, internal: Boolean,
+                                  area: String, department: String)
     suspend fun getMemberConfirmationData(user: String): Map<String, Any?>
     suspend fun getProfiles(area: String): Profiles
     suspend fun getDepartmentUsers(area: String, deparment: String): List<User>
