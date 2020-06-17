@@ -9,6 +9,7 @@ import android.view.animation.LayoutAnimationController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.EmptyItemViewBindingImpl
 import es.samiralkalii.myapps.soporteit.databinding.HeaderGroupMembersItemBinding
@@ -146,6 +147,31 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         this.recyclerView= recyclerView
+    }
+
+    fun update(groupExpanded: Pair<Group, List<MemberUserViewModelTemplate>>) {
+        val ContractedGroup= members.filter { it is MemberUserViewModelTemplate.GroupMemberUserViewModel && it.selected}.first() as MemberUserViewModelTemplate.GroupMemberUserViewModel
+        val iterator= members.iterator()
+        var i= 0
+        val itemDecorator= recyclerView.getItemDecorationAt(0)
+        recyclerView.removeItemDecoration(itemDecorator)
+        while (iterator.hasNext()) {
+            val value= iterator.next()
+            if (value is MemberUserViewModelTemplate.MemberUserViewModel) {
+                notifyItemRemoved(i)
+                iterator.remove()
+            }
+            i++
+        }
+        val groupExpandedItem= members.filter {it is MemberUserViewModelTemplate.GroupMemberUserViewModel && it.group== groupExpanded.first}.first() as MemberUserViewModelTemplate.GroupMemberUserViewModel
+        val itemPosition= members.indexOf(groupExpandedItem)
+        groupExpanded.second.forEachIndexed { index, item ->
+            val position= itemPosition+index+1
+            members.add(position, item)
+            notifyItemInserted(position)
+        }
+        recyclerView.addItemDecoration(itemDecorator)
+
     }
 
 

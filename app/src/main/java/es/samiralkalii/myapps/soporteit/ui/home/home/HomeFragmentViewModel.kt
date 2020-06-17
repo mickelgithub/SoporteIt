@@ -78,12 +78,13 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             }
             var result= mutableListOf<MemberUserViewModelTemplate>(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
             if (!myGroups.isEmpty) {
-                result= myGroups.groups.map {
+                result= filterResult(myGroups.groups.map {
                     val items= mutableListOf<MemberUserViewModelTemplate>()
-                    items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(user!!, it, this@HomeFragmentViewModel))
-                    items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) })
+                    val subItems= it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) }
+                    items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(user!!, it, subItems, this@HomeFragmentViewModel, it.name.equals(uiModel.selectedGroup.value, true)))
+                    items.addAll(subItems)
                     items
-                }.flatMap{it}.toMutableList()
+                }.flatMap{it}.toMutableList())
                 if (myGroups.groups.size== 1 && myGroups.groups[0].members.isEmpty()) {
                     result.add(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
                 }
@@ -97,6 +98,17 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
     }
 
     //suspend fun confirmDenyMember(user: String, isConfirmed: Boolean)= confirmDenyMemberUseCase(user, isConfirmed)
+
+    private fun filterResult(data: List<MemberUserViewModelTemplate>): MutableList<MemberUserViewModelTemplate>  {
+        val result= mutableListOf<MemberUserViewModelTemplate>()
+        val selectedGroup= data.find { it is MemberUserViewModelTemplate.GroupMemberUserViewModel && it.selected} as MemberUserViewModelTemplate.GroupMemberUserViewModel?
+        if (selectedGroup!= null) {
+            result.addAll(data.filter { it is MemberUserViewModelTemplate.GroupMemberUserViewModel || it in selectedGroup!!.subItems})
+        } else {
+            result.addAll(data)
+        }
+        return result
+    }
 
     fun updateItem(position: Int, memberUserViewModel: MemberUserViewModelTemplate) {
         uiModel._items.value?.let {
@@ -115,12 +127,13 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             filteredGroups= myGroups.groups.filter { it.name.startsWith(groupName, ignoreCase = true)}
         }
         if (filteredGroups.isNotEmpty()) {
-            result= filteredGroups.map {
+            result= filterResult(filteredGroups.map {
                 val items= mutableListOf<MemberUserViewModelTemplate>()
-                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(uiModel._user.value!!, it, this))
-                items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) })
+                val subItems= it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) }
+                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(uiModel._user.value!!, it, subItems, this, it.name.equals(uiModel.selectedGroup.value, true)))
+                items.addAll(subItems)
                 items
-            }.flatMap{it}.toMutableList()
+            }.flatMap{it}.toMutableList())
             if (filteredGroups.size== 1 && filteredGroups[0].members.isEmpty()) {
                 result.add(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
             }
@@ -183,17 +196,25 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
             }
         }
         if (groups.isNotEmpty()) {
-            result= groups.map {
+            result= filterResult(groups.map {
                 val items= mutableListOf<MemberUserViewModelTemplate>()
-                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(uiModel._user.value!!, it, this@HomeFragmentViewModel))
-                items.addAll(it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) })
+                val subItems= it.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, it) }
+                items.add(MemberUserViewModelTemplate.GroupMemberUserViewModel(uiModel._user.value!!, it, subItems,this@HomeFragmentViewModel, it.name.equals(uiModel.selectedGroup.value, true)))
+                items.addAll(subItems)
                 items
-            }.flatMap{it}.toMutableList()
+            }.flatMap{it}.toMutableList())
         } else {
             result= mutableListOf(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
         }
         uiModel._getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
         myGroups= GroupList(groups)
+
+    }
+
+    fun onExpandClick(group: Group) {
+
+        uiModel._updateExpandableGroup.value= group to group.members.map { userItem -> MemberUserViewModelTemplate.MemberUserViewModel(userItem, uiModel.user.value!!, group) }
+
 
     }
 

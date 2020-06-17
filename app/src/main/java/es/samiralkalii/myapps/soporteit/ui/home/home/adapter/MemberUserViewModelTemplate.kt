@@ -24,11 +24,17 @@ import org.slf4j.LoggerFactory
 
 sealed class MemberUserViewModelTemplate {
 
-    class GroupMemberUserViewModel(val user: User, val group: Group, val viewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
+    class GroupMemberUserViewModel(val user: User, val group: Group, val subItems: List<MemberUserViewModel>, val viewModel: HomeFragmentViewModel, val selected: Boolean): MemberUserViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(GroupMemberUserViewModel::class.java)
 
         lateinit var viewHolder: MemberUserAdapter.MemberUserViewHolder
+
+        fun onExpandClick(v: View) {
+
+            viewModel.onExpandClick(group)
+
+        }
 
         fun onGroupOverflowMenuClick(v: View) {
             PopupMenu(v.context, v).apply {

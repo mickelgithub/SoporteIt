@@ -8,6 +8,7 @@ import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.soporteit.ui.UiModel
 import es.samiralkalii.myapps.soporteit.ui.dialog.MyDialog
 import es.samiralkalii.myapps.soporteit.ui.home.home.adapter.MemberUserViewModelTemplate
+import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.GROUP_TODOS
 import es.samiralkalii.myapps.soporteit.ui.util.Event
 import es.samiralkalii.myapps.soporteit.ui.util.ScreenState
 
@@ -40,5 +41,13 @@ class HomeFragmentViewModelUiModel: UiModel {
     val _updateGroup= MutableLiveData<Event<Group>?>()
     val updateGroup: LiveData<Event<Group>?>
         get() = _updateGroup
+
+    val _selectedGroup= MutableLiveData(GROUP_TODOS)
+    val selectedGroup: LiveData<String>
+        get() = _selectedGroup
+
+    val _updateExpandableGroup= MutableLiveData<Pair<Group,List<MemberUserViewModelTemplate>>?>()
+    val updateExpandableGroup: LiveData<Pair<Group,List<MemberUserViewModelTemplate>>?>
+        get() = _updateExpandableGroup
 
 }

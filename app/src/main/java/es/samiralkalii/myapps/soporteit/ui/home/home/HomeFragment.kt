@@ -27,6 +27,7 @@ import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.OPERATION_NEW
 import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.OPERATION_UPDATE
 import es.samiralkalii.myapps.soporteit.ui.util.animators.animateRevealView
+import es.samiralkalii.myapps.soporteit.ui.util.view.CustomDividerItemDecoration
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.slf4j.LoggerFactory
 
@@ -59,6 +60,7 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
                 swipeContainer.setDistanceToTriggerSync(requireActivity().convertDpToPixels(DISTANCE_TO_TRIGGER_SWIP).toInt())
                 groupsRecycleView.apply {
                     setHasFixedSize(true)
+                    addItemDecoration(CustomDividerItemDecoration(requireContext()))
                     adapter =
                         MemberUserAdapter(mutableListOf(), this@HomeFragment)
                 }
@@ -116,6 +118,12 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
                 it.getContentIfNotHandled()?.let { group ->
                     showNewGroupForUpdate(group)
                 }
+            }
+        })
+
+        viewModel.uiModel.updateExpandableGroup.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                (binding.groupsRecycleView.adapter as MemberUserAdapter).update(it)
             }
         })
 
