@@ -11,7 +11,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         app:cardBackgroundColor="@color/colorAccent"
         android:elevation="16dp"
         android:layout_marginBottom="0dp"
@@ -28,8 +28,8 @@
                 android:layout_marginStart="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:onClick="@{(v) -> item.onExpandClick(v)}"
-                android:src="@{item.selected ? @drawable/ic_down : @drawable/ic_right}"
+                android:onClick="@{(_) -> item.onExpandClick()}"
+                app:resdraw="@{item.expandImage}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -40,6 +40,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="@{item.group.name}"
+                android:clickable="true"
+                android:onClick="@{(_) -> item.onExpandClick()}"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -213,7 +213,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
             val membersQueryresult= it.get(Source.SERVER).await()
             if (!membersQueryresult.isEmpty) {
                 //Until now we have all members that belongs to user.department && user.area
-                val groupAll= membersQueryresult.documents.map { it.data!!.toUser() }.filter { it!= null && it.id!= user.id }.let { Group(id = "TODOS", name = "Todos", members = it as List<User>, area = user.areaId, department = user.departmentId) }
+                val groupAll= membersQueryresult.documents.map { it.data!!.toUser() }.filter { it!= null && it.id!= user.id }.let { Group(id = Constants.GROUP_ALL_ID, name = Constants.GROUP_ALL, members = it as List<User>, area = user.areaId, department = user.departmentId) }
                 var otherGroups= getTheGroupsIbelongTo(user, groupAll.members).filter { it.members!= null && !it.members.isEmpty() }
                 return GroupList(listOf(groupAll, *otherGroups.toTypedArray()))
             }
@@ -232,7 +232,7 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
                     val groupName= data!![KEY_GROUP_NAME] as String
                     val id= data!![KEY_GROUP_ID] as String
                     val members= data!![KEY_GROUP_MEMBERS] as List<String>
-                    val groupUsers= members.filter { it!= null && it!= user.id }.map { it ->
+                    val groupUsers= members.filter { it!= null && it!= user.id }.map {
                         users.find { user-> user.id== it }
                     }.filter { it!= null }
                     Group(id, groupName, members = groupUsers as List<User>, area = user.areaId, department = user.departmentId)

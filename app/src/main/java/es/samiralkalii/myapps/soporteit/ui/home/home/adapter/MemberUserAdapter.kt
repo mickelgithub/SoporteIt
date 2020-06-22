@@ -9,14 +9,12 @@ import android.view.animation.LayoutAnimationController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import es.samiralkalii.myapps.domain.teammanagement.Group
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.databinding.EmptyItemViewBindingImpl
 import es.samiralkalii.myapps.soporteit.databinding.HeaderGroupMembersItemBinding
 import es.samiralkalii.myapps.soporteit.databinding.LoadingItemViewBinding
 import es.samiralkalii.myapps.soporteit.databinding.MemberUserItemBinding
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
-import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 import es.samiralkalii.myapps.soporteit.ui.util.Constants
 
 
@@ -40,14 +38,14 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
                     binding.fragment= fragment
                     memberUserViewModel.viewHolder= this
                     this.itemView.setOnLongClickListener {
-                        if (item.group.name.equals(Constants.GROUP_TODOS, true) && fragment.viewModel.uiModel.user.value!!.isBoss) {
+                        if (item.group.name.equals(Constants.GROUP_ALL, true) && fragment.viewModel.uiModel.user.value!!.isBoss) {
                             (itemView.context as AppCompatActivity).startSupportActionMode(deleteUserActionModeCallback!!)
                             deleteUserActionModeCallback.selectUser(item)
                         }
                         true
                     }
                     this.itemView.setOnClickListener {
-                        if (item.group.name.equals(Constants.GROUP_TODOS, true) && fragment.viewModel.uiModel.user.value!!.isBoss) {
+                        if (item.group.name.equals(Constants.GROUP_ALL, true) && fragment.viewModel.uiModel.user.value!!.isBoss) {
                             deleteUserActionModeCallback!!.selectUser(item)
                         }
                         true
@@ -149,12 +147,14 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
         this.recyclerView= recyclerView
     }
 
-    fun update(groupExpanded: Pair<Group, List<MemberUserViewModelTemplate>>) {
-        val ContractedGroup= members.filter { it is MemberUserViewModelTemplate.GroupMemberUserViewModel && it.selected}.first() as MemberUserViewModelTemplate.GroupMemberUserViewModel
+    fun update(groupExpanded: MemberUserViewModelTemplate.GroupMemberUserViewModel) {
+        val contractedGroup= members.filter { it is MemberUserViewModelTemplate.GroupMemberUserViewModel && it.isExpanded}.first() as MemberUserViewModelTemplate.GroupMemberUserViewModel
+
         val iterator= members.iterator()
         var i= 0
         val itemDecorator= recyclerView.getItemDecorationAt(0)
         recyclerView.removeItemDecoration(itemDecorator)
+
         while (iterator.hasNext()) {
             val value= iterator.next()
             if (value is MemberUserViewModelTemplate.MemberUserViewModel) {
@@ -163,13 +163,16 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
             }
             i++
         }
-        val groupExpandedItem= members.filter {it is MemberUserViewModelTemplate.GroupMemberUserViewModel && it.group== groupExpanded.first}.first() as MemberUserViewModelTemplate.GroupMemberUserViewModel
-        val itemPosition= members.indexOf(groupExpandedItem)
-        groupExpanded.second.forEachIndexed { index, item ->
+        contractedGroup.setExpanded(false)
+        notifyItemChanged(members.indexOf(contractedGroup))
+        val itemPosition= members.indexOf(groupExpanded)
+        groupExpanded.subItems.forEachIndexed { index, item ->
             val position= itemPosition+index+1
             members.add(position, item)
             notifyItemInserted(position)
         }
+        groupExpanded.setExpanded(true)
+        notifyItemChanged(itemPosition)
         recyclerView.addItemDecoration(itemDecorator)
 
     }

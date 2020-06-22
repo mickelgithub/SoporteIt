@@ -29,7 +29,7 @@ class CustomDividerItemDecoration(val context: Context): RecyclerView.ItemDecora
             val position= parent.getChildAdapterPosition(child)
             if (position< (parent.adapter as MemberUserAdapter).members.size && position>= 0) {
                 val item= (parent.adapter as MemberUserAdapter).members[position]
-                if (item is MemberUserViewModelTemplate.GroupMemberUserViewModel && !item.selected && (parent.getChildAdapterPosition(child) != parent.adapter!!.itemCount - 1)) {
+                if (item is MemberUserViewModelTemplate.GroupMemberUserViewModel && !item.isExpanded && (parent.getChildAdapterPosition(child) != parent.adapter!!.itemCount - 1)) {
                     val params = child.layoutParams as RecyclerView.LayoutParams
 
 

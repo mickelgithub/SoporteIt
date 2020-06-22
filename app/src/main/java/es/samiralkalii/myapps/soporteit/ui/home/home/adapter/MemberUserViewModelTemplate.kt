@@ -1,6 +1,5 @@
 package es.samiralkalii.myapps.soporteit.ui.home.home.adapter
 
-import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
@@ -13,27 +12,35 @@ import es.samiralkalii.myapps.domain.teammanagement.KEY_GROUP_MAP_ID
 import es.samiralkalii.myapps.soporteit.R
 import es.samiralkalii.myapps.soporteit.ui.dialog.AlertDialog
 import es.samiralkalii.myapps.soporteit.ui.dialog.showDialog
-import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragment
 import es.samiralkalii.myapps.soporteit.ui.home.home.HomeFragmentViewModel
 
 import es.samiralkalii.myapps.soporteit.ui.home.home.confirmmember.ConfirmMemberDialog
 import es.samiralkalii.myapps.soporteit.ui.util.*
 import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.GROUP_INTERNALS
-import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.GROUP_TODOS
+import es.samiralkalii.myapps.soporteit.ui.util.Constants.Companion.GROUP_ALL
 import org.slf4j.LoggerFactory
 
 sealed class MemberUserViewModelTemplate {
 
-    class GroupMemberUserViewModel(val user: User, val group: Group, val subItems: List<MemberUserViewModel>, val viewModel: HomeFragmentViewModel, val selected: Boolean): MemberUserViewModelTemplate() {
+    class GroupMemberUserViewModel(val user: User, val group: Group, val subItems: List<MemberUserViewModel>, val viewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(GroupMemberUserViewModel::class.java)
 
         lateinit var viewHolder: MemberUserAdapter.MemberUserViewHolder
 
-        fun onExpandClick(v: View) {
+        private val _expandImage= MutableLiveData(R.drawable.ic_right)
+        val expandImage: LiveData<Int>
+            get() = _expandImage
 
-            viewModel.onExpandClick(group)
+        fun setExpanded(expand: Boolean) {
+            _expandImage.value= if (expand) R.drawable.ic_down else R.drawable.ic_right
+        }
 
+        val isExpanded
+            get() = _expandImage.value== R.drawable.ic_down
+
+        fun onExpandClick() {
+            viewModel.onExpandClick(this)
         }
 
         fun onGroupOverflowMenuClick(v: View) {
@@ -60,7 +67,7 @@ sealed class MemberUserViewModelTemplate {
                     }
                 } }
                 inflate(R.menu.menu_group_overflow)
-                if (group.name in listOf(GROUP_TODOS, GROUP_INTERNALS) || !user.isBoss) {
+                if (group.name in listOf(GROUP_ALL, GROUP_INTERNALS) || !user.isBoss) {
                     menu.findItem(R.id.delete_group).isVisible= false
                     menu.findItem(R.id.update_group).isVisible= false
                 }
