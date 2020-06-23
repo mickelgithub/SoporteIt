@@ -151,7 +151,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         var filteredGroups= myGroups.groups
         var result= mutableListOf<MemberUserViewModelTemplate>(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
         if (groupName.length> 0) {
-            filteredGroups= myGroups.groups.filter { it.name.startsWith(groupName, ignoreCase = true)}
+            filteredGroups= myGroups.groups.filter { it.name.startsWith(groupName, ignoreCase = true)}.toMutableList()
         }
         if (filteredGroups.isNotEmpty()) {
             result= filterResult(filteredGroups.map {
@@ -215,10 +215,34 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
 
     private fun updateStateAfterUsersDeletion(users: List<String>) {
 
-        var groups= mutableListOf<Group>()
-        var result: MutableList<MemberUserViewModelTemplate>
+        //Todos contains all members
+        val deletedGroups= mutableListOf<String>()
+        val newMembers= myGroups.groups[0].members.filter { it.id !in users }
+        if (newMembers.isEmpty()) {
+            myGroups= GroupList(mutableListOf())
+            myGroupsUiModel= listOf()
+            uiModel._deletedUsers.value= Event(Triple(true, null, null))
+        } else {
+            val newGroups= myGroups.groups.map {
+                val newItems= it.members.filter { user ->  user.id !in users }
+                if (newItems.isEmpty()) {
+                    deletedGroups.add(it.name)
+                }
+                it.copy(members = newItems)
+            }.filter { it.members.isNotEmpty() }
+            myGroups= GroupList(newGroups.toMutableList())
+            myGroupsUiModel= myGroupsUiModel.map {
+                val subItems= it.subItems.filter { subitem ->
+                    subitem.user.id !in users
+                }
+                it.subItems= subItems
+                it
+                }.filter { it.subItems.isNotEmpty() }
+            uiModel._deletedUsers.value= Event(Triple(false, users, deletedGroups))
+        }
+    }
 
-        myGroups.groups.forEach {
+        /*myGroups.groups.forEach {
             val members= it.members.filter { user -> user.id !in users }
             if (members.size> 0) {
                 val newGroup= it.copy(members = members)
@@ -242,7 +266,7 @@ class HomeFragmentViewModel(private val getGroupsUseCase: GetGroupsUseCase,
         uiModel._getGroupsActionState.value= Event(ScreenState.Render(HomeFragmentStates.GetGroupsState.GetGroupsStateOk(result)))
         myGroups= GroupList(groups)
 
-    }
+    }*/
 
     fun onExpandClick(itemGroup: MemberUserViewModelTemplate.GroupMemberUserViewModel) {
 

@@ -1,6 +1,6 @@
 package es.samiralkalii.myapps.domain.teammanagement
 
-data class GroupList(val groups: List<Group>) {
+data class GroupList(var groups: MutableList<Group>) {
 
     val isEmpty
         get() = groups.isEmpty()

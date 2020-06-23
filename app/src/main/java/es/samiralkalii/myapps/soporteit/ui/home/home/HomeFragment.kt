@@ -127,6 +127,14 @@ class HomeFragment: BaseFragment(), SearchView.OnQueryTextListener {
             }
         })
 
+        viewModel.uiModel.deletedUsers.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                it.getContentIfNotHandled()?.let { deletedUsers ->
+                    (binding.groupsRecycleView.adapter as MemberUserAdapter).update(deletedUsers)
+                }
+            }
+        })
+
         /*val resId = R.anim.layout_animation_fall_down
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, resId)
         binding.groupsRecycleView.setLayoutAnimation(animation)*/

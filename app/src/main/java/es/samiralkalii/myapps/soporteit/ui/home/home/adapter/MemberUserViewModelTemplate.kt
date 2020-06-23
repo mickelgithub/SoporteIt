@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
 
 sealed class MemberUserViewModelTemplate {
 
-    class GroupMemberUserViewModel(val user: User, val group: Group, val subItems: List<MemberUserViewModel>, val viewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
+    class GroupMemberUserViewModel(val user: User, val group: Group, var subItems: List<MemberUserViewModel>, val viewModel: HomeFragmentViewModel): MemberUserViewModelTemplate() {
 
         private val logger= LoggerFactory.getLogger(GroupMemberUserViewModel::class.java)
 

@@ -49,4 +49,10 @@ class HomeFragmentViewModelUiModel: UiModel {
     val updateExpandableGroup: LiveData<MemberUserViewModelTemplate.GroupMemberUserViewModel?>
         get() = _updateExpandableGroup
 
+    //the first boolean atribute indicate whether after deleting the users, there is no more users
+    //en this case, the adapter haz to delete each item and that's it
+    val _deletedUsers= MutableLiveData<Event<Triple<Boolean, List<String>?, List<String>?>>?>()
+    val deletedUsers: LiveData<Event<Triple<Boolean, List<String>?, List<String>?>>?>
+        get() = _deletedUsers
+
 }

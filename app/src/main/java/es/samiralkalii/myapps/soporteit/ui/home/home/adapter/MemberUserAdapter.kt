@@ -147,6 +147,34 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
         this.recyclerView= recyclerView
     }
 
+    fun update(deletedUsers: Triple<Boolean, List<String>?, List<String>?>) {
+
+        val iterator= members.iterator()
+        if (deletedUsers.first) {
+            //No more members, so we have to delete all items
+            var i= 0
+            while (iterator.hasNext()) {
+                iterator.remove()
+                notifyItemRemoved(i++)
+            }
+            members.add(MemberUserViewModelTemplate.MemberUserViewModelEmpty)
+            notifyItemInserted(0)
+        } else {
+            var i= 0
+            while (iterator.hasNext()) {
+                val item= iterator.next()
+                if (item is MemberUserViewModelTemplate.MemberUserViewModel && item.user.id in deletedUsers.second!!) {
+                    notifyItemRemoved(i)
+                    iterator.remove()
+                } else if (item is MemberUserViewModelTemplate.GroupMemberUserViewModel && item.group.name in (deletedUsers.third!!)) {
+                    notifyItemRemoved(i)
+                    iterator.remove()
+                }
+                i++
+            }
+        }
+    }
+
     fun update(groupExpanded: MemberUserViewModelTemplate.GroupMemberUserViewModel) {
         val contractedGroup= members.filter { it is MemberUserViewModelTemplate.GroupMemberUserViewModel && it.isExpanded}.first() as MemberUserViewModelTemplate.GroupMemberUserViewModel
 
@@ -156,8 +184,8 @@ class MemberUserAdapter(val members: MutableList<MemberUserViewModelTemplate>, v
         recyclerView.removeItemDecoration(itemDecorator)
 
         while (iterator.hasNext()) {
-            val value= iterator.next()
-            if (value is MemberUserViewModelTemplate.MemberUserViewModel) {
+            val item= iterator.next()
+            if (item is MemberUserViewModelTemplate.MemberUserViewModel) {
                 notifyItemRemoved(i)
                 iterator.remove()
             }

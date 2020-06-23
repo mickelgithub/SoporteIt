@@ -215,10 +215,10 @@ class RemoteTeamDatasourceManager(val fstore: FirebaseFirestore): IRemoteTeamMan
                 //Until now we have all members that belongs to user.department && user.area
                 val groupAll= membersQueryresult.documents.map { it.data!!.toUser() }.filter { it!= null && it.id!= user.id }.let { Group(id = Constants.GROUP_ALL_ID, name = Constants.GROUP_ALL, members = it as List<User>, area = user.areaId, department = user.departmentId) }
                 var otherGroups= getTheGroupsIbelongTo(user, groupAll.members).filter { it.members!= null && !it.members.isEmpty() }
-                return GroupList(listOf(groupAll, *otherGroups.toTypedArray()))
+                return GroupList(mutableListOf(groupAll, *otherGroups.toTypedArray()))
             }
         }
-        return GroupList(listOf())
+        return GroupList(mutableListOf())
     }
 
     suspend private fun getTheGroupsIbelongTo(user: User, users: List<User>): List<Group> {
